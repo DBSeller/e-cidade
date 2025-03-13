@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -85,7 +85,7 @@ class cl_serieregimemat {
    // funcao para inclusao
    function incluir ($ed223_i_codigo){ 
       $this->atualizacampos();
-     if($this->ed223_i_serie == null ){ 
+     if($this->ed223_i_serie == null ){
        $this->erro_sql = " Campo Etapa nao Informado.";
        $this->erro_campo = "ed223_i_serie";
        $this->erro_banco = "";
@@ -423,7 +423,6 @@ class cl_serieregimemat {
      $sql .= "      inner join regimemat  on  regimemat.ed218_i_codigo = serieregimemat.ed223_i_regimemat";
      $sql .= "      left  join regimematdiv  on  regimematdiv.ed219_i_codigo = serieregimemat.ed223_i_regimematdiv";
      $sql .= "      inner join serie  on  serie.ed11_i_codigo = serieregimemat.ed223_i_serie";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = serie.ed11_i_codcenso";
      $sql .= "      inner join ensino  on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
      $sql2 = "";
      if($dbwhere==""){
@@ -462,7 +461,6 @@ class cl_serieregimemat {
      $sql .= "      inner join regimemat  on  regimemat.ed218_i_codigo = serieregimemat.ed223_i_regimemat";
      $sql .= "      left  join regimematdiv  on  regimematdiv.ed219_i_codigo = serieregimemat.ed223_i_regimematdiv";
      $sql .= "      inner join serie  on  serie.ed11_i_codigo = serieregimemat.ed223_i_serie";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = serie.ed11_i_codcenso";
      $sql .= "      inner join ensino  on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
      $sql .= "      inner join base  on  base.ed31_i_regimemat = regimemat.ed218_i_codigo";
      $sql .= "      inner join basemps  on  basemps.ed34_i_base = base.ed31_i_codigo
@@ -521,5 +519,51 @@ class cl_serieregimemat {
      }
      return $sql;
   }
+
+  // funcao do sql 
+   function sql_query_censo_etapa ( $ed223_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from serieregimemat ";
+     $sql .= "      inner join regimemat                  on regimemat.ed218_i_codigo                 = serieregimemat.ed223_i_regimemat";
+     $sql .= "      left  join regimematdiv               on regimematdiv.ed219_i_codigo              = serieregimemat.ed223_i_regimematdiv";
+     $sql .= "      inner join serie                      on serie.ed11_i_codigo                      = serieregimemat.ed223_i_serie";
+     $sql .= "      inner join seriecensoetapa            on seriecensoetapa.ed133_serie              = serie.ed11_i_codigo";
+     $sql .= "      inner join censoetapa                 on (censoetapa.ed266_i_codigo = seriecensoetapa.ed133_censoetapa and censoetapa.ed266_ano = seriecensoetapa.ed133_ano)";
+     $sql .= "      inner join ensino                     on ensino.ed10_i_codigo                     = serie.ed11_i_ensino";
+     $sql .= "      inner join mediacaodidaticopedagogica on mediacaodidaticopedagogica.ed130_codigo  = ensino.ed10_mediacaodidaticopedagogica";
+     $sql .= "      inner join base                       on base.ed31_i_regimemat                    = regimemat.ed218_i_codigo";
+     $sql .= "      inner join basemps                    on (basemps.ed34_i_base                     = base.ed31_i_codigo and basemps.ed34_i_serie = serie.ed11_i_codigo)";
+                    
+     $sql2 = "";
+     if($dbwhere==""){
+       if($ed223_i_codigo!=null ){
+         $sql2 .= " where serieregimemat.ed223_i_codigo = $ed223_i_codigo ";
+       }
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+
 }
 ?>

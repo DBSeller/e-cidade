@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -640,7 +640,7 @@ class cl_tarefa_agenda {
             		 
 		    if ($this->at13_horafim == $at53_horafim_tarde) {
 		        $sqlsoma = "select '$data_inicial'::date + '1 day'::interval as data_inicial";
-			$resultsoma = pg_exec($sqlsoma) or die($sqlsoma);
+			$resultsoma = db_query($sqlsoma) or die($sqlsoma);
 			db_fieldsmemory($resultsoma, 0);
 //		    	$data_inicial++;
 		    	continue;
@@ -689,7 +689,7 @@ class cl_tarefa_agenda {
 	    }
 	
 	    $sqlsoma = "select '$data_inicial'::date + '1 day'::interval as data_inicial";
-	    $resultsoma = pg_exec($sqlsoma) or die($sqlsoma);
+	    $resultsoma = db_query($sqlsoma) or die($sqlsoma);
 	    db_fieldsmemory($resultsoma, 0);
 
 //	    $data_inicial++;

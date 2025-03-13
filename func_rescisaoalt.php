@@ -1,33 +1,8 @@
-<?
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
+<?php
 
-/*
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -51,15 +26,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rescisao_classe.php");
-include("classes/db_rhregime_classe.php");
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
+require_once modification('dbforms/db_funcoes.php');
+require_once modification('classes/db_rescisao_classe.php');
+require_once modification('classes/db_rhregime_classe.php');
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+parse_str($HTTP_SERVER_VARS['QUERY_STRING'], $queryString);
+
+foreach ($queryString as $key => $value) {
+    ${$key} = $value;
+}
+
 db_postmemory($HTTP_POST_VARS);
 
 $clrescisao = new cl_rescisao;
@@ -89,75 +69,82 @@ if(!isset($chave_r59_mesusu)){
 <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
   <tr>
     <td height="63" align="center" valign="top">
+      <form name="form2" method="post" action="" >
+        <fieldset style="width: 35%">
+          <legend>Pesquisa de Rescisão</legend>
+          <table width="35%" border="0" align="center" cellspacing="0">
+            <tr>
+              <td align="left" nowrap title="Digite o Ano / Mes de competência" >
+                <strong>Ano / Mês :&nbsp;&nbsp;</strong>
+              </td>
+              <td>
+                <?
+                db_input('r59_anousu',4,$Ir59_anousu,true,'text',2,'',"chave_r59_anousu")
+                ?>
+                &nbsp;/&nbsp;
+                <?
+                db_input('r59_mesusu',2,$Ir59_mesusu,true,'text',2,'',"chave_r59_mesusu")
+                ?>
+              </td>
+            </tr>
+            <tr>
+              <td width="4%" align="left" nowrap title="<?=$Tr59_regime?>">
+                <?=$Lr59_regime?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?
+             db_input("r59_regime",4,$Ir59_regime,true,"text",4,"","chave_r59_regime");
+             ?>
+              </td>
+            </tr>
+            <tr>
+              <td width="4%" align="left" nowrap title="<?=$Tr59_causa?>">
+                <?=$Lr59_causa?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?
+             db_input("r59_causa",4,$Ir59_causa,true,"text",4,"","chave_r59_causa");
+             ?>
+              </td>
+            </tr>
+            <tr>
+              <td width="4%" align="left" nowrap title="<?=$Tr59_caub?>">
+                <?=$Lr59_caub?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?
+             db_input("r59_caub",4,$Ir59_caub,true,"text",4,"","chave_r59_caub");
+             ?>
+              </td>
+            </tr>
+            <tr>
+              <td width="4%" align="left" nowrap title="<?=$Tr59_descr?>">
+                <?=$Lr59_descr?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?
+             db_input("r59_descr",40,$Ir59_descr,true,"text",4,"","chave_r59_descr");
+             ?>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
         <table width="35%" border="0" align="center" cellspacing="0">
-	      <form name="form2" method="post" action="" >
-          <tr>
-            <td align="right" nowrap title="Digite o Ano / Mes de competência" >
-              <strong>Ano / Mês :&nbsp;&nbsp;</strong>
-            </td>
-            <td>
-              <?
-              db_input('r59_anousu',4,$Ir59_anousu,true,'text',2,'',"chave_r59_anousu")
-              ?>
-              &nbsp;/&nbsp;
-              <?
-              db_input('r59_mesusu',2,$Ir59_mesusu,true,'text',2,'',"chave_r59_mesusu")
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="4%" align="right" nowrap title="<?=$Tr59_regime?>">
-              <?=$Lr59_regime?>
-            </td>
-            <td width="96%" align="left" nowrap>
-              <?
-		       db_input("r59_regime",4,$Ir59_regime,true,"text",4,"","chave_r59_regime");
-		       ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="4%" align="right" nowrap title="<?=$Tr59_causa?>">
-              <?=$Lr59_causa?>
-            </td>
-            <td width="96%" align="left" nowrap>
-              <?
-		       db_input("r59_causa",4,$Ir59_causa,true,"text",4,"","chave_r59_causa");
-		       ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="4%" align="right" nowrap title="<?=$Tr59_caub?>">
-              <?=$Lr59_caub?>
-            </td>
-            <td width="96%" align="left" nowrap>
-              <?
-		       db_input("r59_caub",4,$Ir59_caub,true,"text",4,"","chave_r59_caub");
-		       ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="4%" align="right" nowrap title="<?=$Tr59_descr?>">
-              <?=$Lr59_descr?>
-            </td>
-            <td width="96%" align="left" nowrap>
-              <?
-		       db_input("r59_descr",40,$Ir59_descr,true,"text",4,"","chave_r59_descr");
-		       ?>
-            </td>
-          </tr>
           <tr>
             <td colspan="2" align="center">
               <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
               <input name="limpar" type="reset" id="limpar" value="Limpar" >
               <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_rescisao.hide();">
-             </td>
+            </td>
           </tr>
-        </form>
         </table>
-      </td>
+      </form>
+    </td>
   </tr>
   <tr>
     <td align="center" valign="top">
+      <fieldset>
+        <legend>Resultado da Pesquisa</legend>
       <?
       if(isset($regime) && trim($regime)!=""){
 
@@ -170,7 +157,7 @@ if(!isset($chave_r59_mesusu)){
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_rescisao.php")==true){
-             include("funcoes/db_func_rescisao.php");
+             include(modification("funcoes/db_func_rescisao.php"));
            }else{
              $campos = "rescisao.*";
            }
@@ -208,8 +195,9 @@ if(!isset($chave_r59_mesusu)){
         }
       }
       ?>
-     </td>
-   </tr>
+      </td>
+    </tr>
+  </tr>
 </table>
 </body>
 </html>
@@ -221,3 +209,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

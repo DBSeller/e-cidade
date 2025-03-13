@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cflicita_classe.php");
-require_once("classes/db_pccflicitapar_classe.php");
-require_once("classes/db_liclicita_classe.php");
-require_once("classes/db_cflicitatemplate_classe.php");
-require_once("classes/db_cflicitatemplateata_classe.php");
-require_once("classes/db_pctipocompratribunal_classe.php");
-require_once("classes/db_cflicitatemplateminuta_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cflicita_classe.php"));
+require_once(modification("classes/db_pccflicitapar_classe.php"));
+require_once(modification("classes/db_liclicita_classe.php"));
+require_once(modification("classes/db_cflicitatemplate_classe.php"));
+require_once(modification("classes/db_cflicitatemplateata_classe.php"));
+require_once(modification("classes/db_pctipocompratribunal_classe.php"));
+require_once(modification("classes/db_cflicitatemplateminuta_classe.php"));
 
 $clcflicita               = new cl_cflicita();
 $clliclicita              = new cl_liclicita();
@@ -143,7 +143,7 @@ if (isset($excluir)) {
     <td valign="top" bgcolor="#CCCCCC"> 
     <center>
       <?
-        include("forms/db_frmcflicita.php");
+        include(modification("forms/db_frmcflicita.php"));
       ?>
     </center>
   </td>
@@ -185,11 +185,11 @@ if(isset($chavepesquisa)){
          parent.document.formaba.templateata.disabled=false;    
          parent.document.formaba.faixavalores.disabled=false;  
          parent.document.formaba.templateminuta.disabled=false;
-         top.corpo.iframe_pccflicitapar.location.href='lic1_pccflicitapar001.php?db_opcaoal=33&l25_codcflicita=".@$l03_codigo."';
-         top.corpo.iframe_template.location.href='lic1_cflicitatemplate001.php?db_opcaoal=33&l35_cflicita=".@$l03_codigo."';
-         top.corpo.iframe_templateata.location.href='lic1_cflicitatemplateata001.php?db_opcaoal=33&l37_cflicita=".@$l03_codigo."'; 
-         top.corpo.iframe_templateminuta.location.href='lic1_cflicitatemplateminuta001.php?db_opcaoal=33&l41_cflicita=".@$l03_codigo."'; 
-         top.corpo.iframe_faixavalores.location.href='lic1_cflicitafaixavalor001.php?l37_cflicita=".@$l03_codigo."';       
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_pccflicitapar.location.href='lic1_pccflicitapar001.php?db_opcaoal=33&l25_codcflicita=".@$l03_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_template.location.href='lic1_cflicitatemplate001.php?db_opcaoal=33&l35_cflicita=".@$l03_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_templateata.location.href='lic1_cflicitatemplateata001.php?db_opcaoal=33&l37_cflicita=".@$l03_codigo."'; 
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_templateminuta.location.href='lic1_cflicitatemplateminuta001.php?db_opcaoal=33&l41_cflicita=".@$l03_codigo."'; 
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_faixavalores.location.href='lic1_cflicitafaixavalor001.php?l37_cflicita=".@$l03_codigo."';       
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('pccflicitapar');";

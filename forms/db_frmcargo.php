@@ -78,7 +78,7 @@ $clcargo->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cargo','func_cargo.php?funcao_js=parent.js_preenchepesquisa|r65_anousu|r65_mesusu|r65_cargo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cargo','func_cargo.php?funcao_js=parent.js_preenchepesquisa|r65_anousu|r65_mesusu|r65_cargo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_cargo.hide();

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -99,7 +99,7 @@ class impressao {
       throw new Exception("Sem IP configurado!");
     }
     
-    $rImpressora = fsockopen($this->getIp(), $this->getPorta());
+    $rImpressora = @fsockopen($this->getIp(), $this->getPorta());
     //$rImpressora = fopen('/tmp/saida.log', "w+");
     if (!$rImpressora) {
       throw new Exception("Não foi possivel conectar com impressora (IP {$this->getIp()}:{$this->getPorta()}). Verifique!");

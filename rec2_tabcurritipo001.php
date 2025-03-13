@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tabcurritipo_classe.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tabcurritipo_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cltabcurritipo = new cl_tabcurritipo;
 $rotulocampo = new rotulocampo;
@@ -191,10 +191,10 @@ function js_emite(){
 <script>
 function js_pesquisarh03_padrao(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_padroes','func_padroes.php?funcao_js=parent.js_mostrapadrao1|r02_codigo|r02_descr&chave_r02_anousu='+document.form1.anofolha.value+'&chave_r02_mesusu='+document.form1.mesfolha.value,'Pesquisa',true,'0');
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_padroes','func_padroes.php?funcao_js=parent.js_mostrapadrao1|r02_codigo|r02_descr&chave_r02_anousu='+document.form1.anofolha.value+'&chave_r02_mesusu='+document.form1.mesfolha.value,'Pesquisa',true,'0');
     }else{
       if(document.form1.rh03_padrao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_padroes','func_padroes.php?pesquisa_chave='+document.form1.rh03_padrao.value+'&funcao_js=parent.js_mostrapadrao&chave_r02_anousu='+document.form1.anofolha.value+'&chave_r02_mesusu='+document.form1.mesfolha.value,'Pesquisa',false,'0');
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_padroes','func_padroes.php?pesquisa_chave='+document.form1.rh03_padrao.value+'&funcao_js=parent.js_mostrapadrao&chave_r02_anousu='+document.form1.anofolha.value+'&chave_r02_mesusu='+document.form1.mesfolha.value,'Pesquisa',false,'0');
       }else{
         document.form1.rh03_padrao.value = '';
         document.form1.r02_descr.value  = '';

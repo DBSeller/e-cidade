@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-include("libs/db_liborcamento.php");
+include(modification("libs/db_liborcamento.php"));
 
 
 
@@ -55,10 +55,10 @@ $qorgao = 0;
 $qunidade = 0;
 
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
-include("fpdf151/assinatura.php");
+include(modification("fpdf151/assinatura.php"));
 $classinatura = new cl_assinatura;
 
 //db_postmemory($HTTP_POST_VARS,2);exit;
@@ -70,7 +70,7 @@ $head1 = "DEMONSTRATIVO DA DESPESA/SUBELEMENTO";
 $head3 = "EXERCÍCIO: ".db_getsession("DB_anousu");
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -125,8 +125,8 @@ if (substr($nivel,1,1) == 'A'){
     $sele_work .= " and exists (select 1 from t where t.o58_codigo = w.o58_codigo) ";
   }
 
-  pg_exec("begin");
-  pg_exec("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
+  db_query("begin");
+  db_query("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
     
   $xcampos = split("-",$orgaos);
   
@@ -154,10 +154,10 @@ if (substr($nivel,1,1) == 'A'){
        $where .= ",0,0";
      if($nivela == 7)
        $where .= ",0";
-     pg_exec("insert into t values($where)");
+     db_query("insert into t values($where)");
   }
 
-//db_criatabela(pg_exec("select * from t"));
+//db_criatabela(db_query("select * from t"));
 $anousu  = db_getsession("DB_anousu");
 /*
 $dataini = date("Y-m-d",db_getsession("DB_datausu"));
@@ -171,11 +171,11 @@ $head5 = "PERÍODO : ".db_formatar($dataini,'d')." A ".db_formatar($datafin,'d');
 $result = db_dotacaosaldo($nivela,1,2,true,$sele_work,$anousu,$dataini,$datafin);
 //db_criatabela($result);exit;
 // funcao para gerar work
-//db_criatabela(pg_exec("select * from work w inner join temporario t on $sele_work "));exit;
+//db_criatabela(db_query("select * from work w inner join temporario t on $sele_work "));exit;
 
 
 
-pg_exec("commit");
+db_query("commit");
 
 $pdf = new PDF(); 
 $pdf->Open(); 
@@ -560,7 +560,7 @@ for($i=0;$i<pg_numrows($result);$i++){
 		    
 	      group by o56_codele,o56_elemento,o56_descr";
 */
-      $res = pg_exec($sql);
+      $res = db_query($sql);
 //      db_criatabela($res);
       for($ne=0;$ne<pg_numrows($res);$ne++){
 	db_fieldsmemory($res,$ne);
@@ -638,11 +638,11 @@ $pdf->cell(20,$alt,db_formatar($totorgaoatual,'f'),0,1,"R",0);
 $anousu  = db_getsession("DB_anousu");
 $dataini = db_getsession("DB_anousu")."-01-01";
 $datafin = date("Y-m-d",db_getsession("DB_datausu"));
-//db_criatabela(pg_exec("select * from temporario"));
+//db_criatabela(db_query("select * from temporario"));
 $result = db_dotacaosaldo($nivela,3,2,true,$where,$anousu,$dataini,$datafin);
 //db_criatabela($result);exit;
 // funcao para gerar work
-//db_criatabela(pg_exec("select * from work w inner join temporario t on $sele_work "));exit;
+//db_criatabela(db_query("select * from work w inner join temporario t on $sele_work "));exit;
 
 
 
@@ -842,7 +842,7 @@ $pdf->cell(20,$alt,db_formatar($totorgaoatual,'f'),0,1,"R",0);
 
 
 }
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 
 
 $tes =  "______________________________"."\n"."Tesoureiro";
@@ -869,6 +869,6 @@ $pdf->multicell($largura,2,$ass_cont,0,"C",0,0);
 
 $pdf->Output();
 
-pg_exec("commit");
+db_query("commit");
 
 ?>

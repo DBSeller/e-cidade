@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,8 +33,8 @@
  * @author André Ianzer Hertzog andre.hertzog@dbseller.com.br
  * @author Everton Catto everton.heckler@dbseller.com.br
  * @package Divida
- * @revision $Author: dbeverton.heckler $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbroberto $
+ * @version $Revision: 1.4 $
  *
  */
 class ProcedenciaDivida {
@@ -102,8 +102,12 @@ class ProcedenciaDivida {
 	 * Tabela procdiver
 	 * @var integer
 	 */
-	
 	protected $iTipoProcedencia;
+
+	/**
+   * @var
+   */
+	protected $iTipoDebito;
 
 	/**
 	 * Construtor da classe
@@ -112,7 +116,7 @@ class ProcedenciaDivida {
 	 */
 	function __construct($iProcedenciaDivida = null) {
 	
-		$oDaoProcedenciaDivida       = db_utils::getDao("proced");
+		$oDaoProcedenciaDivida       = new cl_proced;
 	
 		if (!empty($iProcedenciaDivida)) {
 	
@@ -138,7 +142,8 @@ class ProcedenciaDivida {
 				$this->setTipoProcedenciaTributaria ($oProcedenciaDivida->v03_tributaria);
 				$this->setInstituicao               ($oProcedenciaDivida->v03_instit);
 				$this->setTipoProcedencia           ($oProcedenciaDivida->v03_procedtipo);
-		    
+				$this->setTipoDebito                ($oProcedenciaDivida->v06_arretipo);
+
 				unset($oProcedenciaDivida);
 			}
 		}
@@ -289,7 +294,24 @@ class ProcedenciaDivida {
 	    $this->iTipoProcedencia = $iTipoProcedencia;
 	}
 
-	
+    /**
+     *
+     * @return
+     */
+    public function getTipoDebito()
+    {
+        return $this->iTipoDebito;
+    }
+
+    /**
+     *
+     * @param $iTipoDebito
+     */
+    public function setTipoDebito($iTipoDebito)
+    {
+        $this->iTipoDebito = $iTipoDebito;
+    }
+
 }
 
 

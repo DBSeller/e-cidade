@@ -26,13 +26,13 @@
  */
 
 
-include("fpdf151/scpdf.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_contrib_classe.php");
-include("classes/db_contlotv_classe.php");
-include("classes/db_contricalc_classe.php");
-include("classes/db_editalserv_classe.php");
-include("classes/db_editalrua_classe.php");
+include(modification("fpdf151/scpdf.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_contrib_classe.php"));
+include(modification("classes/db_contlotv_classe.php"));
+include(modification("classes/db_contricalc_classe.php"));
+include(modification("classes/db_editalserv_classe.php"));
+include(modification("classes/db_editalrua_classe.php"));
 
 $clcontlot = new cl_contlot;
 $clcontrib = new cl_contrib;
@@ -109,7 +109,7 @@ for($i=0;$i<$num;$i++) {
     inner join projmelhoriasmatric on d41_codigo = d11_codproj and d41_matric = j01_matric 
     where d05_contri= $d02_contri 
     order by j40_refant";
-    $result01=pg_query($sql01) or die($sql01);
+    $result01=db_query($sql01) or die($sql01);
     
     $sqlsoma = "	select sum(d41_testada + d41_eixo) as total_testada 
     from contlot 
@@ -118,7 +118,7 @@ for($i=0;$i<$num;$i++) {
     inner join editalruaproj on d11_contri = d05_contri
     inner join projmelhoriasmatric on d41_codigo = d11_codproj and d41_matric = j01_matric 
     where d05_contri = $d02_contri";
-    $resultsoma = pg_exec($sqlsoma) or die($sqlsoma);
+    $resultsoma = db_query($sqlsoma) or die($sqlsoma);
     if (pg_numrows($resultsoma) == 0) {
       $total_testada = 0;
     } else {
@@ -140,7 +140,7 @@ for($i=0;$i<$num;$i++) {
                 from db_config 
                 inner join db_uf on db12_uf=uf
                 where codigo = ".db_getsession("DB_instit");
-        $result05 = pg_query($sql);
+        $result05 = db_query($sql);
         global $nomeinst;
         global $ender;
         global $munic;
@@ -237,7 +237,7 @@ for($i=0;$i<$num;$i++) {
 				from db_config 
 				inner join db_uf on db12_uf=uf
 				where codigo = ".db_getsession("DB_instit");
-        $result05 = pg_query($sql);
+        $result05 = db_query($sql);
         global $nomeinst;
         global $ender;
         global $munic;

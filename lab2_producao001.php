@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_lab_laboratorio_classe.php");
-require_once('libs/db_utils.php');
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_lab_laboratorio_classe.php"));
+require_once(modification('libs/db_utils.php'));
 $cllab_laboratorio = new cl_lab_laboratorio;
 $clrotulo          = new rotulocampo;
 
@@ -64,7 +64,7 @@ $oDaolab_labusuario;
                 <b> Inicio:</b>
               </td>
               <td nowrap>
-                <?db_inputdata('la02_d_datainicio',
+                <?php db_inputdata('la02_d_datainicio',
                                @$la02_d_datainicio_dia,
                                @$la02_d_datainicio_mes,
                                @$la02_d_datainicio_ano,
@@ -76,7 +76,7 @@ $oDaolab_labusuario;
                 <b>Fim:</b>
               </td>
               <td nowrap>
-                <?db_inputdata('la02_d_datafim',
+                <?php db_inputdata('la02_d_datafim',
                                @$la02_d_datafim_dia,
                                @$la02_d_datasaida_mes,
                                @$la02_d_datasaida_ano,
@@ -87,14 +87,20 @@ $oDaolab_labusuario;
           </tr> 
           <tr>
             <td align="right" colspan="4">
-              <?
+              <?php
               $sSql           = $cllab_laboratorio->sql_query("","la02_i_codigo,la02_c_descr");
               $rsLaboratorios = $cllab_laboratorio->sql_record($sSql);
+              $labs = [
+                'TODOS' => 'TODOS',
+              ];
+              while($state = pg_fetch_array($rsLaboratorios)) {
+                $labs[$state['la02_i_codigo']] = $state['la02_c_descr'];
+              }
               db_multiploselect("la02_i_codigo",
                                 "la02_c_descr",
                                 "nselecionados",
                                 "sselecionados",
-                                $rsLaboratorios,
+                                $labs,
                                 array(),
                                 5,
                                 250);
@@ -106,7 +112,7 @@ $oDaolab_labusuario;
               <b>Tipo:</b>
             </td>
             <td colspan="3" align="left">
-              <?$aX = array(1=>'SINTÉTICO',2=>'ANALÍTICO');
+              <?php $aX = array(1=>'SINTÉTICO',2=>'ANALÍTICO');
                 db_select('tipo',$aX,true,1,"");?>
             </td>
           </tr>
@@ -118,36 +124,60 @@ $oDaolab_labusuario;
     </td>
  </tr>
 </table>
-<?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+<?php
+  db_menu();
+?>
 </body>
 </html>
 <script>
-function js_gerar(){
+const dataInicial = document.getElementById('la02_d_datainicio');
+const dataFinal = document.getElementById('la02_d_datafim');
+const selectSelecionados = document.getElementById('sselecionados');
+const selectTipo = document.getElementById('tipo');
 
-    oF   = document.form1;
-    iTam = oF.sselecionados.length;
-    if(iTam==0){
-      alert('Selecione um laboratorio');
-      return false;
-    }
-    if ((oF.la02_d_datainicio.value == "") && (oF.la02_d_datafim.value == "")) {
-      alert('Entre com o periodo!');
-      return false;
+function js_gerar() {
+    if (!validaCampos()) {
+        return;
     }
     
-    sStr = '';
-    sSep = '';
-    for(iX=0; iX<iTam; iX++){
-
-      sStr += sSep+oF.sselecionados.options[iX].value;
-      sSep=",";
-
+    let selecionados = [];
+    for (let selecionado of selectSelecionados.options) {
+        if (selecionado.value == 'TODOS' && selectSelecionados.options.length > 1) {
+            continue;
+        }
+        selecionados.push(selecionado.value);
     }
-    sDados  = 'dInicio='+oF.la02_d_datainicio.value+'&dFim='+oF.la02_d_datafim.value+'&sLaboratorios='+sStr;
-    sDados += '&iTipo='+oF.tipo.value;
-    Jan = window.open('lab2_producao002.php?'+sDados,'',
-                      'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-    oJan.moveTo(0,0);
 
+    let dados = [];
+    dados.push(`dInicio=${dataInicial.value}`);
+    dados.push(`dFim=${dataFinal.value}`);
+    dados.push(`sLaboratorios=${selecionados.join(',')}`);
+    dados.push(`iTipo=${selectTipo.value}`);
+
+    let url = `lab2_producao002.php?${dados.join('&')}`;
+    let features = `width=${(screen.availWidth-5)},height=${(screen.availHeight-40)},scrollbars=1,location=0`;
+    Jan = window.open(url, '', features);
+    oJan.moveTo(0,0);
+}
+
+function validaCampos() {
+    if(selectSelecionados.length == 0) {
+        alert('Selecione um laboratório!');
+        return false;
+    }
+    if (selectSelecionados.length == 1 && selectSelecionados.options[0].value == 'TODOS' && selectTipo.value == 2) {
+        alert('Opção TODOS não disponível para o relatório do tipo Analítico. Selecione um ou mais laboratórios para gerar o documento!');
+        return false;
+    }
+    if (dataInicial.value == "" && dataFinal.value == "") {
+        alert('Informe o período!');
+        return false;
+	}
+	if (js_formatar(dataInicial.value, 'd') > js_formatar(dataFinal.value, 'd')) {
+		alert('A data inicial não pode ser maior que a data final!');
+        return false;
+	}
+
+    return true;
 }
 </script>

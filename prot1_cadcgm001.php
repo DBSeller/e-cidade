@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_cgm_classe.php");
-  include("classes/db_db_cgmruas_classe.php");
-  include("classes/db_db_cgmbairro_classe.php");
-  include("classes/db_db_cgmcgc_classe.php");
-  include("classes/db_db_cgmcpf_classe.php");
-  include("classes/db_db_cepmunic_classe.php");
-  include("classes/db_ruascep_classe.php");
-  include("classes/db_db_replica_classe.php");
-  include("classes/db_cidadao_classe.php");
-  include("classes/db_cidadaocgm_classe.php");
-  include("classes/db_cgmfisico_classe.php");
-  include("classes/db_cgmjuridico_classe.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("classes/db_cgm_classe.php"));
+  require_once(modification("classes/db_db_cgmruas_classe.php"));
+  require_once(modification("classes/db_db_cgmbairro_classe.php"));
+  require_once(modification("classes/db_db_cgmcgc_classe.php"));
+  require_once(modification("classes/db_db_cgmcpf_classe.php"));
+  require_once(modification("classes/db_db_cepmunic_classe.php"));
+  require_once(modification("classes/db_ruascep_classe.php"));
+  require_once(modification("classes/db_db_replica_classe.php"));
+  require_once(modification("classes/db_cidadao_classe.php"));
+  require_once(modification("classes/db_cidadaocgm_classe.php"));
+  require_once(modification("classes/db_cgmfisico_classe.php"));
+  require_once(modification("classes/db_cgmjuridico_classe.php"));
   
   db_postmemory($HTTP_SERVER_VARS);
   db_postmemory($HTTP_POST_VARS);
@@ -146,8 +146,11 @@
    
    if (strlen($z01_cgccpf) <= 11) {
     
-    $oDaoCgmFisico->z04_numcgm = $clcgm->z01_numcgm;
-    $oDaoCgmFisico->z04_rhcbo  = $rh70_sequencial;
+    $oDaoCgmFisico->z04_numcgm            = $clcgm->z01_numcgm;
+    $oDaoCgmFisico->z04_rhcbo             = $rh70_sequencial;
+    $oDaoCgmFisico->z04_nomesocial        = $z04_nomesocial;
+    $oDaoCgmFisico->z04_paisnascimento    = $z04_paisnascimento;
+    $oDaoCgmFisico->z04_paisnacionalidade = $z04_paisnacionalidade;
     $oDaoCgmFisico->incluir(null);
     
     if ($oDaoCgmFisico->erro_status == "0") {
@@ -217,7 +220,7 @@
       
     if ($clcidadaocgm->erro_status == '0') {
         
-      pg_exec("rollback");
+      db_query("rollback");
       $clcgm->erro_msg    = $clcidadaocgm->erro_msg;
       $clcgm->erro_status = "0";
       //echo $clcidadaocgm->erro_msg;
@@ -229,7 +232,7 @@
     
     if ($clcidadao->erro_status == '0') {
         
-      pg_exec("rollback");
+      db_query("rollback");
       $clcgm->erro_msg    = $clcidadao->erro_msg;
       $clcgm->erro_status = "0";
       //echo $clcidadaocgm->erro_msg;
@@ -317,19 +320,19 @@
                )
               ";
              
-      $result_replica = pg_query($con_replica,$sqlreplica);
+      $result_replica = db_query($con_replica,$sqlreplica);
       
       if ($result_replica==false) {
         echo "erro no cgm $sqlreplica";exit;
-        pg_exec("rollback");
+        db_query("rollback");
       }
      }
       
-     pg_exec("commit");
+     db_query("commit");
     }
      
    }
-   require("libs/db_conecta.php");
+   require_once(modification("libs/db_conecta.php"));
        
    }
      $db_botao = true;
@@ -357,7 +360,7 @@ if (!isset($testanome)) {
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC">
   <?
   //die('antes do form');
-  include("forms/db_frmcgm.php");
+  include(modification("forms/db_frmcgm.php"));
 
   ?>
   </td>

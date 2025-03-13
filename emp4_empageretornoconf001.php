@@ -1,75 +1,52 @@
+
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_empagepag_classe.php");
-require_once("classes/db_empagetipo_classe.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("classes/db_empempenho_classe.php");
-require_once("classes/db_empelemento_classe.php");
-require_once("classes/db_pagordem_classe.php");
-require_once("classes/db_pagordemele_classe.php");
-require_once("classes/db_cfautent_classe.php");
-require_once("classes/db_conlancam_classe.php");
-require_once("classes/db_conlancamele_classe.php");
-require_once("classes/db_conlancampag_classe.php");
-require_once("classes/db_conlancamcgm_classe.php");
-require_once("classes/db_conparlancam_classe.php");
-require_once("classes/db_conlancamemp_classe.php");
-require_once("classes/db_conlancamval_classe.php");
-require_once("classes/db_conlancamdot_classe.php");
-require_once("classes/db_conplanoreduz_classe.php");
-require_once("classes/db_conlancamord_classe.php");
-require_once("classes/db_conlancamlr_classe.php");
-require_once("classes/db_conlancamdoc_classe.php");
-require_once("classes/db_conlancamcompl_classe.php");
-require_once("classes/db_saltes_classe.php");
-require_once("classes/db_empagedadosret_classe.php");
-require_once("classes/db_empagedadosretmov_classe.php");
-require_once("libs/db_utils.php");
-require_once ('model/empenho/EmpenhoFinanceiro.model.php');
-require_once('model/empenho/EmpenhoFinanceiroItem.model.php');
-require_once('model/MaterialCompras.model.php');
-require_once("classes/ordemPagamento.model.php");
-require_once ("libs/db_app.utils.php");
-require_once ("interfaces/ILancamentoAuxiliar.interface.php");
-require_once ("interfaces/IRegraLancamentoContabil.interface.php");
-require_once ("libs/db_app.utils.php");
-
-require_once ("model/slip.model.php");
-require_once ("model/CgmFactory.model.php");
-require_once ("model/CgmBase.model.php");
-require_once ("model/CgmJuridico.model.php");
-require_once ("model/CgmFisico.model.php");
-require_once ("model/Dotacao.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_empagepag_classe.php"));
+require_once(modification("classes/db_empagetipo_classe.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification('model/MaterialCompras.model.php'));
+require_once(modification("classes/ordemPagamento.model.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("interfaces/IRegraLancamentoContabil.interface.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("model/slip.model.php"));
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/CgmBase.model.php"));
+require_once(modification("model/CgmJuridico.model.php"));
+require_once(modification("model/CgmFisico.model.php"));
+require_once(modification("model/Dotacao.model.php"));
 
 
 db_app::import("CgmFactory");
@@ -112,11 +89,13 @@ $clconlancamlr       = new cl_conlancamlr;
 $cltranslan          = new cl_translan;
 $clempagedadosret    = new cl_empagedadosret;
 $clempagedadosretmov = new cl_empagedadosretmov;
+$daoSlip = new cl_slip();
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-
+parse_str($_SERVER['QUERY_STRING']);
+$iInstituicaoSessao = db_getsession('DB_instit');
 //db_postmemory($_POST);
 //db_postmemory($_GET);
+$aSlipAutomatico = array();
 
 if (isset($atualizar)) {
 
@@ -134,6 +113,8 @@ if (isset($atualizar)) {
     $erro_msg = "Nenhum registro encontrado para confirmação de pagamento !";
     $sqlerro = true;
   }
+
+  $oDataSistema = new DBDate($data_baixa);
 
   $sCodmovProcessados = '';
   for ($iRegistros = 0; $iRegistros < $iTotalRegistros; $iRegistros++) {
@@ -165,10 +146,27 @@ if (isset($atualizar)) {
     $sSqlTipoMov .= " where e81_codmov = {$movimento} ";
     $rsTipoMov    = db_query($sSqlTipoMov);
     $oTipoMov     = db_utils::fieldsMemory($rsTipoMov, 0);
+
+    $campo = "e92_coderro, e92_processa";
+    $where = "e02_empagedadosretmov = {$movimento} and e02_empagedadosret = {$retornoarq} and e02_errobanco <> 114";
+    $sqlSituacaoRetornoBanco = $clempagedadosretmov->sql_query_ocorrencia($campo, $where);
+    $rsSituacaoRetornoBanco = db_query($sqlSituacaoRetornoBanco);
+    if (!$rsSituacaoRetornoBanco) {
+        $sqlerro = true;
+        $erro_msg = "Movimento {$movimento} sem processamento neste aqrquivo.";
+    }
+
+    $oDadoOcorrencia   = db_utils::fieldsMemory($rsSituacaoRetornoBanco, 0);
+    $processaPagamento = $oDadoOcorrencia->e92_processa == 't';
+    $confirmacaoDeAgendamento = $oDadoOcorrencia->e92_coderro === 'BD';
     // Buscar ordem, conta, valor processado pelo banco
     if ($oTipoMov->e82_codord != "") {
 
-      $result_ordemtipo = $clempagepag->sql_record($clempagepag->sql_query_pago(null,null,"e82_codord as e50_codord,e83_conta as k13_conta,e76_valorefet as vlrpag,e90_correto,e90_codgera",""," e81_codmov=$movimento and e76_codret=$retornoarq and e80_instit = " . db_getsession("DB_instit")));
+      $campos = "k12_codmov as movimento_pago, e82_codord as e50_codord,e83_conta as k13_conta, fc_valorretencaomov(e81_codmov::integer, true) as valor_retencao, ";
+      $campos .= "e76_valorefet as vlrpag,e90_correto,e90_codgera, e81_valor as valor_movimento ";
+      $wherePagamento =  " e81_codmov={$movimento} and e76_codret={$retornoarq} and e80_instit = " . db_getsession("DB_instit");
+      $sqlDadosPagamento = $clempagepag->sql_query_pago(null,null, $campos,"",$wherePagamento );
+      $result_ordemtipo = $clempagepag->sql_record($sqlDadosPagamento );
       if($clempagepag->numrows==0){
         $sqlerro = true;
         $erro_msg = "Ordem de pagamento não encontrada.";
@@ -212,14 +210,32 @@ if (isset($atualizar)) {
         $sep    = '#';
       }
       $data_usuario="";
-
+        if ($oDadoOcorrencia->e92_errobanco == 35 || ProcessamentoPagamentoFornecedor::retornoAgendamento($oDadoOcorrencia->e92_errobanco)) {
+            /**
+             * agendamentos nao devems ser movimentados
+             */
+          continue;
+        }
       if ($sqlerro == false) {
         $pagamento_auto = true;  // Variável setada para indicar que é pagamento automático
         // Arquivo que dará baixa do pagamento dos fornecedores no sistema
 
-  	    $data_usuario = date("Y-m-d", db_getsession("DB_datausu"));
+  	    $data_usuario = $oDataSistema->getDate();
 
         try {
+
+            /**
+             * paga - processo padrao
+             * novo...
+             *    estornar - caso ja esteja pago e retorne com erro do banco
+             *    ignorar movimento - caso empenho ou slip ja esteja pago retorno do banco seja 00
+             *
+             * @todo - verificar caso do agendamento e confirmacao de agendamento BD -> 35
+             * @todo - arrumar validacao do TRA no front
+             * @todo - arrumar validacao do CNPJ
+             *
+             */
+
 
           $oOrdemPagamento = new ordemPagamento($e50_codord);
           $oOrdemPagamento->setCheque(null);
@@ -228,12 +244,62 @@ if (isset($atualizar)) {
           $oOrdemPagamento->setValorPago($vlrpag);
           $oOrdemPagamento->setDataUsu($data_usuario);
   	      $oOrdemPagamento->setMovimentoAgenda($movimento);
-          $oOrdemPagamento->pagarOrdem();
+  	      $iMovimento  = $oOrdemPagamento->getMovimentoAgenda();
+
+            if (APROPRIACAO_RETENCAO) {
+
+                $oOrdemPagamento->gerarSlipDasRetencoesApropriadas();
+
+                if (count($oOrdemPagamento->getSlipsGeradosAutomaticamente(1)) > 0  ) {
+                    $aSlipAutomatico[] = $sSlipsGeradoAutomatico = implode(", ", $oOrdemPagamento->getSlipsGeradosAutomaticamente(1));
+                }
+            }
+
+
+            if ( ! empty($movimento_pago) && !$processaPagamento) {
+
+            $iCaracteristicaPeculiar = null;
+
+            if (!empty($iMovimento)) {
+
+                $oDaoEmpAgeConcarPeculiar = new cl_empageconcarpeculiar;
+                $sSqlConCarPeculiar = $oDaoEmpAgeConcarPeculiar->sql_query_file(null, "e79_concarpeculiar", null, "e79_empagemov = {$iMovimento}");
+                $rsConcarPeculiar = $oDaoEmpAgeConcarPeculiar->sql_record($sSqlConCarPeculiar);
+                if ($oDaoEmpAgeConcarPeculiar->numrows > 0) {
+
+                    $iCaracteristicaPeculiar = db_utils::fieldsMemory($rsConcarPeculiar, 0)->e79_concarpeculiar;
+                }
+            }
+
+            $oOrdemPagamento->setValorPago(round($valor_movimento - $valor_retencao, 2));
+            $oOrdemPagamento->estornarOrdem($iCaracteristicaPeculiar);
+
+            $oRetorno->iTipoAutentica = $oOrdemPagamento->getTipoAutenticacao();
+            $oRetorno->sAutenticacao  = $oOrdemPagamento->getRetornoautenticacao();
+            $oRetorno->sCodLanc       = $oOrdemPagamento->iCodLanc;
+        } else if (empty($movimento_pago) && $processaPagamento){
+            $oOrdemPagamento->pagarOrdem();
+        } else if (empty($movimento_pago) && !$processaPagamento) {
+
+            /**
+             * devemos devolver o empenho para a agenda
+             */
+            $oDadosAgendaPgto = new stdClass();
+            $oDadosAgendaPgto->iCodForma = 0;
+            $oDadosAgendaPgto->iCodMov = $iMovimento;
+            $oDaoAgendaPgto = new agendaPagamento();
+            $sDataAtual = db_getsession('DB_datausu');
+            $oDaoEmpAgeConfGera = new cl_empageconfgera();
+            $oDaoEmpAgeConfGera->excluir($iMovimento);
+            if ($oDaoEmpAgeConfGera->erro_status == "0") {
+                throw new BusinessException("Não foi possível devolver o movimento {$iMovimento} para a agenda de pagamentos.");
+            }
+            $oDaoAgendaPgto->configurarPagamentos($sDataAtual, $oDadosAgendaPgto);
+
+        }
           $sqlerro       = false;
           $erro_msg      = "";
-          $k11_tipautent = $oOrdemPagamento->oAutentica->k11_tipautent;
           $retorno       = true;
-          $c70_codlan    = $oOrdemPagamento->iCodLanc;
 
        }
        catch (Exception $e) {
@@ -242,69 +308,54 @@ if (isset($atualizar)) {
          $erro_msg   = str_replace("\n","\\n",$e->getMessage());
         }
       }
+
+
     } else if ($oTipoMov->e89_codigo != "") {
 
        $sIp     = db_getsession("DB_ip");
        $iInstit = db_getsession("DB_instit");
 
-       $data    = date("Y-m-d", db_getsession("DB_datausu"));
+  	   $data    = $oDataSistema->getDate();
 
-       $sSqlaut        = "select fc_auttransf({$oTipoMov->e89_codigo},'".$data."','".$sIp."',true,0,".$iInstit.") as verautenticacao";
-       $rsAutenticacao = db_query($sSqlaut);
-       if (pg_num_rows($rsAutenticacao) == 0) {
+  	   /**
+        * verificar se slip está autenticado.
+        *  - caso esteja autenticado , e o retorno for de erro devemos estornar o slip
+        *  - caso autenticado e retorno for sucesso apenas segue para o proximo registro.
+        *  - caso não autenticado e sucesso, devemos autenticar o slip
+        */
 
-         $erro_msg = "Erro ao Autenticar SLIP {$oTipoMov->e89_codigo}!";
-		     break;
+  	   $sqlSituacaoSlip = $daoSlip->sql_query_file($oTipoMov->e89_codigo);
+  	   $rsSlip = db_query($sqlSituacaoSlip);
+  	   $dadosSlip = db_utils::fieldsMemory($rsSlip, 0);
 
-	     } else {
+  	   $slipJaEstaPago = (int)$dadosSlip->k17_situacao === Transferencia::SITUACAO_AUTENTICADO;
 
-	       $oRetornoAut = db_utils::fieldsMemory($rsAutenticacao,0);
-	       if (substr($oRetornoAut->verautenticacao,0,1) != "1") {
+  	   try {
 
-		       $erro_msg = $oRetornoAut->verautenticacao;
-		       $sqlerro = true;
-	  	     break;
-	       } else {
+           if ($slipJaEstaPago === false && $processaPagamento) {
 
-	         if (USE_PCASP) {
+               $transferencia = TransferenciaFactory::getInstance(null, $oTipoMov->e89_codigo);
+               $transferencia->executaAutenticacao(true, $data);
+               $transferencia->executarLancamentoContabil($data, false);
+           }
 
-	           try {
+           if ($slipJaEstaPago && $processaPagamento === false && $confirmacaoDeAgendamento === false) {
 
-	             $oDaoSlipTipoOperacao  = db_utils::getDao('sliptipooperacaovinculo');
-	             $sSqlBuscaTipoOperacao = $oDaoSlipTipoOperacao->sql_query_file($oTipoMov->e89_codigo);
-	             $rsBuscaTipoOperacao   = $oDaoSlipTipoOperacao->sql_record($sSqlBuscaTipoOperacao);
-	             if ($oDaoSlipTipoOperacao->numrows == 0) {
-	               throw new Exception("Não foi possível localizar o tipo de operação do slip {$oTipoMov->e89_codigo}.");
-	             }
-	             $iTipoOperacao  = db_utils::fieldsMemory($rsBuscaTipoOperacao, 0)->k153_slipoperacaotipo;
-	             $oTransferencia = TransferenciaFactory::getInstance($iTipoOperacao, $oTipoMov->e89_codigo);
+               $transferencia = TransferenciaFactory::getInstance(null, $oTipoMov->e89_codigo);
+               $transferencia->executaAutenticacao(false, $data);
+               $transferencia->executarLancamentoContabil($data, true, null, true);
 
-	             $oDaocfautent      = db_utils::getDao('cfautent');
-	             $sSqlAutenticadora = $oDaocfautent->sql_query_file(null,
-                                                	                 "k11_id, k11_tipautent",
-                                                	                 '',
-                                                	                 "k11_ipterm    = '{$sIp}'
-                                                	                 and k11_instit = ".db_getsession("DB_instit"));
-	             $rsAutenticador    = $oDaocfautent->sql_record($sSqlAutenticadora);
+               agendaPagamento::criarMovimentoAgendaParaSlip($movimento, $oTipoMov->e89_codigo);
+           }
 
-               if ($oDaocfautent->numrows == '0') {
-                 throw new Exception("Cadastre o ip {$iIp} como um caixa.");
-               }
-               $iCodigoTerminal = db_utils::fieldsMemory($rsAutenticador, 0)->k11_id;
-               $oTransferencia->setDataAutenticacao($data);
-               $oTransferencia->setIDTerminal($iCodigoTerminal);
-               $oTransferencia->setNumeroAutenticacao(substr($oRetornoAut->verautenticacao, 1, 7));
-	             $oTransferencia->executarLancamentoContabil();
+           if ($slipJaEstaPago === false && $processaPagamento === false && $confirmacaoDeAgendamento === false) {
+                ProcessamentoPagamentoFornecedor::devolveMovimento($movimento);
+           }
 
-	           } catch (Exception $eErro) {
-
-	             $sqlerro  = true;
-	             $erro_msg = str_replace("\n", "\\n", $eErro->getMessage());
-	           }
-
-	         }
-	       }
-      }
+       } catch (Exception $eErro) {
+           $sqlerro = true;
+           $erro_msg = str_replace("\n", "\\n", $eErro->getMessage());
+       }
     }
 
     if ($sCodmovProcessados == ''){
@@ -318,8 +369,9 @@ if (isset($atualizar)) {
      $sCodmovProcessados .= ')';
   }
 
+  $sSlip = implode(", ", $aSlipAutomatico);
+
   db_fim_transacao($sqlerro);
-  //db_fim_transacao(true);
 }
 
 if (!isset($db_opcao)){
@@ -333,7 +385,24 @@ if (!isset($db_opcao)){
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script>
+    function verificaCampos(){
+
+        var data_baixa = $F("data_baixa");
+        var data_atual = new Date();
+
+        if (js_comparadata(data_baixa, data_atual.getDateBR(), ">")) {
+            alert("Data da baixa não pode ser maior que a data atual.");
+            return false;
+        }
+
+        return true;
+    }
+
 function js_atualizar(){
+
+    if (!verificaCampos()){
+        return false;
+    }
 
   if(canc.document.form1){
 
@@ -365,8 +434,8 @@ function js_atualizar(){
   <form name="form1" enctype="multipart/form-data" method="post">
   <tr>
     <td height="10%" align="center" bgcolor="#CCCCCC">
-        <?if(isset($retornoarq) && trim($retornoarq)!=""){?>
-          <?
+        <?php if(isset($retornoarq) && trim($retornoarq)!=""){?>
+          <?php
 	  db_input("movs",10,'',true,'hidden',3);
 	  db_input("retornoarq",10,'',true,'hidden',3);
 	  $passaparametro = "";
@@ -398,7 +467,7 @@ function js_atualizar(){
      <td height="70%">
           <iframe
 	    name="canc" height="100%"
-	    src="emp4_empageretornoconf001_iframe.php?&lCancelado=0&retornoarq=<?=(@$retornoarq)?><?=$passaparametro?>"
+	    src="emp4_empageretornoconf001_iframe.php?&lCancelado=0&retornoarq=<?php echo (@$retornoarq)?><?php echo $passaparametro?>"
 	    width="100%" marginwidth="0" marginheight="0" frameborder="0"></iframe>
     </td>
     </tr>
@@ -422,7 +491,7 @@ function js_atualizar(){
         </td>
         <td align="left">
           <strong>Data da Baixa:</strong>
-          <?php db_inputdata('data_baixa', date('d', db_getsession("DB_datausu")), date('m', db_getsession("DB_datausu")), date('Y', db_getsession("DB_datausu")), true, 'text', 3); ?>
+          <?php db_inputdata('data_baixa', date('d', db_getsession("DB_datausu")), date('m', db_getsession("DB_datausu")), date('Y', db_getsession("DB_datausu")), true, 'text', 1); ?>
         </td>
         <td>
           <small><span style="color:darkblue;">** Verifique a mensagem de retorno</span></small>
@@ -433,7 +502,7 @@ function js_atualizar(){
 	    <BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
 	    <b>Arquivo retorno não encontrado.</b>
 	    <BR><BR><BR><BR><BR><BR><BR><BR><BR>
-	  <?php } 
+	  <?php }
 
 	    $voltacorreto = "emp4_empageretorno001.php";
 
@@ -449,14 +518,14 @@ function js_atualizar(){
   </tr>
 </form>
 </table>
-<?
+<?php
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
 </html>
 <script>
 function js_voltar(){
-  <?
+  <?php
   if(isset($voltacorreto)){
     echo "location.href='$voltacorreto';";
   }
@@ -472,15 +541,32 @@ function js_showInconsistencias(iCodArquivo,sCodmovProcessados) {
   }
 }
 </script>
-<?
+<?php
 if(isset($atualizar)){
+
   if($sqlerro==true){
     db_msgbox($erro_msg);
+
   } else {
 
     echo "<script>\n";
     echo "js_showInconsistencias('$sCodigoRetornoGerado','$sCodmovProcessados')\n";
     echo "</script>\n";
+
+    if (count($aSlipAutomatico) > 0) {
+
+        $sSlip = implode(", ", $aSlipAutomatico);
+
+        echo "
+
+          <script>
+            if ( confirm('Foram Gerados Slips para asReceitas, Deseja Imprimir ?') ) {
+              window.open('cai1_slip003.php?numslip=' + '{$sSlip}', '', 'location=0');
+            }
+          </script>
+        ";
+
+    }
 
   }
 }

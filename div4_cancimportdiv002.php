@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_arretipo_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arrecant_classe.php");
-include("classes/db_arrehist_classe.php");
-include("classes/db_arreold_classe.php");
-include("classes/db_divida_classe.php");
-include("classes/db_divold_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-require_once("model/cancelamentoDebitos.model.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_arretipo_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arrecant_classe.php"));
+include(modification("classes/db_arrehist_classe.php"));
+include(modification("classes/db_arreold_classe.php"));
+include(modification("classes/db_divida_classe.php"));
+include(modification("classes/db_divold_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("model/cancelamentoDebitos.model.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -185,7 +185,7 @@ if (isset($cancelar)&&isset($chaves)&&$chaves!=""){
      
     if ( count($aDebitos) > 0 ) {
       try {
-        $oCancelaDebito->setArreHistTXT("CANCELAMENTO DE IMPORTAÇÃO DE DÍVIDA PARCIAL");
+        $oCancelaDebito->setArreHistTXT("CANCELAMENTO DE INSCRIÇÃO EM DÍVIDA");
         $oCancelaDebito->setTipoCancelamento(2);
         $oCancelaDebito->setCadAcao(4);
         $oCancelaDebito->geraCancelamento($aDebitos);
@@ -336,7 +336,7 @@ function js_submit_form(){
 </html>
 <script>
 function js_mandadados(tipor,tipdes,inner,where){
-    js_OpenJanelaIframe('top.corpo','db_iframe','div4_importadivida033.php?k00_tipo_or='+tipor+'&k00_tipo_des='+tipdes+'&txt_where='+where+'&txt_inner='+inner,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','div4_importadivida033.php?k00_tipo_or='+tipor+'&k00_tipo_des='+tipdes+'&txt_where='+where+'&txt_inner='+inner,'Pesquisa',true);
     jan.moveTo(0,0);
 }
 </script>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,8 +30,8 @@
 *
 * @author   Alberto Ferri Neto alberto@dbseller.com.br
 * @package  Cadastro
-* @revision $Author: dbalberto $
-* @version  $Revision: 1.2 $
+* @revision $Author: dbanderson $
+* @version  $Revision: 1.5 $
 */
 class ImovelEndereco {
   
@@ -97,7 +97,7 @@ class ImovelEndereco {
     
     $this->setMatricula($iMatricula);
     
-    $rsImovelEndereco = pg_query("select fc_iptuender({$this->iMatricula}) as endereco_imovel");
+    $rsImovelEndereco = db_query("select fc_iptuender({$this->iMatricula}) as endereco_imovel");
     
     
     if (pg_num_rows($rsImovelEndereco) > 0) {

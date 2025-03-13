@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_procfiscal_classe.php");
-include("classes/db_procfiscalinscr_classe.php");
-include("classes/db_procfiscalmatric_classe.php");
-include("classes/db_procfiscalsani_classe.php");
-include("classes/db_procfiscalcgm_classe.php");
-include("classes/db_procfiscalprot_classe.php");
-include("classes/db_procfiscalfiscais_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_procfiscal_classe.php"));
+include(modification("classes/db_procfiscalinscr_classe.php"));
+include(modification("classes/db_procfiscalmatric_classe.php"));
+include(modification("classes/db_procfiscalsani_classe.php"));
+include(modification("classes/db_procfiscalcgm_classe.php"));
+include(modification("classes/db_procfiscalprot_classe.php"));
+include(modification("classes/db_procfiscalfiscais_classe.php"));
 $clprocfiscal       = new cl_procfiscal;
 $clprocfiscalinscr  = new cl_procfiscalinscr;
 $clprocfiscalmatric = new cl_procfiscalmatric;
@@ -82,7 +82,7 @@ $sql = "
 				where y100_sequencial = $procfiscal
        ";
 			
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 db_fieldsmemory($result,0);
 
@@ -96,7 +96,7 @@ $sqlvistoria = "
 								left join vistinscr on y71_codvist=y70_codvist 
 								where y109_procfiscal =	$procfiscal					";
 								
-$rsvistorias     = pg_query($sqlvistoria);								
+$rsvistorias     = db_query($sqlvistoria);								
 $linhasvistorias = pg_num_rows($rsvistorias);			
 
 
@@ -108,7 +108,7 @@ $sqlnotificacao = "
 									 left join fiscalmatric on y35_codnoti=y30_codnoti 
 									 left join fiscalinscr on y34_codnoti=y30_codnoti
 									 where y110_procfiscal =$procfiscal ";
-$rsnotificacao     = pg_query($sqlnotificacao);								
+$rsnotificacao     = db_query($sqlnotificacao);								
 $linhasnotificacao = pg_num_rows($rsnotificacao);
 
 $sqlauto = "select y54_numcgm,y53_matric,y52_inscr,y50_codauto,y50_data,y50_nome 
@@ -118,7 +118,7 @@ $sqlauto = "select y54_numcgm,y53_matric,y52_inscr,y50_codauto,y50_data,y50_nome
 						left  join automatric on y53_codauto = y50_codauto 
 						left  join autoinscr  on y52_codauto = y50_codauto 
 						where y111_procfiscal = $procfiscal ";
-$rsauto     = pg_query($sqlauto);								
+$rsauto     = db_query($sqlauto);								
 $linhasauto = pg_num_rows($rsauto);	
 	
 $sqllevanta = "select y62_inscr,y93_numcgm,y60_codlev,y60_data 
@@ -127,7 +127,7 @@ $sqllevanta = "select y62_inscr,y93_numcgm,y60_codlev,y60_data
 							 left  join levcgm   on y93_codlev = y60_codlev 
 							 left  join levinscr on y62_codlev = y60_codlev 
 							 where y112_procfiscal = $procfiscal";
-$rslevanta     = pg_query($sqllevanta);								
+$rslevanta     = db_query($sqllevanta);								
 $linhaslevanta = pg_num_rows($rslevanta);		
 
 $sqlvarfix = "select q33_codigo,q33_inscr,z01_nome as nome_lanc ,q33_data 
@@ -136,7 +136,7 @@ $sqlvarfix = "select q33_codigo,q33_inscr,z01_nome as nome_lanc ,q33_data
 							inner join issbase on q33_inscr=q02_inscr 
 							inner join cgm on q02_numcgm=z01_numcgm 
 							where y113_procfiscal = $procfiscal ";
-$rsvarfix     = pg_query($sqlvarfix);								
+$rsvarfix     = db_query($sqlvarfix);								
 $linhasvarfix = pg_num_rows($rsvarfix);		
 ?>
 

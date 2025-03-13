@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -201,9 +201,14 @@ class cl_avaliacaoresposta {
        }
      }
      if(trim($this->db106_resposta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db106_resposta"])){ 
+         if (trim($this->db106_resposta) === "null") {
+             $sql  .= $virgula." db106_resposta = null ";
+         } else {
        $sql  .= $virgula." db106_resposta = '$this->db106_resposta' ";
+         }
        $virgula = ",";
      }
+
      $sql .= " where ";
      if($db106_sequencial!=null){
        $sql .= " db106_sequencial = $this->db106_sequencial";

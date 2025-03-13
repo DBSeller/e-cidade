@@ -1,0 +1,95 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010354' name='sliprecursocontas' description="Recurso envolvidos com o slip" prefix="k181" label="sliprecursocontas" type="0">
+  <fields>
+    <field codigo="1010182" 
+           campo_api='' 
+           name="k181_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='sliprecursocontas_k181_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010183" 
+           campo_api='' 
+           name="k181_slip" 
+           conteudo="int4" 
+           description="Código do Slip" 
+           inivalue="0" 
+           label="Código do Slip" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Slip" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010184" 
+           campo_api='' 
+           name="k181_recursocredito" 
+           conteudo="int4" 
+           description="Recurso a Crédito" 
+           inivalue="0" 
+           label="Recurso a Crédito" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Recurso a Crédito" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010185" 
+           campo_api='' 
+           name="k181_recursodebito" 
+           conteudo="int4" 
+           description="Recurso a Débito" 
+           inivalue="0" 
+           label="Recurso a Débito" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Recurso a Débito" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k181_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="slip" inner='t'>
+      <fieldfk name="k181_slip" reference="k17_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="orctiporec" inner='t'>
+      <fieldfk name="k181_recursocredito" reference="o15_codigo" /> 
+      <fieldfk name="k181_recursodebito" reference="o15_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

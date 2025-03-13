@@ -1,33 +1,7 @@
 <?PHP
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -51,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_lote_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_empempenho_classe.php");
-require_once("classes/db_conhistdoc_classe.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_lote_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_empempenho_classe.php"));
+require_once(modification("classes/db_conhistdoc_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -93,7 +67,7 @@ db_app::load("scripts.js,
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBDownload.widget.js"></script>
 </head>
 
 
@@ -123,8 +97,8 @@ db_app::load("scripts.js,
            <b>Período:</b>
 	     </td>
 	     <td nowrap align=left>
-          <?
-	         $dia=  date("d",db_getsession("DB_datausu"));
+          <?php
+	           $dia=  date("d",db_getsession("DB_datausu"));
 		       $mes=  date("m",db_getsession("DB_datausu"));
 		       $ano=  date("Y",db_getsession("DB_datausu"));
 		       $dia2= date("d",db_getsession("DB_datausu"));
@@ -203,6 +177,20 @@ db_app::load("scripts.js,
             </select>
          </td>
       </tr>
+
+      <tr>
+        <td nowrap align=left>
+          <b> Tipo Relatório:</b>
+	    </td>
+	     <td align=left>
+            <select id='tiporelatorio' name="tiporelatorio" class="ComboRazao">
+                <option  value="1">PDF</option>
+                <option  value="2">Planilha</option>
+            </select>
+         </td>
+      </tr>
+
+
      <tr>
        <td align = "left"><strong> Estrutural: </strong></td><td>
          <input type='text' name='estrut_inicial' id='estrut_inicial' size='15' maxlength='10'  class="ComboRazao">
@@ -225,7 +213,7 @@ db_app::load("scripts.js,
 </center>
 
 
-<? db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+<?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
 
   </body>
 </html>
@@ -243,7 +231,7 @@ $('relatorio').observe("change", function() {
   $('contrapartida').disabled = false;
   $('contasemmov').disabled   = false;
   if ($F("relatorio") == "e") {
-    
+
     $('contasemmov').disabled   = true;
     $('contrapartida').disabled = true;
   }
@@ -258,7 +246,7 @@ function js_criarLancadorDocumentos() {
 	oLancadorDocumentos.setLabelAncora("Documentos: ");
 	oLancadorDocumentos.setTextoFieldset("Documentos Selecionados");
 	oLancadorDocumentos.setParametrosPesquisa("func_conhistdoc.php", ['c53_coddoc', 'c53_descr']);
-	oLancadorDocumentos.setGridHeight("400px");
+	oLancadorDocumentos.setGridHeight("100px");
 	oLancadorDocumentos.setTituloJanela("Pesquisar Documentos");
 	oLancadorDocumentos.show($("ctnLancadorDocumentos"));
 }
@@ -275,7 +263,7 @@ function js_criarLancadorContas() {
 	oLancadorContas.setLabelAncora("Contas: ");
 	oLancadorContas.setTextoFieldset("Contas Selecionadas");
 	oLancadorContas.setParametrosPesquisa("func_conplanoexe.php", ['c62_reduz', 'c60_descr']);
-	oLancadorContas.setGridHeight("400px");
+	oLancadorContas.setGridHeight("100px");
 	oLancadorContas.setTituloJanela("Pesquisar Contas");
 	oLancadorContas.show($("ctnLancadorContas"));
 }
@@ -296,6 +284,7 @@ function js_imprimir() {
   var contasemmov          = $F('contasemmov');
   var quebrapaginaporconta = $F('quebrapaginaporconta');
   var estrut_inicial       = $F('estrut_inicial');
+  var tiporelatorio        = $F('tiporelatorio');
   var sDocumentos          = "";
   var sVirgulaDocumentos   = "";
   var sContas              = "";
@@ -323,11 +312,11 @@ function js_imprimir() {
   if ( sDocumentos == '' ||  sDocumentos == null ){
     retorno = confirm( _M( CAMINHO_MENSAGEM_TELA + "sem_documentos_selecionados") );
   }
-  
+
   if ( sContas == '' ||  sContas == null ){
     retorno = confirm( _M( CAMINHO_MENSAGEM_TELA + "sem_conta_selecionada") );
   }
-  
+
   var data1 = js_formatar($F("data1"), 'd');
   var data2 = js_formatar($F("data2"), 'd');
 
@@ -342,21 +331,31 @@ function js_imprimir() {
       sQuery += "&contasemmov="          + contasemmov;
       sQuery += "&quebrapaginaporconta=" + quebrapaginaporconta;
       sQuery += "&estrut_inicial="       + estrut_inicial;
+      sQuery += "&tiporelatorio="        + tiporelatorio;
 
-      
-  if ( retorno == true && $F('relatorio') == 'e') {
+      if(tiporelatorio == 2 ){
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bbrubmescalculo','con2_razaocontas002.php?'+sQuery,'Gerando Arquivo',false);
+      }else{
 
-    oJanela = window.open('con2_razaoporcontas003.php?'+sQuery,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-    oJanela.moveTo(0,0);
+      if ( retorno == true && $F('relatorio') == 'e') {
+
+        oJanela = window.open('con2_razaoporcontas003.php?'+sQuery,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+        oJanela.moveTo(0,0);
+      } else {
+
+        oJanela = window.open('con2_razaocontas002.php?'+sQuery,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+        oJanela.moveTo(0,0);
+      }
   }
 
-  if ( retorno == true && $F('relatorio') != 'e'){
-
-    oJanela = window.open('con2_razaocontas002.php?'+sQuery,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-    oJanela.moveTo(0,0);
-  }
+}
 
 
+function gera_arquivo(sArquivo){
+
+    var oDownload = new DBDownload();
+        oDownload.addFile(sArquivo, "Download arquivo CSV ");
+        oDownload.show();
 }
 
 </script>

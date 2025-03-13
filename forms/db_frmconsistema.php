@@ -69,7 +69,7 @@ db_select('c52_descrred',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_consistema','func_consistema.php?funcao_js=parent.js_preenchepesquisa|c52_codsis','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consistema','func_consistema.php?funcao_js=parent.js_preenchepesquisa|c52_codsis','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_consistema.hide();

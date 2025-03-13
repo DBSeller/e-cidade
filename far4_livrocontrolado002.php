@@ -1,37 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once('libs/db_stdlibwebseller.php');
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification('libs/db_stdlibwebseller.php'));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -319,8 +319,10 @@ $sCampos  = " m60_descr, m80_data, m80_hora, m80_codigo, m81_tipo, ";
 $sCampos .= " m81_descr, fa28_c_numero, ";
 $sCampos .= " m77_lote, z01_i_cgsund, z01_v_nome, s158_d_validade, fa04_c_numeroreceita, m80_obs, ";
 $sCampos .= " fa04_i_codigo, login, m60_codmater, fa14_i_codigo, ";
-$sCampos .= " far_retirada.fa04_numeronotificacao,cgm.z01_nome, medicos.sd03_i_crm, ";
-$sGroup   = " GROUP BY ".$sCampos." m81_codtipo, deptodestino, deposito, m82_quant";
+$sCampos .= " far_retirada.fa04_numeronotificacao, medicos.sd03_i_crm, ";
+$sGroup   = " GROUP BY (CASE WHEN cgm.z01_numcgm is null THEN sau_medicosforarede.s154_c_nome ELSE cgm.z01_nome END), ";
+$sGroup  .= $sCampos." m81_codtipo, deptodestino, deposito, m82_quant";
+$sCampos .= " (CASE WHEN cgm.z01_numcgm is null THEN sau_medicosforarede.s154_c_nome ELSE cgm.z01_nome END) as z01_nome, ";
 $sCampos .= " m81_codtipo, destino.descrdepto as deptodestino, db_depart.descrdepto as deposito, sum(m82_quant) as m82_quant";
 
 $sOrdem   = " m60_descr, m80_data, m80_hora, m81_tipo ";

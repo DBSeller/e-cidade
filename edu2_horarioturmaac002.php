@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_regenciahorario_classe.php");
-include("classes/db_periodoescola_classe.php");
-include("classes/db_escola_classe.php");
-include("classes/db_turmaac_classe.php");
-include("classes/db_turmaachorario_classe.php");
-include("classes/db_diasemana_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_regenciahorario_classe.php"));
+include(modification("classes/db_periodoescola_classe.php"));
+include(modification("classes/db_escola_classe.php"));
+include(modification("classes/db_turmaac_classe.php"));
+include(modification("classes/db_turmaachorario_classe.php"));
+include(modification("classes/db_diasemana_classe.php"));
 $clregenciahorario = new cl_regenciahorario;
 $cldiasemana = new cl_diasemana;
 $clperiodoescola = new cl_periodoescola;
@@ -136,7 +136,7 @@ for($z=0;$z<$clperiodoescola->numrows;$z++){
   $sql .= " AND ed270_i_periodo = $ed17_i_codigo";
   $sql .= " AND ed270_i_turmaac = $turma";  
   $sql .= " AND ed268_i_escola = $escola $condicao";    
-  $result2 = pg_query($sql);
+  $result2 = db_query($sql);
   $linhas2 = pg_num_rows($result2);
   if($linhas2>0){
    db_fieldsmemory($result2,0);

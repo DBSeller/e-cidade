@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010620' name='juridico.cartorioextratipo' description="Tabela que guarda que tipo é o cartório" prefix="j168" label="Cartório Extrajudicial Tipo" type="0">
+  <fields>
+    <field codigo="1011836" 
+           campo_api='' 
+           name="j168_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela cartorioextratipo." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='juridico.cartorioextratipo_j168_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011832" 
+           campo_api='' 
+           name="j168_cartorioextra" 
+           conteudo="int4" 
+           description="Código do cartório extrajudicial" 
+           inivalue="0" 
+           label="Código do cartório extrajudicial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do cartório extrajudicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011833" 
+           campo_api='' 
+           name="j168_tiposcartorioextra" 
+           conteudo="int4" 
+           description="Tipo do cartório extrajudicial" 
+           inivalue="0" 
+           label="Tipo do cartório extrajudicial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo do cartório extrajudicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="j168_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cartorioextra" inner='t'>
+      <fieldfk name="j168_cartorioextra" reference="j167_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="tiposcartorioextra" inner='t'>
+      <fieldfk name="j168_tiposcartorioextra" reference="j169_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

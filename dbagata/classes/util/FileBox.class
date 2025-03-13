@@ -37,10 +37,10 @@ class FileBox
     function FileBox($Description, $isdir)
     {
         global $Pixmaps;
-        $tooltip = &new GtkTooltips;
-        $this->entry = &new GtkEntry;
+        $tooltip = new GtkTooltips;
+        $this->entry = new GtkEntry;
 
-        $box = &new GtkHBox;
+        $box = new GtkHBox;
         $this->widget = new Box($box, $Description);
         $this->button = new Button(array($this, 'FileSel'), _a('File Selection'), $Pixmaps['file'], ICONBUTTON, $isdir, true);
         $this->button->set_relief(GTK_RELIEF_NONE);
@@ -98,9 +98,9 @@ class FileBox
     /***********************************************************/
     function FileSel($is_dir = false)
     {
-        $FileSelection = &new FileDialog(_a('File Selection'));
+        $FileSelection = new FileDialog(_a('File Selection'));
         $button_ok = $FileSelection->ok_button;
-        $button_ok->connect_object('clicked', array(&$this, 'GetFileName'), &$FileSelection, $is_dir);
+        $button_ok->connect_object('clicked', array($this, 'GetFileName'), &$FileSelection, $is_dir);
 
         $button_cancel = $FileSelection->cancel_button;
         $button_cancel->connect_object('clicked', array(&$FileSelection, 'hide'));

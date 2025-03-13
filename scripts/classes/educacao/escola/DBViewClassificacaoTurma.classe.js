@@ -116,7 +116,7 @@ DBViewClassificacaoTurma.prototype.criarTreeView = function () {
 DBViewClassificacaoTurma.prototype.montaTreeView = function(oAjax) {
   
   js_removeObj("msgBoxA");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   var oSelf    = this;
   
   if(oRetorno.status == 2) {
@@ -284,7 +284,7 @@ DBViewClassificacaoTurma.prototype.setCallBackVisualizaDados = function (oTurma,
 DBViewClassificacaoTurma.prototype.montaGridAlunosTurma = function (oAjax) {
   
   js_removeObj("msgBoxB");
-  var oRetorno = eval ("(" + oAjax.responseText + ")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   var oSelf = this;
   this.oGridAlunosTurma.clearAll(true);
@@ -399,7 +399,7 @@ DBViewClassificacaoTurma.prototype.processar = function () {
   oRequest.onComplete = function (oAjax) {
 
     js_removeObj("msgBoxC"); 
-    var oRetorno = eval("(" +oAjax.responseText+ ")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     alert(oRetorno.message.urlDecode());
     oSelf.oGridAlunosTurma.clearAll(true);
     oSelf.criarTreeView();

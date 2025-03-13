@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_utils.php");
-  require_once("fpdf151/pdf.php");
-  require_once("classes/db_ouvidoriaatendimento_classe.php");
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("fpdf151/pdf.php"));
+  require_once(modification("classes/db_ouvidoriaatendimento_classe.php"));
   
   /**
    * Impressão de relatório
@@ -158,7 +158,7 @@
   /**
    * Armazena resultados da query em um array
    */
-  $aDadosRelatorio = db_utils::getColectionByRecord($rsBuscaRelatorio);
+  $aDadosRelatorio = db_utils::getCollectionByRecord($rsBuscaRelatorio);
   
   /**
    * Cria objeto PDF para impressão do relatório

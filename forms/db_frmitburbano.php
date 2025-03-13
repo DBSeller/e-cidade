@@ -112,10 +112,10 @@ db_input('it07_descr',40,$Iit07_descr,true,'text',3,'')
 <script>
 function js_pesquisait05_guia(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_itbi','func_itbi.php?funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbi','func_itbi.php?funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia','Pesquisa',true);
   }else{
      if(document.form1.it05_guia.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_itbi','func_itbi.php?pesquisa_chave='+document.form1.it05_guia.value+'&funcao_js=parent.js_mostraitbi','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbi','func_itbi.php?pesquisa_chave='+document.form1.it05_guia.value+'&funcao_js=parent.js_mostraitbi','Pesquisa',false);
      }else{
        document.form1.it01_guia.value = ''; 
      }
@@ -135,10 +135,10 @@ function js_mostraitbi1(chave1,chave2){
 }
 function js_pesquisait05_itbisituacao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_itbisituacao','func_itbisituacao.php?funcao_js=parent.js_mostraitbisituacao1|it07_codigo|it07_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbisituacao','func_itbisituacao.php?funcao_js=parent.js_mostraitbisituacao1|it07_codigo|it07_descr','Pesquisa',true);
   }else{
      if(document.form1.it05_itbisituacao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_itbisituacao','func_itbisituacao.php?pesquisa_chave='+document.form1.it05_itbisituacao.value+'&funcao_js=parent.js_mostraitbisituacao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbisituacao','func_itbisituacao.php?pesquisa_chave='+document.form1.it05_itbisituacao.value+'&funcao_js=parent.js_mostraitbisituacao','Pesquisa',false);
      }else{
        document.form1.it07_descr.value = ''; 
      }
@@ -157,7 +157,7 @@ function js_mostraitbisituacao1(chave1,chave2){
   db_iframe_itbisituacao.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_itburbano','func_itburbano.php?funcao_js=parent.js_preenchepesquisa|it05_guia','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itburbano','func_itburbano.php?funcao_js=parent.js_preenchepesquisa|it05_guia','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_itburbano.hide();

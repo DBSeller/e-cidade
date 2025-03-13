@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -37,7 +37,7 @@ $m51_prazoent = 3;
 $sWhere       = ''; 
 $evtCLick     = '';
 $coddepto     = db_getsession("DB_coddepto");
-$rsDepto      = pg_query("select descrdepto from db_depart where coddepto = $coddepto");
+$rsDepto      = db_query("select descrdepto from db_depart where coddepto = $coddepto");
 $oDepto       = db_utils::fieldsMemory($rsDepto,0);
 $descrdepto   = $oDepto->descrdepto;
 
@@ -99,7 +99,7 @@ if (isset($listagem_empenhos) && $listagem_empenhos!='' ){
 							
 							for ($i = 0; $i < count($aListaEmp); $i++) {
 								$sSqlOrigemEmpenho = "select * from fc_origem_empenho({$aListaEmp[$i]})";
-								$rsOrigemEmpenho   = pg_query($sSqlOrigemEmpenho) or die($sSqlOrigemEmpenho);
+								$rsOrigemEmpenho   = db_query($sSqlOrigemEmpenho) or die($sSqlOrigemEmpenho);
 								for ($ii = 0; $ii < pg_num_rows($rsOrigemEmpenho); $ii++) {
 									 $oOrigemEmpenho = db_utils::fieldsMemory($rsOrigemEmpenho,$ii);
 									 $aDeptoEmp[]    = $oOrigemEmpenho->ridepto;
@@ -308,16 +308,16 @@ if (isset($listagem_empenhos) && $listagem_empenhos!='' ){
 <script>
   
 	function js_pesquisaEmpenho(iNumEmp){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empempenho','func_empempenho001.php?e60_numemp='+iNumEmp,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho','func_empempenho001.php?e60_numemp='+iNumEmp,'Pesquisa',true);
 	}
 	
 	function js_coddepto(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostracoddepto1|coddepto|descrdepto','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostracoddepto1|coddepto|descrdepto','Pesquisa',true);
     }else{
       coddepto = document.form1.coddepto.value;
       if(coddepto!=""){
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+coddepto+'&funcao_js=parent.js_mostracoddepto','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+coddepto+'&funcao_js=parent.js_mostracoddepto','Pesquisa',false);
       }else{ 	
 	document.form1.descrdepto.value='';
       } 	

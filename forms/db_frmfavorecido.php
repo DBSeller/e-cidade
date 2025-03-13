@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -160,7 +160,7 @@ function js_liberaAbas(sChave, lBloqueada) {
 
   parent.document.formaba.favorecidotaxas.disabled = lBloqueada;
   if(!lBloqueada){
-    top.corpo.iframe_favorecidotaxas.location.href='jur1_favorecidotaxa001.php?v86_sequencial=' + sChave;
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_favorecidotaxas.location.href='jur1_favorecidotaxa001.php?v86_sequencial=' + sChave;
   }
 }
 
@@ -216,7 +216,7 @@ function js_getDadosFavorecido(iCgm){
                                 onComplete: function(oAjax) {
                                             
                                               js_removeObj('msgBox');
-                                              var oRetorno = eval("("+oAjax.responseText+")");
+                                              var oRetorno = JSON.parse(oAjax.responseText);
                                               
                                               if (oRetorno.status== "2") {
                                                 alert(oRetorno.message.urlDecode());
@@ -426,7 +426,7 @@ function js_novoCgm() {
 
   js_OpenJanelaIframe('', 
                       'db_iframe_novocgm', 
-                      'prot1_cadgeralmunic001.php?lMenu=false&lFisico=true&funcaoRetorno=top.corpo.iframe_favorecido.retornoCgm',
+                      'prot1_cadgeralmunic001.php?lMenu=false&lFisico=true&funcaoRetorno=parent.CurrentWindow.corpo.iframe_favorecido.retornoCgm',
                       'Novo CGM',
                       true,
                       '0');
@@ -438,7 +438,7 @@ function js_alterarCgm(iCgm) {
     js_OpenJanelaIframe('', 
                         'db_iframe_novocgm', 
                         'prot1_cadgeralmunic002.php?chavepesquisa='+iCgm+
-                        '&lMenu=false&lCpf=true&funcaoRetorno=top.corpo.iframe_favorecido.retornoCgm',
+                        '&lMenu=false&lCpf=true&funcaoRetorno=parent.CurrentWindow.corpo.iframe_favorecido.retornoCgm',
                         'Novo CGM',
                         true,
                         '0');

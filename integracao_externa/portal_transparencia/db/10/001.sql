@@ -1,0 +1,1 @@
+alter table transparencia.empenhos_movimentacoes_tipos alter column descricao type varchar (200);

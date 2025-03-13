@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("fpdf151/assinatura.php");
-include("classes/db_orcparamrel_classe.php");
-include("libs/db_libcontabilidade.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $anousu = db_getsession("DB_anousu");
 
@@ -50,7 +50,7 @@ $dt_fin= $dt[1]; // data final do período
 $interferencias = $orcparamrel->sql_parametro('19','0');
 
 //-----------------------------------------
-$r_orgao = pg_exec("select distinct(o41_orgao) from orcunidade where o41_ident=03 and o41_anousu=$anousu");
+$r_orgao = db_query("select distinct(o41_orgao) from orcunidade where o41_ident=03 and o41_anousu=$anousu");
 if (pg_numrows($r_orgao) == 0 ){
    db_redireciona('db_erros.php?fechar=true&db_erro=No cadastro das unidades não foi definido o identificador do tribunal!');   
    exit;
@@ -69,7 +69,7 @@ $total_saldo_arrecadado_acumulado=0;
 $total_saldo_a_arrecadar        = 0;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -221,6 +221,6 @@ $pdf->multicell($largura,2,$ass_cont,0,"C",0,0);
 
 $pdf->Output();
 
-pg_exec("commit");
+db_query("commit");
 
 ?>

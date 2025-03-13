@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_modpreparo_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_modpreparo_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_modpreparo = new cl_mer_modpreparo;
@@ -75,7 +75,7 @@ if (isset($alterar)) {
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <br><br>
     <fieldset style="width:95%"><legend><b>Alteração do Modo Preparo</b></legend>
-	<? include("forms/db_frmmer_modpreparo.php");?>
+	<? include(modification("forms/db_frmmer_modpreparo.php"));?>
 	</fieldset>
 	</td>
   </tr>
@@ -102,7 +102,7 @@ if (isset($alterar)) {
   	
     $clmer_modpreparo->erro(true,false);
     ?><script>
-       top.corpo.iframe_a3.location.href = 'mer1_mer_modpreparo002.php?me05_i_cardapio=<?=$aux?>'+
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href = 'mer1_mer_modpreparo002.php?me05_i_cardapio=<?=$aux?>'+
                                            '&me01_c_nome=<?=$me01_c_nome?>';
     </script><?
         
@@ -112,7 +112,7 @@ if ($db_opcao==22) {
 	
   ?>
   <script>
-    top.corpo.iframe_a3.location.href = 'mer1_mer_modpreparo001.php?me05_i_cardapio=<?=$aux?>'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href = 'mer1_mer_modpreparo001.php?me05_i_cardapio=<?=$aux?>'+
                                         '&me01_c_nome=<?=$me01_c_nome?>';
   </script>
   <?

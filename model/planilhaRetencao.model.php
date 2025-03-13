@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/issqn/NotaPlanilhaRetencao.model.php");
+require_once(modification("model/issqn/NotaPlanilhaRetencao.model.php"));
 
 /**
  * @author dbseller
@@ -60,7 +60,7 @@ class planilhaRetencao {
   protected $aNotas          = array();
            
   /**
-   * 
+   * Adiciona uma planilha
    */
   function __construct($iCodigoPlanilha = null, $iNumCgm = null, $iAnoUsu = null, $iMesUsu = null, $iInscricao = null) {
     
@@ -78,6 +78,7 @@ class planilhaRetencao {
       if (empty($iNumCgm)){
         throw new Exception("Erro [1] - Código do fornecedor não informado.");
       }
+
       $this->iNumCgm               = $iNumCgm;
       $oDaoIssPlan                 = db_utils::getDao("issplan");
       $oDaoIssPlan->q20_ano        = $this->iAnoUsu;
@@ -89,9 +90,11 @@ class planilhaRetencao {
       $oDaoIssPlan->q20_nomecontri = "";
       $oDaoIssPlan->q20_situacao   = 1;
       $oDaoIssPlan->incluir(null);
+
       if ($oDaoIssPlan->erro_status == 0) {
         throw new Exception("Erro [2] - Não foi possível incluir planilha.\n{$oDaoIssPlan->erro_msg}");
       }
+
       $this->iCodigoPlanilha = $oDaoIssPlan->q20_planilha;
       
       if ( !empty($iInscricao) ) {
@@ -102,7 +105,7 @@ class planilhaRetencao {
         $oDaoIssPlanInscri->incluir(null);
         
         if ($oDaoIssPlanInscri->erro_status == 0) {
-          throw new Exception("Erro [3] - Nao foi possivel vincular a planilha a inscricao.\n{$oDaoIssPlan->erro_msg}");
+          throw new Exception("Erro [3] - Nao foi possivel vincular a planilha a inscricao.\n{$oDaoIssPlanInscri->erro_msg}");
         }
       }
     } else {
@@ -119,7 +122,7 @@ class planilhaRetencao {
       
       if ( !$rsDadosPlanilha ) {
         throw new DBException("Erro ao buscar os dados da planilha");
-      } 
+      }
       
       $oDadosPlanilha = db_utils::fieldsMemory($rsDadosPlanilha, 0);
 
@@ -388,7 +391,7 @@ class planilhaRetencao {
   
   function anularPlanilha($sMotivo){
   
-    require_once("libs/db_sql.php");
+    require_once(modification("libs/db_sql.php"));
     $clissplananula = db_utils::getDao("issplananula");
     $clissplan      = db_utils::getDao("issplan");
     $clarrecad      = db_utils::getDao("arrecad");

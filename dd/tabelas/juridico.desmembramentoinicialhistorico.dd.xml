@@ -1,0 +1,153 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010280' name='juridico.desmembramentoinicialhistorico' description="Histórico dos desmembramentos de inicial do foro." prefix="v37" label="desmembramentoinicialhistorico" type="0">
+  <fields>
+    <field codigo="1009725" 
+           campo_api='' 
+           name="v37_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='juridico.desmembramentoinicialhistorico_v37_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009729" 
+           campo_api='' 
+           name="v37_cda" 
+           conteudo="int4" 
+           description="CDA nova do desmembramento" 
+           inivalue="0" 
+           label="CDA" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CDA" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009731" 
+           campo_api='' 
+           name="v37_usuario" 
+           conteudo="int4" 
+           description="Usuário que efetuou o desmembramento" 
+           inivalue="0" 
+           label="Usuário" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009727" 
+           campo_api='' 
+           name="v37_inicial" 
+           conteudo="int4" 
+           description="Inicial atual do desmembramento" 
+           inivalue="0" 
+           label="Inicial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009728" 
+           campo_api='' 
+           name="v37_cda_old" 
+           conteudo="int4" 
+           description="CDA antiga do desmembramento" 
+           inivalue="0" 
+           label="CDA Antiga" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CDA Antiga" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009730" 
+           campo_api='' 
+           name="v37_data" 
+           conteudo="date" 
+           description="Data do desmembramento" 
+           inivalue="null" 
+           label="Data" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009726" 
+           campo_api='' 
+           name="v37_inicial_old" 
+           conteudo="int4" 
+           description="Inicial antiga do desmembramento" 
+           inivalue="0" 
+           label="Inicial antiga" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inicial antiga" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="v37_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="certid" inner='t'>
+      <fieldfk name="v37_cda" reference="v13_certid" /> 
+      <fieldfk name="v37_cda_old" reference="v13_certid" /> 
+    </foreignkey>
+    <foreignkey reference="inicial" inner='t'>
+      <fieldfk name="v37_inicial" reference="v50_inicial" /> 
+      <fieldfk name="v37_inicial_old" reference="v50_inicial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

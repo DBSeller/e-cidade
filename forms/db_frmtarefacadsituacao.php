@@ -58,7 +58,7 @@ db_input('at46_descr',40,$Iat46_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tarefacadsituacao','func_tarefacadsituacao.php?funcao_js=parent.js_preenchepesquisa|at46_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefacadsituacao','func_tarefacadsituacao.php?funcao_js=parent.js_preenchepesquisa|at46_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tarefacadsituacao.hide();

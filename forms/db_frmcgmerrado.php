@@ -26,8 +26,8 @@
  */
 
 //MODULO: protocolo
-include("dbforms/db_classesgenericas.php");
-include("classes/db_cgmcorreto_classe.php");
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_cgmcorreto_classe.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcgmerrado->rotulo->label();
 $clrotulo = new rotulocampo;

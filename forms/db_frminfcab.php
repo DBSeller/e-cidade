@@ -182,11 +182,11 @@ function js_atualizavalores(){
 
 
 function js_pesquisadados(){
-  js_OpenJanelaIframe("top.corpo","db_iframe_pesquisa","func_infcab.php?funcao_js=parent.js_pesquisadadosretorno|i03_codigo","Pesquisa Valores Atualizados");
+  js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_pesquisa","func_infcab.php?funcao_js=parent.js_pesquisadadosretorno|i03_codigo","Pesquisa Valores Atualizados");
 }
 
 function js_imprimir(programa){
-//  js_OpenJanelaIframe("top.corpo","db_iframe_pesquisa","func_infcab.php?funcao_js=parent.js_pesquisadadosretorno|i03_codigo","Pesquisa Valores Atualizados");
+//  js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_pesquisa","func_infcab.php?funcao_js=parent.js_pesquisadadosretorno|i03_codigo","Pesquisa Valores Atualizados");
     jandb = window.open(programa,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
     jandb.moveTo(0,0);
 }

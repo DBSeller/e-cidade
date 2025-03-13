@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -190,9 +190,10 @@ function js_mostraCartorio(chave1,chave2,erro) {
   $('v82_descricao').value = chave2;
   $('v82_sequencial').value = chave1; 
 
-  if (erro == true) {
+  if (erro == true || erro == undefined) {
    
-    $('v82_sequencial').value = ''; 
+    $('v82_sequencial').value = '';
+    $('v82_descricao').value = '';
     $('v82_sequencial').focus(); 
   }
 }
@@ -205,7 +206,14 @@ function js_mostraCartorio1(chave1,chave2) {
 
 function js_validar() {
 
-  var sOpcao = $('db_opcao').value;  
+  var sOpcao = $('db_opcao').value;
+
+  if($F('v82_descricao') == ''){
+    alert("Campo cartório não informado");
+    $('v82_sequencial').focus();
+    return false;
+  }
+
   if (sOpcao == 'Anular') {
     
     if (!confirm(_M('tributario.juridico.db_frminicialcodforo.deseja_desvincular_todas_inicais'))) {

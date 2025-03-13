@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -108,7 +108,7 @@ $clrotulo->label("nome");
 		  
 		  $sql = $clcancdebitos->sql_pendentes("k21_sequencia,k21_numpre,k21_numpar,sum(k00_valor) as k00_valor,k21_receit,(select k00_numcgm from arrenumcgm where k00_numpre = k21_numpre limit 1) as k00_numcgm, (select k00_matric from arrematric where k00_numpre = k21_numpre limit 1) as k00_matric, (select k00_inscr from arreinscr where k00_numpre = k21_numpre limit 1) as k00_inscr","k21_numpre,k21_numpar"," k20_codigo = $chavepesquisa  and k20_instit = ".db_getsession("DB_instit")."GROUP BY k21_sequencia,k21_numpre,k21_numpar,k21_receit");
 		  
-		  $result = pg_query($sql);
+		  $result = db_query($sql);
 		  $linhas = pg_num_rows($result);
 		  if($linhas>0){
 		    $total = 0;
@@ -123,7 +123,7 @@ $clrotulo->label("nome");
 			<tr>
 				<td><strong>Tipo de cancelamento:</strong></td>
 				<td><?
-				  $resulttipo = pg_query("select k73_sequencial,k73_descricao from cancdebitostipo order by k73_sequencial");
+				  $resulttipo = db_query("select k73_sequencial,k73_descricao from cancdebitostipo order by k73_sequencial");
 				  $linhasTipo = pg_num_rows($resulttipo);
 				  $tipo = array();
 				  if($linhasTipo > 0 ){
@@ -198,7 +198,7 @@ $clrotulo->label("nome");
 </center>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cancdebitos','func_cancdebitos.php?funcao_js=parent.js_preenchepesquisa|k20_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cancdebitos','func_cancdebitos.php?funcao_js=parent.js_preenchepesquisa|k20_codigo','Pesquisa',true);
 }
 
 function js_mostraRenuncia(id){

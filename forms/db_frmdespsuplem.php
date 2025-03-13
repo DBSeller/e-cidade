@@ -31,7 +31,7 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("o39_codproj");
 $clrotulo->label("nome");
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 
 ?>
@@ -57,10 +57,12 @@ $cliframe_seleciona = new cl_iframe_seleciona;
    <td colspan=2 align=center>
     <?
       if (isset($o39_codproj) && $o39_codproj !=""){
+
        $sql = " select o46_codsup,
                                o48_descr,
 		                       sum(case when o47_valor > 0  then o47_valor else 0 end)  as suplementado,
-		                       sum(case when o47_valor < 0  then o47_valor else 0 end) as reduzido	   
+		                       sum(case when o47_valor < 0  then o47_valor else 0 end) as reduzido,
+		                       count(orcsuplemval.o47_coddot) as total_dotacoes
                      from orcsuplem
 		                     inner join orcsuplemtipo on o48_tiposup = o46_tiposup
 		                     inner join orcsuplemval  on o47_codsup=o46_codsup   
@@ -69,11 +71,14 @@ $cliframe_seleciona = new cl_iframe_seleciona;
 		             group by o46_codlei,o46_codsup,o48_descr
 		             order by o46_codlei    
   	      ";
+        /** [Extensao FiltroDespesa] - Modificacao 1*/
+
+
   	     // se este projeto é retificador, todas as suplementações devem ser desprocessadas  
   	    $sql_retificador= "select *
                                      from orcsuplemretif 
                                      where o48_projeto = $o39_codproj";
-        $result = pg_exec($sql_retificador);                 
+        $result = db_query($sql_retificador);                 
   	    if (pg_numrows($result)>0){
   	    	  $db_opcao=3;              
               $sql_marca = "  select o46_codsup,
@@ -116,7 +121,7 @@ $cliframe_seleciona = new cl_iframe_seleciona;
 <script>
 function js_pesquisao39_codproj(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcprojeto','func_orcprojetodesprocessa.php?funcao_js=parent.js_mostraprojeto|o39_codproj','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcprojeto','func_orcprojetodesprocessa.php?funcao_js=parent.js_mostraprojeto|o39_codproj','Pesquisa',true);
   }
 }
 function js_mostraprojeto(chave,erro){

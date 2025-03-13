@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("classes/db_turmaac_classe.php");
-require_once ("classes/db_turmaacmatricula_classe.php");
-require_once ("classes/db_escola_classe.php");
-require_once ("classes/db_escolaestrutura_classe.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_jsplibwebseller.php");
-require_once ("model/educacao/Escola.model.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_turmaac_classe.php"));
+require_once(modification("classes/db_turmaacmatricula_classe.php"));
+require_once(modification("classes/db_escola_classe.php"));
+require_once(modification("classes/db_escolaestrutura_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("model/educacao/Escola.model.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $clturmaac          = new cl_turmaac;
@@ -123,7 +123,7 @@ if ($ed255_i_aee == 3 && $ed255_i_ativcomplementar == 3) {
 }
 
 function PegaValores($array,$tamanho) {
-	
+    
   $retorno = "";
   for ($x = 1; $x <= $tamanho; $x++) {
   	
@@ -151,7 +151,7 @@ if (isset($incluir)) {
   db_inicio_transacao();
   if ($ed268_i_tipoatend == 5) {
     
-    $ed268_c_aee                = PegaValores($ed268_c_aee,12);
+    $ed268_c_aee                = PegaValores($ed268_c_aee,15);
     $ed268_programamaiseducacao = null;
   } else {
     $ed268_c_aee = "";
@@ -182,7 +182,7 @@ if (isset($incluir)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Inclusão de Turma com Atividade Complementar / AEE</b></legend>
-    <?include("forms/db_frmturmaac.php");?>
+    <?include(modification("forms/db_frmturmaac.php"));?>
    </fieldset>
    </center>
   </td>

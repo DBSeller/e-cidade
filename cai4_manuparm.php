@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
-include("classes/db_numpref_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_numpref_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clnumpref = new cl_numpref;
 $clnumpref->rotulo->label();
@@ -42,7 +42,7 @@ $clrotulo->label("k06_descr");
 
 
 if(isset($HTTP_POST_VARS["alterar"])) {
-  $result = pg_exec("select k03_anousu from numpref where k03_anousu = ".db_getsession("DB_anousu"));
+  $result = db_query("select k03_anousu from numpref where k03_anousu = ".db_getsession("DB_anousu"));
   db_postmemory($HTTP_POST_VARS);
 
   $k03_numpre = $k03_numpre==""?0:$k03_numpre;
@@ -53,7 +53,7 @@ if(isset($HTTP_POST_VARS["alterar"])) {
   $k03_recmul = $k03_recmul==""?0:$k03_recmul;
   
   if(pg_numrows($result) == 0) {
-    pg_exec("insert into numpref(k03_anousu,
+    db_query("insert into numpref(k03_anousu,
                                  k03_numpre,                                 
                                  k03_defope,
                                  k03_recjur,
@@ -84,7 +84,7 @@ if(isset($HTTP_POST_VARS["alterar"])) {
                                  '$k03_reccert',
                                  '$k03_taxagrupo')") or die("Erro(40) inserindo em numpref");
   } else {
-    pg_exec("update numpref set  k03_numpre = $k03_numpre,
+    db_query("update numpref set  k03_numpre = $k03_numpre,
                                       k03_defope = $k03_defope,
                                       k03_recjur = $k03_recjur,
                                       k03_numsli = $k03_numsli,
@@ -102,7 +102,7 @@ if(isset($HTTP_POST_VARS["alterar"])) {
 
   }
 }
-$result = pg_exec("select * from numpref where k03_anousu = ".db_getsession("DB_anousu"));
+$result = db_query("select * from numpref where k03_anousu = ".db_getsession("DB_anousu"));
 if(pg_numrows($result) > 0)
   db_fieldsmemory($result,0);
 ?>

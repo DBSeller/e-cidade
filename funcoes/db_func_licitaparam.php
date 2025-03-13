@@ -1,7 +1,8 @@
-<?
+<?php
+
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2014  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,5 +26,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "licitaparam.l12_instit,licitaparam.l12_escolherprocesso";
+$campos = "licitaparam.l12_instit,licitaparam.l12_escolherprocesso,licitaparam.l12_escolheprotocolo,licitaparam.l12_qtdediasliberacaoweb,licitaparam.l12_tipoliberacaoweb,licitaparam.l12_limitetamanhoarquivo";
 ?>

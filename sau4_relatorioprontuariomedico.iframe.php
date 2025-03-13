@@ -1,36 +1,36 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/db_usuariosonline.php');
-require_once('libs/db_utils.php');
-require_once('dbforms/db_funcoes.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_usuariosonline.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('dbforms/db_funcoes.php'));
 
 ?>
 <html>
@@ -71,13 +71,13 @@ require_once('dbforms/db_funcoes.php');
         $dFim_dia = $aDataFim[0];
         $dFim_mes = $aDataFim[1];
         $dFim_ano = $aDataFim[2];
-  
+
         db_inputdata('dFim', @$dFim_dia, @$dFim_mes, @$dFim_ano, true, 'text', 1);
         ?>
       </td>
     </tr>
   </table>
-</fieldset>  
+</fieldset>
 <br>
 <input name="relatorio" type="button" id="relatorio" value="Relatório" onclick="js_mandaDados();">
 <input name="fechar" type="button" id="fechar" value="Fechar" onclick="parent.db_iframe_relatorioprontuario.hide();">
@@ -106,18 +106,18 @@ function js_ajax( objParam, jsRetorno, sUrl, lAsync) {
   if (lAsync == undefined) {
     lAsync = true;
   }
-  
+
     var objAjax = new Ajax.Request(
-                         sUrl, 
+                         sUrl,
                          {
-                          method    : 'post', 
+                          method    : 'post',
                           asynchronous: lAsync,
                           parameters: 'json='+Object.toJSON(objParam),
                           onComplete: function(objAjax) {
-                             
+
                                         var evlJS    = jsRetorno+'( objAjax );';
                                         return mRetornoAjax = eval( evlJS );
-                                        
+
                                     }
                          }
                         );
@@ -134,7 +134,7 @@ function js_validaData() {
     return false;
 
   }
-  
+
   if ($F('dIni') != '' && $F('dFim') != '') {
 
     var dIni = new Date($('dIni').value.substring(6,10),
@@ -145,15 +145,15 @@ function js_validaData() {
                         $('dFim').value.substring(3,5),
                         $('dFim').value.substring(0,2)
                        );
-    
+
     if (dIni > dFim) {
-  
+
       alert('A data de início não pode ser maior que a data final.');
       $('dFim').value = '';
       $('dFim').focus();
-  
+
       return false;
-  
+
     }
 
   }
@@ -177,7 +177,7 @@ function js_mandaDados() {
 
   sGet = 'dIni='+$F('dIni')+'&dFim='+$F('dFim')+'&cgs='+$F('iCgs');
 
-  oJan = window.open('sau4_prontuariomedico003.php?'+sGet, '', 'width='+(screen.availWidth - 5)+
+  oJan = window.open('sau4_prontuariomedico004.php?'+sGet, '', 'width='+(screen.availWidth - 5)+
                      ',height='+(screen.availHeight - 40)+',scrollbars=1,location=0 '
                     );
   oJan.moveTo(0, 0);
@@ -193,14 +193,14 @@ function js_getCgsFaa() {
   var oParam             = new Object();
   oParam.exec            = "getCgsFaa";
   oParam.iFaa            = $F('iFaa');
-  
+
   js_ajax(oParam, 'js_retornoGetCgsFaa', 'sau4_sau_encaminhamentos.RPC.php');
 
 }
 
 function js_retornoGetCgsFaa(objRetorno) {
 
-  oRetorno = eval("("+objRetorno.responseText+")");
+  oRetorno = JSON.parse(objRetorno.responseText);
   if (oRetorno.iStatus == 1) {
     $('iCgs').value = oRetorno.iCgs;
   } else {

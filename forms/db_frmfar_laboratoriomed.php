@@ -86,7 +86,7 @@ function js_pesquisafa32_i_medanvisa(mostra){
     js_OpenJanelaIframe('','db_iframe_far_medanvisa','func_far_medanvisa.php?funcao_js=parent.js_mostrafar_medanvisa1|fa14_i_codigo|fa14_c_medanvisa','Pesquisa',true);
   }else{
      if(document.form1.fa32_i_medanvisa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_far_medanvisa','func_far_medanvisa.php?pesquisa_chave='+document.form1.fa32_i_medanvisa.value+'&funcao_js=parent.js_mostrafar_medanvisa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_medanvisa','func_far_medanvisa.php?pesquisa_chave='+document.form1.fa32_i_medanvisa.value+'&funcao_js=parent.js_mostrafar_medanvisa','Pesquisa',false);
      }else{
        document.form1.fa14_i_codigo.value = ''; 
      }

@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 ?>
 <html>
@@ -34,6 +34,7 @@
     <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/dates.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
     <link href="estilos.css" rel="stylesheet" type="text/css">
   </head>
 
@@ -68,17 +69,36 @@
             <?php db_input('mes_folha', 10,0,true,'hidden', 3); ?>
 
             <table style="border:0;">
+              <?php
+              if ($db_opcao != 3) {
+
+
+                ?>
+                <tr>
+                  <td>
+                    <b>Escolha o Período:</b>
+                  </td>
+                  <td>
+
+                    <?php
+                    db_select('periodoaquisitivo', $aPeriodosAquisitivos, true, 1, 'onchange="setarDadosPeriodo()"');
+                    ?>
+                  </td>
+                </tr>
+                <?php
+              }
+              ?>
               <tr>
                 <td>
                    <?php echo $Lrh109_periodoaquisitivoinicial; ?>
                 </td>
                 <td>
-                  <?php 
+                  <?php
                   db_inputdata('rh109_periodoaquisitivoinicial',
                                 $rh109_periodoaquisitivoinicial_dia,
                                 $rh109_periodoaquisitivoinicial_mes,
                                 $rh109_periodoaquisitivoinicial_ano,
-                                true, 'text', 3, "");                          
+                                true, 'text', 3, "");
                   ?>
                 </td>
               </tr>
@@ -87,12 +107,12 @@
                    <?php echo $Lrh109_periodoaquisitivofinal; ?>
                 </td>
                 <td>
-                  <?php 
+                  <?php
                   db_inputdata('rh109_periodoaquisitivofinal',
                                 $rh109_periodoaquisitivofinal_dia,
                                 $rh109_periodoaquisitivofinal_mes,
                                 $rh109_periodoaquisitivofinal_ano,
-                                true, 'text', 3, "");                          
+                                true, 'text', 3, "");
                   ?>
                 </td>
               </tr>
@@ -105,74 +125,9 @@
                     <?php db_input('rh109_diasdireito', 10, 0, true, 'text', 3); ?>
                   </td>
                 </tr>
-                <tr>
-                  <td>
-                    <?php  echo $Lrh109_faltasperiodoaquisitivo; ?>
-                  </td>
-                  <td>
-                    <?php db_input('rh109_faltasperiodoaquisitivo', 10, 0, true, 'text', 3); ?>
-                  </td>
-                </tr>
               <?php } ?>
-
             </table>
-            
           </fieldset>     
-
-          <fieldset  class="separator">
-            <legend>Cálculo da Média do Período de Gozo</legend>
-
-            <table class="form-container">
-              <tr>               
-                <td>
-                  <strong>Apuração da Média:</strong>
-                </td>
-                <td>
-                  <?php
-                    $aOptionsApuracaoMedia = array('N' => 'Período Aquisitivo Normal', 
-                                                   'E' => 'Período Aquisitivo Específico');
-
-                    if (isset($lDireitoApuracaoMedia) && $lDireitoApuracaoMedia == 'E') {
-                      unset($aOptionsApuracaoMedia['N']);
-                    }
-
-                    db_select('lDireitoApuracaoMedia', $aOptionsApuracaoMedia, true, 
-                              $db_opcao, "onchange=js_alteraApuracaoMedia();");
-                  ?>
-                </td>
-              </tr>
-
-              <tr style="display:<?php echo ((isset($lDireitoApuracaoMedia) && $lDireitoApuracaoMedia == 'E') ? '' : 'none');?>" id="camposperiodoinicial">
-                <td>
-                  <?php echo $Lrh110_periodoespecificoinicial; ?>
-                </td>
-                <td>
-                  <?php 
-                    db_inputdata('rh110_periodoespecificoinicial',
-                                 $rh110_periodoespecificoinicial_dia,
-                                 $rh110_periodoespecificoinicial_mes,
-                                 $rh110_periodoespecificoinicial_ano,
-                                 true, 'text', $db_opcao, "");
-                  ?>
-                </td>
-              </tr>
-              <tr style="display:<?php echo ((isset($lDireitoApuracaoMedia) && $lDireitoApuracaoMedia == 'E') ? '' : 'none');?>;" id="camposperiodofinal">
-                <td>
-                  <?php echo $Lrh110_periodoespecificofinal; ?>
-                </td>
-                <td>
-                  <?php 
-                    db_inputdata('rh110_periodoespecificofinal',
-                                 $rh110_periodoespecificofinal_dia,
-                                 $rh110_periodoespecificofinal_mes,
-                                 $rh110_periodoespecificofinal_ano,
-                                 true, 'text', $db_opcao, "");
-                  ?>
-                </td>
-              </tr>
-            </table>
-
-          </fieldset>
 
           <fieldset class="separator">
             <legend>Período de Gozo</legend>
@@ -180,23 +135,44 @@
             <table class="form-container">
 
               <tr>
-                <td>
+                <td width="145">
                   <?php  echo $Lrh110_dias; ?>
                 </td>
                 <td>
                   <?php db_input('rh110_dias', 10, $Irh110_dias, true, 'text', $db_opcao); ?>
                 </td>
               </tr>
-              
+
               <tr>
                 <td>
-                  <?php  echo $Lrh110_diasabono; ?>
+                    <?php  echo $Lrh110_diasabono; ?>
                 </td>
                 <td>
-                  <?php db_input('rh110_diasabono', 10, $Irh110_diasabono, true, 'text', $db_opcao); ?>
+                    <?php db_input('rh110_diasabono', 10, $Irh110_diasabono, true, 'text', $db_opcao); ?>
                 </td>
               </tr>
 
+                <tr>
+                    <td width="145">
+                        <?php  echo $Lrh110_diaspecunia; ?>
+                    </td>
+                    <td>
+                        <?php db_input('rh110_diaspecunia', 10, $Irh110_diaspecunia, true, 'text', $db_opcao); ?>
+                    </td>
+                </tr>
+
+              <tr>
+                <td width="145">
+                    <?php  echo $Lrh110_diaspagar; ?>
+                </td>
+                <td>
+                    <?php db_input('rh110_diaspagar', 10, $Irh110_diaspagar, true, 'text', $db_opcao); ?>
+                </td>
+                <td>
+                  <input id="saldoDiasAPagar" type="hidden" value="<?=$rh110_diaspagar?>" />
+                </td>
+              </tr>
+              
               <tr>
                 <td>
                   <?php echo $Lrh110_datainicial; ?>
@@ -206,12 +182,12 @@
                                      $rh110_datainicial_dia,
                                      $rh110_datainicial_mes,
                                      $rh110_datainicial_ano,
-                                     true, 'text', $db_opcao,"","","","parent.validar()");                           
+                                     true, 'text', $db_opcao, "onchange='validaDataInicial()'", "", "", "parent.validaDataInicial()");
                   ?>
                 </td>
               </tr>
 
-              <tr>
+              <tr id="linhaDataFinal">
                 <td>
                   <?php echo $Lrh110_datafinal; ?>
                 </td>
@@ -223,49 +199,17 @@
                                      true, 'text', 3);                          
                   ?>
                 </td>
-              </tr>
-              
-              <tr>
-                <td><?php echo $Lrh110_tipoponto; ?></td>
-                <td>
-                  <?php 
-                    $aOptionsTipoPonto = array('1' => 'Salário', '2' => 'Complementar');
-                    db_select('rh110_tipoponto', $aOptionsTipoPonto, true, $db_opcao, "");
-                  ?>
-                </td>
-              </tr>
-             <tr>
-               <td>
-                <?php echo $Lrh110_pagaterco; ?>
-               </td>
-               <td>
-                <?php
-                   $aOptionsPagaTerco = array('false' => 'NÃO', 'true' => 'SIM');
-                   db_select('rh110_pagaterco', $aOptionsPagaTerco, true, $db_opcao, "");
-                ?>
-               </td> 
-             </tr>
-              
-             <tr>
-                <td nowrap title="Digite o Ano / Mês de competência">
-                   <strong>Ano / Mês pagamento:</strong>
-                </td>
-                <td>
-                  <?php
-
-                     db_input("rh110_anopagamento", 4, 1, true, "text", $db_opcao,"","rh110_anopagamento");
-                     echo "&nbsp;/&nbsp;";
-                     db_input("rh110_mespagamento", 2, 1, true, "text", $db_opcao,"","rh110_mespagamento");
-                  ?>            
-                </td>
-              </tr>     
-
+              </tr>   
             </table>
           </fieldset>
           
           <fieldset  class="separator">
             <legend>Observações</legend>
-              <?php db_textarea("rh110_observacoes", 5, 60,  "", true, null, $db_opcao);?>
+             <?php 
+               $rh110_observacoes = utf8_decode($rh110_observacoes);
+             ?>
+
+             <?php db_textarea("rh110_observacoes", 5, 60,  "", true, null, $db_opcao);?>
           </fieldset>
         </fieldset>
 
@@ -274,6 +218,7 @@
           if ($db_opcao == 3) {
           ?>
           <input name="excluir" type="button" id="db_opcao" value="Excluir" onclick="return js_excluir()" />
+          <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="return pesquisaPeriodosquisitivo()" />
           <?php 
           } else {
         ?>
@@ -289,105 +234,153 @@
   </body>
                      
   <script>
- 
-    var MENSAGEM_SISTEMA = "recursoshumanos.pessoal.db_frmescalaferias.";
-    var validar = null;
-      
-      var oInputDiasGozar             = $('rh110_dias');
-      var oInputDiasAbono             = $('rh110_diasabono');
-      var oInputDiasDireito           = $('rh109_diasdireito');
-      var oInputDataInicial           = $('rh110_datainicial');
-      var oInputDataFinal             = $('rh110_datafinal');
-      var oInputDataEspecificaInicial = $('rh110_periodoespecificoinicial')
+    (function(){
+      periodosEmAberto();
+    })();
 
-      oInputDiasAbono.onchange = function() {
-        if (isNaN(+this.value)) {
-          return false;
-        }
-        return validarDiasAGozar();
-      };
+    var oUrl                  = js_urlToObject();
+    var lPermiteSelecaoFerias = <?=($db_opcao == 3 && $lPermiteEscolhaPeriodo) ? 'true' : 'false';?>;
+    var periodosAquisitivos   = null;
+    var diasAGozar            = null;
+    var diasAbono             = null;
+    var periodoSelecionado    = null;
 
-      oInputDiasGozar.onchange = function(evt) {
+    var MENSAGEM_SISTEMA  = "recursoshumanos.pessoal.db_frmescalaferias.";
 
-        validarDiasAGozar();
+    var oInputDiasGozar             = $('rh110_dias');
+    var oInputDiasAbono             = $('rh110_diasabono');
+    var oInputDiasAPagar            = $('rh110_diaspagar');
+    var oInputDiasPecunia           = $('rh110_diaspecunia');
+    var oInputDiasDireito           = $('rh109_diasdireito');
+    var oInputDataInicial           = $('rh110_datainicial');
+    var oInputDataFinal             = $('rh110_datafinal');
 
-        if (evt && oInputDataInicial.value) {
-          oInputDataFinal.value = "";
-        }
+    oInputDiasAbono.onchange = function() {
 
-        if ((oInputDataInicial.value && !oInputDataFinal.value) || (!oInputDataInicial.value && oInputDataFinal.value) && oInputDiasGozar.value) {
-          validarPeriodoGozo();
-        }
+      validaDataInicial();
 
-      };
+      if (isNaN(+this.value)) {
+        return false;
+      }
+      return validarDiasAGozar();
+    };
 
-      oInputDataInicial.onchange = function() {
-        var diff = retornaDiferencaEntreDatas(this.value, $F('rh109_periodoaquisitivoinicial'))
-        if (diff > 0) {
-          alert(_M( MENSAGEM_SISTEMA + 'data_inicial_menor_que_periodo_aquisitivo' ))
-          this.value = "";
-          return;
-        }
+    oInputDiasGozar.onchange = function(evt) {
 
+      if (evt && oInputDataInicial.value) {
+        oInputDataFinal.value = "";
+      }
+
+      if ((oInputDataInicial.value && !oInputDataFinal.value) || (!oInputDataInicial.value && oInputDataFinal.value) && oInputDiasGozar.value) {
         validarPeriodoGozo();
       }
 
-      oInputDataEspecificaInicial.onchange = function() {
-        
-        if ($F('lDireitoApuracaoMedia') == 'E') {
-          
-          var oDate = inputDateToObject($F('rh110_periodoespecificoinicial'))
-          var dData = new Date( (+oDate.year + 1), ( +oDate.month-1), +oDate.day ) ;
-          $('rh110_periodoespecificofinal').value = dData.getFormatedDate('d/m/Y');
+    };
+
+
+    oInputDiasPecunia.onchange = function(evt) {
+
+        if (evt && oInputDataInicial.value) {
+            oInputDataFinal.value = "";
         }
+
+        if ((oInputDataInicial.value && !oInputDataFinal.value) || (!oInputDataInicial.value && oInputDataFinal.value) && oInputDiasGozar.value) {
+            validarPeriodoGozo();
+        }
+
+    };
+
+    oInputDiasAPagar.onchange = function() {
+
+      var diasAPagarDigitado = Number(oInputDiasAPagar.value);
+      var diasAPagarSaldo = Number($F('saldoDiasAPagar'));
+
+      if(diasAPagarDigitado.valueOf() > diasAPagarSaldo.valueOf()) {
+
+        alert('Dias a Pagar é maior que o saldo disponível(Saldo: ' + diasAPagarSaldo.valueOf() + ')');
+        $('rh110_diaspagar').value = diasAPagarSaldo.valueOf();
+
+
+      }
+    };
+
+    function validaDataInicial() {
+
+      if (empty(oInputDiasGozar.value) && empty(oInputDiasPecunia.value) && empty(oInputDiasAbono.value)) {
+          return;
       }
 
-      function validarDiasAGozar() {
-                
-        if ( +oInputDiasGozar.value == 0 ) {
+      var diff = retornaDiferencaEntreDatas(oInputDataInicial.value, $F('rh109_periodoaquisitivofinal'));
 
-          alert(_M( MENSAGEM_SISTEMA + 'periodo_de_gozo_zerado' ));
-        //  oInputDiasGozar.value = +$F('rh109_diasdireito') - +$F('rh110_diasabono');
-          return false;
-        } 
-        var iTotal = +oInputDiasGozar.value + +oInputDiasAbono.value;
-
-        if (iTotal > +oInputDiasDireito.value) {
-        
-          alert( _M( MENSAGEM_SISTEMA + 'dias_direito_menor_abono_dias_a_gozar') );
-          return false;
-        }
-        return true;
+      if (diff > 0) {
+        alert(_M(MENSAGEM_SISTEMA + 'data_inicial_menor_que_periodo_aquisitivo'));
+        oInputDataInicial.value = "";
+        return;
       }
 
-      /**
-       * Valida os Dias de Periodo de Gozo
-       */
-      function validarPeriodoGozo() {
-        
-        require_once("scripts/strings.js");
-        
-        var oDataInicial   = inputDateToObject(oInputDataInicial.value);
-        var oDataFinal     = inputDateToObject(oInputDataFinal.value);
+      validarPeriodoGozo();
+    }
 
-        /**
-         * Verifica se tem dias a gozar preenchido e a data inicial.
-         * A partir disto preenche a data final.
-         */
-        if ( oInputDataInicial.value != '' && oInputDiasGozar.value != '' ) {
-        
-          oNewDateFinal       = new Date();
-          var iDiasAdicionais = ( oDataInicial.day + new Number(oInputDiasGozar.value) ) - 1;// Diminuido 1 dia pois o tida de inicio conta como dia gozado
-          
-          oNewDateFinal.setYear( oDataInicial.year );
-          oNewDateFinal.setMonth( oDataInicial.month - 1);
-          oNewDateFinal.setDate( iDiasAdicionais );
-          
-          oInputDataFinal.value = oNewDateFinal.getFormatedDate(DATA_PTBR);
-        }
+    function validarDiasAGozar() {
+
+      if ( +oInputDiasGozar.value == 0 && +oInputDiasAbono.value === 0 && oInputDiasPecunia.value == 0) {
+
+        alert(_M( MENSAGEM_SISTEMA + 'periodo_de_gozo_zerado' ));
+        return false;
       }
 
-      validar = validarPeriodoGozo;
+
+      if ( +oInputDiasGozar.value > +oInputDiasDireito.value || +oInputDiasAbono.value > +oInputDiasDireito.value
+      || +oInputDiasPecunia.value > +oInputDiasDireito.value ) {
+
+        alert(_M( MENSAGEM_SISTEMA + 'dias_direito_menor_abono_dias_a_gozar'));
+        oInputDiasGozar.value = +oInputDiasDireito.value;
+        oInputDiasAbono.value = +oInputDiasDireito.value - oInputDiasGozar.value;
+        return false;
+      }
+
+      var iTotal = +oInputDiasGozar.value + +oInputDiasAbono.value;
+
+      if (iTotal > +oInputDiasDireito.value) {
+
+        alert( _M( MENSAGEM_SISTEMA + 'dias_direito_menor_abono_dias_a_gozar') );
+        return false;
+      }
+
+      return true;
+    }
+
+    /**
+     * Valida os Dias de Periodo de Gozo
+     */
+    function validarPeriodoGozo() {
+
+      if ( oInputDataInicial.value != '' && (oInputDiasGozar.value != '' || oInputDiasPecunia.value != '')) {
+
+        var oDataInicial = inputDateToObject(oInputDataInicial.value);
+        var oDataFinal   = new Date();
+        
+        oDataFinal.setUTCFullYear(Number(oDataInicial.year));
+        oDataFinal.setUTCMonth(Number(oDataInicial.month - 1));
+        oDataFinal.setUTCDate(Number(oDataInicial.day));
+
+        var oDiasGozar = Number(oInputDiasGozar.value);
+        var oDiasPecunia = Number(oInputDiasPecunia.value);
+        var diasCalculo = oDiasGozar.valueOf();
+        var diasPecunia = oDiasPecunia.valueOf();
+        diasCalculo += diasPecunia;
+
+        if (diasCalculo == 0) {
+
+          var diasAbonar = new Number(oInputDiasAbono.value);
+          diasCalculo = diasAbonar.valueOf();
+        }
+
+        oDataFinal.setUTCMonth(Number(oDataInicial.month - 1));
+        oDataFinal.setUTCDate(oDataFinal.getDate() + diasCalculo - 1);
+        oInputDataFinal.value = oDataFinal.getFormatedDate(DATA_PTBR);
+      }
+    }
 
     /**
     * Retorna em dias a dirença entre duas das data
@@ -432,13 +425,10 @@
         return false;
       }
 
-      $('rh110_dias').onkeyup(clickEvent);
       if (!$F('rh110_dias')) {
     	  alert( _M(MENSAGEM_SISTEMA + 'dias_gozar_nao_informado') );  
         return false;
       }
-
-      $('rh110_diasabono').onkeyup = clickEvent;
       
       if (!$F('rh110_diasabono')) {
         
@@ -447,91 +437,77 @@
         return false;
       }
 
-      if ($F('lDireitoApuracaoMedia') == 'E') {
-        
-        if (!$F('rh110_periodoespecificoinicial')) {
-          
-          alert( _M(MENSAGEM_SISTEMA + 'periodo_especifico_inicial_nao_informado') );
-          return false;
-        }
-
-        if (!$F('rh110_periodoespecificofinal')) {
-          alert( _M(MENSAGEM_SISTEMA + 'periodo_especifico_final_nao_informado') );
-          return false;
-        }
-
-        if (retornaDiferencaEntreDatas($F('rh110_periodoespecificoinicial'), $F('rh110_periodoespecificofinal')) < 0) {
-          alert( _M(MENSAGEM_SISTEMA + 'data_especifica_final_menor_que_inicial') );
-          return false;
-        }
-      } else {
-
-        $('rh110_periodoespecificoinicial').value = '';
-        $('rh110_periodoespecificofinal').value = '';
-
-      }
-
       if (!$F('rh110_datainicial')) {
         alert( _M(MENSAGEM_SISTEMA + 'data_inicial_nao_informada'));
         return false;
       }
+      if ($F('rh110_diaspecunia') > 0 && ($F('rh110_dias') > 0 || $F('rh110_diasabono') > 0)) {
 
-      if (!js_validaAnoPagamento($('rh110_anopagamento'), clickEvent)) {
-        return false;
+          alert( _M(MENSAGEM_SISTEMA + 'dias_pecunia_com_gozo_nao_permitido'));
+          return false;
       }
-
-      if (!js_validaMesPagamento($('rh110_mespagamento'), clickEvent)) {
-        return false;
-      }
-      
 
       var sUrlRPC = 'pes4_ferias.RPC.php';
+
+      diasAGozar = Number($F('rh110_dias'));
+      diasAbono = Number($F('rh110_diasabono'));
+      periodoSelecionado = $F('periodoaquisitivo');
 
       var msgDiv                            = "Processando Dados. \n Aguarde ...",
           oParam                            = {
             sExecucao                 : "cadastrarPeriodoGozo",
             iCodigoFerias             : $F('rh110_rhferias'),
+            iMatricula                : $F('rh109_regist'), 
             iDiasGozo                 : $F('rh110_dias'),
+            iDiasAPagar               : $F('rh110_diaspagar'),
             iDiasAbono                : $F('rh110_diasabono'),
+            iDiasPecunia              : $F('rh110_diaspecunia'),
             sDataPeriodoInicial       : $F('rh110_datainicial'),
             sDataPeriodoFinal         : $F('rh110_datafinal'),
-            sObservacao               : $F('rh110_observacoes').urlEncode(),
-            iAnoPagamento             : $F('rh110_anopagamento'),
-            iMesPagamento             : $F('rh110_mespagamento'),
-            lPagaTerco                : $F('rh110_pagaterco'),
-            iTipoPonto                : $F('rh110_tipoponto'),
-            sPeriodoEspecificoInicial : $F('rh110_periodoespecificoinicial'),
-            sPeriodoEspecificoFinal   : $F('rh110_periodoespecificofinal')
+            sObservacao               : $F('rh110_observacoes').urlEncode()
           };
 
       js_divCarregando(msgDiv,'msgBox');
 
-      var oAjax  = new Ajax.Request(sUrlRPC,{method: "post",
-        parameters:'json='+Object.toJSON(oParam),
-        onComplete: js_retornoProcessar
+      new Ajax.Request(sUrlRPC, { method: "post",
+                                 parameters:'json='+Object.toJSON(oParam),
+                                 onComplete: js_retornoProcessar
       });  
 
     }
 
     function js_retornoProcessar(oAjax) {
+
       js_removeObj('msgBox');
-      var oRetorno = eval("("+oAjax.responseText+")");
+      var oRetorno = JSON.parse(oAjax.responseText);
 
       alert(oRetorno.sMensagem.urlDecode());
 
-      if (oRetorno.iStatus == "1") {
+      var lRetornaPaginaInicial = true;
+
+      periodosAquisitivos.each(function(periodo) {
+
+        if(periodo.codigo == periodoSelecionado) {
+
+          var diasLancados = diasAGozar.valueOf() + diasAbono.valueOf();
+
+          if(periodo.saldo > diasLancados) {
+            lRetornaPaginaInicial = false;
+          }
+        }
+      });
+
+      if (lRetornaPaginaInicial && oRetorno.iStatus == "1") {
         js_voltar();
+      }
+
+      if(!lRetornaPaginaInicial) {
+        location.href = "pes1_escalaferias002.php?rh109_regist=" + $F('rh109_regist') + "&z01_nome=" + $F('z01_nome');
       }
     }
 
-    function js_alteraApuracaoMedia() {
-      var display = $F('lDireitoApuracaoMedia') == 'E' ? '' : 'none';
-
-      $('camposperiodoinicial').style.display = display;
-      $('camposperiodofinal').style.display   = display;
-    }
-
     function js_excluir() {
+
       var sUrlRPC = 'pes4_ferias.RPC.php';
 
       var msgDiv                            = "Processando Dados. \n Aguarde ...",
@@ -549,18 +525,23 @@
     }
 
     function js_validaAnoPagamento(obj, event) {
+
       obj.onkeyup(event);
+
       if (!obj.value) {
+
     	  alert(_M(MENSAGEM_SISTEMA + 'ano_pagamento_nao_informado'));
         return false;
       }
 
       if (+obj.value < +$F('ano_folha')) {
-        alert(_M(MENSAGEM_SISTEMA + 'ano_pagamento_menor_folha'))
+
+        alert(_M(MENSAGEM_SISTEMA + 'ano_pagamento_menor_folha'));
         return false;
       }
 
       if (+obj.value > +( inputDateToObject($('rh110_datainicial').value).year ))  {
+
         alert( _M( MENSAGEM_SISTEMA + 'ano_pagamento_maior_data_incial') );
         return false;
       }
@@ -569,28 +550,129 @@
     }
 
     function js_validaMesPagamento(obj, event) {
+
       obj.onkeyup(event);
+
       if (!obj.value) {
+
     	  alert(_M(MENSAGEM_SISTEMA + 'mes_pagamento_nao_informado'));
         return false;
       }
 
       if (+obj.value > 12) {
-        alert( _M(MENSAGEM_SISTEMA + 'mes_invalido') )
+
+        alert( _M(MENSAGEM_SISTEMA + 'mes_invalido') );
         return false;
       }        
 
       if (+obj.value < +$F('mes_folha')) {
-        alert(_M(MENSAGEM_SISTEMA + 'mes_pagamento_menor_folha'))
+
+        alert(_M(MENSAGEM_SISTEMA + 'mes_pagamento_menor_folha'));
         return false;
       }
 
       if (+obj.value > +( inputDateToObject($('rh110_datainicial').value).month ))  {
+
         alert( _M( MENSAGEM_SISTEMA + 'mes_pagamento_maior_data_incial') );
         return false;
       }
 
       return true;
     }
-   </script>
+
+    /**
+     * Define os dados pdo peroi
+     */
+    function setarDadosPeriodo() {
+
+      var oCombo = $('periodoaquisitivo');
+      oOption    = oCombo.options[oCombo.selectedIndex];
+      if (oOption.data_periodo != '') {
+
+        var oDadosPeriodo = oOption.data_periodo;
+
+        $('rh109_periodoaquisitivoinicial').value = oDadosPeriodo.inicio;
+        $('rh109_periodoaquisitivofinal').value   = oDadosPeriodo.fim;
+        $('rh109_diasdireito').value              = oDadosPeriodo.saldo;
+        $('rh110_dias').value                     = oDadosPeriodo.saldo;
+        $('rh110_rhferias').value                 = oDadosPeriodo.codigo;
+        $('rh110_diaspagar').value                = oDadosPeriodo.dias_pagar;
+      }
+    }
+
+    function pesquisaPeriodosquisitivo() {
+
+        js_OpenJanelaIframe('CurrentWindow.corpo',
+                            'db_iframe_periodo',
+                            'func_rhferiasperiodomanutencao.php?funcao_js=parent.carregaperiodo|rh110_sequencial|rh109_sequencial&matricula='+$F('rh109_regist')+"&situacao=0",
+                             'Pesquisa',true);
+    }
+    function carregaperiodo(codigo_periodo, codigo_ferias) {
+
+      db_iframe_periodo.hide();
+      var nome_arquivo = '<?php $arquivos = explode('?',
+          basename($_SERVER["PHP_SELF"])); echo array_shift($arquivos); ?>';
+      location.href = nome_arquivo+'?codigo_periodo='+codigo_periodo+'&rh109_regist='+$F('rh109_regist')+'&codigo_ferias='+codigo_ferias;
+    }
+
+    if (oUrl.codigo_periodo == null && lPermiteSelecaoFerias) {
+      pesquisaPeriodosquisitivo();
+    }
+
+    function periodosEmAberto() {
+
+      var request = {
+        exec      :'getPeriodoEmAbertoDoServidor',
+        matricula : $F('rh109_regist')
+      };
+
+      if ($('periodoaquisitivo')) {
+
+        new AjaxRequest('rh4_periodoaquisitivo.RPC.php', request,
+          function (oRetorno, erro) {
+
+            if(erro) {
+              alert(oRetorno.sMensagem.urlDecode());
+              return false;
+            }
+
+            var oCombo = $('periodoaquisitivo');
+            oCombo.options.length = 0;
+            oRetorno.periodos.each(function (periodo, iSeq) {
+
+              var option = new Option(periodo.inicio + " - " + periodo.fim + " Dias: " + periodo.saldo, periodo.codigo);
+              if (iSeq == 0) {
+                option.selected = true;
+              }
+              option.data_periodo = periodo;
+              oCombo.add(option);
+              setarDadosPeriodo();
+            });
+
+            periodosAquisitivos = oRetorno.periodos;
+          }).setMessage('Buscando Periodos Aquisitivos').execute();
+      }
+   }
+
+
+      function calculaDiasAPagar()
+      {
+        var diasPecunia =  $F('rh110_diaspecunia') == '' ? 0 : $F('rh110_diaspecunia');
+        var diasAbono   =  $F('rh110_diasabono') == '' ? 0 : $F('rh110_diasabono');
+        var diasPagar = ($F('rh109_diasdireito') - diasAbono - diasPecunia);
+        if (diasPagar < 0) {
+            diasPagar = 0;
+        }
+        $('rh110_diaspagar').value = diasPagar;
+      }
+      $('rh110_dias').observe('change', function () {
+          calculaDiasAPagar();
+      });
+      $('rh110_diasabono').observe('change', function () {
+        calculaDiasAPagar();
+      });
+      $('rh110_diaspecunia').observe('change', function () {
+        calculaDiasAPagar();
+    });
+  </script>
 </html>

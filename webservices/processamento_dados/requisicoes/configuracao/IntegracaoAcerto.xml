@@ -1,0 +1,15 @@
+<?xml version='1.0' ?>
+<processamento>
+  <versao>1.2</versao>
+  <transacao>true</transacao>
+  <parametros>
+    <parametro nome="sql" obrigatorio="true" tipo="string" />
+  </parametros>
+  <configuracoes>
+    <classe nome="IntegracaoAcerto" referencia="dados" parametros="" caminho="model/configuracao/IntegracaoAcerto.model.php" />
+    <exec>
+      <metodo referencia="dados" nome="setQuery" parametros="$sql" />
+      <metodo referencia="dados" nome="executaQuery" parametros="$sql" />
+    </exec>
+  </configuracoes>
+</processamento>

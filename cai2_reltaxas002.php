@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -41,7 +41,7 @@ if ( $codsubrec == ''){
    $where = ' f.k00_codsubrec is not null and ';
 }else{
    $sql = "select upper(k07_descr) as k07_descr from tabdesc where codsubrec = $codsubrec and k07_instit = $instit";
-   $result = pg_exec($sql);
+   $result = db_query($sql);
 
    $head4 = $codsubrec.' - '.pg_result($result,0,'k07_descr');
    $ordem = ' order by g.codsubrec, a.k00_dtpaga, e.z01_nome ';
@@ -52,12 +52,14 @@ if ($agrupar == 't'){
     $sql ="
             select  g.codsubrec,
                     g.k07_descr,
-                    sum(a.k00_valor) as valor,
+                    sum(f.k00_valor) as valor,
 		                count(*) as count
             from recibo f
             left outer join tabdesc g on g.codsubrec  = f.k00_codsubrec 
                                      and g.k07_instit = $instit
 		        inner join arrepaga a		  on a.k00_numpre = f.k00_numpre
+                                     and a.k00_numpar = f.k00_numpar 
+                                     and a.k00_receit = f.k00_receit
             where $where k00_dtpaga between '$datai' and '$dataf'
             group by g.codsubrec,
                      g.k07_descr
@@ -73,11 +75,13 @@ if ($agrupar == 't'){
 		coalesce(b.k00_matric,0) as k00_matric,
 		coalesce(c.k00_inscr,0)  as k00_inscr,
 		d.k00_histtxt,
-		sum(a.k00_valor) as valor
+		sum(f.k00_valor) as valor
 	from recibo f
 		left outer join tabdesc g	on g.codsubrec  = f.k00_codsubrec 
                              and g.k07_instit = $instit
 		inner join arrepaga a		on a.k00_numpre   = f.k00_numpre
+                             and a.k00_numpar = f.k00_numpar 
+                             and a.k00_receit = f.k00_receit
 		inner join cgm e                on a.k00_numcgm = e.z01_numcgm
 		left outer join arrematric b    on a.k00_numpre = b.k00_numpre
                 left outer join arreinscr  c    on a.k00_numpre = c.k00_numpre
@@ -97,7 +101,7 @@ if ($agrupar == 't'){
 $sql = "select * from ($sql) as x where codsubrec is not null";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem lançamentos para a taxa '.$codsubrec.' no período de '.db_formatar($datai,'d').' a '.db_formatar($dataf,'d'));

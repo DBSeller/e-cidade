@@ -1,5 +1,5 @@
 <?
-//require('fpdf151/alphapdf.php');
+//require(modification('fpdf151/alphapdf.php'));
 //$obj_alpha   = new alphapdf;
 $cldb_config = new cl_db_config;
 

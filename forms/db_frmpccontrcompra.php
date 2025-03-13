@@ -72,10 +72,10 @@ db_input('pc50_descr',50,$Ipc50_descr,true,'text',3,'')
 <script>
 function js_pesquisap72_codcontr(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pccontratos','func_pccontratos.php?funcao_js=parent.js_mostrapccontratos1|p71_codcontr|p71_datalanc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pccontratos','func_pccontratos.php?funcao_js=parent.js_mostrapccontratos1|p71_codcontr|p71_datalanc','Pesquisa',true);
   }else{
      if(document.form1.p72_codcontr.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pccontratos','func_pccontratos.php?pesquisa_chave='+document.form1.p72_codcontr.value+'&funcao_js=parent.js_mostrapccontratos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pccontratos','func_pccontratos.php?pesquisa_chave='+document.form1.p72_codcontr.value+'&funcao_js=parent.js_mostrapccontratos','Pesquisa',false);
      }else{
        document.form1.p71_datalanc.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostrapccontratos1(chave1,chave2){
 }
 function js_pesquisap72_codcom(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pctipocompra','func_pctipocompra.php?funcao_js=parent.js_mostrapctipocompra1|pc50_codcom|pc50_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pctipocompra','func_pctipocompra.php?funcao_js=parent.js_mostrapctipocompra1|pc50_codcom|pc50_descr','Pesquisa',true);
   }else{
      if(document.form1.p72_codcom.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pctipocompra','func_pctipocompra.php?pesquisa_chave='+document.form1.p72_codcom.value+'&funcao_js=parent.js_mostrapctipocompra','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pctipocompra','func_pctipocompra.php?pesquisa_chave='+document.form1.p72_codcom.value+'&funcao_js=parent.js_mostrapctipocompra','Pesquisa',false);
      }else{
        document.form1.pc50_descr.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostrapctipocompra1(chave1,chave2){
   db_iframe_pctipocompra.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pccontrcompra','func_pccontrcompra.php?funcao_js=parent.js_preenchepesquisa|p72_codcontr','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pccontrcompra','func_pccontrcompra.php?funcao_js=parent.js_preenchepesquisa|p72_codcontr','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_pccontrcompra.hide();

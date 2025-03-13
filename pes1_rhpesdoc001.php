@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_rhpesdoc_classe.php");
-require_once("classes/db_rhpessoal_classe.php");
-require_once("classes/db_db_uf_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhpesdoc_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_db_uf_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -159,7 +159,7 @@ if (isset($opcao) || isset($rh16_regist)) {
     $rsPessoal   = $clrhpessoal->sql_record($sSqlPessoal);
     if ($clrhpessoal->numrows > 0) {
 
-      require_once("libs/db_utils.php");
+      require_once(modification("libs/db_utils.php"));
       $iNumCgm = db_utils::fieldsMemory($rsPessoal, 0)->rh01_numcgm;
       $oDaoCgm = db_utils::getDao("cgm");
       $sSqlCgm = $oDaoCgm->sql_query_file($iNumCgm, "z01_pis");
@@ -186,7 +186,7 @@ if (isset($opcao) || isset($rh16_regist)) {
     <td height="430" valign="top" bgcolor="#CCCCCC">
     <center>
 	  <?php
-	  include("forms/db_frmrhpesdoc.php");
+	  include(modification("forms/db_frmrhpesdoc.php"));
 	  ?>
     </center>
 	</td>

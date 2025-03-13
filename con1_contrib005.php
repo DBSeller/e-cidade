@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("classes/db_editalrua_classe.php");
-include("classes/db_contrib_classe.php");
-include("classes/db_contlot_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("classes/db_editalrua_classe.php"));
+include(modification("classes/db_contrib_classe.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $cleditalrua = new cl_editalrua;
 $clcontrib = new cl_contrib;
 $clcontlot = new cl_contlot;
@@ -74,7 +74,7 @@ if(isset($confirma) && $confirma=="ok"){
                                    from iptucalc
                                   where j23_anousu = $ano  
                                     and j23_matric = $matric ) as j23_vlrter ) as j23_vlrter ";
-      $result04 = pg_query($sql);	 
+      $result04 = db_query($sql);	 
       db_fieldsmemory($result04,0);
 
       $clcontrib->d07_venal  = $j23_vlrter;
@@ -123,7 +123,15 @@ class cl_fate extends cl_contrib {
             <td align='center'  style='font-weight:bold;'>À Pagar R$</td>
            </tr>";
 	   $pri=false;
-	} 
+  } 
+  
+  //db_criatabela($result2);
+
+
+  $nTotalzao = 0;
+  $nTestetotal = 0;
+
+
         for($r=0; $r<$numrows; $r++){
           db_fieldsmemory($result2,$r);
 	  $j34_idbql=$GLOBALS["j34_idbql"];
@@ -142,20 +150,46 @@ class cl_fate extends cl_contrib {
 	  $Id07_valor=$GLOBALS["Id07_valor"];
 	  $Id07_vlrdes=$GLOBALS["Id07_vlrdes"];
 
-     $resultas=pg_query("select fc_fracao($j34_idbql,".db_getsession('DB_datausu').",$j01_matric)");
+
+    $sSqlFracao = "select fc_fracao($j34_idbql,".db_getsession('DB_datausu').",$j01_matric)";
+
+     $resultas=pg_query($sSqlFracao);
+
+
+//echo "FRACAO: $sSqlFracao<br>";
+
 	   db_fieldsmemory($resultas,0);
 	   $fc_fracao=$GLOBALS["fc_fracao"];
-	   //$fc_fracao=100;
-     $resultad=pg_query("select d06_valor from contlotv where d06_contri=$numcontri and d06_idbql=$j34_idbql");
+     //$fc_fracao=100;
+     
+     $sQueryContlotv = "select d06_valor from contlotv where d06_contri=$numcontri and d06_idbql=$j34_idbql";
+
+     //echo "<br>$sQueryContlotv<br>";
+
+     $resultad=pg_query($sQueryContlotv);
 	   $nu=pg_numrows($resultad);
 	   
 	   if($nu>0){
 	     $total="";
 	     for($q=0; $q<$nu; $q++){
          db_fieldsmemory($resultad,$q);
-	       $d06_valor=$GLOBALS["d06_valor"]/$GLOBALS["d05_testad"]*$d05_testad;
+         //$d06_valor=$GLOBALS["d06_valor"] / $GLOBALS["d05_testad"] * $d05_testad;
+         
+         $d06_valor=$GLOBALS["d06_valor"] / ($d05_testad + $GLOBALS["d41_eixo"] ) * ($d05_testad +  $GLOBALS["d41_eixo"]);
+         //$d06_valor=$GLOBALS["d06_valor"] / ($GLOBALS["j36_testad"] + $GLOBALS["d41_eixo"] )* $d05_testad;
+
+        // $d06_valor=$GLOBALS["d06_valor"] ;
+         
+//echo "<br> IDBQL:  $j34_idbql calculo: contlotv.d06_valor /  testada.j36_testad *  contlot.d05_testad : " .  $GLOBALS['d06_valor'] . "/" . $GLOBALS['j36_testad'] . "*". $d05_testad  ."  TOTAL:   $d06_valor ";
+
+//echo " global_d06_valor:  " . $GLOBALS["d06_valor"] . "  divide pela global testada:   " . $GLOBALS["j36_testad"] . "  multipl pela testada fracionada: " .  $d05_testad. "<br>";
+
 	       //$d06_fracao=$GLOBALS["d06_fracao"];
-	       $total += $d06_valor;  
+         $total += $d06_valor;  
+         
+         $nTestetotal += $GLOBALS["d06_valor"];
+
+
 	     } 
 	     if($fc_fracao==0){
 	       $d07_valor=0;
@@ -163,7 +197,8 @@ class cl_fate extends cl_contrib {
 	     }else{
 	       ///d07_valor é igual a soma do contlotv conforme sua fração do iptubase
 //				 echo "matric: $j01_matric - bql: $j34_idbql - fracao: $fc_fracao - total: $total<br>";
-	       $valparc=$total; //*$fc_fracao/100;
+         //$valparc=$total; //*$fc_fracao/100;
+         $valparc=($total*$fc_fracao)/100;
 	       $d07_valor=$valparc;
 	     }
 	   }
@@ -205,7 +240,14 @@ class cl_fate extends cl_contrib {
 		 db_input('d07_valor',7,$Id07_valor,true,'text',3,"","d07_valor_$j01_matric");
 		 echo "</td>";
           echo "</tr>";
- 	}
+
+
+
+   }
+   
+
+//echo "<br><br>::: $nTestetotal";
+
 	exit;
       }	  
  
@@ -334,20 +376,98 @@ function js_incluirlinha(matri,refant,nome,setor,quadra,lote,zona,total,desconto
        $prox=true;  
     }else{
       $clfate = new cl_fate;
-       $sql = "select d02_profun,d01_perc,j01_matric,j40_refant,z01_nome,j34_setor,j34_quadra,j34_lote,j34_zona,d05_testad,j34_idbql, case when j36_testle is null or j36_testle = 0 then j36_testad else j36_testle end as j36_testad, d41_testada+d41_eixo as d41_testada
-               from contlot
-               inner join lote on j34_idbql = d05_idbql
-							 inner join testpri on j49_idbql = j34_idbql
-							 inner join testada on j49_idbql = j36_idbql and j49_face = j36_face and j49_codigo = j36_codigo
-							 inner join iptubase on j01_idbql = d05_idbql
-							 left  join iptuant on j40_matric = j01_matric
-							 inner join cgm on j01_numcgm = z01_numcgm
-							 inner join editalrua on d02_contri = d05_contri
-							 inner join edital on d02_codedi = d01_codedi
-               inner join editalruaproj on d11_contri=d05_contri
-               inner join projmelhoriasmatric on d41_codigo = d11_codproj and j01_matric = d41_matric
-	    where d05_contri=$contri
-	    order by j01_matric";
+
+
+
+      $sqls = "
+      SELECT d02_profun,
+      d01_perc,
+      j01_matric,
+      j40_refant,
+      z01_nome,
+      j34_setor,
+      j34_quadra,
+      j34_lote,
+      j34_zona,
+      d05_testad,
+      j34_idbql,
+      CASE
+          WHEN j36_testle IS NULL
+               OR j36_testle = 0 THEN j36_testad
+          ELSE j36_testle
+      END AS j36_testad,
+      d41_testada+d41_eixo AS d41_testada
+   FROM contlot
+   INNER JOIN lote ON j34_idbql = d05_idbql
+   INNER JOIN testpri ON j49_idbql = j34_idbql
+   INNER JOIN testada ON j49_idbql = j36_idbql
+                 AND j49_face = j36_face
+                 AND j49_codigo = j36_codigo
+   INNER JOIN iptubase ON j01_idbql = d05_idbql
+   LEFT JOIN iptuant ON j40_matric = j01_matric
+   INNER JOIN cgm ON j01_numcgm = z01_numcgm
+   INNER JOIN editalrua ON d02_contri = d05_contri
+   INNER JOIN edital ON d02_codedi = d01_codedi
+   INNER JOIN editalruaproj ON d11_contri=d05_contri
+   INNER JOIN projmelhoriasmatric ON d41_codigo = d11_codproj
+   AND j01_matric = d41_matric
+   where d01_codedi = $contri
+   
+   ";
+   
+
+
+
+
+   $sql = "
+   
+
+   SELECT DISTINCT 
+  d02_profun,
+  d10_codigo,
+  d01_perc,
+  j01_matric,
+  j40_refant,
+  z01_nome,
+  j34_setor,
+  j34_quadra,
+  j34_lote,
+  j34_zona,
+  j36_testad AS d05_testad,
+  d41_eixo,
+  j34_idbql,
+  CASE
+      WHEN j36_testle IS NULL
+           OR j36_testle = 0 THEN (select j36_testad from testada where j36_codigo = d40_codlog and j36_idbql = j34_idbql)
+      ELSE (select j36_testad from testada where j36_codigo = d40_codlog and j36_idbql = j34_idbql)
+  END AS j36_testad,
+  d41_testada+d41_eixo AS d41_testada
+FROM edital
+INNER JOIN editalrua ON d02_codedi =d01_codedi
+INNER JOIN editalproj ON d10_codedi = d01_codedi
+INNER JOIN editalruaproj ON d11_contri = d02_contri
+INNER JOIN projmelhorias ON d10_codigo = d40_codigo
+INNER JOIN projmelhoriasmatric ON d41_codigo = d40_codigo
+INNER JOIN iptubase ON j01_matric = d41_matric
+INNER JOIN lote ON j01_idbql = j34_idbql
+INNER JOIN testpri ON j49_idbql = j34_idbql
+INNER JOIN testada ON j49_idbql = j36_idbql
+AND j49_face = j36_face
+AND j49_codigo = j36_codigo
+INNER JOIN cgm ON j01_numcgm = z01_numcgm
+LEFT JOIN iptuant ON j40_matric = j01_matric
+where d02_contri = $contri
+order by d10_codigo, j01_matric
+
+   
+   ";
+
+
+
+
+
+//echo "<br>$sql<br>";
+
       $clfate->facetesta($sql,$contri);
       echo "<script>;
              parent.document.form1.confirma.style.visibility='visible';

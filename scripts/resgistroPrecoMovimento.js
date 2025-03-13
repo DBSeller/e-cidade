@@ -15,7 +15,7 @@ function js_showVencedores(iSolicitacao, iOrcamento) {
   
 function  js_retornoVencedoresRegistro(oAjax) {
     
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   windowVencedoresRegistro = new windowAux('windowVencedoresRegistro','Vencedores', document.body.getWidth() - 100, 500);
   windowVencedoresRegistro.allowCloseWithEsc(false);
     
@@ -142,7 +142,7 @@ function  js_retornoVencedoresRegistro(oAjax) {
     
     js_removeObj('msgBox');
     oGridItensMov.clearAll(true);
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     var aItens   = oRetorno.itens;
     for(var i = 0; i < aItens.length; i++) {
     
@@ -191,7 +191,7 @@ function  js_retornoVencedoresRegistro(oAjax) {
   function  js_retornoGetMovimentos(oAjax) {
     
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     windowMovimentos = new windowAux('windowMovimentos','Movimentos', document.body.getWidth() - 50);
     windowMovimentos.allowCloseWithEsc(false);
     
@@ -283,7 +283,7 @@ function  js_retornoVencedoresRegistro(oAjax) {
   function js_retornoCancelarMovimentos(oAjax) {
   
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 1) {
       
       alert('Bloqueio efetuado com sucesso!'); 

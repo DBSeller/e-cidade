@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,18 +28,18 @@
 /**
  * 
  * @author I
- * @revision $Author: dbandrio.costa $
- * @version $Revision: 1.6 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.10 $
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-require("libs/db_app.utils.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empparametro_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+require(modification("libs/db_app.utils.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empparametro_classe.php"));
 
 $clempparametro = new cl_empparametro;
 $clrotulo = new rotulocampo;
@@ -66,6 +66,7 @@ if ($oParam->e30_liberaempenho != 't') {
 	$sDisable = "disabled";
 	$sMesErro = "<b>* Está Instituição não utiliza controle de empenhos *</b> para a ordem de compras.";
 }
+
 ?>
 <html>
 <head>
@@ -221,7 +222,7 @@ function js_pesquisaEmpenho() {
 function js_retornoPesquisa(oAjax) {
   
   js_removeObj("msgbox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 1) {
     js_openPesquisaEmpenhos(oRetorno.aItens,oRetorno.aItens.length);
@@ -376,11 +377,18 @@ function js_retornoLiberarEmpenho(oAjax) {
   
   js_removeObj("msgbox");
   $('btnLiberarEmpenho').disabled  = false;
-  var oRetorno = eval("("+oAjax.responseText+")");
-
-  if (oRetorno.status == 1) {
+  var oRetorno = JSON.parse(oAjax.responseText);
   
-    alert('Processo efetuado com sucesso.');
+  console.log(oRetorno);
+  if (oRetorno.status == 1) {
+
+    var empenhos = '';
+    for (var i = 0; i < oRetorno.empenhos.length; i++) {
+      empenhos += empenhos ? ',' : '';
+      empenhos += oRetorno.empenhos[i].iNumemp;
+    }
+  
+    alert(`Empenhos (${empenhos}) liberados com sucesso para a ordem de compra!`);
     windowEmpenhosLiberados.destroy();
     js_pesquisaEmpenho();
   } else {
@@ -427,7 +435,7 @@ function js_pesquisae60_codempIni(){
  var e60_codemp_ini = $('e60_codemp_ini').value;
  var sUrl1          = 'func_empempenho.php?libperm=T&funcao_js=parent.js_mostracodempIni|e60_codemp|e60_anousu';
   
- js_OpenJanelaIframe('top.corpo','db_iframe_empempenho',sUrl1,'Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho',sUrl1,'Pesquisa',true);
 }
 function js_mostracodempIni(chave1,chave2){
      $('e60_codemp_ini').value = chave1+'/'+chave2;
@@ -438,7 +446,7 @@ function js_pesquisae60_codempFim(){
  var e60_codemp_fim = $('e60_codemp_fim').value;
  var sUrl1          = 'func_empempenho.php?libperm=T&funcao_js=parent.js_mostracodempFim|e60_codemp|e60_anousu';
 
- js_OpenJanelaIframe('top.corpo','db_iframe_empempenho',sUrl1,'Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho',sUrl1,'Pesquisa',true);
 
 }
 function js_mostracodempFim(chave1,chave2){
@@ -452,10 +460,10 @@ function js_pesquisa_z01_numcgm(mostra){
  var sUrl2       = 'func_nome.php?pesquisa_chave='+z01_numcgm+'&funcao_js=parent.js_mostraz01_numcgm';
   
   if(mostra == true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm',sUrl1,'Pesquisa',true);
   }else{
      if(z01_numcgm != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm',sUrl2,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm',sUrl2,'Pesquisa',false);
      }else{
        $('z01_numcgm').value = ''; 
        $('z01_nome').value   = '';

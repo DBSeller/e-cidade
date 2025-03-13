@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
  
-include("fpdf151/pdfwebseller.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_mer_cardapioaluno_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_mer_cardapioaluno_classe.php"));
 $clmer_cardapioaluno = new cl_mer_cardapioaluno;
 $escola              = db_getsession("DB_coddepto");
 

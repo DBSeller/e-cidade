@@ -103,7 +103,7 @@ DBViewCriterioAvaliacaoOrdenar.prototype.js_retornoCriteriosAvaliacao = function
 
   js_removeObj("msgboxA");
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   var aCriterios = oRetorno.aCriterios;
 
@@ -153,7 +153,7 @@ DBViewCriterioAvaliacaoOrdenar.prototype.salvarReordenacao = function() {
       oRequest.onComplete = function(oResponse) {
         
                                       js_removeObj("msgBoxB");
-                                      var oRetorno = eval("("+oResponse.responseText+")");
+                                      var oRetorno = JSON.parse(oResponse.responseText);
                                       
                                       alert(oRetorno.sMensagem.urlDecode());
                                       oSelf.fechar();

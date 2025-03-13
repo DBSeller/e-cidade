@@ -1,82 +1,82 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: dividaativa
 //CLASSE DA ENTIDADE termodiv
-class cl_termodiv { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $parcel = 0; 
-   var $coddiv = 0; 
-   var $valor = 0; 
-   var $juros = 0; 
-   var $multa = 0; 
-   var $desconto = 0; 
-   var $total = 0; 
-   var $numpreant = 0; 
-   var $v77_perc = 0; 
-   var $vlrcor = 0; 
-   var $vlrdescjur = 0; 
-   var $vlrdescmul = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_termodiv {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $parcel = 0;
+   var $coddiv = 0;
+   var $valor = 0;
+   var $juros = 0;
+   var $multa = 0;
+   var $desconto = 0;
+   var $total = 0;
+   var $numpreant = 0;
+   var $v77_perc = 0;
+   var $vlrcor = 0;
+   var $vlrdescjur = 0;
+   var $vlrdescmul = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 parcel = int4 = Parcelamento 
-                 coddiv = int4 = codigo da divida 
-                 valor = float8 = valor 
-                 juros = float8 = juros 
-                 multa = float8 = multa 
-                 desconto = float8 = desconto 
-                 total = float8 = total 
-                 numpreant = int4 = numpreant 
-                 v77_perc = float8 = percentual da divida no parcelamento 
-                 vlrcor = float8 = Valor corrigido 
-                 vlrdescjur = float8 = Desconto Juros 
-                 vlrdescmul = float8 = Desconto Multa 
+                 parcel = int4 = Parcelamento
+                 coddiv = int4 = codigo da divida
+                 valor = float8 = valor
+                 juros = float8 = juros
+                 multa = float8 = multa
+                 desconto = float8 = desconto
+                 total = float8 = total
+                 numpreant = int4 = numpreant
+                 v77_perc = float8 = percentual da divida no parcelamento
+                 vlrcor = float8 = Valor corrigido
+                 vlrdescjur = float8 = Desconto Juros
+                 vlrdescmul = float8 = Desconto Multa
                  ";
-   //funcao construtor da classe 
-   function cl_termodiv() { 
+   //funcao construtor da classe
+   function cl_termodiv() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("termodiv"); 
+     $this->rotulo = new rotulo("termodiv");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -105,9 +105,9 @@ class cl_termodiv {
      }
    }
    // funcao para inclusao
-   function incluir ($parcel,$coddiv){ 
+   function incluir ($parcel,$coddiv){
       $this->atualizacampos();
-     if($this->valor == null ){ 
+     if($this->valor == null ){
        $this->erro_sql = " Campo valor nao Informado.";
        $this->erro_campo = "valor";
        $this->erro_banco = "";
@@ -116,7 +116,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->juros == null ){ 
+     if($this->juros == null ){
        $this->erro_sql = " Campo juros nao Informado.";
        $this->erro_campo = "juros";
        $this->erro_banco = "";
@@ -125,7 +125,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->multa == null ){ 
+     if($this->multa == null ){
        $this->erro_sql = " Campo multa nao Informado.";
        $this->erro_campo = "multa";
        $this->erro_banco = "";
@@ -134,7 +134,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->desconto == null ){ 
+     if($this->desconto == null ){
        $this->erro_sql = " Campo desconto nao Informado.";
        $this->erro_campo = "desconto";
        $this->erro_banco = "";
@@ -143,7 +143,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->total == null ){ 
+     if($this->total == null ){
        $this->erro_sql = " Campo total nao Informado.";
        $this->erro_campo = "total";
        $this->erro_banco = "";
@@ -152,7 +152,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->numpreant == null ){ 
+     if($this->numpreant == null ){
        $this->erro_sql = " Campo numpreant nao Informado.";
        $this->erro_campo = "numpreant";
        $this->erro_banco = "";
@@ -161,7 +161,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v77_perc == null ){ 
+     if($this->v77_perc == null ){
        $this->erro_sql = " Campo percentual da divida no parcelamento nao Informado.";
        $this->erro_campo = "v77_perc";
        $this->erro_banco = "";
@@ -170,7 +170,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->vlrcor == null ){ 
+     if($this->vlrcor == null ){
        $this->erro_sql = " Campo Valor corrigido nao Informado.";
        $this->erro_campo = "vlrcor";
        $this->erro_banco = "";
@@ -179,7 +179,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->vlrdescjur == null ){ 
+     if($this->vlrdescjur == null ){
        $this->erro_sql = " Campo Desconto Juros nao Informado.";
        $this->erro_campo = "vlrdescjur";
        $this->erro_banco = "";
@@ -188,7 +188,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if($this->vlrdescmul == null ){ 
+     if($this->vlrdescmul == null ){
        $this->erro_sql = " Campo Desconto Multa nao Informado.";
        $this->erro_campo = "vlrdescmul";
        $this->erro_banco = "";
@@ -197,9 +197,9 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-       $this->parcel = $parcel; 
-       $this->coddiv = $coddiv; 
-     if(($this->parcel == null) || ($this->parcel == "") ){ 
+       $this->parcel = $parcel;
+       $this->coddiv = $coddiv;
+     if(($this->parcel == null) || ($this->parcel == "") ){
        $this->erro_sql = " Campo parcel nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -207,7 +207,7 @@ class cl_termodiv {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->coddiv == null) || ($this->coddiv == "") ){ 
+     if(($this->coddiv == null) || ($this->coddiv == "") ){
        $this->erro_sql = " Campo coddiv nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -216,35 +216,35 @@ class cl_termodiv {
        return false;
      }
      $sql = "insert into termodiv(
-                                       parcel 
-                                      ,coddiv 
-                                      ,valor 
-                                      ,juros 
-                                      ,multa 
-                                      ,desconto 
-                                      ,total 
-                                      ,numpreant 
-                                      ,v77_perc 
-                                      ,vlrcor 
-                                      ,vlrdescjur 
-                                      ,vlrdescmul 
+                                       parcel
+                                      ,coddiv
+                                      ,valor
+                                      ,juros
+                                      ,multa
+                                      ,desconto
+                                      ,total
+                                      ,numpreant
+                                      ,v77_perc
+                                      ,vlrcor
+                                      ,vlrdescjur
+                                      ,vlrdescmul
                        )
                 values (
-                                $this->parcel 
-                               ,$this->coddiv 
-                               ,$this->valor 
-                               ,$this->juros 
-                               ,$this->multa 
-                               ,$this->desconto 
-                               ,$this->total 
-                               ,$this->numpreant 
-                               ,$this->v77_perc 
-                               ,$this->vlrcor 
-                               ,$this->vlrdescjur 
-                               ,$this->vlrdescmul 
+                                $this->parcel
+                               ,$this->coddiv
+                               ,$this->valor
+                               ,$this->juros
+                               ,$this->multa
+                               ,$this->desconto
+                               ,$this->total
+                               ,$this->numpreant
+                               ,$this->v77_perc
+                               ,$this->vlrcor
+                               ,$this->vlrdescjur
+                               ,$this->vlrdescmul
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = " ($this->parcel."-".$this->coddiv) nao Incluído. Inclusao Abortada.";
@@ -288,16 +288,16 @@ class cl_termodiv {
        $resac = db_query("insert into db_acount values($acount,104,9144,'','".AddSlashes(pg_result($resaco,0,'vlrdescmul'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($parcel=null,$coddiv=null) { 
+   function alterar ($parcel=null,$coddiv=null) {
       $this->atualizacampos();
      $sql = " update termodiv set ";
      $virgula = "";
-     if(trim($this->parcel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["parcel"])){ 
+     if(trim($this->parcel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["parcel"])){
        $sql  .= $virgula." parcel = $this->parcel ";
        $virgula = ",";
-       if(trim($this->parcel) == null ){ 
+       if(trim($this->parcel) == null ){
          $this->erro_sql = " Campo Parcelamento nao Informado.";
          $this->erro_campo = "parcel";
          $this->erro_banco = "";
@@ -307,10 +307,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->coddiv)!="" || isset($GLOBALS["HTTP_POST_VARS"]["coddiv"])){ 
+     if(trim($this->coddiv)!="" || isset($GLOBALS["HTTP_POST_VARS"]["coddiv"])){
        $sql  .= $virgula." coddiv = $this->coddiv ";
        $virgula = ",";
-       if(trim($this->coddiv) == null ){ 
+       if(trim($this->coddiv) == null ){
          $this->erro_sql = " Campo codigo da divida nao Informado.";
          $this->erro_campo = "coddiv";
          $this->erro_banco = "";
@@ -320,10 +320,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["valor"])){ 
+     if(trim($this->valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["valor"])){
        $sql  .= $virgula." valor = $this->valor ";
        $virgula = ",";
-       if(trim($this->valor) == null ){ 
+       if(trim($this->valor) == null ){
          $this->erro_sql = " Campo valor nao Informado.";
          $this->erro_campo = "valor";
          $this->erro_banco = "";
@@ -333,10 +333,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->juros)!="" || isset($GLOBALS["HTTP_POST_VARS"]["juros"])){ 
+     if(trim($this->juros)!="" || isset($GLOBALS["HTTP_POST_VARS"]["juros"])){
        $sql  .= $virgula." juros = $this->juros ";
        $virgula = ",";
-       if(trim($this->juros) == null ){ 
+       if(trim($this->juros) == null ){
          $this->erro_sql = " Campo juros nao Informado.";
          $this->erro_campo = "juros";
          $this->erro_banco = "";
@@ -346,10 +346,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->multa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["multa"])){ 
+     if(trim($this->multa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["multa"])){
        $sql  .= $virgula." multa = $this->multa ";
        $virgula = ",";
-       if(trim($this->multa) == null ){ 
+       if(trim($this->multa) == null ){
          $this->erro_sql = " Campo multa nao Informado.";
          $this->erro_campo = "multa";
          $this->erro_banco = "";
@@ -359,10 +359,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->desconto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["desconto"])){ 
+     if(trim($this->desconto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["desconto"])){
        $sql  .= $virgula." desconto = $this->desconto ";
        $virgula = ",";
-       if(trim($this->desconto) == null ){ 
+       if(trim($this->desconto) == null ){
          $this->erro_sql = " Campo desconto nao Informado.";
          $this->erro_campo = "desconto";
          $this->erro_banco = "";
@@ -372,10 +372,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->total)!="" || isset($GLOBALS["HTTP_POST_VARS"]["total"])){ 
+     if(trim($this->total)!="" || isset($GLOBALS["HTTP_POST_VARS"]["total"])){
        $sql  .= $virgula." total = $this->total ";
        $virgula = ",";
-       if(trim($this->total) == null ){ 
+       if(trim($this->total) == null ){
          $this->erro_sql = " Campo total nao Informado.";
          $this->erro_campo = "total";
          $this->erro_banco = "";
@@ -385,10 +385,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->numpreant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["numpreant"])){ 
+     if(trim($this->numpreant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["numpreant"])){
        $sql  .= $virgula." numpreant = $this->numpreant ";
        $virgula = ",";
-       if(trim($this->numpreant) == null ){ 
+       if(trim($this->numpreant) == null ){
          $this->erro_sql = " Campo numpreant nao Informado.";
          $this->erro_campo = "numpreant";
          $this->erro_banco = "";
@@ -398,10 +398,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->v77_perc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v77_perc"])){ 
+     if(trim($this->v77_perc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v77_perc"])){
        $sql  .= $virgula." v77_perc = $this->v77_perc ";
        $virgula = ",";
-       if(trim($this->v77_perc) == null ){ 
+       if(trim($this->v77_perc) == null ){
          $this->erro_sql = " Campo percentual da divida no parcelamento nao Informado.";
          $this->erro_campo = "v77_perc";
          $this->erro_banco = "";
@@ -411,10 +411,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->vlrcor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrcor"])){ 
+     if(trim($this->vlrcor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrcor"])){
        $sql  .= $virgula." vlrcor = $this->vlrcor ";
        $virgula = ",";
-       if(trim($this->vlrcor) == null ){ 
+       if(trim($this->vlrcor) == null ){
          $this->erro_sql = " Campo Valor corrigido nao Informado.";
          $this->erro_campo = "vlrcor";
          $this->erro_banco = "";
@@ -424,10 +424,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->vlrdescjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrdescjur"])){ 
+     if(trim($this->vlrdescjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrdescjur"])){
        $sql  .= $virgula." vlrdescjur = $this->vlrdescjur ";
        $virgula = ",";
-       if(trim($this->vlrdescjur) == null ){ 
+       if(trim($this->vlrdescjur) == null ){
          $this->erro_sql = " Campo Desconto Juros nao Informado.";
          $this->erro_campo = "vlrdescjur";
          $this->erro_banco = "";
@@ -437,10 +437,10 @@ class cl_termodiv {
          return false;
        }
      }
-     if(trim($this->vlrdescmul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrdescmul"])){ 
+     if(trim($this->vlrdescmul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrdescmul"])){
        $sql  .= $virgula." vlrdescmul = $this->vlrdescmul ";
        $virgula = ",";
-       if(trim($this->vlrdescmul) == null ){ 
+       if(trim($this->vlrdescmul) == null ){
          $this->erro_sql = " Campo Desconto Multa nao Informado.";
          $this->erro_campo = "vlrdescmul";
          $this->erro_banco = "";
@@ -492,7 +492,7 @@ class cl_termodiv {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->parcel."-".$this->coddiv;
@@ -520,14 +520,14 @@ class cl_termodiv {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($parcel=null,$coddiv=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($parcel=null,$coddiv=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($parcel,$coddiv));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -571,7 +571,7 @@ class cl_termodiv {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$parcel."-".$coddiv;
@@ -599,11 +599,11 @@ class cl_termodiv {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -625,7 +625,7 @@ class cl_termodiv {
       }
      return $result;
    }
-   function sql_query ( $parcel=null,$coddiv=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $parcel=null,$coddiv=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -642,16 +642,16 @@ class cl_termodiv {
      $sql2 = "";
      if($dbwhere==""){
        if($parcel!=null ){
-         $sql2 .= " where termodiv.parcel = $parcel "; 
-       } 
+         $sql2 .= " where termodiv.parcel = $parcel ";
+       }
        if($coddiv!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " termodiv.coddiv = $coddiv "; 
-       } 
+         }
+         $sql2 .= " termodiv.coddiv = $coddiv ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -665,6 +665,97 @@ class cl_termodiv {
          $virgula = ",";
        }
      }
+     return $sql;
+  }
+
+  function sql_query_file( $parcel=null,$coddiv=null,$campos="*",$ordem=null,$dbwhere=""){
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from termodiv ";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($parcel!=null ){
+         $sql2 .= " where termodiv.parcel = $parcel ";
+       }
+       if($coddiv!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         }
+         $sql2 .= " termodiv.coddiv = $coddiv ";
+       }
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+
+  function sql_query_arreold ( $parcel=null,$coddiv=null,$campos="*",$ordem=null,$dbwhere="", $groupBy = ""){
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from termodiv ";
+     $sql .= "      left join divida on  divida.v01_coddiv = termodiv.coddiv";
+     $sql .= "      left join arreold on  divida.v01_numpre = arreold.k00_numpre";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($parcel!=null ){
+         $sql2 .= " where termodiv.parcel = $parcel ";
+       }
+       if($coddiv!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         }
+         $sql2 .= " termodiv.coddiv = $coddiv ";
+       }
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+
+     if($groupBy != null ){
+       $sql .= " group by $groupBy";
+     }
+
      return $sql;
   }
 }

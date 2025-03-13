@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 
  if($limite==0){
@@ -36,17 +36,17 @@ include("libs/db_usuariosonline.php");
  }else{
    $limit=" limit ".$limite;
  }
-  $resultsql = @pg_exec(str_replace('\\','',$sql.@$limit ));
-  $result = pg_exec("select max(codger) + 1 from db_gerador");
+  $resultsql = @db_query(str_replace('\\','',$sql.@$limit ));
+  $result = db_query("select max(codger) + 1 from db_gerador");
 
   if(@$libera==true){
-      pg_exec("update  db_gerador set  nomeger='$nome', tituloger='$titulo', finalidadeger='$finalidade', sqlger='$sql', limiteger=$limite,visualizacao='$visualizacao',intercalar1='$intercalar1', intercalar2='$intercalar2', pcabecaltura=$pcabecaltura,pcorpaltura=$pcorpaltura  where codger=$codigo ");
+      db_query("update  db_gerador set  nomeger='$nome', tituloger='$titulo', finalidadeger='$finalidade', sqlger='$sql', limiteger=$limite,visualizacao='$visualizacao',intercalar1='$intercalar1', intercalar2='$intercalar2', pcabecaltura=$pcabecaltura,pcorpaltura=$pcorpaltura  where codger=$codigo ");
   }else{
-     $resultsql = @pg_exec(str_replace('\\','',$sql.@$limit ));
-     $result = pg_exec("select max(codger) + 1 from db_gerador");
+     $resultsql = @db_query(str_replace('\\','',$sql.@$limit ));
+     $result = db_query("select max(codger) + 1 from db_gerador");
      $codger = pg_result($result,0,0);
      $codger = $codger==""?"1":$codger;
-      pg_exec("insert into db_gerador values($codger,'$nome','$titulo','$finalidade','$sql',$limite,'$visualizacao','$intercalar1','$intercalar2',$pcabecaltura,$pcorpaltura)");
+      db_query("insert into db_gerador values($codger,'$nome','$titulo','$finalidade','$sql',$limite,'$visualizacao','$intercalar1','$intercalar2',$pcabecaltura,$pcorpaltura)");
   }  
 
  
@@ -56,7 +56,7 @@ include("libs/db_usuariosonline.php");
  $arquivo = ($root."/"."gerador/".$nomeok."002.php");
  $fd = fopen($arquivo,"w");
  fputs($fd,'<? '."\n");
- fputs($fd,'  include("../fpdf151/pdfger.php");'."\n");
+ fputs($fd,'  include(modification("fpdf151/pdfger.php"));'."\n");
  fputs($fd,'  // variaveis de cabeçalho;'."\n");
  fputs($fd,'  db_postmemory($HTTP_SERVER_VARS);'."\n");
  fputs($fd,'if($limite==0||$limite=="" ){'."\n");
@@ -64,7 +64,7 @@ include("libs/db_usuariosonline.php");
  fputs($fd,'}else{'."\n");
  fputs($fd,'  $limit=" limit ".$limite;'."\n");
  fputs($fd,'}'."\n");
- fputs($fd,'  $resultsql = pg_exec(str_replace(\'\\\\\',\'\',\''.$sql.'\'.@$limit));'."\n");
+ fputs($fd,'  $resultsql = db_query(str_replace(\'\\\\\',\'\',\''.$sql.'\'.@$limit));'."\n");
  fputs($fd,'  if($resultsql==false){'."\n");
  fputs($fd,'    echo "Verifique os dados a serem gerados.<br>";'."\n");
  fputs($fd,'    echo "'.$sql.'";'."\n");
@@ -96,7 +96,7 @@ include("libs/db_usuariosonline.php");
  fputs($fd,' }'."\n");
  fputs($fd,' $nova="";'."\n");
   
-  $resultsql = pg_exec(str_replace('\\','',$sql));
+  $resultsql = db_query(str_replace('\\','',$sql));
   for ($i = 0;$i < $fm_numfields;$i++){
     $v="cabecfonte_".$i;
     fputs($fd,' $cabecfonte_'.$i.'="'.$$v.'";'."\n");
@@ -191,14 +191,14 @@ include("libs/db_usuariosonline.php");
     $coluna = pg_fieldname($resultsql,$i);
 
     if(@$libera==true){
-      //pg_exec("update  db_gerpref set coluna ='$coluna',cabecfonte='$cabecfonte', cabectamanho=$cabectamanho, cabecn='$cabecn', cabeci='$cabeci', cabecs='$cabecs',cabeccortexto='$cabeccortexto', cabeccorborda='$cabeccorborda', cabeccorfundo='$cabeccorfundo', cabecaltura=$cabecaltura, cabeclargura='$cabeclargura', corpfonte='$corpfonte',corpopcao='$corpopcao',corptamanho=$corptamanho, corpn='$corpn', corpi='$corpi',corps='$corps', corpcortexto='$corpcortexto', corpcorborda='$corpcorborda', corpcorfundo='$corpcorfundo', corpaltura='$corpaltura', corplargura='$corplargura' where codger=$codigo");
+      //db_query("update  db_gerpref set coluna ='$coluna',cabecfonte='$cabecfonte', cabectamanho=$cabectamanho, cabecn='$cabecn', cabeci='$cabeci', cabecs='$cabecs',cabeccortexto='$cabeccortexto', cabeccorborda='$cabeccorborda', cabeccorfundo='$cabeccorfundo', cabecaltura=$cabecaltura, cabeclargura='$cabeclargura', corpfonte='$corpfonte',corpopcao='$corpopcao',corptamanho=$corptamanho, corpn='$corpn', corpi='$corpi',corps='$corps', corpcortexto='$corpcortexto', corpcorborda='$corpcorborda', corpcorfundo='$corpcorfundo', corpaltura='$corpaltura', corplargura='$corplargura' where codger=$codigo");
       if($i==0){   
-        pg_exec("delete from db_gerpref where codger=$codigo");
+        db_query("delete from db_gerpref where codger=$codigo");
       }
-      pg_exec("insert into db_gerpref values ($codigo,'$coluna','$cabecfonte',$cabectamanho,'$cabecn','$cabeci','$cabecs','$cabeccortexto','$cabeccorborda','$cabeccorfundo',$cabecaltura,$cabeclargura,'$corpfonte','$corpopcao',$corptamanho,'$corpn','$corpi','$corps','$corpcortexto','$corpcorborda','$corpcorfundo',$corpaltura,$corplargura)");
+      db_query("insert into db_gerpref values ($codigo,'$coluna','$cabecfonte',$cabectamanho,'$cabecn','$cabeci','$cabecs','$cabeccortexto','$cabeccorborda','$cabeccorfundo',$cabecaltura,$cabeclargura,'$corpfonte','$corpopcao',$corptamanho,'$corpn','$corpi','$corps','$corpcortexto','$corpcorborda','$corpcorfundo',$corpaltura,$corplargura)");
        
     }else{	
-      pg_exec("insert into db_gerpref values ($codger,'$coluna','$cabecfonte',$cabectamanho,'$cabecn','$cabeci','$cabecs','$cabeccortexto','$cabeccorborda','$cabeccorfundo',$cabecaltura,$cabeclargura,'$corpfonte','$corpopcao',$corptamanho,'$corpn','$corpi','$corps','$corpcortexto','$corpcorborda','$corpcorfundo',$corpaltura,$corplargura)");
+      db_query("insert into db_gerpref values ($codger,'$coluna','$cabecfonte',$cabectamanho,'$cabecn','$cabeci','$cabecs','$cabeccortexto','$cabeccorborda','$cabeccorfundo',$cabecaltura,$cabeclargura,'$corpfonte','$corpopcao',$corptamanho,'$corpn','$corpi','$corps','$corpcortexto','$corpcorborda','$corpcorfundo',$corpaltura,$corplargura)");
     }
  }
  fputs($fd,' for ($i = 0;$i < $fm_numfields;$i++){'."\n");
@@ -420,8 +420,8 @@ include("libs/db_usuariosonline.php");
  $arquivo = ($root."/"."gerador/".$nomeok."001.php");
  $fd = fopen($arquivo,"w");
  fputs($fd,'<?'."\n");
- fputs($fd,'require("../libs/db_stdlib.php");'."\n");
- fputs($fd,'require("../libs/db_conecta.php");'."\n");
+ fputs($fd,'require(modification("libs/db_stdlib.php"));'."\n");
+ fputs($fd,'require(modification("libs/db_conecta.php"));'."\n");
  fputs($fd,'?>'."\n");
  fputs($fd,'<html>'."\n");
  fputs($fd,'<head>'."\n");

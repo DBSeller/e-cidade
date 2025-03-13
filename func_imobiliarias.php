@@ -26,10 +26,10 @@
  */
 
 // Conexões necessárias
- require("libs/db_stdlib.php");
- require("libs/db_conecta.php");
- include("libs/db_sessoes.php");
- include("libs/db_usuariosonline.php");
+ require(modification("libs/db_stdlib.php"));
+ require(modification("libs/db_conecta.php"));
+ include(modification("libs/db_sessoes.php"));
+ include(modification("libs/db_usuariosonline.php"));
 
 ?>
 
@@ -85,3 +85,9 @@
 
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

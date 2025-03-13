@@ -1,0 +1,15 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="q40_codporte" label="codigo"  />
+        <campo campo="q40_descr" label="descricao"    />
+    </campos>
+    <from tabela="issporte"/>
+    <juncoes>
+    </juncoes>
+    <filtros>
+        <filtro label="pessoa_fisica" condicao=" q40_fisica is $pessoa_fisica" obrigatorio="false"/>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao   campos="codigo"/>
+</consulta>

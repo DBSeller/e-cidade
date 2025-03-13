@@ -1,0 +1,21 @@
+[
+    {"value":"01", "label":"01 - Empresa enquadrada no regime de tributação Simples Nacional com tributação previdenciária substituída"},
+    {"value":"02", "label":"02 - Empresa enquadrada no regime de tributação Simples Nacional com tributação previdenciária não substituída"},
+    {"value":"03", "label":"03 - Empresa enquadrada no regime de tributação Simples Nacional com tributação previdenciária substituída e não substituída"},
+    {"value":"04", "label":"04 - MEI - Micro Empreendedor Individual"},
+    {"value":"06", "label":"06 - Agroindústria"},
+    {"value":"07", "label":"07 - Produtor Rural Pessoa Jurídica"},
+    {"value":"08", "label":"08 - Consórcio Simplificado de Produtores Rurais"},
+    {"value":"09", "label":"09 - Órgão Gestor de Mão de Obra"},
+    {"value":"10", "label":"10 - Entidade Sindical a que se refere a Lei 12.023/2009"},
+    {"value":"11", "label":"11 - Associação Desportiva que mantém Clube de Futebol Profissional"},
+    {"value":"13", "label":"13 - Banco, caixa econômica, sociedade de crédito, financiamento e investimento e demais empresas relacionadas no parágrafo 1o do art. 22 da Lei 8.212./91"},
+    {"value":"14", "label":"14 - Sindicatos em geral, exceto aquele classificado no código [10]"},
+    {"value":"21", "label":"21 - Pessoa Física, exceto Segurado Especial"},
+    {"value":"22", "label":"22 - Segurado Especial"},
+    {"value":"60", "label":"60 - Missão Diplomática ou Repartição Consular de carreira estrangeira"},
+    {"value":"70", "label":"70 - Empresa de que trata o Decreto 5.436/2005"},
+    {"value":"80", "label":"80 - Entidade Beneficente de Assistência Social isenta de contribuições sociais"},
+    {"value":"85", "label":"85 - Administração Direta da União, Estados, Distrito Federal e Municípíos; Autarquias e Fundações Públicas"},
+    {"value":"99", "label":"99 - Pessoas Jurídicas em Geral"}
+]

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,7 +29,7 @@ $clitbinome->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("it01_guia");
 
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
@@ -65,6 +65,7 @@ if( $rsDAOParItbi ){
   }
 }
 ?>
+<!-- M16507 - ajustacadastroitbi - 1 -->
   <fieldset>
 		<legend>Transmitentes</legend>
 
@@ -73,9 +74,9 @@ if( $rsDAOParItbi ){
 			<table>
 
         <tr>
-          <td nowrap title="<?php echo @$Tit03_guia; ?>">
+          <td nowrap title="<?php echo $Tit03_guia; ?>">
             <?php
-              db_ancora(@$Lit03_guia,"js_pesquisait03_guia(true);",3);
+              db_ancora($Lit03_guia,"js_pesquisait03_guia(true);",3);
             ?>
           </td>
           <td colspan="3">
@@ -92,24 +93,25 @@ if( $rsDAOParItbi ){
         </tr>
 
 			  <tr>
-			    <td nowrap title="<?php echo @$Tit21_numcgm; ?>">
+			    <td nowrap title="<?php echo $Tit21_numcgm; ?>">
 			       <?php
-			         db_ancora(@$Lit21_numcgm,"js_pesquisait21_numcgm(true);",$db_opcao);
+              $GLOBALS['Lit21_numcgm'] = 'CGM/Nome:';
+		          db_ancora($Lit21_numcgm,"js_pesquisait21_numcgm(true);",$db_opcao);
 			       ?>
 			    </td>
 			    <td nowrap colspan="3">
 			      <?php
 			        db_input('it21_numcgm',14,$Iit21_numcgm,true,'text',$db_opcao," onchange='js_pesquisait21_numcgm(false);'");
-			        db_input('z01_nome',46,$Iz01_nome,true,'text',3,'');
+			        db_input('z01_nome',52,$Iz01_nome,true,'text',3,'');
 			      ?>
 			    </td>
 			  </tr>
 
 			  <tr>
-			    <td nowrap><?php echo @$Lit03_nome; ?></td>
+			    <td nowrap><?php echo $Lit03_nome; ?></td>
           <td nowrap colspan="3">
 		    	  <?php
-			        db_input('it03_nome',40,$Iit03_nome,true,'text',$db_opcao,"");
+			        db_input('it03_nome',70,$Iit03_nome,true,'text',$db_opcao,"");
 			      ?>
 			    </td>
 			  </tr>
@@ -131,79 +133,91 @@ if( $rsDAOParItbi ){
 			      </script>
 
           </td>
-          <td><?php echo @$Lit03_endereco; ?></td>
+          <td width="87px"><?php echo $Lit03_endereco; ?></td>
 			    <td>
 			      <?php
-			        db_input('it03_endereco',40,$Iit03_endereco,true,'text',$db_opcao,"");
+			        db_input('it03_endereco',39,$Iit03_endereco,true,'text',$db_opcao,"");
 			      ?>
 			    </td>
 			  </tr>
 
 			  <tr>
-			    <td nowrap title="<?php echo @$Tit03_numero; ?>"><?php echo @$Lit03_numero; ?></td>
+			    <td nowrap title="<?php echo $Tit03_numero; ?>"><?php echo $Lit03_numero; ?></td>
 			    <td>
 			      <?php
 			        db_input('it03_numero',14,$Iit03_numero,true,'text',$db_opcao,"");
 			      ?>
           </td>
-          <td><?php echo @$Lit03_bairro; ?></td>
+          <td><?php echo $Lit03_bairro; ?></td>
 			    <td>
 			      <?php
-			        db_input('it03_bairro',40,$Iit03_bairro,true,'text',$db_opcao,"");
+			        db_input('it03_bairro',39,$Iit03_bairro,true,'text',$db_opcao,"");
 			      ?>
 			    </td>
 			  </tr>
 
 			  <tr>
-			    <td nowrap title="<?php echo @$Tit03_cxpostal; ?>"><?php echo @$Lit03_cxpostal; ?></td>
+			    <td nowrap title="<?php echo $Tit03_cxpostal; ?>"><?php echo $Lit03_cxpostal; ?></td>
 			    <td>
 			      <?php
 			        db_input('it03_cxpostal',14,$Iit03_cxpostal,true,'text',$db_opcao,"");
 			      ?>
           </td>
-          <td><?php echo @$Lit03_compl; ?></td>
+          <td><?php echo $Lit03_compl; ?></td>
 	        <td>
 			      <?php
-			        db_input('it03_compl',40,$Iit03_compl,true,'text',$db_opcao,"");
+			        db_input('it03_compl',39,$Iit03_compl,true,'text',$db_opcao,"");
 			      ?>
 			    </td>
 			  </tr>
 
+        <tr>
+          <td nowrap title="<?php echo $Tit03_uf; ?>"><?php echo $Lit03_uf; ?></td>
+          <td nowrap>
+            <?php
+              db_input('it03_uf',14,$Iit03_uf,true,'text',$db_opcao,"");
+            ?>
+          </td>
+          <td nowrap title="<?php echo $Tit03_cep; ?>"><?php echo $Lit03_cep; ?></td>
+          <td nowrap>
+            <?php
+              db_input('it03_cep',14,$Iit03_cep,true,'text',$db_opcao,"");
+            ?>
+          </td>
+        </tr>
+
 			  <tr>
-			    <td nowrap title="<?php echo @$Tit03_munic; ?>"><?php echo @$Lit03_munic; ?></td>
+			    <td nowrap title="<?php echo $Tit03_munic; ?>"><?php echo $Lit03_munic; ?></td>
 			    <td colspan="3">
   		  	  <?php
-	  	  	    db_input('it03_munic',40,$Iit03_munic,true,'text',$db_opcao,"");
+	  	  	    db_input('it03_munic',70,$Iit03_munic,true,'text',$db_opcao,"");
 		    	  ?>
 		      </td>
 		    </tr>
 
 	  	  <tr>
-		      <td nowrap title="<?php echo @$Tit03_mail; ?>"><?php echo @$Lit03_mail; ?></td>
+		      <td nowrap title="<?php echo $Tit03_mail; ?>"><?php echo $Lit03_mail; ?></td>
 			    <td nowrap colspan="3">
 			      <?php
-			        db_input('it03_mail',40,$Iit03_mail,true,'text',$db_opcao,"");
+			        db_input('it03_mail',70,$Iit03_mail,true,'text',$db_opcao,"");
 			      ?>
 			    </td>
 		    </tr>
 
-		    <tr>
-			    <td nowrap title="<?php echo @$Tit03_uf; ?>"><?php echo @$Lit03_uf; ?></td>
-			    <td nowrap>
-			      <?php
-			        db_input('it03_uf',2,$Iit03_uf,true,'text',$db_opcao,"");
+        <tr>
+          <td nowrap title="<?php echo $Tit03_sexo; ?>"><?php echo $Lit03_sexo; ?></td>
+          <td colspan="3">
+            <?php
+              if( empty($aOptionsSexo) || ( $lHabilitaEdicaoCGM === false ) ){
+                $aOptionsSexo = array('m'=>'Masculino','f'=>'Feminino');
+              }
+              db_select('it03_sexo',$aOptionsSexo,true,$db_opcao,"");
             ?>
           </td>
-          <td nowrap title="<?php echo @$Tit03_cep; ?>"><?php echo @$Lit03_cep; ?></td>
-          <td nowrap>
-			      <?php
-			        db_input('it03_cep',8,$Iit03_cep,true,'text',$db_opcao,"");
-			      ?>
-			    </td>
-		    </tr>
+        </tr>
 
 		    <tr>
-		      <td nowrap title="<?php echo @$Tit03_princ; ?>"><?php echo @$Lit03_princ; ?></td>
+		      <td nowrap title="<?php echo $Tit03_princ; ?>"><?php echo $Lit03_princ; ?></td>
 			    <td colspan="3">
 			      <?php
 			        if (!isset($it03_guia) or trim($it03_guia)=='') {
@@ -221,25 +235,13 @@ if( $rsDAOParItbi ){
         </tr>
 
 		    <tr>
-		      <td nowrap title="<?php echo @$Tit03_sexo; ?>"><?php echo @$Lit03_sexo; ?></td>
-          <td colspan="3">
-			      <?php
-              if( empty($aOptionsSexo) || ( $lHabilitaEdicaoCGM === false ) ){
-                $aOptionsSexo = array('m'=>'Masculino','f'=>'Feminino');
-              }
-			        db_select('it03_sexo',$aOptionsSexo,true,$db_opcao,"");
-		        ?>
-		      </td>
-		    </tr>
-
-		    <tr>
 		    	<td colspan="4" align="center">
 		    	  <input name="bt_opcao" type="submit" id="bt_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"<?=($db_botao==false?"disabled":"")?> onClick="return js_valida();" />
 		    	  <input name="novo" type="button" id="novo" value="Novo" onclick="return js_novo();" />
 			    </td>
         </tr>
 
-        <tr>
+        <tr id="trGrid">
           <td align="top" colspan="4">
             <?php
 		    	    $chavepri = array("it03_guia"=>@$it03_guia,"it03_seq"=>@$it03_seq);
@@ -254,7 +256,8 @@ if( $rsDAOParItbi ){
 		          $cliframe_alterar_excluir->fundocabec    = "#aacccc";
 		          $cliframe_alterar_excluir->fundocorpo    = "#ccddcc";
 		          $cliframe_alterar_excluir->iframe_width  = "100%";
-		          $cliframe_alterar_excluir->iframe_height = "170";
+                  $cliframe_alterar_excluir->iframe_height = "170";
+                  // M16507 - ajustacadastroitbi - 2
 		          $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
 		    	    $re = $clitbinome->sql_record($clitbinome->sql_query_file(null,"*",null," it03_guia = $it03_guia and upper(it03_tipo) = '".@$tiponome."'"));   //$clitbinome->sql_query("","","*",""," it03_guia = $it03_guia"));
 		    	    if($clitbinome->numrows > 0) {
@@ -263,7 +266,6 @@ if( $rsDAOParItbi ){
 			      ?>
           </td>
         </tr>
-
       </table>
     </form>
   </fieldset>
@@ -324,11 +326,11 @@ if( $rsDAOParItbi ){
 function js_pesquisait03_guia(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_compnome','db_iframe_itbi','func_itbi.php?funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_compnome','db_iframe_itbi','func_itbi.php?funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia','Pesquisa',true);
   }else{
 
      if(document.form1.it03_guia.value != ''){
-        js_OpenJanelaIframe('top.corpo.iframe_compnome','db_iframe_itbi','func_itbi.php?pesquisa_chave='+document.form1.it03_guia.value+'&funcao_js=parent.js_mostraitbi','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_compnome','db_iframe_itbi','func_itbi.php?pesquisa_chave='+document.form1.it03_guia.value+'&funcao_js=parent.js_mostraitbi','Pesquisa',false);
      }else{
         document.form1.it01_guia.value = '';
      }
@@ -403,7 +405,7 @@ function js_mostracgm1(chave1,chave2) {
 }
 
 function js_pesquisa() {
-  js_OpenJanelaIframe('top.corpo','db_iframe_itbinome','func_itbinome.php?funcao_js=parent.js_preenchepesquisa|it03_seq|it03_guia','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbinome','func_itbinome.php?funcao_js=parent.js_preenchepesquisa|it03_seq|it03_guia','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave,chave1) {

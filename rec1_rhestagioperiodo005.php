@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhestagioperiodo_classe.php");
-include("classes/db_rhestagioperiodomes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhestagioperiodo_classe.php"));
+include(modification("classes/db_rhestagioperiodomes_classe.php"));
 $clrhestagioperiodo = new cl_rhestagioperiodo;
   /*
 $clrhestagioperiodomes = new cl_rhestagioperiodomes;
@@ -71,7 +71,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmrhestagioperiodo.php");
+	include(modification("forms/db_frmrhestagioperiodo.php"));
 	?>
     </center>
 	</td>
@@ -96,7 +96,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.rhestagioperiodomes.disabled=false;
-         top.corpo.iframe_rhestagioperiodomes.location.href='rec1_rhestagioperiodomes001.php?h55_rhestagioperiodo=".@$h55_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhestagioperiodomes.location.href='rec1_rhestagioperiodomes001.php?h55_rhestagioperiodo=".@$h55_sequencial."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('rhestagioperiodomes');";

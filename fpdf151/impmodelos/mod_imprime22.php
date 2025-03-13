@@ -30,10 +30,10 @@
 	$this->objpdf->text(16,68,'Data :');
 	$this->objpdf->text(32,68,date('d/m/Y'));
 	$this->objpdf->text(50,68,'Hora: '.date("H:i:s"));
-	$this->objpdf->text(16,72,$this->tipoinscr);
-	$this->objpdf->text(32,72,$this->nrinscr);
-	$this->objpdf->text(16,76,'IP :');
-	$this->objpdf->text(32,76,$this->ip);
+	//$this->objpdf->text(16,72,$this->tipoinscr);
+	//$this->objpdf->text(32,72,$this->nrinscr);
+	//$this->objpdf->text(16,76,'IP :');
+	//$this->objpdf->text(32,76,$this->ip);
 	$this->objpdf->Setfont('Arial','',6);
 	
 	$this->objpdf->Roundedrect(130,45,65,35,2,'DF','1234');
@@ -76,10 +76,34 @@
            }
 	   $this->objpdf->cell(15,4,db_formatar(pg_result($this->recorddadospagto,$i,$this->valor),'f'),0,1,"R",0);
 	}
+
+	/*
+	echo "<pre>";
+	print_r($this);
+	echo "</pre>";
+	die();
+	*/
+
+	/*
+	if ($this->linhasdadospagto <= 0) {
+
+		foreach($this->arraycodreceitas as $iIndice => $iCodReceitas){
+
+			$sDescrReceita = $this->arraydescrreceitas[$iIndice];
+			$nValorReceita = $this->arrayvalreceitas[$iIndice];
+
+			$this->objpdf->setx(17);
+			$this->objpdf->cell(50,4,trim($iCodReceitas . "  " . $sDescrReceita),0,0,"L",0);
+			$this->objpdf->cell(15,4,db_formatar($nValorReceita,'f'),0,1,"R",0);
+
+		}
+	}
+	*/
+
 	$this->objpdf->SetXY(15,158);
 	$this->objpdf->multicell(0,4,'HISTÓRICO :   '.$this->historico);
 	$this->objpdf->setx(15);
-	$this->objpdf->multicell(0,4,$this->histparcel);
+	//$this->objpdf->multicell(0,4,$this->histparcel);
 	$this->objpdf->setfillcolor(255,255,255);
 	$this->objpdf->Roundedrect(10,195,190,46,2,'DF','1234');
 	

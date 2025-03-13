@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/scpdf.php");
-include ("libs/db_sql.php");
-include ("classes/db_divida_classe.php");
-include ("classes/db_proced_classe.php");
-include ("classes/db_arreinscr_classe.php");
-include ("classes/db_arrematric_classe.php");
-include ("classes/db_db_docparag_classe.php");
-include ("classes/db_pardiv_classe.php");
-include ("libs/db_utils.php");
-include ("libs/db_libdocumento.php");
+include(modification("fpdf151/scpdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_divida_classe.php"));
+include(modification("classes/db_proced_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_arrematric_classe.php"));
+include(modification("classes/db_db_docparag_classe.php"));
+include(modification("classes/db_pardiv_classe.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_libdocumento.php"));
 
 // ################################################## //
 //               VARIAVES DISPONIVEIS                 //
@@ -665,7 +665,7 @@ foreach ( $parag as $chave ) {
   $pdf->cell(280, $alt, "", 0, 1, "C", 1);
 }
 
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 //$pdf->output("/tmp/livro.pdf");
 
 

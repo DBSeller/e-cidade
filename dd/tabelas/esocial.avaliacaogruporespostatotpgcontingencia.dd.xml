@@ -1,0 +1,106 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010418' name="avaliacaogruporespostatotpgcontingencia" description="Tabela de ligação para o formulário de solicitação de totalizador de pagamentos de contingencia" prefix="eso34" label="Totalização Pagamentos Contingência" type="0">
+  <fields>
+    <field codigo='1010321'
+                           name="eso34_sequencial" 
+                           conteudo="int4" 
+                           description="Campo sequencial" 
+                           inivalue="0" 
+                           label="" 
+                           size="1" 
+                           null="f" 
+                           uppercase="f" 
+                           autocompl="f" 
+                           aceitatipo="1" 
+                           tipoobj="text" 
+                           labelrel="" 
+                           reference="" 
+                           ispk="t" 
+                           hassequence="t">
+ 			<sequence name='avaliacaogruporespostatotpgcontingencia_eso34_sequencial_seq'/>
+                    </field> 
+    <field codigo='1010322'
+                           name="eso34_avaliacaogruporesposta" 
+                           conteudo="int4" 
+                           description="CHAVE ESTRANGEIRA PARA AVALIACAO" 
+                           inivalue="0" 
+                           label="" 
+                           size="1" 
+                           null="f" 
+                           uppercase="f" 
+                           autocompl="f" 
+                           aceitatipo="1" 
+                           tipoobj="text" 
+                           labelrel="" 
+                           reference="" 
+                           ispk="f" 
+                           hassequence="t">
+                           
+                    </field> 
+    <field codigo='1010323'
+                           name="eso34_empregador" 
+                           conteudo="int4" 
+                           description="Chave estrangeira para CGM" 
+                           inivalue="0" 
+                           label="" 
+                           size="1" 
+                           null="f" 
+                           uppercase="f" 
+                           autocompl="f" 
+                           aceitatipo="1" 
+                           tipoobj="text" 
+                           labelrel="" 
+                           reference="" 
+                           ispk="f" 
+                           hassequence="t">
+                           
+                    </field> 
+    <field codigo='1010324'
+                           name="eso34_periodo" 
+                           conteudo="varchar(7)" 
+                           description="Ano relativo ao envio" 
+                           inivalue="0" 
+                           label="" 
+                           size="1" 
+                           null="f" 
+                           uppercase="f" 
+                           autocompl="f" 
+                           aceitatipo="1" 
+                           tipoobj="text" 
+                           labelrel="" 
+                           reference="" 
+                           ispk="f" 
+                           hassequence="t">
+                           
+                    </field> 
+    <field codigo='1010325'
+                           name="eso34_indicativoapuracao" 
+                           conteudo="int4" 
+                           description="Indicativo de Apuração" 
+                           inivalue="0" 
+                           label="" 
+                           size="1" 
+                           null="f" 
+                           uppercase="f" 
+                           autocompl="f" 
+                           aceitatipo="1" 
+                           tipoobj="text" 
+                           labelrel="" 
+                           reference="" 
+                           ispk="f" 
+                           hassequence="t">
+                           
+                    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk  name="eso34_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm">
+      <fieldfk name="eso34_empregador" reference="z01_numcgm" inner='t'></fieldfk> 
+    </foreignkey>
+    <foreignkey reference="avaliacaogruporesposta">
+      <fieldfk name="eso34_avaliacaogruporesposta" reference="db107_sequencial" inner='t'></fieldfk> 
+    </foreignkey>
+  </foreignkeys>
+</table>

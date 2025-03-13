@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010279' name='consistenciasistema' description="Armazena as consistencias disponiveis no sistema" prefix="db160" label="consistenciasistema" type="0">
+  <fields>
+    <field codigo="1009721" 
+           campo_api='' 
+           name="db160_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='configuracoes.consistenciasistema_db160_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009722" 
+           campo_api='' 
+           name="db160_sistema" 
+           conteudo="int4" 
+           description="Sistema" 
+           inivalue="0" 
+           label="Sistema" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sistema" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009723" 
+           campo_api='' 
+           name="db160_json" 
+           conteudo="text" 
+           description="JSON" 
+           inivalue="" 
+           label="JSON" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="JSON" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db160_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

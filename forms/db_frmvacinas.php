@@ -68,7 +68,7 @@ db_input('sd07_i_doses',2,$Isd07_i_doses,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_vacinas','func_vacinas.php?funcao_js=parent.js_preenchepesquisa|sd07_c_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vacinas','func_vacinas.php?funcao_js=parent.js_preenchepesquisa|sd07_c_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_vacinas.hide();

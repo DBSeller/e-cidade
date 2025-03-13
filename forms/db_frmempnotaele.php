@@ -106,10 +106,10 @@ db_input('e70_vlrliq',8,$Ie70_vlrliq,true,'text',$db_opcao,"")
 <script>
 function js_pesquisae70_codnota(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_empnotaele','db_iframe_empnota','func_empnota.php?funcao_js=parent.js_mostraempnota1|e69_codnota|e69_codnota','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_empnotaele','db_iframe_empnota','func_empnota.php?funcao_js=parent.js_mostraempnota1|e69_codnota|e69_codnota','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.e70_codnota.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_empnotaele','db_iframe_empnota','func_empnota.php?pesquisa_chave='+document.form1.e70_codnota.value+'&funcao_js=parent.js_mostraempnota','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_empnotaele','db_iframe_empnota','func_empnota.php?pesquisa_chave='+document.form1.e70_codnota.value+'&funcao_js=parent.js_mostraempnota','Pesquisa',false);
      }else{
        document.form1.e69_codnota.value = ''; 
      }
@@ -129,10 +129,10 @@ function js_mostraempnota1(chave1,chave2){
 }
 function js_pesquisae70_codele(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_empnotaele','db_iframe_orcelemento','func_orcelemento.php?funcao_js=parent.js_mostraorcelemento1|o56_codele|o56_elemento','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_empnotaele','db_iframe_orcelemento','func_orcelemento.php?funcao_js=parent.js_mostraorcelemento1|o56_codele|o56_elemento','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.e70_codele.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_empnotaele','db_iframe_orcelemento','func_orcelemento.php?pesquisa_chave='+document.form1.e70_codele.value+'&funcao_js=parent.js_mostraorcelemento','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_empnotaele','db_iframe_orcelemento','func_orcelemento.php?pesquisa_chave='+document.form1.e70_codele.value+'&funcao_js=parent.js_mostraorcelemento','Pesquisa',false);
      }else{
        document.form1.o56_elemento.value = ''; 
      }

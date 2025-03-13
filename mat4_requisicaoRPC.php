@@ -1,53 +1,55 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/requisicaoMaterial.model.php");
-require_once("classes/materialestoque.model.php");
-require_once("classes/db_matparam_classe.php");
-require_once("classes/db_db_almox_classe.php");
-require_once("libs/JSON.php");
-require_once "libs/db_app.utils.php";
+use App\Domain\Patrimonial\Material\Relatorios\IncosistenciasSaidaMaterialPDF;
 
-require_once "std/DBDate.php";
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/requisicaoMaterial.model.php"));
+require_once(modification("classes/materialestoque.model.php"));
+require_once(modification("classes/db_matparam_classe.php"));
+require_once(modification("classes/db_db_almox_classe.php"));
+require_once(modification("libs/JSON.php"));
+require_once modification("libs/db_app.utils.php");
 
-require_once("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
-require_once("model/financeiro/ContaBancaria.model.php");
-require_once("model/contabilidade/planoconta/ContaPlano.model.php");
-require_once("model/contabilidade/planoconta/ClassificacaoConta.model.php");
-require_once("model/contabilidade/planoconta/ContaCorrente.model.php");
-require_once("model/contabilidade/planoconta/ContaOrcamento.model.php");
-require_once("model/contabilidade/planoconta/ContaPlanoPCASP.model.php");
+require_once modification("std/DBDate.php");
+
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php"));
+require_once(modification("model/financeiro/ContaBancaria.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlano.model.php"));
+require_once(modification("model/contabilidade/planoconta/ClassificacaoConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaCorrente.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaOrcamento.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASP.model.php"));
 
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -62,6 +64,7 @@ db_app::import("contabilidade.contacorrente.*");
 $cldb_dbalmox = new cl_db_almox;
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
+$oRetorno = new stdClass();
 if ($oParam->exec == "getDados"){
 
   try {
@@ -142,7 +145,6 @@ if ($oParam->exec == "getDados"){
 } else if ($oParam->exec == "saidaMaterial") {
 
   try {
-
     db_inicio_transacao();
     foreach ($oParam->params[0]->itens as $oMaterial) {
 
@@ -151,18 +153,94 @@ if ($oParam->exec == "getDados"){
       if (isset($oMaterial->iCriterioCustoRateio)) {
         $oMaterialEstoque->setCriterioRateioCusto($oMaterial->iCriterioCustoRateio);
       }
-      $oMaterialEstoque->saidaMaterial($oMaterial->nQuantidade, $oMaterial->sObs);
+
+        $observacao = sprintf(
+            "Lançamento de saida manual do estoque. Material: %s - %s.",
+            $oMaterial->iCodMater,
+            $oMaterial->sObs
+        );
+
+        $oMaterialEstoque->saidaMaterial($oMaterial->nQuantidade, $observacao);
       db_fim_transacao(false);
 
     }
     echo $oJson->encode(array("status" => 1, "message"=> urlencode("Saída Efetuada com Sucesso")));
   }
   catch (Exception $eErro) {
-
     $oMaterialEstoque->cancelarLoteSession();
     db_fim_transacao(true);
     echo $oJson->encode(array("status" => 2, "message"=> urlencode($eErro->getMessage())));
   }
+} else if ($oParam->exec == "saidaDeposito"){
+    try {
+
+        if (empty($oParam->depositos)) {
+            throw new Exception('Informe ao menos um depósito.');
+        }
+        if (empty($oParam->observacao)) {
+            throw new Exception('Informe a observação.');
+        }
+
+        $departamentos = [];
+        foreach ($oParam->depositos as $codigoDeposito) {
+            $deposito = \App\Domain\Patrimonial\Material\Models\Deposito::find($codigoDeposito);
+            $departamentos[] = $deposito->departamento->getCodigo();
+        }
+        $codigosDepartamentos = implode(',',$departamentos);
+
+        $daoMaterialEstoque = new cl_matestoque();
+        $sql = $daoMaterialEstoque->sql_query_file(
+            null,
+            'm70_codmatmater,
+             m70_quant,
+             m70_coddepto',
+            1,
+            "m70_coddepto in ({$codigosDepartamentos}) and m70_quant > 0"
+        );
+
+        $rs = db_query($sql);
+        if (!$rs) {
+            throw new Exception('Erro ao buscar materiais do estoque');
+        }
+        $departamentoAtual = db_getsession("DB_coddepto");
+        $erros = [];
+
+        if (!pg_fetch_result($rs, 0)) {
+            throw new Exception('Não existe quantidade em estoque a ser zerada, por favor, verifique.');
+        }
+
+        while ($dadosMaterial = pg_fetch_object($rs)) {
+            db_inicio_transacao();
+            db_putsession('DB_coddepto', $dadosMaterial->m70_coddepto);
+            $oMaterialEstoque = new materialEstoque($dadosMaterial->m70_codmatmater);
+            MaterialEstoque::bloqueioMovimentacaoItem($dadosMaterial->m70_codmatmater, $dadosMaterial->m70_coddepto);
+            try {
+                $oMaterialEstoque->saidaMaterial($dadosMaterial->m70_quant, $oParam->observacao);
+            } catch (Exception $e) {
+                db_fim_transacao(true);
+               $erros[] = $dadosMaterial;
+            }
+            db_fim_transacao(false);
+        }
+
+        $relatorioInconsistencia = '';
+        $incosistencias = false;
+        if (!empty($erros)) {
+            $incosistencias = true;
+            $pdf = new IncosistenciasSaidaMaterialPDF($erros);
+            $relatorioInconsistencia = $pdf->emitirPdf()['file'];
+        }
+        db_putsession('DB_coddepto', $departamentoAtual);
+        echo $oJson->encode([
+            "status" => 1,
+            "message" => urlencode("Saída manual dos itens em estoque efetuada com sucesso!"),
+            "inconsistencias" => $incosistencias,
+            "relatorio" => $relatorioInconsistencia
+            ]);
+    } catch (Exception $eErro) {
+        db_fim_transacao(true);
+        echo $oJson->encode(array("status" => 2, "message"=> urlencode($eErro->getMessage())));
+    }
 } else if ($oParam->exec == "cancelarSaidaMaterial") {
 
   try {
@@ -193,6 +271,7 @@ if ($oParam->exec == "getDados"){
     if ($oSolicitacao->getDadosPedidoRequisicao()) {
 
       $oRetorno           = $oSolicitacao->getInfo();
+      unset($oRetorno->senha);
     if($oRetorno->m91_depto!=""){
       	 if($oRetorno->m91_depto!=""){
 	       $sql=$cldb_dbalmox->sql_record($cldb_dbalmox->sql_query("","descrdepto as descr","","m91_depto= ".$oRetorno->m91_depto));
@@ -221,7 +300,7 @@ if ($oParam->exec == "getDados"){
          $oMaterialEstoque = new materialEstoque($oMaterial->iCodMater);
 
          $oMaterialEstoque->anularRequisicao($oMaterial->nQtde,
-                                               $oMaterial->sItemMotivo,
+                                               db_stdClass::normalizeStringJsonEscapeString($oMaterial->sItemMotivo),
                                                $oMaterial->iCodMater,
                                                $oMaterial->iCodItemReq
                                                );

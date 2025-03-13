@@ -25,5 +25,4 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "liclicita.l20_codigo,liclicita.l20_edital,l20_anousu,liclicita.l20_codtipocom,pctipocompra.pc50_descr,liclicita.l20_numero,liclicita.l20_id_usucria,liclicita.l20_datacria,liclicita.l20_horacria,liclicita.l20_dataaber,liclicita.l20_dtpublic,liclicita.l20_horaaber,liclicita.l20_local,liclicita.l20_objeto";
-?>
+$campos = "liclicita.l20_codigo,l20_tipojulg,liclicita.l20_edital,l20_anousu,liclicita.l20_codtipocom,pctipocompra.pc50_descr,liclicita.l20_numero,liclicita.l20_id_usucria,liclicita.l20_datacria,liclicita.l20_horacria,liclicita.l20_dataaber,liclicita.l20_dtpublic,liclicita.l20_horaaber,liclicita.l20_local,liclicita.l20_objeto";

@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -37,7 +37,7 @@ if($regist != ''){
 }
 
 $sql_ano = "select fc_anofolha(".db_getsession('DB_instit').") as anousu, fc_mesfolha(".db_getsession('DB_instit').") as mesusu";
-$res_ano = pg_query($sql_ano);
+$res_ano = db_query($sql_ano);
 db_fieldsmemory($res_ano,0);
 
 if($perinicial != '--'){
@@ -46,14 +46,15 @@ if($perinicial != '--'){
   }else{
     $final = $perfinal;
   }
-  $where .= " and ( h16_dtconc <= '$final' and (h16_dtterm is null or h16_dtterm between '$perinicial' and '$final') )  ";
+  $where .= " and h16_dtconc between '{$perinicial}' and '{$final}'";
 }
+
 if($tipos != ''){
   $where .= " and h12_codigo in ($tipos)";
 }
 $xordem = 'order by ';
 if($ordem == 'a'){
-  $xordem .= " z01_nome, h16_dtconc ";
+  $xordem .= " z01_nome, rh37_descr, h12_descr, h16_dtconc ";
 }elseif($ordem == 'n'){
   $xordem .= " h16_regist, h16_dtconc ";
 }elseif($ordem == 'c'){
@@ -63,6 +64,12 @@ if($ordem == 'a'){
 }
 
 
+$where .= " and h16_regist in (select distinct rh02_regist from rhpessoalmov 
+                                where rh02_anousu = ". DBPessoal::getAnoFolha() ."
+                                  and rh02_mesusu = ". DBPessoal::getMesFolha() ."
+                                  and rh02_lota in (select distinct rh157_lotacao
+                                                      from db_usuariosrhlota
+                                                     where rh157_usuario = ". db_getsession("DB_id_usuario") ."))";
 $head3 = "RELATORIO DE ASSENTAMENTOS";
 $head5 = "PERIODO : ".db_formatar($perinicial,'d')." a ".db_formatar($final,'d');
 
@@ -79,25 +86,27 @@ $sql = "
         h16_hist2,
         h16_dtlanc
  from assenta 
-      inner join rhpessoal    on h16_regist  = rh01_regist
-      inner join rhpessoalmov on rh02_regist = rh01_regist
-                             and rh02_anousu = $anousu
-                             and rh02_mesusu = $mesusu
-                             and rh02_instit = ".db_getsession('DB_instit')."
-      inner join rhfuncao     on rh37_funcao = rh02_funcao
-                             and rh37_instit = ".db_getsession('DB_instit')."
-      inner join cgm          on rh01_numcgm = z01_numcgm 
-      inner join tipoasse     on h16_assent  = h12_codigo 
+      inner join assentamentofuncional on rh193_assentamento_funcional = h16_codigo
+      inner join rhpessoal             on h16_regist                   = rh01_regist
+      inner join rhpessoalmov          on rh02_regist                  = rh01_regist
+                                      and rh02_anousu                  = $anousu
+                                      and rh02_mesusu                  = $mesusu
+                                      and rh02_instit                  = ".db_getsession('DB_instit')."
+      inner join rhfuncao              on rh37_funcao                  = rh02_funcao
+                                      and rh37_instit                  = ".db_getsession('DB_instit')."
+      inner join cgm                   on rh01_numcgm                  = z01_numcgm 
+      inner join tipoasse              on h16_assent                   = h12_codigo 
  $where
  $xordem
        ";
-// echo $sql ;exit; 
+// kill_sql($sql);
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit;
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
-   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);
+   
+            db_redireciona('db_erros.php?fechar=true&db_erro=Não existem assentamentos cadastrados para o período informado');
 
 }
 

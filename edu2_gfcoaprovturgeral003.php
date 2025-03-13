@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_turma_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_turma_classe.php"));
 $clturma = new cl_turma;
 $sql = $clturma->sql_query_turma("","ed52_c_descr,ed57_c_descr,ed11_c_descr",""," ed57_i_codigo = $turma");
 

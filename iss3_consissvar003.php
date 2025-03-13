@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
   
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("classes/db_issvar_classe.php");
-  include("classes/db_issvarnotas_classe.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
+  include(modification("classes/db_issvar_classe.php"));
+  include(modification("classes/db_issvarnotas_classe.php"));
   parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
   $clissvar = new cl_issvar;
   $clissvarnotas = new cl_issvarnotas;
@@ -79,7 +79,7 @@
 		 
   }
  
-  $result04  = pg_query($sql04);
+  $result04  = db_query($sql04);
   $numrows04 = pg_num_rows($result04)
 ?>
 <html>

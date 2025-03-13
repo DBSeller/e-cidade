@@ -1,36 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
+
+define( 'MENSAGENS_AVALIACAO_RESULTADO_FINAL', 'educacao.avaliacao.AvaliacaoResultadoFinal.' );
 
 /**
  * Resultado final da avaliacao - diariofinal
  * @author  Fabio Esteves - fabio.esteves@dbseller.com.br
  * @package educacao
  * @subpackage avaliacao
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.28 $
  */
 class AvaliacaoResultadoFinal {
 
@@ -38,50 +40,68 @@ class AvaliacaoResultadoFinal {
    * Codigo do resultado final
    * @var integer
    */
-  private $iCodigoResultadoFinal;
+  protected $iCodigoResultadoFinal;
 
   /**
    * Codigo do diario
    * @var integer
    */
-  private $iCodigoDiario;
+  protected $iCodigoDiario;
 
   /**
    * Instancia de ResultadoAvaliacao
    * @var ResultadoAvaliacao
    */
-  private $oResultadoAvaliacao;
+  protected $oResultadoAvaliacao;
 
   /**
    * Nota da avaliacao
    * @var mixed
    */
-  private $mValorAprovacao = '';
+  protected $mValorAprovacao = '';
 
   /**
    * Observacao para o resultado final
    * @var string
    */
-  private $sObservacao;
+  protected $sObservacao;
 
   /**
    * Resultado da aprovacao
    * @var string
    */
-  private $sResultadoAprovacao = '';
+  protected $sResultadoAprovacao = '';
 
   /**
    * Resultado da frequencia;
    * @var string
    */
-  private $sResultadoFrequencia;
+  protected $sResultadoFrequencia;
   /**
    * Resultado final
    * @var string
    */
-  private $sResultadoFinal = '';
+  protected $sResultadoFinal = '';
 
-  private $nPercentualFrequencia = 0;
+  protected $nPercentualFrequencia = 0;
+
+  /**
+   * Procresultado referente ao resultado final
+   * @var integer
+   */
+  protected $iProcResultado = null;
+
+  /**
+   * Identifica se resultado final foi alterado
+   * @var AprovadoConcelho
+   */
+  protected $oAprovadoConcelho = null;
+
+  /**
+   * Controle para saber se já validou busca por alteração do resultado final
+   * @var boolean
+   */
+  protected $lValidouAlteracaoResultadoFinal = false;
 
   public function __construct(DiarioAvaliacaoDisciplina $oDiarioAvaliacaoDisciplina) {
 
@@ -89,9 +109,17 @@ class AvaliacaoResultadoFinal {
 
     $oDaoDiarioFinal    = db_utils::getDao('diariofinal');
     $sSqlAvaliacaoFinal = $oDaoDiarioFinal->sql_query_file(null, "*", null, "ed74_i_diario={$this->iCodigoDiario}");
-    $rsAvaliacaoFinal   = $oDaoDiarioFinal->sql_record($sSqlAvaliacaoFinal);
+    $rsAvaliacaoFinal   = db_query($sSqlAvaliacaoFinal);
 
-    if ($rsAvaliacaoFinal) {
+    if( !is_resource( $rsAvaliacaoFinal ) ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+
+      throw new DBException( _M( MENSAGENS_AVALIACAO_RESULTADO_FINAL . 'erro_buscar_diario_final', $oErro ) );
+    }
+
+    if( pg_num_rows( $rsAvaliacaoFinal ) > 0 ) {
 
       $oDados                      = db_utils::fieldsMemory($rsAvaliacaoFinal, 0);
       $this->iCodigoDiario         = $oDados->ed74_i_diario;
@@ -202,7 +230,6 @@ class AvaliacaoResultadoFinal {
    * Retorna a observacao referente ao resultado final
    * @return string
    */
-
   public function getObservacao() {
     return $this->sObservacao;
   }
@@ -217,7 +244,7 @@ class AvaliacaoResultadoFinal {
 
   /**
    * Retorna o percentual de frequencia
-   * @return numeric
+   * @return number
    */
   public function getPercentualFrequencia() {
     return $this->nPercentualFrequencia;
@@ -225,6 +252,14 @@ class AvaliacaoResultadoFinal {
 
   public function setPercentualFrequencia($nPercentual) {
     $this->nPercentualFrequencia = $nPercentual;
+  }
+
+  /**
+   * Retorna o procresultado do Resultado Final
+   * @return int
+   */
+  public function getProcResultado() {
+    return $this->iProcResultado;
   }
 
   /**
@@ -236,7 +271,8 @@ class AvaliacaoResultadoFinal {
   		throw new DBException("Não existe transação com o banco de dados ativa");
   	}
 
-    $oDaoDiarioFinal = db_Utils::getDao("diariofinal");
+    $oDaoDiarioFinal = new cl_diariofinal();
+
     if (empty($this->sResultadoFinal)) {
       $GLOBALS["HTTP_POST_VARS"]["ed74_c_resultadofinal"] = '';
     }
@@ -248,7 +284,7 @@ class AvaliacaoResultadoFinal {
     if (empty($this->sResultadoAprovacao)) {
       $GLOBALS["HTTP_POST_VARS"]["ed74_c_resultadoaprov"] = '';
     }
-    
+
     if (empty($this->ed74_c_valoraprov)) {
       $GLOBALS["HTTP_POST_VARS"]["ed74_c_valoraprov"] = '';
     }
@@ -257,8 +293,18 @@ class AvaliacaoResultadoFinal {
      * Caso o aluno está aprovado pelo conselho, o resultado final do mesmo deverá
      * ser sempre aprovado.
      */
-    if ($this->getFormaAprovacaoConselho() != "") {
-      $this->setResultadoFinal('A');
+    if( $this->getFormaAprovacaoConselho() != "" ) {
+
+      if( $this->getFormaAprovacaoConselho()->getFormaAprovacao() == AprovacaoConselho::RECLASSIFICACAO_BAIXA_FREQUENCIA ) {
+
+        $this->setResultadoFrequencia('A');
+
+        if( $this->getResultadoAprovacao() == 'A' ) {
+          $this->setResultadoFinal('A');
+        }
+      } else {
+        $this->setResultadoFinal('A');
+      }
     }
 
     $oDaoDiarioFinal->ed74_i_procresultadoaprov = $this->getResultadoAvaliacao()->getCodigo();
@@ -269,6 +315,7 @@ class AvaliacaoResultadoFinal {
     $oDaoDiarioFinal->ed74_c_resultadofreq      = $this->getResultadoFrequencia();
     $oDaoDiarioFinal->ed74_c_resultadofinal     = $this->getResultadoFinal();
     $oDaoDiarioFinal->ed74_i_calcfreq           = '1';
+
     if (empty($this->sObservacao)) {
       $GLOBALS["HTTP_POST_VARS"]["ed74_t_obs"] = '';
     }
@@ -291,24 +338,33 @@ class AvaliacaoResultadoFinal {
 
   /**
    * Verifica se o aluno foi aprovado na disciplina atraves de progressao parcial
-   * @return boolean
+   * @return bool
+   * @throws DBException
    */
   public function aprovadoPorProgressaoParcial() {
 
     if ( $this->getCodigoResultadoFinal() == null ) {
       return false;
     }
-    
+
     $oDaoProgressaoParcialAluno = new cl_progressaoparcialalunodiariofinalorigem();
     $sWhere                     = "     ed107_diariofinal = {$this->getCodigoResultadoFinal()}";
     $sWhere                    .= " and ed114_situacaoeducacao <> ".ProgressaoParcialAluno::INATIVA;
     $sSqlProgressaoParcial      = $oDaoProgressaoParcialAluno->sql_query( null, '1', null, $sWhere );
-    $rsProgressaoParcial        = $oDaoProgressaoParcialAluno->sql_record( $sSqlProgressaoParcial );
-    
-    if ($oDaoProgressaoParcialAluno->numrows > 0) {
+    $rsProgressaoParcial        = db_query( $sSqlProgressaoParcial );
+
+    if( !is_resource( $rsProgressaoParcial ) ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+
+      throw new DBException( _M( MENSAGENS_AVALIACAO_RESULTADO_FINAL . 'erro_buscar_progressao_parcial', $oErro ) );
+    }
+
+    if( pg_num_rows( $rsProgressaoParcial ) > 0 ) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -333,7 +389,6 @@ class AvaliacaoResultadoFinal {
         return '';
         break;
     }
-
   }
 
   /**
@@ -346,46 +401,84 @@ class AvaliacaoResultadoFinal {
 
   /**
    * Retorna uma instancia de AprovacaoConselho, com os dados a aprovacao
-   * @todo Mover Codigo do construtor para dentro da AprovacaoConselho
-   * @return AprovacaoConselho
+   * @return AprovacaoConselho|null
+   * @throws DBException
    */
   public function getFormaAprovacaoConselho() {
 
-  	$oAprovacaoConselho  = null;
-  	$oDaoAprovConselho   = new cl_aprovconselho();
-  	$sWhereAprovConselho = "ed253_i_diario = {$this->iCodigoDiario}";
-  	$sSqlAprovConselho   = $oDaoAprovConselho->sql_query_file(null, "*", null, $sWhereAprovConselho);
-  	$rsAprovConselho     = $oDaoAprovConselho->sql_record($sSqlAprovConselho);
-  	$iTotalAprovConselho = $oDaoAprovConselho->numrows;
+    if ( is_null($this->oAprovadoConcelho) && !$this->lValidouAlteracaoResultadoFinal ) {
 
-  	if ($iTotalAprovConselho > 0) {
+      $this->lValidouAlteracaoResultadoFinal = true;
+    	$oDaoAprovConselho   = new cl_aprovconselho();
+    	$sWhereAprovConselho = "ed253_i_diario = {$this->iCodigoDiario}";
+    	$sSqlAprovConselho   = $oDaoAprovConselho->sql_query_file(null, "*", null, $sWhereAprovConselho);
+    	$rsAprovConselho     = db_query($sSqlAprovConselho);
 
-  		$oAprovacaoConselho  = new AprovacaoConselho($this);
-  		$oDadosAprovConselho = db_utils::fieldsMemory($rsAprovConselho, 0);
+      if( !is_resource( $rsAprovConselho ) ) {
 
-  		$oAprovacaoConselho->setCodigo($oDadosAprovConselho->ed253_i_codigo);
-  		$oAprovacaoConselho->setFormaAprovacao($oDadosAprovConselho->ed253_aprovconselhotipo);
+        $oErro        = new stdClass();
+        $oErro->sErro = pg_last_error();
 
-  		if (!empty($oDadosAprovConselho->ed253_i_rechumano)) {
-  		  $oAprovacaoConselho->setRecursoHumano($oDadosAprovConselho->ed253_i_rechumano);
-  		}
+        throw new DBException( _M( MENSAGENS_AVALIACAO_RESULTADO_FINAL . 'erro_buscar_aprovacao_conselho', $oErro ) );
+      }
 
-  		if (!empty($oDadosAprovConselho->ed253_t_obs)) {
-  		  $oAprovacaoConselho->setJustificativa($oDadosAprovConselho->ed253_t_obs);
-  		}
+    	$iTotalAprovConselho = pg_num_rows( $rsAprovConselho );
 
-  		$oAprovacaoConselho->setData(new DBDate(date("Y-m-d", $oDadosAprovConselho->ed253_i_data)));
-  		$oAprovacaoConselho->setHora(date("H:i", $oDadosAprovConselho->ed253_i_data));
-  		$oAprovacaoConselho->setUsuario(new UsuarioSistema($oDadosAprovConselho->ed253_i_usuario));
-      $oAprovacaoConselho->setAlterarNotaFinal( $oDadosAprovConselho->ed253_alterarnotafinal );
+    	if ($iTotalAprovConselho > 0) {
 
-      if ( $oDadosAprovConselho->ed253_avaliacaoconselho != '' ) {
-        $oAprovacaoConselho->setAvaliacaoConselho( $oDadosAprovConselho->ed253_avaliacaoconselho );
-      } 
-      
-  	}
+    		$oAprovacaoConselho  = AprovacaoConselhoRepository::getByAvaliacaoResultadoFinal( $this );
+    		$oDadosAprovConselho = db_utils::fieldsMemory($rsAprovConselho, 0);
 
-  	return $oAprovacaoConselho;
+    		$oAprovacaoConselho->setCodigo($oDadosAprovConselho->ed253_i_codigo);
+    		$oAprovacaoConselho->setFormaAprovacao($oDadosAprovConselho->ed253_aprovconselhotipo);
+
+    		if (!empty($oDadosAprovConselho->ed253_i_rechumano)) {
+    		  $oAprovacaoConselho->setRecursoHumano($oDadosAprovConselho->ed253_i_rechumano);
+    		}
+
+    		if (!empty($oDadosAprovConselho->ed253_t_obs)) {
+    		  $oAprovacaoConselho->setJustificativa($oDadosAprovConselho->ed253_t_obs);
+    		}
+
+    		$oAprovacaoConselho->setData(new DBDate(date("Y-m-d", $oDadosAprovConselho->ed253_i_data)));
+    		$oAprovacaoConselho->setHora(date("H:i", $oDadosAprovConselho->ed253_i_data));
+    		$oAprovacaoConselho->setUsuario(new UsuarioSistema($oDadosAprovConselho->ed253_i_usuario));
+        $oAprovacaoConselho->setAlterarNotaFinal( $oDadosAprovConselho->ed253_alterarnotafinal );
+
+        if ( $oDadosAprovConselho->ed253_avaliacaoconselho != '' ) {
+          $oAprovacaoConselho->setAvaliacaoConselho( $oDadosAprovConselho->ed253_avaliacaoconselho );
+        }
+        $this->oAprovadoConcelho = $oAprovacaoConselho;
+    	}
+    }
+  	return $this->oAprovadoConcelho;
   }
+
+  /**
+   * Remove a aprovação do conselho
+   */
+  public function removerAprovacaoConselho() {
+
+    $oAprovacaoConselho = $this->getFormaAprovacaoConselho();
+
+    if ($oAprovacaoConselho instanceof AprovacaoConselho) {
+      $oAprovacaoConselho->remover();
+    }
+
+    $this->oAprovadoConcelho               = null;
+    $this->lValidouAlteracaoResultadoFinal = false;
+  }
+
+
+  /**
+   * Emcapsulado alteracao do resultado final por aprovação do conselho
+   * @param  AprovacaoConselho $oAprovacaoConselho
+   */
+  public function adicionarAprovacaoConselho(AprovacaoConselho $oAprovacaoConselho) {
+
+    $this->oAprovadoConcelho = $oAprovacaoConselho;
+    $this->oAprovadoConcelho->salvar();
+    $this->lValidouAlteracaoResultadoFinal = true;
+  }
+
 }
-?>

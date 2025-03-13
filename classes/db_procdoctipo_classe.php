@@ -1,28 +1,28 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: protocolo
@@ -44,10 +44,12 @@ class cl_procdoctipo {
    // cria variaveis do arquivo 
    var $p57_codigo = 0; 
    var $p57_coddoc = 0; 
-   // cria propriedade com as variaveis do arquivo 
+   var $p57_ouvidoriaobrigatorio = '';
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  p57_codigo = int4 = Código 
                  p57_coddoc = int4 = Código 
+                 p57_ouvidoriaobrigatorio = boolean = Obrigatório( Sistema Externo ) 
                  ";
    //funcao construtor da classe 
    function cl_procdoctipo() { 
@@ -69,9 +71,11 @@ class cl_procdoctipo {
      if($exclusao==false){
        $this->p57_codigo = ($this->p57_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["p57_codigo"]:$this->p57_codigo);
        $this->p57_coddoc = ($this->p57_coddoc == ""?@$GLOBALS["HTTP_POST_VARS"]["p57_coddoc"]:$this->p57_coddoc);
+       $this->p57_ouvidoriaobrigatorio = ($this->p57_ouvidoriaobrigatorio == ""?@$GLOBALS["HTTP_POST_VARS"]["p57_ouvidoriaobrigatorio"]:'f');
      }else{
        $this->p57_codigo = ($this->p57_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["p57_codigo"]:$this->p57_codigo);
        $this->p57_coddoc = ($this->p57_coddoc == ""?@$GLOBALS["HTTP_POST_VARS"]["p57_coddoc"]:$this->p57_coddoc);
+       $this->p57_ouvidoriaobrigatorio = ($this->p57_ouvidoriaobrigatorio == ""?@$GLOBALS["HTTP_POST_VARS"]["p57_ouvidoriaobrigatorio"]:'f');
      }
    }
    // funcao para inclusao
@@ -98,12 +102,15 @@ class cl_procdoctipo {
      $sql = "insert into procdoctipo(
                                        p57_codigo 
                                       ,p57_coddoc 
+                                      ,p57_ouvidoriaobrigatorio 
                        )
                 values (
                                 $this->p57_codigo 
                                ,$this->p57_coddoc 
+                               ,'$this->p57_ouvidoriaobrigatorio' 
                       )";
-     $result = db_query($sql); 
+
+     $result = db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -136,6 +143,7 @@ class cl_procdoctipo {
        $resac = db_query("insert into db_acountkey values($acount,2453,'$this->p57_coddoc','I')");
        $resac = db_query("insert into db_acount values($acount,402,2452,'','".AddSlashes(pg_result($resaco,0,'p57_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,402,2453,'','".AddSlashes(pg_result($resaco,0,'p57_coddoc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,402,1010637,'','".AddSlashes(pg_result($resaco,0,'p57_ouvidoriaobrigatorio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -189,6 +197,8 @@ class cl_procdoctipo {
            $resac = db_query("insert into db_acount values($acount,402,2452,'".AddSlashes(pg_result($resaco,$conresaco,'p57_codigo'))."','$this->p57_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p57_coddoc"]))
            $resac = db_query("insert into db_acount values($acount,402,2453,'".AddSlashes(pg_result($resaco,$conresaco,'p57_coddoc'))."','$this->p57_coddoc',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["p57_ouvidoriaobrigatorio"]))
+             $resac = db_query("insert into db_acount values($acount,402,1010637,'".AddSlashes(pg_result($resaco,$conresaco,'p57_ouvidoriaobrigatorio'))."','$this->p57_ouvidoriaobrigatorio',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
@@ -239,6 +249,7 @@ class cl_procdoctipo {
          $resac = db_query("insert into db_acountkey values($acount,2453,'$p57_coddoc','E')");
          $resac = db_query("insert into db_acount values($acount,402,2452,'','".AddSlashes(pg_result($resaco,$iresaco,'p57_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,402,2453,'','".AddSlashes(pg_result($resaco,$iresaco,'p57_coddoc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,402,1010637,'','".AddSlashes(pg_result($resaco,0,'p57_ouvidoriaobrigatorio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from procdoctipo
@@ -318,7 +329,7 @@ class cl_procdoctipo {
    function sql_query ( $p57_codigo=null,$p57_coddoc=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -349,7 +360,7 @@ class cl_procdoctipo {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -358,10 +369,10 @@ class cl_procdoctipo {
      }
      return $sql;
   }
-   function sql_query_file ( $p57_codigo=null,$p57_coddoc=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $p57_codigo=null,$p57_coddoc=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -374,23 +385,23 @@ class cl_procdoctipo {
      $sql2 = "";
      if($dbwhere==""){
        if($p57_codigo!=null ){
-         $sql2 .= " where procdoctipo.p57_codigo = $p57_codigo "; 
-       } 
+         $sql2 .= " where procdoctipo.p57_codigo = $p57_codigo ";
+       }
        if($p57_coddoc!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " procdoctipo.p57_coddoc = $p57_coddoc "; 
-       } 
+         }
+         $sql2 .= " procdoctipo.p57_coddoc = $p57_coddoc ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_empautoriza_classe.php");
-include("classes/db_empautitem_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_pctipocompra_classe.php");
-include("classes/db_pcprocitem_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_orcelemento_classe.php");
-include("classes/db_db_departorg_classe.php");
-require_once("classes/db_empautitempcprocitem_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_empautoriza_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_pctipocompra_classe.php"));
+include(modification("classes/db_pcprocitem_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
+require_once(modification("classes/db_empautitempcprocitem_classe.php"));
 
 $clempautoriza          = new cl_empautoriza;
 $clempautitem           = new cl_empautitem;
@@ -281,7 +281,7 @@ for($i=0;$i<$numrows;$i++){
   if ($clempautitempcprocitem->numrows > 0) {
     db_fieldsmemory($result_pcprocitem,0);
     $sql_solicita = "select fc_solproc($pc81_codproc)";
-    $result_solicita = pg_exec($sql_solicita);
+    $result_solicita = db_query($sql_solicita);
     if (pg_numrows($result_solicita) > 0) {
       db_fieldsmemory($result_solicita,0);
       $pdf->cell(25,$alt,$fc_solproc          ,0,0,"C",$c);

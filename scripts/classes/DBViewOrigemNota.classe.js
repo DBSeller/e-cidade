@@ -296,7 +296,7 @@ DBViewOrigemNota.prototype.getAlunos = function () {
 DBViewOrigemNota.prototype.retornaGetAlunos = function ( oResponse, oSelf ) {
   
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   
   oSelf.oCboAlunos.clearItens();
   if ( oRetorno.aAlunos.length > 0 ) {
@@ -453,7 +453,7 @@ DBViewOrigemNota.prototype.buscaDadosEscolaFora = function ( aArgumentos ) {
  */
 DBViewOrigemNota.prototype.retornoBuscaDadosEscolaFora = function ( oResponse, oSelf ) {
   
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   oSelf.oTxtMunicipioEscolaDestino.setValue(oRetorno.sMunicipio.urlDecode());
   oSelf.oTxtEstadoEscolaDestino.setValue(oRetorno.sUf.urlDecode());
 };
@@ -509,7 +509,7 @@ DBViewOrigemNota.prototype.salvar = function () {
 DBViewOrigemNota.prototype.retornoSalvar = function ( oResponse, oSelf ) {
   
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   
   if ( oRetorno.status == 1 ) {
     

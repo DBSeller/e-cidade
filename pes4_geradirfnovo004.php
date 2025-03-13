@@ -1,33 +1,7 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -51,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_libpessoal.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 db_postmemory($HTTP_POST_VARS);
 global $db_config;
 db_selectmax("db_config","select lower(trim(munic)) as d08_carnes , cgc from db_config where codigo = ".db_getsession("DB_instit"));
@@ -82,283 +56,269 @@ $clrotulo->label("rh50_oid");
 ?>
 
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
 
-<?php
-db_app::load('prototype.js,
-              strings.js,
-              scripts.js');
+    <?php
+    $teste = db_app::load('prototype.js, strings.js, scripts.js, estilos.css');
+    ?>
+    <style>
+      #dados_responsavel > tbody > tr > td:first-child,
+      #dados_dirf        > tbody > tr > td:first-child  {
+        width: 200px;
+      }
 
-db_app::load("estilos.css");
+    </style>
+    <script>
 
-?>
+    function js_emite(){
 
-<script>
-function js_emite(){
-  //js_controlarodape(true);
-  qry  = 'ano_base='+ document.form1.ano_base.value;
-  qry += '&oriret='+ document.form1.oriret.value;
-  qry += '&codret='+ document.form1.codret.value;
-  qry += '&nomeresp=' + document.form1.nomeresp.value;
-  qry += '&cpfresp=' + document.form1.cpfresp.value;
-  qry += '&dddresp=' + document.form1.dddresp.value;
-  qry += '&foneresp=' + document.form1.foneresp.value;
-  qry += '&r70_numcgm=' + document.form1.r70_numcgm.value;
-  if(document.form1.pref_fun){
-    qry += '&pref_fun=' + document.form1.pref_fun.value;
-  }
-  js_OpenJanelaIframe('top.corpo','db_iframe_geradirf','pes4_geradirf002.php?'+qry,'Gerando Arquivo',true);
-}
+      qry  = 'ano_base='    + document.form1.ano_base.value;
+      qry += '&oriret='     + document.form1.oriret.value;
+      qry += '&codret='     + document.form1.codret.value;
+      qry += '&nomeresp='   + document.form1.nomeresp.value;
+      qry += '&cpfresp='    + document.form1.cpfresp.value;
+      qry += '&dddresp='    + document.form1.dddresp.value;
+      qry += '&foneresp='   + document.form1.foneresp.value;
+      qry += '&r70_numcgm=' + document.form1.r70_numcgm.value;
+      if(document.form1.pref_fun){
+        qry += '&pref_fun=' + document.form1.pref_fun.value;
+      }
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_geradirf','pes4_geradirf002.php?'+qry,'Gerando Arquivo',true);
+    }
 
-function js_erro(msg){
+    function js_erro(msg){
 
-  top.corpo.db_iframe_geradirf.hide();
-  alert(msg);
-}
-function js_fechaiframe(){
-  db_iframe_geradirf.hide();
-}
-function js_controlarodape(mostra){
+      (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_geradirf.hide();
+      alert(msg);
+    }
 
-  if(mostra == true){
+    function js_fechaiframe(){
+      db_iframe_geradirf.hide();
+    }
 
-    document.form1.rodape.value = parent.bstatus.document.getElementById('st').innerHTML;
-    parent.bstatus.document.getElementById('st').innerHTML = '<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
-  }else{
-    parent.bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
-  }
-}
+    function js_controlarodape(mostra){
 
-function js_detectaarquivo(arquivo,pdf){
+      if(mostra == true){
 
-  top.corpo.db_iframe_geradirf.hide();
-  listagem = arquivo+"#Download Arquivo TXT |";
-  listagem+= pdf+"#Download Relatório";
-  js_montarlista(listagem,"form1");
-}
-</script>
-</head>
-<body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
+        document.form1.rodape.value = (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML;
+        (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '<blink><font color="red">GERANDO ARQUIVO</font></blink>' ;
+      }else{
+        (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
+      }
+    }
 
-    <center>
-    <form name="form1" method="post" id='form1' action="">
-    <table border='0' style="margin-top:20px">
+    function js_detectaarquivo(arquivo, pdf) {
 
-	   <tr>
-	    <td><fieldset><legend><strong>Informações de Processamento</strong></legend>
-	      <table>
-	       <tr>
-	        <td nowrap>
-	          <strong>Tipo de Processamento:</strong>
-	        </td>
-	        <td nowrap>
-	          <?php
-	            $aTipoProcessamento = array("1" => "Geral",
-	                                        "2" => "Selecionados");
-	            db_select("iTipoProcessamento", $aTipoProcessamento, true, 1, "onchange='return js_tipoProcessamento();' style='width: 100%;'");
-	          ?>
-	        </td>
-          <td nowrap>
-            <strong>Somente Valores Acima de <span id="valor_minimo"></span>: </strong>
-            <input type="hidden" name="codigo_arquivo" id="codigo_arquivo" value="" />
-          </td>
-          <td>
-            <?php
-             $arr_acima = array("S"=>"Sim","N"=>"Não");
-             db_select('acima6000',$arr_acima,true,4,"");
-	          ?>
-          </td>
-	      </tr>
-	     </table>
-	    </fieldset>
-	   </td>
-	   </tr>
+      (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_geradirf.hide();
+      listagem = arquivo+"#Download Arquivo TXT |";
+      listagem+= pdf+"#Download Relatório";
+      js_montarlista(listagem,"form1");
+    }
+    </script>
+  </head>
+  <body>
 
-     <tr>
-       <td>
-         <fieldset><legend><strong>Dados DIRF</strong></legend>
-          <table>
-            <tr>
-              <td align="right" nowrap title="Digite o Ano Base">
-                <strong>Ano Base:</strong>
-              </td>
-              <td align="left">
-                <?php
-                  db_select('ano_base',null,true,4,'onChange="js_buscaValor()"');
-                ?>
-              </td>
-            </tr>
-            <tr align="center">
-              <td align="right" nowrap title="Tipo de Declaração: ">
-                <strong>Tipo de Declaração:</strong>
-              </td>
-              <td align="left">
-                <?php
-                 $xy = array("O"=>"Original","R"=>"Retificadora");
-                 db_select('oriret',$xy,true,4,"");
-                ?>
-              </td>
-            </tr>
-            <tr id='recibo'>
-              <td align="right" nowrap>
-                <strong>Número do Recibo:</strong>
-              </td>
-              <td>
-                <?php
-                 db_input('numerorecibo', 10, 1, true, 'text', 2, '');
-                ?>
-              </td>
-            </tr>
-          </table>
-       </fieldset>
-     </td>
-     </tr>
-    <tr>
-     <td colspan="2"  align="center">
-     <fieldset>
-        <legend><strong>Dados do Responsável</strong></legend>
-        <table width="100%">
-      <tr>
-        <td align="right" nowrap title="Nome do Responsável ">
-         <strong>Nome:</strong>
-        </td>
-        <td align="left">
-          <?php
-            db_input('nomeresp',40,'',true,'text',2,'');
-	        ?>
-        </td>
-        </tr>
-        <tr>
-        <td align="right" nowrap title="Código Nacional de Pessoal FÍSICA" >
-        <strong>CPF:</strong>
-        </td>
-        <td align="left">
-          <?php
-            db_input('cpfresp', 11, '', true, 'text', 2,
-                      "  onBlur='js_verificaCGCCPF(this)'
-                         onKeyDown='return js_controla_tecla_enter(this,event);'",
-                         null, null, null, 11);
-          ?>
-        </td>
-        </tr>
-        <tr>
-        <td align="right" nowrap title="DDD do Responsável">
-         <strong>DDD:</strong>
-        </td>
-        <td align="left">
-          <?php
-            db_input('dddresp', 4, 1, true, 'text', 2, '', null, null, null, 3);
-	        ?>
-        </td>
-        </tr>
-        <tr>
-        <td align="right" nowrap title="Fone do Responsável ">
-         <strong>Fone:</strong>
-        </td>
-        <td align="left">
-          <?php
-            db_input('foneresp', 10, 1, true, 'text', 2, '', null, null, null, 9);
-       	  ?>
-        </td>
-        </tr>
-         <tr>
-        <td align="right" nowrap title="CPF do Responsável pelo CNPJ">
-        <strong>CPF do Responsável pelo CNPJ:</strong>
-        </td>
-        <td align="left">
-          <?php
-            db_input('cpfrespcnpj', 11, '', true, 'text', 2,
-                     " onBlur='js_verificaCGCCPF(this)'
-                       onKeyDown='return js_controla_tecla_enter(this,event);'",
-                       null, null, null, 11);
-          ?>
-        </td>
-       </tr>
+    <form name="form1" method="post" id='form1' action="" class="container">
+
+      <!-- Informações do Processamento -->
+      <fieldset>
+        <legend>Informações de Processamento</legend>
+        <table class="form-container">
+          <tr>
+            <td>
+              Tipo de Processamento:
+            </td>
+            <td>
+              <?php
+              $aTipoProcessamento = array("1" => "Geral", "2" => "Selecionados");
+              db_select("iTipoProcessamento", $aTipoProcessamento, true, 1, "onchange='return js_tipoProcessamento();' style='width: 100%;'");
+              ?>
+            </td>
+            <td>
+              Somente Valores Acima de <span id="valor_minimo"></span>:
+              <input type="hidden" name="codigo_arquivo" id="codigo_arquivo" value="" />
+            </td>
+            <td>
+              <?php
+              $arr_acima = array("S"=>"Sim","N"=>"Não");
+              db_select('acima6000',$arr_acima,true,4,"");
+              ?>
+            </td>
+          </tr>
         </table>
       </fieldset>
-    </td>
-  </tr>
-  <tr>
-    <td><fieldset><legend><strong>Saúde</strong></legend>
-      <table>
-      <tr>
-        <td nowrap title="<?=@$Trh01_numcgm?>">
-          <?php
-            db_ancora(@$Lrh01_numcgm,"js_pesquisarh01_numcgm(true);",$db_opcao);
-          ?>
-        </td>
-        <td nowrap>
-          <?php
-            db_input('rh01_numcgm',6,$Irh01_numcgm,true,'text',$db_opcao,"onchange='js_pesquisarh01_numcgm(false);' tabIndex='1'","cgm_saude1");
-          ?>
-          <?php
-            db_input('z01_nome',33,$Iz01_nome,true,'text',3,'',"nome_saude1");
-          ?>
-        </td>
-        <td align="right" nowrap title="ANS" >
-         <strong>ANS:</strong>
-        </td>
-        <td align="left">
-          <?php
-            db_input('numeroans1',10,'',true,'text',2,'', '', '', '', 6);
-          ?>
-        </td>
-      </tr>
-      <tr>
-        <td nowrap title="<?=@$Trh01_numcgm?>">
-          <?php
-            db_ancora(@$Lrh01_numcgm,"js_pesquisarh01_numcgm_1(true);",$db_opcao);
-          ?>
-        </td>
-        <td nowrap>
-          <?php
-            db_input('rh01_numcgm',6,$Irh01_numcgm,true,'text',$db_opcao,"onchange='js_pesquisarh01_numcgm_1(false);' tabIndex='2'","cgm_saude2");
-          ?>
-          <?php
-            db_input('z01_nome',33,$Iz01_nome,true,'text',3,'',"nome_saude2");
-          ?>
-        </td>
-        <td align="right" nowrap title="ANS">
-         <strong>ANS:</strong>
-        </td>
-        <td align="left">
-          <?php
-            db_input('numeroans2',10,'',true,'text',2,'', '', '', '', 6);
-          ?>
-        </td>
-       </tr>
-     </table>
-    </fieldset>
-   </td>
-   </tr>
-   <tr>
-    <td><fieldset><legend><strong>Informações Financeiras</strong></legend>
-      <table><tr>
-        <td nowrap title="<?=@$Trh01_numcgm?>">
-          <strong>Buscar Pagamentos Efetuados na Contabilidade:</strong>
-        </td>
-        <td nowrap>
-         <?php
-           $arr = array('s' => 'Sim','n'=>'Não');
-           db_select("dadosfinanceiros",$arr,true,$db_opcao,"");
-         ?>
-        </td>
-      </tr>
-     </table>
-    </fieldset>
-   </td>
-   </tr>
-   <tr>
-    <td colspan="2">
+
+      <!-- Dados da DIRF -->
       <fieldset>
-        <legend><strong>CNPJ</strong></legend>
-        <table>
+        <legend>Dados DIRF</legend>
+        <table class="form-container" id="dados_dirf">
           <tr>
-            <td nowrap align="right" title="CNPJ">
-              <strong>CNPJ:</strong>
+            <td title="Digite o Ano Base">
+              Ano Base:
+            </td>
+            <td>
+              <?php
+              db_select('ano_base',array(),true,4,'onChange="js_buscaValor()"');
+              ?>
+            </td>
+          </tr>
+          <tr >
+            <td title="Tipo de Declaração: ">
+              Tipo de Declaração:
+            </td>
+            <td>
+              <?php
+              $xy = array("O"=>"Original","R"=>"Retificadora");
+              db_select('oriret',$xy,true,4,"");
+              ?>
+            </td>
+          </tr>
+          <tr id='recibo'>
+            <td>
+              Número do Recibo:
+            </td>
+            <td>
+              <?php
+              db_input('numerorecibo', 10, 1, true, 'text', 2, '');
+              ?>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Dados do Responsável</legend>
+        <table class="form-container" id="dados_responsavel">
+          <tr>
+            <td title="Nome do Responsável ">
+              Nome:
+            </td>
+            <td>
+              <?php
+              db_input('nomeresp',40,'',true,'text',2,'');
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td title="Código Nacional de Pessoal FÍSICA" >
+              CPF:
+            </td>
+            <td>
+              <?php
+              db_input('cpfresp', 11, '', true, 'text', 2," onBlur='js_verificaCGCCPF(this)' onKeyDown='return js_controla_tecla_enter(this,event);'", null, null, null, 11);
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td title="DDD do Responsável">
+              DDD:
+            </td>
+            <td>
+              <?php
+              db_input('dddresp', 2, 1, true, 'text', 2, '', null, null, null, 2);
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td title="Fone do Responsável ">
+              Fone:
+            </td>
+            <td>
+              <?php
+              db_input('foneresp', 10, 1, true, 'text', 2, '', null, null, null, 9);
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td title="CPF do Responsável pelo CNPJ">
+              CPF do Responsável pelo CNPJ:
+            </td>
+            <td>
+              <?php
+              db_input('cpfrespcnpj', 11, '', true, 'text', 2, " onBlur='js_verificaCGCCPF(this)' onKeyDown='return js_controla_tecla_enter(this,event);'", null, null, null, 11);
+              ?>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>
+          Saúde
+        </legend>
+        <table class="form-container">
+          <tr>
+            <td title="<?=$Trh01_numcgm?>">
+              <?php
+              db_ancora($Lrh01_numcgm,"js_pesquisarh01_numcgm(true);",$db_opcao);
+              ?>
+            </td>
+            <td>
+              <?php
+              db_input('rh01_numcgm',6,$Irh01_numcgm,true,'text',$db_opcao,"onchange='js_pesquisarh01_numcgm(false);' tabIndex='1'","cgm_saude1");
+              db_input('z01_nome',33,$Iz01_nome,true,'text',3,'',"nome_saude1");
+              ?>
+            </td>
+            <td title="ANS" >
+              ANS:
+            </td>
+            <td>
+              <?php
+              db_input('numeroans1',10,'',true,'text',2,'', '', '', '', 6);
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td title="<?=$Trh01_numcgm?>">
+              <?php
+              db_ancora($Lrh01_numcgm,"js_pesquisarh01_numcgm_1(true);",$db_opcao);
+              ?>
+            </td>
+            <td>
+              <?php
+              db_input('rh01_numcgm',6,$Irh01_numcgm,true,'text',$db_opcao,"onchange='js_pesquisarh01_numcgm_1(false);' tabIndex='2'","cgm_saude2");
+              db_input('z01_nome',33,$Iz01_nome,true,'text',3,'',"nome_saude2");
+              ?>
+            </td>
+            <td title="ANS">
+              ANS:
+            </td>
+            <td>
+              <?php
+              db_input('numeroans2',10,'',true,'text',2,'', '', '', '', 6);
+              ?>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Informações Financeiras</legend>
+        <table class="form-container">
+          <tr>
+            <td title="<?=$Trh01_numcgm?>">
+              Buscar Pagamentos Efetuados na Contabilidade:
+            </td>
+            <td>
+              <?php
+              $arr = array('s' => 'Sim','n'=>'Não');
+              db_select("dadosfinanceiros",$arr,true,$db_opcao,"");
+              ?>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+
+      <fieldset>
+        <legend>CNPJ</legend>
+        <table class="form-container">
+          <tr>
+            <td title="CNPJ">
+              CNPJ:
             </td>
             <td>
               <?php
@@ -374,22 +334,19 @@ function js_detectaarquivo(arquivo,pdf){
 		            $sSqlUnidades .= " where o41_instit = {$instit}                                                  ";
 		            $sSqlUnidades .= "   and o41_anousu = ".db_getsession("DB_anousu");
 		            $result = db_query($sSqlUnidades);
-		            db_selectrecord("cnpjpagador", $result, true, @$db_opcao, "", "", "", "", " js_verificaProcessamento(); return js_tipoProcessamento()", "2");
+                if (!$result) {
+                  db_msgbox("Erro ao buscar as unidades.");
+                }
+		            db_selectrecord("cnpjpagador", $result, true, $db_opcao, " rel='ignore-css' ", "", "", "", " js_verificaProcessamento(); return js_tipoProcessamento()", "2");
               ?>
             </td>
           </tr>
         </table>
       </fieldset>
-    </td>
-  </tr>
-  <tr>
-	  <td colspan="2" align = "center">
+
       <input  name="gera" id="gera" type="button" value="Gerar DIRF" onclick="return js_emitirDirf();">
-        </td>
-      </tr>
-     </table>
   </form>
-</center>
+
 </body>
 </html>
 <script type="text/javascript">
@@ -408,7 +365,7 @@ function js_carregaAnoBase() {
                                 parameters:'json={"exec": "getAnos"}',
                                 onComplete: function (oAjax){
 
-                                  var oRetorno = eval("("+oAjax.responseText+")");
+                                  var oRetorno = JSON.parse(oAjax.responseText);
 
                                   if (oRetorno.iStatus == 2) {
 
@@ -441,7 +398,7 @@ function js_buscaValor() {
                                 parameters:'json={"exec": "getValorAno", "iAno": ' + iAno + '}',
                                 onComplete: function (oAjax){
 
-                                  var oRetorno = eval("("+oAjax.responseText+")");
+                                  var oRetorno = JSON.parse(oAjax.responseText);
                                   $('valor_minimo').innerHTML = oRetorno.iValor;
                                   $('codigo_arquivo').value   = oRetorno.sCodigoArquivo;
 
@@ -550,13 +507,13 @@ function js_tipoProcessamento() {
 
     parent.document.formaba.geradirf.disabled     = false;
     parent.document.formaba.selecionados.disabled = false;
-    top.corpo.iframe_selecionados.js_montaGrid();
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_selecionados.js_montaGrid();
     parent.mo_camada('selecionados');
   } else {
 
     parent.document.formaba.geradirf.disabled     = true;
     parent.document.formaba.selecionados.disabled = true;
-    top.corpo.iframe_selecionados.js_montaGrid();
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_selecionados.js_montaGrid();
     parent.mo_camada('geradirf');
   }
 }
@@ -582,7 +539,7 @@ function js_emitirDirf() {
     return false;
   }
 
-  if($F('dddresp').length < 3){
+  if($F('dddresp').length < 2){
 
     alert(_M(MENSAGENS+'ddd_invalido'));
     return false;
@@ -619,7 +576,11 @@ function js_emitirDirf() {
   oParam.lProcessaEmpenho       = $F('dadosfinanceiros')=='s'?true:false;
   oParam.sCnpj                  = $F('cnpjpagador');
   oParam.sAcima6000             = $F('acima6000');
-  oParam.aMatriculaSelecionadas = top.corpo.iframe_selecionados.js_retornaMatriculasSelecionados();
+  oParam.aMatriculaSelecionadas = (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_selecionados.js_retornaMatriculasSelecionados();
+
+
+  //Desabilita o botão processar.
+  $('gera').disabled = true;
 
   js_divCarregando('Aguarde, Processando...','div_msg', true);
 
@@ -634,7 +595,10 @@ function js_retornoEmiteDirf(oAjax) {
 
   js_removeObj('div_msg');
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  //Habilita o botão novamente.
+  $('gera').disabled = false;
+
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
    var listagem = "tmp/"+oRetorno.arquivo+"#Download Arquivo TXT";

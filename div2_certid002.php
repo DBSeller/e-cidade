@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_certid_classe.php");
-include("classes/db_certdiv_classe.php");
-include("classes/db_certter_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_certid_classe.php"));
+include(modification("classes/db_certdiv_classe.php"));
+include(modification("classes/db_certter_classe.php"));
 
 $clcertid = new cl_certid;
 $clcertdiv = new cl_certdiv;
@@ -101,7 +101,7 @@ if ($ordem=="t") {
                  left join certter     on certter.v14_certid = v13_certid
            $where
         order by v13_certid";
-  $result = pg_query($sql);
+  $result = db_query($sql);
   if (pg_numrows($result) == 0) {
     db_redireciona('db_erros.php?fechar=true&db_erro=Não existem certidões.');
   }
@@ -158,7 +158,7 @@ if ($ordem=="t") {
     if ($rela=="c") {
       
       if ($tipo=="Parcelamento") {
-        $result1 = pg_query("select certter.v14_certid,
+        $result1 = db_query("select certter.v14_certid,
                                     v07_parcel,
                                     v07_dtlanc,
                                     v07_totpar,
@@ -195,7 +195,7 @@ if ($ordem=="t") {
       }
       
       if ($tipo=="Dívida Ativa") {
-        $result2 = pg_query("select distinct
+        $result2 = db_query("select distinct
                                     v14_certid,
                                     v01_coddiv,
                                     v01_dtinsc,
@@ -263,7 +263,7 @@ if ($ordem=="p") {
                  left  join inicialcert on v51_certidao       = v13_certid
           $where and  certter.v14_certid is not null and v13_instit = ".db_getsession('DB_instit')." 
         order by certter.v14_certid";
-  $result = pg_query($sql);
+  $result = db_query($sql);
   if (pg_numrows($result) == 0) {
     db_redireciona('db_erros.php?fechar=true&db_erro=Não existem certidões.');
   }
@@ -311,7 +311,7 @@ if ($ordem=="p") {
     $total++;
     
     if ($rela=="c") {
-      $result1 = pg_query("select distinct
+      $result1 = db_query("select distinct
                                   certter.v14_certid,
                                   v07_parcel,
                                   v07_dtlanc,
@@ -368,7 +368,7 @@ if ($ordem=="d") {
                  left  join inicialcert on v51_certidao       = v13_certid
           $where and certdiv.v14_certid is not null and certid.v13_instit = ".db_getsession('DB_instit')." ) as x
         order by v14_certid   ";
-  $result = pg_query($sql);
+  $result = db_query($sql);
   if (pg_numrows($result) == 0) {
     db_redireciona('db_erros.php?fechar=true&db_erro=Não existem certidões.');
   }
@@ -414,7 +414,7 @@ if ($ordem=="d") {
     $pdf->cell(40,$alt,$ini,0,1,"C",0);
     $total++;
     if ($rela=="c") {
-      $result2 = pg_query("select v14_certid,
+      $result2 = db_query("select v14_certid,
                                   v01_coddiv,
                                   v01_numpre,
                                   v01_dtinsc,

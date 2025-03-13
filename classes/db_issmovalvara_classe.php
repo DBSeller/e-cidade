@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -616,6 +616,7 @@ class cl_issmovalvara {
     $sql .= "  from issmovalvara                                                                                        ";
     $sql .= "       inner join issalvara        on issalvara.q123_sequencial       = issmovalvara.q120_issalvara        ";
     $sql .= "       inner join isstipomovalvara on isstipomovalvara.q121_sequencial = issmovalvara.q120_isstipomovalvara";
+    $sql .= "       INNER JOIN isstipoalvara ON isstipoalvara.q98_sequencial = issalvara.q123_isstipoalvara             ";
     $sql .= " where issalvara.q123_inscr               = {$iInscr}                                                      ";
     $sql .= "   and issmovalvara.q120_isstipomovalvara = 1                                                              ";
     if($dbwhere != "") {

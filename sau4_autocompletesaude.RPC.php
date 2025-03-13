@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_utils.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/JSON.php');
-require_once('dbforms/db_funcoes.php');
-require_once('libs/db_stdlibwebseller.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/JSON.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -58,7 +58,7 @@ if ($oParam->exec == "DesinoPedidoTFD") {
 
 if ($iLinhas > 0) {
 
-  $aRetorno = db_utils::getColectionByRecord($rs, false, false, true);
+  $aRetorno = db_utils::getCollectionByRecord($rs, false, false, true);
   
 }
 echo $oJson->encode($aRetorno);

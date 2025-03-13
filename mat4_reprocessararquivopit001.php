@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once ("classes/db_emparquivopit_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_emparquivopit_classe.php"));
 $clemparquivopit = new cl_emparquivopit();
 $clemparquivopit->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -196,7 +196,7 @@ function js_retornoGetArquivos(oResponse) {
   
   js_removeObj('msgBox');
   gridArquivos.clearAll(true);
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
   lDisabled    = false;
   if (oRetorno.status == 1) {
     
@@ -249,10 +249,10 @@ function js_validaSomenteNumeros(sValor) {
 
 function js_pesquisae14_sequencial(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_emparquivopit','func_emparquivopit.php?funcao_js=parent.js_mostrae14_sequencial1|e14_sequencial|e14_nomearquivo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emparquivopit','func_emparquivopit.php?funcao_js=parent.js_mostrae14_sequencial1|e14_sequencial|e14_nomearquivo','Pesquisa',true);
   }else{
      if($('e14_sequencial').value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_emparquivopit','func_emparquivopit.php?pesquisa_chave='+$('e14_sequencial').value+'&funcao_js=parent.js_mostrae14_sequencial','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emparquivopit','func_emparquivopit.php?pesquisa_chave='+$('e14_sequencial').value+'&funcao_js=parent.js_mostrae14_sequencial','Pesquisa',false);
      }else{
        $('e14_nomearquivo').value = ''; 
      }

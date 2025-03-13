@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,15 +24,15 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-$_SESSION["DB_itemmenu_acessado"] = "0";
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once('model/configuracao/PreferenciaUsuario.model.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+$_SESSION["DB_itemmenu_acessado"] = "0";
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php")); 
+require_once(modification('model/configuracao/PreferenciaUsuario.model.php'));
 
 $oPost = db_utils::postMemory($_POST);
 
@@ -69,12 +69,10 @@ $oDaoDBItensMenu = new cl_db_itensmenu();
 $sMenuAnterior   = "Nenhum menu acessado até o momento.";
 $sDisabled       = "disabled";
 $iMenuAcessado   = db_getsession('DB_itemmenu_acessado', false);
-
 if (!empty($iMenuAcessado)) {
 
   $sSqlMenu = $oDaoDBItensMenu->sql_query_file(db_getsession("DB_itemmenu_acessado", false), "fc_montamenu($iMenuAcessado), funcao");
   $rsMenu   = db_query($sSqlMenu);
-
   if ( !$rsMenu ) {
     throw new DBException(" Item de menu não pode ser perquisado. Erro: " . pg_last_error() );
   }
@@ -119,6 +117,16 @@ if (isset($oPost->limpar_cache)) {
   $sMensagem = "Arquivos de cache removidos com sucesso.";
 }
 
+
+$sStatusBtnPreMenus = 'ativar';
+$sValueBtnPreMenus  = 'Ativar PreMenus';
+
+if ( db_getsession("DB_premenus", false) != null  ) {
+  
+  $sStatusBtnPreMenus = 'desativar';
+  $sValueBtnPreMenus  = 'Desativar PreMenus';
+}
+
 ?>
 <html>
   <head>
@@ -126,10 +134,8 @@ if (isset($oPost->limpar_cache)) {
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <?php db_app::load("scripts.js, strings.js, prototype.js, estilos.css"); ?>
   </head>
-
   <body style="background-color: #ccc;">
     <div class="container">
-
     <fieldset style="width: 500px; margin: auto;">
       <legend style="font-weight: bold;">Menu de Acesso Rápido</legend>
 
@@ -151,6 +157,20 @@ if (isset($oPost->limpar_cache)) {
         </tr>
         <tr>
           <td>
+            <input type="button" class="field-size-max" id="btnDebug" value="Debug.PHP" />
+          </td>
+        </tr>    
+        
+        <tr>
+          <td>
+          
+            <input type="button" class="field-size-max" id="btnPreMenus" value="<?=$sValueBtnPreMenus; ?>" status="<?=$sStatusBtnPreMenus;?>" />
+          </td>
+        </tr>            
+            
+        
+        <tr>
+          <td>
            <?php db_select('departamento', $aDepartamentos, true, 1); ?>
           </td>
         </tr>
@@ -159,7 +179,6 @@ if (isset($oPost->limpar_cache)) {
 
     <fieldset style="width: 500px; margin: auto;">
       <legend style="font-weight: bold;">Menu Anterior</legend>
-
       <table class="form-container">
         <tr>
           <td>
@@ -168,7 +187,14 @@ if (isset($oPost->limpar_cache)) {
         </tr>
         <tr>
           <td>
-           <input type="button" class="field-size-max" funcao="<?php echo $sFuncaoRetornar; ?>" id="btnVoltarMenuAnterior" value="Voltar" <?php echo $sDisabled; ?>>
+            <?php
+              $sFuncaoRetornar = isset( $sFuncaoRetornar ) ? $sFuncaoRetornar : "";
+            ?>
+            <input type="button"
+                   class="field-size-max"
+                   funcao="<?=$sFuncaoRetornar;?>"
+                   id="btnVoltarMenuAnterior"
+                   value="Voltar" <?php echo $sDisabled; ?>>
           </td>
         </tr>
       </table>
@@ -207,6 +233,11 @@ if (isset($oPost->limpar_cache)) {
 </html>
 <script type="text/javascript">
 
+  $("btnDebug").observe("click", function() {
+    js_OpenJanelaIframe("", "iframe_debug", "debug.php", "Debug.php", true);
+  });
+
+    
   $("btnRetornaDataSistema").observe("click", function() {
 
      js_OpenJanelaIframe( "", 
@@ -242,12 +273,40 @@ if (isset($oPost->limpar_cache)) {
       var sNomeModulo = '<?php echo db_getsession("DB_nome_modulo"); ?>';
 
       js_OpenJanelaIframe("", "iframe_troca_departamento", sPrograma, "Mensagens do Sistema", false);
-      parent.bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<b>' + sNomeModulo + ' > ' + sDescricaoDepartamento + '</b>';
+      (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<b>' + sNomeModulo + ' > ' + sDescricaoDepartamento + '</b>';
   }
 
   $('btnVoltarMenuAnterior').onclick = function() {
     location.href = this.getAttribute('funcao');
   }
+
+
+  /**
+   * funcao para manipular os premenus
+   * cria a variavel de sessao que o db_query ira verificar
+   */
+  $('btnPreMenus').observe( 'click', function () {
+
+    var oParamentro    = {};
+    oParamentro.sExec  = 'ManipularPreMenus';
+    oParamentro.status = $('btnPreMenus').getAttribute('status');
+
+    var oRequest = {};
+    oRequest.method       = 'post',
+    oRequest.asynchronous = false,
+    oRequest.parameters   = 'json='+Object.toJSON(oParamentro),
+    oRequest.onComplete   = function(oAjax) {
+    
+      var oRetorno = JSON.parse(oAjax.responseText);
+      
+      $('btnPreMenus').value = oRetorno.sValue;
+      $('btnPreMenus').setAttribute('status', oRetorno.sStatus);
+    }
+    
+    new Ajax.Request( 'con1_ativatrace.RPC.php' , oRequest);
+    
+  });
+  
 
   <?php if (isset($sMensagem)): ?>
     alert('<?php echo $sMensagem; ?>');

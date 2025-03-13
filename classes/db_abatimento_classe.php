@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: arrecadacao
@@ -614,80 +614,77 @@ class cl_abatimento {
       }
      return $result;
    }
-   // funcao do sql
-   function sql_query ( $k125_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from abatimento ";
-     $sql .= "      inner join db_config  on  db_config.codigo = abatimento.k125_instit";
-     $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = abatimento.k125_usuario";
-     $sql .= "      inner join tipoabatimento  on  tipoabatimento.k126_sequencial = abatimento.k125_tipoabatimento";
-     $sql .= "      inner join abatimentosituacao  on  abatimentosituacao.k165_sequencial = abatimento.k125_abatimentosituacao";
-     $sql .= "      inner join cgm  on  cgm.z01_numcgm = db_config.numcgm";
-     $sql .= "      inner join db_tipoinstit  on  db_tipoinstit.db21_codtipo = db_config.db21_tipoinstit";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($k125_sequencial!=null ){
-         $sql2 .= " where abatimento.k125_sequencial = $k125_sequencial ";
-       }
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
+
+  /**
+   * @param null $iSequencial
+   * @param string $sCampos
+   * @param string|null $sOrdem
+   * @param string|null $sWhere
+   * @param string|null $group
+   *
+   * @return string
+   */
+  public function sql_query($iSequencial = null, $sCampos = "*", $sOrdem = null, $sWhere = null, $group = null) {
+
+    $sSql = "select {$sCampos} ";
+
+    $sSql .= " from abatimento ";
+    $sSql .= "      inner join db_config  on  db_config.codigo = abatimento.k125_instit";
+    $sSql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = abatimento.k125_usuario";
+    $sSql .= "      inner join tipoabatimento  on  tipoabatimento.k126_sequencial = abatimento.k125_tipoabatimento";
+    $sSql .= "      inner join abatimentosituacao  on  abatimentosituacao.k165_sequencial = abatimento.k125_abatimentosituacao";
+    $sSql .= "      inner join cgm  on  cgm.z01_numcgm = db_config.numcgm";
+    $sSql .= "      inner join db_tipoinstit  on  db_tipoinstit.db21_codtipo = db_config.db21_tipoinstit";
+    $sSql .= "      left join abatimentorecibo on k125_sequencial = k127_abatimento";
+    $sSql .= "      left join arrenumcgm on arrenumcgm.k00_numpre = k127_numprerecibo";
+
+    if ($iSequencial) {
+      $sWhere .= " abatimento.k125_sequencial = {$iSequencial}" . (!empty($sWhere) ? " and " : ''); 
+      
+    }
+
+    if ($sWhere) {
+     $sSql .= " where {$sWhere} ";
+    }
+
+    if ($group) {
+      $sSql .= ' group by ' . $group;
+    }
+
+    if ($sOrdem) {
+     $sSql .= " order by {$sOrdem}";
+    }
+    return $sSql;
   }
-   // funcao do sql
-   function sql_query_file ( $k125_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from abatimento ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($k125_sequencial!=null ){
-         $sql2 .= " where abatimento.k125_sequencial = $k125_sequencial ";
-       }
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
+
+  /**
+   * @param integer|null $iSequencial
+   * @param string $sCampos
+   * @param string|null $sOrdem
+   * @param string|null $sWhere
+   *
+   * @return string
+   */
+  public function sql_query_file($iSequencial = null, $sCampos = "*", $sOrdem = null, $sWhere = null) {
+
+    $sSql = "select {$sCampos} ";
+    $sSql .= " from abatimento ";
+
+    if ($iSequencial) {
+      $sWhere .= "k125_sequencial = {$iSequencial}" . (!empty($sWhere) ? " and " : '');
+    }
+
+    if ($sWhere) {
+      $sSql .= " where  {$sWhere}";
+    }
+
+    if ($sOrdem) {
+      $sSql .= " order by {$sOrdem}";
+    }
+
+    return $sSql;
   }
+
    public function sql_queryCreditoManual($sCampos, $sWhere) {
 
   	$sSqlCreditoManual  = "select {$sCampos}                                                                                                          ";
@@ -743,7 +740,7 @@ class cl_abatimento {
      * Caso o crédito possua uma ou mais regras vinculadas, calcula-se a data de lançamento do crédito somado ao menor tempo de validade dentre as regras vinculadas
      * Caso não possua regra vinculada, somará 99999999 dias a data de lançamento
      */
-    $sSqlCreditosDisponiveis .= "    and (k125_datalanc + ((select coalesce(min(k155_tempovalidade::integer), 99999999)                                                                       ";
+    $sSqlCreditosDisponiveis .= "    and (k125_datalanc + ((select coalesce(min(NULLIF(k155_tempovalidade, '')::integer), 99999999)                                                                       ";
     $sSqlCreditosDisponiveis .= " 		                        from abatimentoregracompensacao                                                                                                 ";
     $sSqlCreditosDisponiveis .= " 		                       inner join regracompensacao on regracompensacao.k155_sequencial = abatimentoregracompensacao.k156_regracompensacao               ";
     $sSqlCreditosDisponiveis .= " 		                       where abatimentoregracompensacao.k156_abatimento = abatimento.k125_sequencial)::integer||' days')::interval) >= '{$dDataSistema}'";
@@ -775,15 +772,15 @@ class cl_abatimento {
     /**
      * Origem
      */
-    $sSql .= " case                                                                                  ";
-    $sSql .= "   when abatimentodisbanco.k132_sequencial is not null and abatimento.k125_perc >= 100 ";
-    $sSql .= "     then 'PAGAMENTO EM DUPLICIDADE/MAIOR'                                             ";
-    $sSql .= "   when abatimentodisbanco.k132_sequencial is not null and abatimento.k125_perc  < 100 ";
-    $sSql .= "     then 'PAGAMENTO A MENOR'                                                          ";
-    $sSql .= "   when abatimentotransferencia.k158_sequencial is not null                            ";
-    $sSql .= "     then 'TRANSFERENCIA'                                                              ";
-    $sSql .= "   else 'MANUAL'                                                                       ";
-    $sSql .= " end as origem,                                                                        ";
+    $sSql .= " case                                                                                         ";
+    $sSql .= "   when abatimentodisbanco.k132_sequencial is not null and abatimento.k125_tipoabatimento = 3 ";
+    $sSql .= "     then 'PAGAMENTO EM DUPLICIDADE/MAIOR'                                                    ";
+    $sSql .= "   when abatimentodisbanco.k132_sequencial is not null and abatimento.k125_tipoabatimento = 1 ";
+    $sSql .= "     then 'PAGAMENTO A MENOR'                                                                 ";
+    $sSql .= "   when abatimentotransferencia.k158_sequencial is not null                                   ";
+    $sSql .= "     then 'TRANSFERENCIA'                                                                     ";
+    $sSql .= "   else 'MANUAL'                                                                              ";
+    $sSql .= " end as origem,                                                                               ";
 
     /**
      * Dono do credito
@@ -849,25 +846,105 @@ class cl_abatimento {
    */
   public function sql_queryDescontos($sCampos = '*', $sWhere = '', $sOrder = '', $sGroup = '') {
 
-    $sSql = "select {$sCampos}                                                                                       ";
-    $sSql.= "  from abatimento                                                                                       ";
-    $sSql.= "       inner join abatimentoarreckey on abatimento.k125_sequencial = abatimentoarreckey.k128_abatimento ";
-    $sSql.= "       inner join arreckey           on arreckey.k00_sequencial    = abatimentoarreckey.k128_arreckey   ";
-    $sSql.= " where abatimento.k125_tipoabatimento = 2                                                               ";
+    $sSql = "select {$sCampos}                                                                                             ";
+    $sSql.= "  from abatimento                                                                                             ";
+    $sSql.= "       inner join abatimentoarreckey on abatimento.k125_sequencial       = abatimentoarreckey.k128_abatimento ";
+    $sSql.= "       inner join arreckey           on arreckey.k00_sequencial          = abatimentoarreckey.k128_arreckey   ";
+    $sSql.= " where abatimento.k125_tipoabatimento = 2 and abatimento.k125_instit     = ".db_getsession('DB_instit')."     ";
 
     if (!empty($sWhere)) {
       $sSql.= " and "     .$sWhere;
-    }
-
-    if (!empty($sOrder)) {
-      $sSql.= " order by ".$sOrder;
     }
 
     if (!empty($sGroup)) {
       $sSql.= " group by ".$sGroup;
     }
 
+    if (!empty($sOrder)) {
+      $sSql.= " order by ".$sOrder;
+    }
+
+    return $sSql;
+  }
+
+  /**
+   * Busca Origem dos Créditos
+   * @param string $sCampos
+   * @param string $sWhere
+   * @param string $sOrder
+   * @param string $sGroup
+   * @return string
+   */
+  public function sql_query_origem($sCampos = '*', $sWhere = '', $sOrder = '', $sGroup = '') {
+
+    $sSql  = "select {$sCampos} ";
+    $sSql .= "  from abatimento";
+    $sSql .= "    inner join abatimentorecibo on abatimentorecibo.k127_abatimento = abatimento.k125_sequencial";
+    $sSql .= "    inner join recibo on recibo.k00_numpre = abatimentorecibo.k127_numprerecibo";
+    $sSql .= "    inner join abatimentoarreckey on k128_abatimento = k125_sequencial";
+    $sSql .= "    inner join arreckey on k128_arreckey = k00_sequencial";
+    $sSql .= "    inner join arrenumcgm on recibo.k00_numpre = arrenumcgm.k00_numpre";
+    $sSql .= "    inner join cgm on arrenumcgm.k00_numcgm = cgm.z01_numcgm";
+    $sSql .= "    inner join arretipo on arretipo.k00_tipo = arreckey.k00_tipo";
+    $sSql .= "    inner join tabrec on recibo.k00_receit = tabrec.k02_codigo";
+
+    if (!empty($sWhere)) {
+      $sSql .= " where " . $sWhere;
+    }
+
+    if (!empty($sGroup)) {
+      $sSql .= " group by " . $sGroup;
+    }
+
+    if (!empty($sOrder)) {
+      $sSql .= " order by " . $sOrder;
+    }
+
+    return $sSql;
+  }
+
+  /**
+   * Busca utiliza
+   * @param string $sCampos
+   * @param string $sWhere
+   * @param string $sOrder
+   * @param string $sGroup
+   * @return string
+   */
+  public function sql_query_utilizacao($sCampos = '*', $sWhere = '', $sOrder = '', $sGroup = '') {
+    
+    $iAnoUsu      = db_getsession('DB_anousu');
+
+    $sSql  = "select {$sCampos}";
+    $sSql .= "  from abatimento";
+    $sSql .= "   inner join abatimentoutilizacao        on k157_abatimento   = k125_sequencial      ";
+    $sSql .= "   inner join abatimentorecibo            on k127_abatimento   = k125_sequencial      ";
+    $sSql .= "   inner join arrenumcgm                  on arrenumcgm.k00_numpre = k127_numprerecibo";
+    $sSql .= "   inner join recibo                      on recibo.k00_numpre = k127_numprerecibo    ";
+    $sSql .= "   inner join cgm                         on arrenumcgm.k00_numcgm = z01_numcgm       ";
+    $sSql .= "    left join abatimentoutilizacaodestino on k170_utilizacao   = k157_sequencial      ";
+    $sSql .= "    left join arretipo                    on k170_tipo         = arretipo.k00_tipo    ";
+    $sSql .= "    left join tabrec                      on k170_receit       = k02_codigo           ";
+    $sSql .= "    left join taborc                      on taborc.k02_codigo = k170_receit          ";
+    $sSql .= "                                         and taborc.k02_anousu = {$iAnoUsu}           ";
+    $sSql .= "    left join orcreceita                  on taborc.k02_anousu = o70_anousu           ";
+    $sSql .= "                                         and taborc.k02_codrec = o70_codrec           ";
+    $sSql .= "    left join orcfontes                   on o57_codfon        = o70_codfon           ";
+    $sSql .= "                                         and o57_anousu        = o70_anousu           ";
+
+
+    if (!empty($sWhere)) {
+      $sSql .= " where " . $sWhere;
+    }
+
+    if (!empty($sGroup)) {
+      $sSql.= " group by ".$sGroup;
+    }
+
+    if (!empty($sOrder)) {
+      $sSql .= " order by " . $sOrder;
+    }
+    
     return $sSql;
   }
 }
-?>

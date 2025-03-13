@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("model/CgmFactory.model.php");
-require_once("model/patrimonio/depreciacao/PlanilhaCalculo.model.php");
-require_once("std/DBNumber.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/patrimonio/depreciacao/PlanilhaCalculo.model.php"));
+require_once(modification("std/DBNumber.php"));
 
 db_app::import("patrimonio.*");
 db_app::import("patrimonio.depreciacao.*");
@@ -92,7 +92,7 @@ switch ($oParam->exec) {
         $oDadoBem->nValorAquisicao   = $oBem->getValorAquisicao();
         $oDadoBem->nValorResidual    = $oBem->getValorResidual();
         $oDadoBem->nValorDepreciavel = $oBem->getValorDepreciavel();
-        $oDadoBem->nValorAtualizado  = $oBem->getValorAtual();
+        $oDadoBem->nValorAtualizado  = $oDadoBem->nValorDepreciavel + $oDadoBem->nValorResidual;
         $aRetornoBens[]              = $oDadoBem;
       }
       $oRetorno->aBens = $aRetornoBens;
@@ -117,7 +117,6 @@ switch ($oParam->exec) {
       $oPlanilhaCalculo->setUsuario(db_getsession("DB_id_usuario"));
 
       foreach ($oParam->aBensDepreciados as $oDadosBem) {
-
         $oCalculoBem = new CalculoBem();
         $oCalculoBem->setBem(new Bem($oDadosBem->iCodigoBem));
         $oCalculoBem->setPercentualDepreciado($oDadosBem->nPercentual);
@@ -141,7 +140,34 @@ switch ($oParam->exec) {
 
     try {
 
+
       db_inicio_transacao();
+
+      if (UTILIZA_INCORPORACAO_BEM) {
+          /**
+           * Caso ja tenha um desprocessamento da depreciação para a competencia que esta sendo processada,
+           * inativa esse registro. Assim fica igual ao cancelamento. Tendo apenas um registro ativo por competencia.
+           */
+          $where = "t57_processado is false and t57_ativo is true and t57_mes = {$oParam->iMesProcessar} and t57_ano = {$oParam->iAnoSessao}";
+          $dao = new cl_benshistoricocalculo();
+          $sql = $dao->sql_query_file(null, "*", null, $where);
+          $rs = db_query($sql);
+          if (!$rs) {
+              throw new Exception("Erro ao verificar historico de calculo.");
+          }
+          if (pg_num_rows($rs) > 0) {
+
+              $dados = db_utils::fieldsMemory($rs, 0);
+              $dao->t57_sequencial = $dados->t57_sequencial;
+              $dao->t57_ativo = 'false';
+              $dao->alterar($dao->t57_sequencial);
+              if ($dao->erro_status == 0) {
+                  throw new DBException("Erro ao inativar desprocessamento da depreciação.");
+              }
+          }
+      }
+
+
       ini_set('memory_limit', '1024M');
       $oPlanilhaCalculo = new PlanilhaCalculo();
       $oPlanilhaCalculo->setMes($oParam->iMesProcessar);
@@ -192,19 +218,13 @@ switch ($oParam->exec) {
       $oPlanilhaCalculo->setTipoProcessamento($oParam->iTipoProcessamento);
       $oPlanilhaCalculo->setAno(db_getsession("DB_anousu"));
       $iMesDisponivel           = $oPlanilhaCalculo->getMesDisponivelParaProcessamento(1);
-      //echo $iMesDisponivel."\n";
       if ($iMesDisponivel == 0) {
         $iMesDisponivel = 12;
       } else {
         $iMesDisponivel -= 1;
       }
-      list($iAno, $iMes, $iDia) = explode("-", $aDataInicioDepreciacao);
 
-      if (db_getsession("DB_anousu") == $iAno) {
-        if ($iMes >= $iMesDisponivel) {
-          $iMesDisponivel = 0;
-        }
-      }
+      list($iAno, $iMes, $iDia) = explode("-", $aDataInicioDepreciacao);
       $oRetorno->iMesDisponivel = $iMesDisponivel;
 
     } catch (Exception $eErro) {
@@ -225,7 +245,8 @@ switch ($oParam->exec) {
          throw new Exception(_M('patrimonial.patrimonio.pat4_processamentodepreciacao.informe_processamento'));
        }
        db_inicio_transacao();
-       $iAnoSessao                = db_getsession("DB_anousu");
+       $iAnoSessao   = db_getsession("DB_anousu");
+       $iInstituicao = db_getsession("DB_instit");
 
        /**
         * Verifica se a depreciação já não foi contabilizada para a competência mes/ano
@@ -234,6 +255,7 @@ switch ($oParam->exec) {
         */
        $oDaoBensDepreciacaoLancamento = db_utils::getDao("bensdepreciacaolancamento");
        $sWhere                        = "     t78_ano       = {$iAnoSessao}";
+       $sWhere                       .= " and t78_instit    = {$iInstituicao}";
        $sWhere                       .= " and t78_mes       = {$oParam->iMesDesprocessar}";
        $sWhere                       .= " and t78_estornado is false";
        $sSqlVerificaContabilizacao    = $oDaoBensDepreciacaoLancamento->sql_query_file(null, "1", null, $sWhere);
@@ -247,6 +269,7 @@ switch ($oParam->exec) {
        $sWhere                    = " t57_ano                   = {$iAnoSessao} ";
        $sWhere                   .= " and t57_mes               = {$oParam->iMesDesprocessar} ";
        $sWhere                   .= " and t57_tipoprocessamento = {$oParam->iTipoProcessamento} ";
+       $sWhere                   .= " and t57_instituicao       = {$iInstituicao} ";
        $sWhere                   .= " and t57_ativo is true ";
        $sWhere                   .= " and t57_processado is true ";
        $sSqlCodigoPlanilha        = $oDaoBensHistoricoCalculo->sql_query_file(null, "t57_sequencial", null, $sWhere);

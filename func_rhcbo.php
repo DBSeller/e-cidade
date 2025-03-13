@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhcbo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhcbo_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrhcbo = new cl_rhcbo;
@@ -86,7 +86,7 @@ $clrhcbo->rotulo->label("rh70_descr");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_rhcbo.php")==true){
-             include("funcoes/db_func_rhcbo.php");
+             include(modification("funcoes/db_func_rhcbo.php"));
            }else{
            $campos = "rhcbo.*";
            }
@@ -102,7 +102,7 @@ $clrhcbo->rotulo->label("rh70_descr");
         if(isset($chave_rh70_sequencial)){
           $repassa = array("chave_rh70_sequencial"=>$chave_rh70_sequencial,"chave_rh70_sequencial"=>$chave_rh70_sequencial);
         }
-        db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
+        db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa, false);
       }else{
 
         if($pesquisa_chave != null && $pesquisa_chave != ""){
@@ -169,10 +169,28 @@ if(!isset($pesquisa_chave)){
 }
 ?>
 <script>
+window.onload = function(){
+      const btnPesquisar = document.getElementById("pesquisar2");
+
+      document.body.addEventListener('keydown', function(event){
+        if(event.which == 13){
+          btnPesquisar.click();
+        }
+        
+      });
+
+};
 function js_limpar(){
 //alert('oi');
 document.form2.chave_rh70_sequencial.value="";
 document.form2.chave_rh70_descr.value="";
+document.getElementById("pesquisar2").click();
 }
 //js_tabulacaoforms("form2","chave_rh70_sequencial",true,1,"chave_rh70_sequencial",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

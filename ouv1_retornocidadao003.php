@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_app.utils.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
-require_once('classes/db_ouvidoriaatendimentotiporetorno_classe.php');
+require_once(modification('classes/db_ouvidoriaatendimentotiporetorno_classe.php'));
 $clOuvidoriaAtendimentoTipoRetorno = new cl_ouvidoriaatendimentotiporetorno();
 
-require_once('classes/db_ouvidoriaatendimento_classe.php');
+require_once(modification('classes/db_ouvidoriaatendimento_classe.php'));
 $clOuvidoriaAtendimento = new cl_ouvidoriaatendimento();
 
 $rsDadosAtendimento = $clOuvidoriaAtendimento->sql_record($clOuvidoriaAtendimento->sql_query($oGet->iCodAtendimento));
 db_fieldsmemory($rsDadosAtendimento,0);
 
-require_once("dbforms/verticalTab.widget.php");
+require_once(modification("dbforms/verticalTab.widget.php"));
 
 ?>
 <html>
@@ -323,7 +323,7 @@ require_once("dbforms/verticalTab.widget.php");
   
     js_removeObj("msgBox");
 	
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     var sExpReg  = new RegExp('\\\\n','g');
     
     alert(aRetorno.sMsg.urlDecode().replace(sExpReg,'\n'));

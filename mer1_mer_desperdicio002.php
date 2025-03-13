@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_desperdicio_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_desperdicio_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_desperdicio = new cl_mer_desperdicio;
@@ -52,7 +52,7 @@ if (isset($alterar)) {
   ?>
   <script>
    parent.document.formaba.a2.disabled = false;
-   top.corpo.iframe_a2.location.href   = 'mer1_mer_desper_und001.php?me23_i_desperdicio=<?=$chavepesquisa?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'mer1_mer_desper_und001.php?me23_i_desperdicio=<?=$chavepesquisa?>'+
                                          '&me01_c_nome=<?=$me01_c_nome?>&me12_d_data=<?=$me12_d_data?>'+
                                          '&me03_c_tipo=<?=$me03_c_tipo?>';
   </script>
@@ -75,7 +75,7 @@ if (isset($alterar)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Desperdicio</b></legend>
-    <?include("forms/db_frmmer_desperdicio.php");?>
+    <?include(modification("forms/db_frmmer_desperdicio.php"));?>
    </fieldset>
    </center>
   </td>

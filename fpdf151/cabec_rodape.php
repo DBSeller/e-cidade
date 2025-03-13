@@ -1,5 +1,5 @@
 <?
-include("assinatura.php");
+include(modification("fpdf151/assinatura.php"));
 
 class cl_cabec_rodape extends cl_assinatura {
 //|00|//assinatura

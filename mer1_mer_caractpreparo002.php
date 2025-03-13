@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_caractpreparo_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_caractpreparo_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_caractpreparo = new cl_mer_caractpreparo;
@@ -83,7 +83,7 @@ if (isset($alterar)) {
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <br><br>
     <fieldset style="width:95%"><legend><b>Alteração de Característica do Preparo</b></legend>
-	<? include("forms/db_frmmer_caractpreparo.php");?>
+	<? include(modification("forms/db_frmmer_caractpreparo.php"));?>
 	</fieldset>
 	</td>
   </tr>
@@ -110,7 +110,7 @@ if (isset($alterar)) {
   	
     $clmer_caractpreparo->erro(true,false);
     ?><script>
-      top.corpo.iframe_a4.location.href='mer1_mer_caractpreparo002.php?me06_i_cardapio=<?=$aux?>'+
+      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href='mer1_mer_caractpreparo002.php?me06_i_cardapio=<?=$aux?>'+
                                          '&me01_c_nome=<?=$me01_c_nome?>';
     </script><?
     
@@ -121,7 +121,7 @@ if ($db_opcao == 22) {
 	
   ?>
   <script>
-    top.corpo.iframe_a4.location.href='mer1_mer_caractpreparo001.php?me06_i_cardapio=<?=$aux?>'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href='mer1_mer_caractpreparo001.php?me06_i_cardapio=<?=$aux?>'+
                                        '&me01_c_nome=<?=$me01_c_nome?>';
   </script>
   <?

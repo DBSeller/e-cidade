@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,18 +26,18 @@
  */
 
 
-require_once('dbforms/db_funcoes.php');
+require_once(modification('dbforms/db_funcoes.php'));
 
-require_once('libs/db_conn.php');
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('libs/JSON.php');
-require_once('libs/db_utils.php');
-require_once('libs/db_sql.php');
+require_once(modification('libs/db_conn.php'));
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/JSON.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_sql.php'));
 
-require_once("classes/db_issalvara_classe.php");
-require_once("classes/db_issmovalvara_classe.php");
-require_once("classes/db_issalvaradocumento_classe.php");
+require_once(modification("classes/db_issalvara_classe.php"));
+require_once(modification("classes/db_issmovalvara_classe.php"));
+require_once(modification("classes/db_issalvaradocumento_classe.php"));
 
 $oJson                  = new services_json();
 $oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -68,12 +68,41 @@ switch ($oParam->exec) {
     $rsSqlDocumentos = db_query($sSqlDocumentos);
 
     $oRetorno->iTotalDocumentos = pg_num_rows($rsSqlDocumentos);
-
+    
+    $oRetorno->aDocumentos = array();
+    
     if ($oRetorno->iTotalDocumentos > 0) {
-      $oRetorno->aDocumentos = db_utils::getColectionByRecord($rsSqlDocumentos);
+      $oRetorno->aDocumentos = db_utils::getCollectionByRecord($rsSqlDocumentos, false, false, true);
+
     }
 
     break;
+
+  case 'getDocumentosVeiculo':
+
+    $sql = " select distinct caddocumento.*, ";
+    $sql .= "     case when db44_sequencial in (select q122_caddocumento ";
+    $sql .= "                                     from issalvaradocumento y ";
+    $sql .= "                                    where y.q122_issalvara = issalvara.q123_sequencial ";
+    $sql .= "                                  ) ";
+    $sql .= "          then true ";
+    $sql .= "          else false ";
+    $sql .= "      end as entregue ";
+    $sql .= " from issveiculo ";
+    $sql .= " inner join tabativ                on q07_inscr = q172_issbase ";
+    $sql .= " inner join issatividconfdocumento on q07_ativ = q119_ativid ";
+    $sql .= " inner join caddocumento           on db44_sequencial = q119_caddocumento ";
+    $sql .= "  left join issalvara              on q123_inscr = q172_issbase ";
+    $sql .= " where q172_issbase = {$oParam->iCodigoAlvara}; ";
+
+    $rs = db_query($sql);
+
+    $oRetorno->total = pg_num_rows($rs);
+
+    if ($oRetorno->total > 0) {
+      $oRetorno->aDocumentos = db_utils::getCollectionByRecord($rs, false, false, true);
+    }
+   break;
 }
 $oRetorno->sMessage = urlencode($oRetorno->sMessage);
 echo $oJson->encode($oRetorno);

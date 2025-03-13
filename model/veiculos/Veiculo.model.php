@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -60,6 +60,36 @@ class Veiculo {
   protected $aRetiradas;
 
   /**
+   * @type string
+   */
+  protected $sPlaca;
+
+  /**
+   * @type integer
+   */
+  protected $iAnoModelo;
+
+  /**
+   * @type integer
+   */
+  protected $iAnoFabricacao;
+
+  /**
+   * @type integer
+   */
+  protected $iCodigoBem;
+
+  /**
+   * @type integer
+   */
+  protected $iCodigoResponsavel;
+
+  /**
+   * @type CgmFisico|CgmJuridico
+   */
+  protected $oResponsavel;
+
+  /**
    * Método construtor da classe
    */
   function __construct($iVeiculo = '') {
@@ -67,16 +97,64 @@ class Veiculo {
     if (!empty($iVeiculo) && DBNumber::isInteger($iVeiculo)) {
 
       $oDaoVeiculo   = new cl_veiculos();
-      $sSqlVeiculos  = $oDaoVeiculo->sql_query_file($iVeiculo);
+      $sSqlVeiculos  = $oDaoVeiculo->sql_query_veiculo($iVeiculo);
       $rsVeiculos    = $oDaoVeiculo->sql_record($sSqlVeiculos);
       if ($oDaoVeiculo->numrows > 0) {
 
-        $oDadosVeiculo      = db_utils::fieldsMemory($rsVeiculos, 0);
-        $this->iCodigo      = $iVeiculo;
-        $this->iCodigoMarca = $oDadosVeiculo->ve01_veiccadmarca;
-        $this->iModelo      = $oDadosVeiculo->ve01_veiccadmodelo;
+        $oDadosVeiculo            = db_utils::fieldsMemory($rsVeiculos, 0);
+        $this->iCodigo            = $iVeiculo;
+        $this->iCodigoMarca       = $oDadosVeiculo->ve01_veiccadmarca;
+        $this->iModelo            = $oDadosVeiculo->ve01_veiccadmodelo;
+        $this->sPlaca             = $oDadosVeiculo->ve01_placa;
+        $this->iAnoFabricacao     = $oDadosVeiculo->ve01_anofab;
+        $this->iAnoModelo         = $oDadosVeiculo->ve01_anomod;
+        $this->iCodigoBem         = $oDadosVeiculo->ve03_bem;
+        $this->iCodigoResponsavel = $oDadosVeiculo->ve02_numcgm;
       }
     }
+  }
+
+  /**
+   * @return string
+   */
+  public function getPlaca() {
+    return $this->sPlaca;
+  }
+
+  /**
+   * @return int
+   */
+  public function getAnoModelo() {
+    return $this->iAnoModelo;
+  }
+
+  /**
+   * @return int
+   */
+  public function getAnoFabricacao() {
+    return $this->iAnoFabricacao;
+  }
+
+  /**
+   * @return Bem|bool
+   */
+  public function getBem() {
+    if (!empty($this->iCodigoBem)) {
+      return new Bem($this->iCodigoBem);
+    }
+    return false;
+  }
+
+  /**
+   * @return CgmBase|CgmFisico|CgmJuridico
+   * @throws Exception
+   */
+  public function getResponsavel() {
+
+    if (empty($this->oResponsavel) && !empty($this->iCodigoResponsavel)) {
+      $this->oResponsavel = CgmFactory::getInstanceByCgm($this->iCodigoResponsavel);
+    }
+    return $this->oResponsavel;
   }
 
   /**
@@ -85,7 +163,6 @@ class Veiculo {
    * @return array
    */
   public function getRetidadas() {
-
     return $this->aRetiradas;
   }
 
@@ -98,8 +175,7 @@ class Veiculo {
     $aAbastecimentos        = array();
     $oDaoAbastecimento      = new cl_veicabast;
     $sWhere                 = "ve70_veiculos = {$this->iCodigo}";
-    $sOrderBy               = "ve70_dtabast, ve70_hora desc";
-    $sSqlQueryAbastecimento = $oDaoAbastecimento->sql_query_file(null, "ve70_codigo", $sOrderBy, $sWhere);
+    $sSqlQueryAbastecimento = $oDaoAbastecimento->sql_query_file(null, "ve70_codigo", "ve70_codigo desc", $sWhere);
     $rsAbastecimento        = $oDaoAbastecimento->sql_record($sSqlQueryAbastecimento);
     for ($i = 0; $i < $oDaoAbastecimento->numrows; $i++) {
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_rhvisavale_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhvisavalecad_classe.php");
-include("libs/db_libgertxtfolha.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_rhvisavale_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhvisavalecad_classe.php"));
+include(modification("libs/db_libgertxtfolha.php"));
 $clcgm = new cl_cgm;
 $cldb_config  = new cl_db_config;
 $clrhvisavale = new cl_rhvisavale;
@@ -415,7 +415,7 @@ from (select rh01_regist,
            inner join rhpessoalmov on rh02_anousu = rh49_anousu
                                   and rh02_mesusu = rh49_mesusu
                                   and rh02_regist = rh49_regist
-                                  and rh02_instit = 1
+                                  and rh02_instit = ".db_getsession('DB_instit')." 
            inner join rhlota       on r70_codigo  = rh02_lota
                                   and r70_instit  = rh02_instit
            inner join rhpessoal    on rh01_regist = rh49_regist
@@ -427,7 +427,7 @@ order by z01_nome
 group by z01_nome, abrev, rh01_numcgm,  z01_cgccpf, rh01_nasc
 order by z01_nome 
 ";
-$result=pg_query($sql);
+$result=db_query($sql);
 $linhas=pg_num_rows($result);
 
 $nomearquivo_csv = "VisaVale_".db_formatar($pedido_dia,"s","0",2,"e",0).
@@ -466,7 +466,7 @@ fclose($fd);
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <center>
 <?
-include("forms/db_frmarqvisa.php");
+include(modification("forms/db_frmarqvisa.php"));
 ?>
 </center>
 <? 
@@ -484,7 +484,7 @@ if(isset($gerarq)){
 /*
       function js_emitir(){
         js_arquivo_abrir('tmp/$nomearquivo');
-        //js_OpenJanelaIframe('top.corpo','db_iframe_download','db_download.php?arquivo=tmp/$nomearquivo','Download de arquivos',false);
+        //js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_download','db_download.php?arquivo=tmp/$nomearquivo','Download de arquivos',false);
       }   
       js_emitir();
 */

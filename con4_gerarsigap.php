@@ -1,49 +1,49 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
- * 
+ *
  * @author I
- * @revision $Author: dbiuri $
- * @version $Revision: 1.10 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.14 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $periodo = array("1"  => " 1 - Janeiro          ",
                  "2"  => " 2 - Fevereiro (1 Bim)",
                  "3"  => " 3 - Março            ",
                  "4"  => " 4 - Abril     (2 Bim)",
                  "5"  => " 5 - Maio             ",
                  "6"  => " 6 - Junho     (3 Bim)",
-                 "7"  => " 7 - Julho            ", 
+                 "7"  => " 7 - Julho            ",
                  "8"  => " 8 - Agosto    (4 Bim)",
                  "9"  => " 9 - Setembro         ",
                  "10" => "10 - Outubro   (5 Bim)",
@@ -69,7 +69,7 @@ $clrotulo->label("o15_codigo");
   </head>
   <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#cccccc">
     <table width="790" border="0" cellpadding="0" cellspacing="0" >
-      <tr> 
+      <tr>
         <td height="40px">&nbsp;</td>
       </tr>
     </table>
@@ -89,11 +89,11 @@ $clrotulo->label("o15_codigo");
                           if(db_getsession("DB_anousu") != date("Y",db_getsession("DB_datausu"))){
                             $periodopad = 12;
                           } else {
-                          	
+
                             if($periodopad == 0)
                               $periodopad = 1;
                           }
-                          
+
                           db_select("periodosigap",$periodo,true,2);
                         ?>
                       </td>
@@ -172,12 +172,12 @@ $clrotulo->label("o15_codigo");
                             <td colspan="2">&nbsp;</td>
                           </tr>
                          </table>
-                       </td>  
+                       </td>
                        <td valign='top' rowspan="2" style='border-right:2px groove white'>
                          <table border="0" style=''>
                            <tr>
                               <td colspan='2' style='border-bottom: 2px groove white;text-align: center'>
-                                <b>ARQUIVOS COMPLEMENTARES</b>   
+                                <b>ARQUIVOS COMPLEMENTARES</b>
                              </td>
                            </tr>
                            <tr>
@@ -216,14 +216,67 @@ $clrotulo->label("o15_codigo");
                              <td><input type=checkbox name="Credor"></td>
                              <td>Credor</td>
                            </tr>
+
+                           <tr>
+                              <td colspan='2' style='border-bottom: 2px groove white;text-align: center'>
+                             </td>
+                           </tr>
+
+                           <tr>
+                              <td colspan='2' style='border-bottom: 2px groove white;text-align: center'>
+                                <b>FOLHA</b>
+                             </td>
+                           </tr>
+
+                           <tr>
+                             <td><input type=checkbox name="FolhaPessoal"></td>
+                             <td>Pessoal</td>
+                           </tr>
+                           <tr>
+                             <td><input type=checkbox name="FolhaEstruturaLegal"></td>
+                             <td>Estrutura Legal</td>
+                           </tr>
+                           <tr>
+                             <td><input type=checkbox name="FolhaDependentePensionista"></td>
+                             <td>Dependente Pensionista</td>
+                           </tr>
+                           <tr>
+                             <td><input type=checkbox name="FolhaFichaFinanceira"></td>
+                             <td>Ficha Financeira</td>
+                           </tr>
+
                          </table>
                        </td>
-                       
-                       <td valign=top height=50%  >
+                       <td valign='top' rowspan="2" style='border-right:2px groove white'>
                          <table border="0" style=''>
                            <tr>
-                             <td colspan='2' style='border-bottom: 2px groove white;text-align: center'> 
-                               <b>DO EXERCÍCIO</b>    
+                              <td colspan='2' style='border-bottom: 2px groove white;text-align: center'>
+                                <b>ORÇAMENTO</b>
+                             </td>
+                           </tr>
+                           <tr>
+                             <td><input type=checkbox name="Ppa"></td>
+                             <td><a href='#' onclick="js_pesquisaDadosPPA(event);return false"> PPA</a></td>
+                           </tr>
+                           <tr>
+                             <td><input type=checkbox name="PpaLoa"></td>
+                             <td><a href='#' onclick="js_pesquisaDadosPPA(event);return false">PPA/LOA</a></td>
+                           </tr>
+                           <tr>
+                             <td><input type=checkbox name="LoaDespesa"></td>
+                             <td><a href='#' onclick="js_pesquisaDadosPPA(event);return false">LOA/Despesa</a></td>
+                           </tr>
+                           <tr>
+                             <td><input type=checkbox name="LoaReceita"></td>
+                             <td><a href='#' onclick="js_pesquisaDadosPPA(event);return false">LOA/Receita</a></td>
+                           </tr>
+                         </table>
+                       </td>
+                        <td valign=top height=50%  >
+                         <table border="0" style=''>
+                           <tr>
+                             <td colspan='2' style='border-bottom: 2px groove white;text-align: center'>
+                               <b>DO EXERCÍCIO</b>
                              </td>
                            </tr>
                            <tr>
@@ -240,7 +293,7 @@ $clrotulo->label("o15_codigo");
                          <table border="0" style="border-left: 2px groove white">
                            <tr>
                              <td colspan='2' style='border-bottom: 2px groove white;text-align: center'>
-                              <b>DO EXERCICIO ANTERIOR</b>   
+                              <b>DO EXERCICIO ANTERIOR</b>
                              </td>
                            </tr>
                            <tr>
@@ -271,7 +324,7 @@ $clrotulo->label("o15_codigo");
                         <div style='overflow:scroll;scroll-x:hidden;height:210px;' id='retorno'></div>
                       </td>
                     </tr>
-                  </table>      
+                  </table>
                 </fieldset>
               </td>
             </tr>
@@ -284,7 +337,7 @@ $clrotulo->label("o15_codigo");
             </tr>
           </table>
       </form>
-    </center>    
+    </center>
   </body>
   <div id='dadosppa' style='display:none; border:2px outset black;background:#cccccc'>
   <fieldset>
@@ -295,13 +348,13 @@ $clrotulo->label("o15_codigo");
           db_ancora("<b>Perspectiva Cronograma:</b>","js_pesquisao125_cronogramaperspectiva(true);", 1);
          ?>
        </td>
-       <td> 
+       <td>
          <?
          db_input('o124_sequencial',10,$Io124_sequencial,true,'text',
                  1," onchange='js_pesquisao125_cronogramaperspectiva(false);'");
          db_input('o124_descricao',40,$Io124_descricao,true,'text',3,'')
          ?>
-       </td>  
+       </td>
      </tr>
      <tr>
         <td>
@@ -309,41 +362,41 @@ $clrotulo->label("o15_codigo");
           db_ancora("<b>Perspectiva PPA:</b>","js_pesquisa_ppa(true);", 1);
          ?>
        </td>
-       <td> 
+       <td>
          <?
          db_input('o119_sequencial',10,$Io124_sequencial,true,'text',
                  1," onchange='js_pesquisa_ppa(false);'");
          db_input('o119_descricao',40,$Io124_descricao,true,'text',3,'')
          ?>
-       </td>  
+       </td>
       </tr>
       <tr>
       <tr>
         <td colspan="4" style='text-align: center'>
           <input type="button" value='Fechar' onclick='js_fecharDadosPPa()'>
         </td>
-     </tr>  
+     </tr>
    </table>
    </fieldset>
   </div>
 </html>
-<? db_menu(db_getsession("DB_id_usuario"), 
-           db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>  
-           
+<? db_menu(db_getsession("DB_id_usuario"),
+           db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
+
 <script>
 var sUrlRPC = 'con4_processarpad.RPC.php';
 function js_processar() {
 
    if ($F('codigotce').trim() == "") {
-   
+
      alert('informe do código do Município no TCE!');
      return false;
    }
-   
+
    var oParam        = new Object();
    oParam.exec       = "processarSigap";
    oParam.iPeriodo   = $F('periodosigap');
-   
+
    oParam.aArquivos  = new Array();
    oParam.iCodigoTCE = $F('codigotce');
    oParam.iPerspectivaPPa        = $F('o119_sequencial');
@@ -352,69 +405,68 @@ function js_processar() {
    var lErroPPA        = false;
    var lErroCronograma = false;
    aArquivos.each(function (oCheckbox, id) {
-   
+
      with (oCheckbox) {
-     
-       if (checked) { 
-         
+
+       if (checked) {
+
          if (name == 'Ppa' ) {
-           
+
            if (oParam.iPerspectivaPPa == '') {
              lErroPPA = true;
            }
          }
          if ( name == 'PpaLoa' || name == 'LoaDespesa' || name == 'LoaReceita') {
-           
+
            if (oParam.iPerspectivaCronograma == '') {
              lErroCronograma = true;
-           } 
+           }
          }
          oParam.aArquivos.push(oCheckbox.name);
        }
      }
-     
+
    });
    if (lErroPPA) {
-   
+
      alert('Informe uma perspectiva do ppa');
      return false;
    }
    if (lErroCronograma) {
-   
+
      alert('Informe uma perspectiva do cronograma de desembolso!');
      return false;
    }
    js_divCarregando('Aguarde, Processando Arquivos', 'msgBox');
-   
+
    var oAjax = new Ajax.Request(sUrlRPC,
                                 {
                                   method:'post',
                                   parameters:'json='+Object.toJSON(oParam),
-                                  onComplete:js_retornoProcessaSigap 
+                                  onComplete:js_retornoProcessaSigap
                                 }
-                              ); 
+                              );
 }
 
 function js_retornoProcessaSigap(oAjax) {
-   
   js_removeObj('msgBox');
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
+
   if (oRetorno.status == 1) {
-    
+
     var sRetorno = "<b>Arquivos Gerados:</b><br>";
     sRetorno    += "Verifique o arquivo SIGAP.log.<br>";
     for (var i = 0; i < oRetorno.itens.length; i++) {
-
       with (oRetorno.itens[i]) {
-            
-        sRetorno += "<a  href='db_download.php?arquivo="+caminho+"'>"+nome+"</a><br>";
+
+        sRetorno += "<a download href='db_download.php?arquivo="+caminho+"'>"+nome+"</a><br>";
       }
     }
-    
+
     $('retorno').innerHTML = sRetorno;
   } else {
-    
+
     $('retorno').innerHTML = '';
     alert(oRetorno.message.urlDecode());
     return false;
@@ -426,27 +478,27 @@ function js_marcaTodos() {
   var aCheckboxes = $$('input[type=checkbox]');
   aCheckboxes.each(function(oCheckbox) {
     oCheckbox.checked = true;
-  }); 
+  });
 }
 
 function js_limpa() {
-   
+
   var aCheckboxes = $$('input[type=checkbox]');
   aCheckboxes.each(function (oCheckbox) {
     oCheckbox.checked = false;
-  }); 
+  });
 }
 function js_pesquisao125_cronogramaperspectiva(mostra) {
 
   if (mostra==true){
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_cronogramaperspectiva',
                         'func_cronogramaperspectiva.php?funcao_js='+
                         'parent.js_mostracronogramaperspectiva1|o124_sequencial|o124_descricao|o124_ano',
                         'Perspectivas do Cronograma',true);
   }else{
-     if ($F('o124_sequencial') != ''){ 
-        js_OpenJanelaIframe('top.corpo',
+     if ($F('o124_sequencial') != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_cronogramaperspectiva',
                             'func_cronogramaperspectiva.php?pesquisa_chave='+
                             $F('o124_sequencial')+
@@ -460,12 +512,12 @@ function js_pesquisao125_cronogramaperspectiva(mostra) {
 }
 
 function js_mostracronogramaperspectiva(chave,erro, ano) {
-  $('o124_descricao').value = chave; 
-  if(erro==true) { 
-    
-    $('o124_sequencial').focus(); 
+  $('o124_descricao').value = chave;
+  if(erro==true) {
+
+    $('o124_sequencial').focus();
     $('o124_sequencial').value = '';
-      
+
   }
 }
 
@@ -479,14 +531,14 @@ function js_mostracronogramaperspectiva1(chave1,chave2,chave3) {
 function js_pesquisa_ppa(mostra) {
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_ppa',
                         'func_ppaversaosigap.php?funcao_js='+
                         'parent.js_mostrappa1|o119_sequencial|o01_descricao',
                         'Perspectivas do Cronograma',true);
   }else{
-     if( $F('o119_sequencial') != ''){ 
-        js_OpenJanelaIframe('top.corpo',
+     if( $F('o119_sequencial') != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_ppa',
                             'func_ppaversaosigap.php?pesquisa_chave='+
                             $F('o119_sequencial')+
@@ -494,21 +546,21 @@ function js_pesquisa_ppa(mostra) {
                             'Perspectivas do Cronograma',
                             false);
      }else{
-     
+
        document.form1.o124_descricao.value = '';
        document.form1.ano.value             = ''
-        
+
      }
   }
 }
 
 function js_mostrappa(chave,erro, ano) {
-  $('o119_descricao').value = chave; 
-  if(erro==true) { 
-    
-    $('o119_sequencial').focus(); 
+  $('o119_descricao').value = chave;
+  if(erro==true) {
+
+    $('o119_sequencial').focus();
     $('o119_sequencial').value = '';
-      
+
   }
 }
 
@@ -519,10 +571,10 @@ function js_mostrappa1(chave1,chave2,chave3) {
   db_iframe_ppa.hide();
 }
 function js_pesquisaDadosPPA(event) {
-  
+
   js_posionaDivApos($('dadosppa'), event.target);
   $('dadosppa').style.display = '';
-  
+
 }
 function js_fecharDadosPPa() {
   $('dadosppa').style.display = 'none';
@@ -549,7 +601,7 @@ function js_posionaDivApos(sDiv, oObjeto) {
 var oMessageBoardUsuario = new DBMessageBoard("msg2",
                                        "Dados Solicitados: ",
                                        'Informe as perspectivas para o PPA e Cronograma de Desembolso',
-                                       $("dadosppa")    
+                                       $("dadosppa")
                                       );
    oMessageBoardUsuario.show();
 </script>

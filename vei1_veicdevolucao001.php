@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,206 +25,161 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_veicdevolucao_classe.php");
-require_once("classes/db_veicretirada_classe.php");
-require_once("classes/db_veiculos_classe.php");
-require_once("classes/db_veictipoabast_classe.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-db_app::import("veiculos.*");
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_veicdevolucao_classe.php"));
+require_once(modification("classes/db_veicretirada_classe.php"));
+require_once(modification("classes/db_veiculos_classe.php"));
+require_once(modification("classes/db_veictipoabast_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
+db_app::import("veiculos.*");
+db_postmemory($_POST);
 $oPost = db_utils::postMemory($_POST);
 
 $clveicdevolucao = new cl_veicdevolucao;
 $clveicretirada  = new cl_veicretirada;
 $clveiculos      = new cl_veiculos;
 $clveictipoabast = new cl_veictipoabast;
+$clveicabast = new cl_veicabast;
 
 $db_opcao = 1;
 $db_botao = true;
-$pesq=false;
+$pesq = false;
 $sqlerro = false;
+$msgErro = '';
 
 if (isset($incluir)) {
+    db_inicio_transacao();
+    try {
+        $dataDevolucao = DateTime::createFromFormat('d/m/Y', $ve61_datadevol);
+        $dataDevolucaoComHora = DateTime::createFromFormat('d/m/Y H:i', "{$ve61_datadevol} {$ve61_horadevol}");
+        $dataSaida = DateTime::createFromFormat('d/m/Y', $ve60_datasaida);
+        $dataSaidaComHora = DateTime::createFromFormat('d/m/Y H:i', "{$ve60_datasaida} {$ve60_horasaida}");
+        $medidaDevolucao = str_replace(".", "", $ve61_medidadevol);
+        $medidaSaida = str_replace(".", "", $ve60_medidasaida);
 
-
-  db_inicio_transacao();
-
-    /*
-     * Verificamos se ja foi realizada a devolução para esta retirada
-     */
-    $sSqlValidaDevolucao = $clveicdevolucao->sql_query_file(null, "ve61_codigo", null, "ve61_veicretirada = {$ve61_veicretirada}");
-    $rsDevolucao = $clveicdevolucao->sql_record($sSqlValidaDevolucao);
-    if ($clveicdevolucao->numrows > 0) {
-
-    	$iDevolucao                = db_utils::fieldsMemory($rsDevolucao, 0)->ve61_codigo;
-    	$sqlerro                   = true;
-    	$erro_msg                  = "Encontrada devolução {$iDevolucao} cadastrada para esta retirada!";
-
-    } else {
-      if ($sqlerro == false) {
-
-        $oDataAtual = new DBDate(date("Y-m-d",db_getsession("DB_datausu")));
-        $oDataDevolucao = new DBDate($oPost->ve61_datadevol);
-        $sHoraAtual = db_hora();
-
-        $oVeiculo = new Veiculo($oPost->ve60_veiculo);
-        $aAbastecimentos = $oVeiculo->getAbastecimentos();
-        $oUltimoAbastecimento = $aAbastecimentos[0];
-
-
-        $sHoraAbastecimento = str_replace(":", '', $oUltimoAbastecimento->getHoraInclusao());
-        $oPost->ve61_horadevol = str_replace(":", '', $oPost->ve61_horadevol);
-
-
-        if ($oUltimoAbastecimento->getDataAbastecimento()->getTimeStamp() > $oDataDevolucao->getTimeStamp()) {
-
-          $sqlerro = true;
-          $erro_msg = "Data do último abastecimento maior que a data da retirada do veículo.";
-
-        } else if ($oUltimoAbastecimento->getDataAbastecimento()->getTimeStamp() >= $oDataDevolucao->getTimeStamp() && $sHoraAbastecimento > $oPost->ve61_horadevol) {
-
-          $sqlerro = true;
-          $erro_msg = "A hora atual é menor que a hora do último abastecimento.";
-
-        } else {
-
-          $clveicdevolucao->ve61_usuario = db_getsession("DB_id_usuario");
-          $clveicdevolucao->ve61_data = $oDataAtual->getDate();
-          $clveicdevolucao->ve61_hora = $sHoraAtual;
-
-          $clveicdevolucao->incluir($ve61_codigo);
-          if ($clveicdevolucao->erro_status == "0") {
-            $sqlerro = true;
-            $erro_msg = $clveicdevolucao->erro_msg;
-          }
-
+        if ($dataDevolucaoComHora < $dataSaidaComHora) {
+            throw new Exception('Data e Hora de Devolução devem ser maiores ou iguais a Data e Hora de Retirada!');
         }
-      }
+
+        if ($medidaDevolucao < $medidaSaida) {
+            throw new Exception('Medida na Devolução deve ser maior que a Medida na Retirada!');
+        }
+
+        /*
+         * Verificamos se existem abastecimentos registrados para esse veículo,
+         * caso existam, verifica se a devolução é maior ou igual que a data e a hora do último abastecimento.
+         */
+        $campos = "ve70_dtabast, ve70_hora";
+        $where = "ve70_veiculos = {$ve60_veiculo} and ve73_veicretirada = {$ve61_veicretirada}";
+        $sqlAbastecimentosRealizados = $clveicabast->sql_query_info(null, $campos, 've70_dtabast DESC, ve70_hora DESC', $where);
+        $recordsetAbastecimentosRealizados = db_query($sqlAbastecimentosRealizados);
+        $abastecimentosRealizados = db_utils::getCollectionByRecord($recordsetAbastecimentosRealizados);
+
+        if (count($abastecimentosRealizados) > 0) {
+            $ultimoAbastecimento = $abastecimentosRealizados[0];
+            $ultimoAbastecimento = DateTime::createFromFormat('Y-m-d H:i', "{$ultimoAbastecimento->ve70_dtabast} {$ultimoAbastecimento->ve70_hora}");
+
+            if ($dataDevolucaoComHora  < $ultimoAbastecimento) {
+                throw new Exception('Data e Hora da Devolução não podem ser menores que Data e Hora do Abastecimento.');
+            }
+        }
+
+        /*
+         * Verificamos se ja foi realizada a devolução para esta retirada.
+         */
+        $sSqlValidaDevolucao = $clveicdevolucao->sql_query_file(null, "ve61_codigo", null, "ve61_veicretirada = {$ve61_veicretirada}");
+        $rsDevolucao = db_query($sSqlValidaDevolucao);
+        if (pg_numrows($rsDevolucao) > 0) {
+            $iDevolucao = db_utils::fieldsMemory($rsDevolucao, 0)->ve61_codigo;
+            throw new Exception("Encontrada devolução {$iDevolucao} cadastrada para esta retirada!");
+        }
+
+        if (!$sqlerro) {
+            $oDataAtual = new DBDate(date("Y-m-d", db_getsession("DB_datausu")));
+            $sHoraAtual = db_hora();
+
+            $clveicdevolucao->ve61_usuario = db_getsession("DB_id_usuario");
+            $clveicdevolucao->ve61_data = $oDataAtual->getDate();
+            $clveicdevolucao->ve61_hora = $sHoraAtual;
+            $clveicdevolucao->incluir($ve61_codigo);
+
+            if ($clveicdevolucao->erro_status == "0") {
+                $sqlerro = true;
+                $erro_msg = $clveicdevolucao->erro_msg;
+            }
+        }
+    } catch (Exception $e) {
+        $clveicdevolucao->erro_status = "0";
+        $sqlerro = true;
+        $clveicdevolucao->erro_msg = $e->getMessage();
+
+        db_fim_transacao(true);
     }
 
-//  die("<br>sqlerro $sqlerro<br>erro_msg $erro_msg<br>");
-
-  db_fim_transacao(false);
-
+    db_fim_transacao();
 } else if (isset($retirada)) {
-  $campos = "distinct ve61_veicretirada,ve60_codigo,ve60_veiculo,ve01_placa,ve60_datasaida,ve60_horasaida,ve60_medidasaida,ve60_veicmotoristas,ve61_veicmotoristas,z01_nome";
-  $result_util = $clveicretirada->sql_record($clveicretirada->sql_query_devol(null,$campos,null,"ve60_codigo=$retirada and ve61_codigo is null"));
+    $campos = "distinct ve61_veicretirada,ve60_codigo,ve60_veiculo,ve01_placa,ve60_datasaida,ve60_horasaida,ve60_medidasaida,ve60_veicmotoristas,ve61_veicmotoristas,z01_nome";
+    $result_util = $clveicretirada->sql_record($clveicretirada->sql_query_devol(null, $campos, null, "ve60_codigo=$retirada and ve61_codigo is null"));
 
-  if ($clveicretirada->numrows>0) {
-    db_fieldsmemory($result_util,0);
-    $ve61_veicmotoristas=$ve60_veicmotoristas;
-    $ve61_veicretirada=$ve60_codigo;
+    if ($clveicretirada->numrows > 0) {
+        db_fieldsmemory($result_util, 0);
+        $ve61_veicmotoristas = $ve60_veicmotoristas;
+        $ve61_veicretirada = $ve60_codigo;
 
-    $result = $clveiculos->sql_record($clveiculos->sql_query($ve60_veiculo,"ve01_veictipoabast"));
-    db_fieldsmemory($result,0);
+        $result = $clveiculos->sql_record($clveiculos->sql_query($ve60_veiculo, "ve01_veictipoabast"));
+        db_fieldsmemory($result, 0);
 
-    $result_veictipoabast = $clveictipoabast->sql_record($clveictipoabast->sql_query($ve01_veictipoabast,"ve07_sigla"));
-    if ($clveictipoabast->numrows > 0) {
-      db_fieldsmemory($result_veictipoabast,0);
-    }
-
-  } else {
-    echo "<script> ";
-    echo "  alert('Este veiculo ja foi devolvido!!'); ";
-    echo "  location.href='vei1_veicdevolucao001.php'; ";
-    echo "</script>";
-    exit;
-  }
-
-  $pesq=true;
-}
-?>
-<html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<?
-  db_app::load("prototype.js, scripts.js, strings.js, prototype.maskedinput.js");
-  db_app::load("estilos.css");
-?>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC style='margin-top: 25px' leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-	<?
-	require_once("forms/db_frmveicdevolucao.php");
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
- ?>
-</body>
-</html>
-<script>
-js_tabulacaoforms("form1","ve61_veicretirada",true,1,"ve61_veicretirada",true);
-</script>
-<?
-if(isset($incluir)){
-
-  if ($sqlerro && !empty($erro_msg)) {
-    $clveicdevolucao->erro_msg = $erro_msg;
-    $pesq = true;
-  }
-
-	if ($ve61_medidadevol > $ve60_medidasaida && $ve61_datadevol > $ve60_datasaida) {
-		if($clveicdevolucao->erro_status=="0"){
-			$clveicdevolucao->erro(true,false);
-			$db_botao=true;
-			echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-			if($clveicdevolucao->erro_campo!=""){
-				echo "<script> document.form1.".$clveicdevolucao->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-				echo "<script> document.form1.".$clveicdevolucao->erro_campo.".focus();</script>";
-			}
-		}else{
-			$clveicdevolucao->erro(true,true);
-		}
-	} else {
-		$clveicdevolucao->erro_status = "0";
-    $medidadevol = str_replace(".","",$ve61_medidadevol);
-    $medidasaida = str_replace(".","",$ve60_medidasaida);
-		if ($medidadevol < $medidasaida) {
-			$clveicdevolucao->erro_msg   = "Medida na devolucao deve ser maior que na retirada!";
-      $clveicdevolucao->erro_campo = "ve61_medidadevol";
-      $sqlerro = true;
-		} elseif ($ve61_datadevol < $ve60_datasaida) {
-			$clveicdevolucao->erro_msg   = "Data da devolucao deve ser maior ou igual a da retirada!";
-      $clveicdevolucao->erro_campo = "ve61_datadevol";
-      $sqlerro = true;
-		} else if ($ve61_horadevol < $ve60_horasaida && $ve61_datadevol <= $ve60_datasaida){
-  		$clveicdevolucao->erro_msg = $erro_msg;
-      $sqlerro = true;
-    } else if (isset($iDevolucao) && !empty($iDevolucao)) {
-    	$clveicdevolucao->erro_msg = $erro_msg;
-		} else {
-
-			if ($sqlerro == true){
-			  $clveicdevolucao->erro_msg = "Erro não registrado! Contate suporte!";
-			}
-      if ($sqlerro && !empty($erro_msg)) {
-        $clveicdevolucao->erro_msg = $erro_msg;
-      }
-		}
-    if ($sqlerro == true) {
-
-      $clveicdevolucao->erro(true,false);
-	  	$db_botao = true;
-      $pesq     = true;
-  		echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-  		if($clveicdevolucao->erro_campo!=""){
-  			echo "<script> document.form1.".$clveicdevolucao->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-  			echo "<script> document.form1.".$clveicdevolucao->erro_campo.".focus();</script>";
-  		}
+        $result_veictipoabast = $clveictipoabast->sql_record($clveictipoabast->sql_query($ve01_veictipoabast, "ve07_sigla"));
+        if ($clveictipoabast->numrows > 0) {
+            db_fieldsmemory($result_veictipoabast, 0);
+        }
     } else {
-			$clveicdevolucao->erro(true,true);
+        echo "<script> ";
+        echo "  alert('Este veiculo ja foi devolvido!!'); ";
+        echo "  location.href='vei1_veicdevolucao001.php'; ";
+        echo "</script>";
+        exit;
     }
-	}
+    $pesq = true;
 }
-if ($pesq==false){
-	echo "<script>js_pesquisaretirada();</script>";
+?>
+
+<html>
+
+<?php
+require_once(modification("forms/db_frmveicdevolucao.php"));
+db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit"));
+?>
+
+<script>
+    js_tabulacaoforms("form1", "ve61_veicretirada", true, 1, "ve61_veicretirada", true);
+</script>
+
+<?php
+if (isset($incluir)) {
+    if ($sqlerro) {
+        $clveicdevolucao->erro(true, false);
+        $db_botao = true;
+        $pesq     = true;
+        echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+        if ($clveicdevolucao->erro_campo != "") {
+            echo "<script> document.form1." . $clveicdevolucao->erro_campo . ".style.backgroundColor='#99A9AE';</script>";
+            echo "<script> document.form1." . $clveicdevolucao->erro_campo . ".focus();</script>";
+        }
+    } else {
+        $clveicdevolucao->erro(true, true);
+    }
 }
 
+if ($pesq == false) {
+    echo "<script>js_pesquisaretirada();</script>";
+}
 ?>
+
+</html>

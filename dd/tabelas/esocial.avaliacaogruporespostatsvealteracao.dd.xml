@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010318' name='avaliacaogruporespostatsvealteracao' description="avaliacaogruporespostatsvealteracao" prefix="eso23" label="avaliacaogruporespostatsvealteracao" type="0">
+  <fields>
+    <field codigo="1009955" 
+           campo_api='' 
+           name="eso23_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='avaliacaogruporespostatsvealteracao_eso23_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009956" 
+           campo_api='' 
+           name="eso23_avaliacaogruporesposta" 
+           conteudo="int4" 
+           description="Grupo de Resposta" 
+           inivalue="0" 
+           label="Grupo de Resposta" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Grupo de Resposta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009958" 
+           campo_api='' 
+           name="eso23_rhpessoal" 
+           conteudo="int4" 
+           description="Matrícula" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso23_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="eso23_rhpessoal" reference="rh01_regist" /> 
+    </foreignkey>
+    <foreignkey reference="avaliacaogruporesposta" inner='t'>
+      <fieldfk name="eso23_avaliacaogruporesposta" reference="db107_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,0 +1,17 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="p56_coddoc"                                       label="codigo" />
+        <campo campo="p56_descr"                                        label="descricao"   />
+        <campo campo="coalesce(p57_ouvidoriaobrigatorio, true)::int"    label="obrigatorio"   />
+    </campos>
+    <from tabela="procdoc"/>
+    <juncoes>
+        <join tipo="inner"  tabela="procdoctipo" condicao="p57_coddoc = p56_coddoc" />
+    </juncoes>
+    <filtros>
+        <filtro label="tipo_processo" condicao="p57_codigo = $tipo_processo" obrigatorio="false"/>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao   campos="codigo"/>
+</consulta>

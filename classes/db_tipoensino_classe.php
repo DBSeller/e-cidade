@@ -1,64 +1,64 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
 //CLASSE DA ENTIDADE tipoensino
-class cl_tipoensino { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ed36_i_codigo = 0; 
-   var $ed36_c_descr = null; 
-   var $ed36_c_abrev = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_tipoensino {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ed36_i_codigo = 0;
+   var $ed36_c_descr = null;
+   var $ed36_c_abrev = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 ed36_i_codigo = int8 = Código 
-                 ed36_c_descr = char(30) = Descrição 
-                 ed36_c_abrev = char(2) = Abreviatura 
+                 ed36_i_codigo = int8 = Código
+                 ed36_c_descr = char(30) = Descrição
+                 ed36_c_abrev = char(2) = Abreviatura
                  ";
-   //funcao construtor da classe 
-   function cl_tipoensino() { 
+   //funcao construtor da classe
+   function cl_tipoensino() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("tipoensino"); 
+     $this->rotulo = new rotulo("tipoensino");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -77,9 +77,9 @@ class cl_tipoensino {
      }
    }
    // funcao para inclusao
-   function incluir ($ed36_i_codigo){ 
+   function incluir ($ed36_i_codigo){
       $this->atualizacampos();
-     if($this->ed36_c_descr == null ){ 
+     if($this->ed36_c_descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "ed36_c_descr";
        $this->erro_banco = "";
@@ -88,7 +88,7 @@ class cl_tipoensino {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed36_c_abrev == null ){ 
+     if($this->ed36_c_abrev == null ){
        $this->erro_sql = " Campo Abreviatura nao Informado.";
        $this->erro_campo = "ed36_c_abrev";
        $this->erro_banco = "";
@@ -98,16 +98,16 @@ class cl_tipoensino {
        return false;
      }
      if($ed36_i_codigo == "" || $ed36_i_codigo == null ){
-       $result = db_query("select nextval('tipoensino_ed36_i_codigo_seq')"); 
+       $result = db_query("select nextval('tipoensino_ed36_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: tipoensino_ed36_i_codigo_seq do campo: ed36_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: tipoensino_ed36_i_codigo_seq do campo: ed36_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ed36_i_codigo = pg_result($result,0,0); 
+       $this->ed36_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from tipoensino_ed36_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $ed36_i_codigo)){
@@ -118,10 +118,10 @@ class cl_tipoensino {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ed36_i_codigo = $ed36_i_codigo; 
+         $this->ed36_i_codigo = $ed36_i_codigo;
        }
      }
-     if(($this->ed36_i_codigo == null) || ($this->ed36_i_codigo == "") ){ 
+     if(($this->ed36_i_codigo == null) || ($this->ed36_i_codigo == "") ){
        $this->erro_sql = " Campo ed36_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -130,17 +130,17 @@ class cl_tipoensino {
        return false;
      }
      $sql = "insert into tipoensino(
-                                       ed36_i_codigo 
-                                      ,ed36_c_descr 
-                                      ,ed36_c_abrev 
+                                       ed36_i_codigo
+                                      ,ed36_c_descr
+                                      ,ed36_c_abrev
                        )
                 values (
-                                $this->ed36_i_codigo 
-                               ,'$this->ed36_c_descr' 
-                               ,'$this->ed36_c_abrev' 
+                                $this->ed36_i_codigo
+                               ,'$this->ed36_c_descr'
+                               ,'$this->ed36_c_abrev'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Tipo de Ensino ($this->ed36_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -157,7 +157,7 @@ class cl_tipoensino {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->ed36_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -174,16 +174,16 @@ class cl_tipoensino {
        $resac = db_query("insert into db_acount values($acount,1010044,13289,'','".AddSlashes(pg_result($resaco,0,'ed36_c_abrev'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ed36_i_codigo=null) { 
+   function alterar ($ed36_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update tipoensino set ";
      $virgula = "";
-     if(trim($this->ed36_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed36_i_codigo"])){ 
+     if(trim($this->ed36_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed36_i_codigo"])){
        $sql  .= $virgula." ed36_i_codigo = $this->ed36_i_codigo ";
        $virgula = ",";
-       if(trim($this->ed36_i_codigo) == null ){ 
+       if(trim($this->ed36_i_codigo) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "ed36_i_codigo";
          $this->erro_banco = "";
@@ -193,10 +193,10 @@ class cl_tipoensino {
          return false;
        }
      }
-     if(trim($this->ed36_c_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed36_c_descr"])){ 
+     if(trim($this->ed36_c_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed36_c_descr"])){
        $sql  .= $virgula." ed36_c_descr = '$this->ed36_c_descr' ";
        $virgula = ",";
-       if(trim($this->ed36_c_descr) == null ){ 
+       if(trim($this->ed36_c_descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "ed36_c_descr";
          $this->erro_banco = "";
@@ -206,10 +206,10 @@ class cl_tipoensino {
          return false;
        }
      }
-     if(trim($this->ed36_c_abrev)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed36_c_abrev"])){ 
+     if(trim($this->ed36_c_abrev)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed36_c_abrev"])){
        $sql  .= $virgula." ed36_c_abrev = '$this->ed36_c_abrev' ";
        $virgula = ",";
-       if(trim($this->ed36_c_abrev) == null ){ 
+       if(trim($this->ed36_c_abrev) == null ){
          $this->erro_sql = " Campo Abreviatura nao Informado.";
          $this->erro_campo = "ed36_c_abrev";
          $this->erro_banco = "";
@@ -239,7 +239,7 @@ class cl_tipoensino {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Tipo de Ensino nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed36_i_codigo;
@@ -267,14 +267,14 @@ class cl_tipoensino {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ed36_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($ed36_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ed36_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -302,7 +302,7 @@ class cl_tipoensino {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Tipo de Ensino nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed36_i_codigo;
@@ -330,11 +330,11 @@ class cl_tipoensino {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -356,8 +356,8 @@ class cl_tipoensino {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $ed36_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $ed36_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -373,8 +373,8 @@ class cl_tipoensino {
      $sql2 = "";
      if($dbwhere==""){
        if($ed36_i_codigo!=null ){
-         $sql2 .= " where tipoensino.ed36_i_codigo = $ed36_i_codigo "; 
-       } 
+         $sql2 .= " where tipoensino.ed36_i_codigo = $ed36_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -390,8 +390,8 @@ class cl_tipoensino {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $ed36_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $ed36_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -407,8 +407,8 @@ class cl_tipoensino {
      $sql2 = "";
      if($dbwhere==""){
        if($ed36_i_codigo!=null ){
-         $sql2 .= " where tipoensino.ed36_i_codigo = $ed36_i_codigo "; 
-       } 
+         $sql2 .= " where tipoensino.ed36_i_codigo = $ed36_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

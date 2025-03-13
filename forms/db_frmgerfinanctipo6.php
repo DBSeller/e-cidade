@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -75,24 +75,29 @@ if (pg_numrows($rsParcelamentoDividaAtiva) == 0) {
 
     $v07_hist .= ($v07_hist != "" ? "<br>" : "") . "Inicia" . (pg_numrows($rsParcelamentoDividaAtiva) == 1 ? "l" : "is") . ":";
     
+    $aProcessoForo = array();
+
     for ($termoini = 0; $termoini < pg_numrows($rsParcelamentoDividaAtiva); $termoini++) {
       
       db_fieldsmemory($rsParcelamentoDividaAtiva, $termoini);
       $v07_hist .= $inicial . ($termoini == pg_numrows($rsParcelamentoDividaAtiva) - 1 ? "" : ",");
     
-      $sSqlProcessoForo  = " select v70_codforo                                                                                   ";
+      $sSqlProcessoForo  = " select distinct v70_codforo ";
       $sSqlProcessoForo .= " from processoforo                                                                                    ";
       $sSqlProcessoForo .= " inner join processoforoinicial on processoforoinicial.v71_processoforo = processoforo.v70_sequencial ";
-      $sSqlProcessoForo .= " where processoforoinicial.v71_inicial = {$inicial}                                                   ";
+      $sSqlProcessoForo .= " inner join termoini on termoini.inicial = processoforoinicial.v71_inicial ";
+      $sSqlProcessoForo .= " inner join termo on termo.v07_parcel = termoini.parcel  ";
+      $sSqlProcessoForo .= " where termo.v07_numpre = {$numpre} and v70_anulado is false order by v70_codforo ";
       
       $rsProcessoForo = db_query($sSqlProcessoForo);
       
-      $oDadosProcessoForo = db_utils::fieldsmemory($rsProcessoForo,0);
+      $aDadosProcessoForo = db_utils::getCollectionByRecord($rsProcessoForo);
       
+      foreach ($aDadosProcessoForo as $oDadosProcessoForo) {
       if (!in_array($oDadosProcessoForo->v70_codforo, $aProcessoForo)) {
         $aProcessoForo[] = $oDadosProcessoForo->v70_codforo;
       }
-  
+      }
     }
   
     $v70_codforo = implode(",", $aProcessoForo);
@@ -195,14 +200,14 @@ if (pg_numrows($rsParcelamentoDividaAtiva) == 0) {
 
   if ($inicial != '') {
     
-    require_once('classes/db_processoforoinicial_classe.php');
+    require_once(modification('classes/db_processoforoinicial_classe.php'));
     
     $clprocessoforoinicial = new cl_processoforoinicial();
     
     $sCampos  = " processoforoinicial.v71_inicial,     ";
     $sCampos .= " processoforoinicial.v71_data,        ";
     $sCampos .= " processoforoinicial.v71_id_usuario,  ";
-    $sCampos .= " processoforo.v70_codforo,            ";
+    // $sCampos .= " processoforo.v70_codforo,            ";
     $sCampos .= " processoforo.v70_vara                ";
     
     $sWhere  = " processoforoinicial.v71_inicial = {$inicial} and ";
@@ -357,14 +362,14 @@ if ($k03_tipo != 16) {
       </td>
     </tr>
     <?php
-      if(@$v70_codforo != '') {
+      if(!empty($v70_codforo)) :
     ?>
       <tr> 
         <td>C&oacute;digo do Processo do Foro:</td>
-        <td><?php echo @$v70_codforo; ?></td>
+        <td><?php echo str_replace(',', ', ', $v70_codforo); ?></td>
       </tr>
     <?php
-      }
+      endif;
     ?>
     <tr>    
     <td>Matr&iacute;cula Im&oacute;vel:</td>
@@ -504,6 +509,10 @@ if ($k03_tipo == 16) {
     		<td>C&oacute;digo Arrecada&ccedil;&atilde;o:</td>
     		<td><?php echo $k00_numpre; ?></td>
   		</tr>
+      <tr>
+        <td align="left">Hist&oacute;rico:</td>
+        <td> <?php echo @$v07_hist; ?> Protocolo: <?php echo $oProtocolo->v27_protprocesso; ?></td>
+      </tr>
   		<tr> 
     		<td>Matr&iacute;cula Im&oacute;vel:</td>
     		<td> 
@@ -524,6 +533,7 @@ if ($k03_tipo == 16) {
       		?>
     		</td>
   		</tr>
+      
   		
 		</table>
 		

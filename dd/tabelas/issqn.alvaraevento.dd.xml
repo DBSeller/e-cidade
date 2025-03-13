@@ -1,0 +1,105 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010593' name='issqn.alvaraevento' description="Tabela que guarda um alvará de eventos" prefix="q170" label="Alvará de Eventos" type="0">
+  <fields>
+    <field codigo="1011634" 
+           campo_api='' 
+           name="q170_codigo" 
+           conteudo="int8" 
+           description="Sequencial da tabela" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011635" 
+           campo_api='' 
+           name="q170_ordemservico" 
+           conteudo="int8" 
+           description="Ordem de serviço do alvara de eventos" 
+           inivalue="0" 
+           label="Ordem de Serviço" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ordem de Serviço" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011636" 
+           campo_api='' 
+           name="q170_certidaobombeiro" 
+           conteudo="varchar(50)" 
+           description="Certidão de bombeiros do alvará de eventos" 
+           inivalue="" 
+           label="Certidão de bombeiros" 
+           size="50" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Certidão de bombeiros" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011637" 
+           campo_api='' 
+           name="q170_dataemissao" 
+           conteudo="date" 
+           description="Data de emissão do alvará de eventos" 
+           inivalue="null" 
+           label="Data de Emissão" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de Emissão" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011638" 
+           campo_api='' 
+           name="q170_observacao" 
+           conteudo="text" 
+           description="Observação do alvará de eventos" 
+           inivalue="" 
+           label="Observação" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Observação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q170_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

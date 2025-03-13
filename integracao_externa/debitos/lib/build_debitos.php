@@ -1,4 +1,30 @@
 <?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 
 function build_debitos($oDebito, $aConfigConexao, $sArquivoLog, $sNomeScript, $sDebitosGera, $sData, $iInstit, $sSufixo) {
 
@@ -12,6 +38,12 @@ function build_debitos($oDebito, $aConfigConexao, $sArquivoLog, $sNomeScript, $s
 		db_log("Erro ao conectar na  ($sDataSource)...", $sArquivoLog);
 		return;
 	}
+
+    /* Define forma de aplicação da multa, usa a data de operação, ao invés do vencimento
+    */
+    if (file_exists("../../config/multa_dtoper_dtvenc.txt")){
+       $rsStartVariavel = db_query($pConexao, "select fc_putsession('DB_multa_dtoper_dtvenc', 'true');", $sArquivoLog);
+    }
 
 	$sSql = "SELECT fc_startsession();SET synchronous_commit TO off;SET application_name TO 'build_debitos_thread.php(build_debitos)';";
 	db_query($pConexao, $sSql, $sArquivoLog);
@@ -194,7 +226,7 @@ function build_debitos_processa($pConexao, $sArquivoLog, $sDebitosGera, $iInstit
 }
 
 
-function waitForThreads($iMaxThreads, $aThreads, $sArquivoLog) {
+function waitForThreads($iMaxThreads, &$aThreads, $sArquivoLog) {
 
 	do {
 		/* verifica status das threads */
@@ -207,7 +239,7 @@ function waitForThreads($iMaxThreads, $aThreads, $sArquivoLog) {
 
 }
 
-function waitForFinishThreads($iMaxThreads, $aThreads, $sArquivoLog) {
+function waitForFinishThreads($iMaxThreads, &$aThreads, $sArquivoLog) {
 
 	do {
 		/* verifica status das threads */

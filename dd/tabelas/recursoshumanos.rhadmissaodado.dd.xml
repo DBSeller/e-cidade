@@ -1,0 +1,528 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010841' name='recursoshumanos.rhadmissaodado' description="Dados de Admissão" prefix="h25" label="Dados de Admissão" type="0">
+  <fields>
+    <field codigo="1013515" 
+           campo_api='' 
+           name="h25_sequencial" 
+           conteudo="int4" 
+           description="Código Sequencial" 
+           inivalue="0" 
+           label="Código Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.rhadmissaodado_h25_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013516" 
+           campo_api='' 
+           name="h25_nrdispositivo" 
+           conteudo="varchar(80)" 
+           description="Número do Dispositivo" 
+           inivalue="" 
+           label="Número do Dispositivo" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Número do Dispositivo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013517" 
+           campo_api='' 
+           name="h25_nomeacao" 
+           conteudo="date" 
+           description="Data de Nomeação" 
+           inivalue="null" 
+           label="Nomeação" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Nomeação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013518" 
+           campo_api='' 
+           name="h25_irfonte" 
+           conteudo="int4" 
+           description="Declaração de IR na fonte" 
+           inivalue="0" 
+           label="Declaração de IR na fonte" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Declaração de IR na fonte" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013519" 
+           campo_api='' 
+           name="h25_referenciair" 
+           conteudo="varchar(20)" 
+           description="Referência" 
+           inivalue="" 
+           label="Referência" 
+           size="20" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Referência" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013520" 
+           campo_api='' 
+           name="h25_portariaaposentadoria" 
+           conteudo="varchar(20)" 
+           description="Portaria da Aposentadoria" 
+           inivalue="" 
+           label="Portaria da Aposentadoria" 
+           size="20" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Portaria da Aposentadoria" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013521" 
+           campo_api='' 
+           name="h25_dataaposentadoria" 
+           conteudo="date" 
+           description="Data da Aposentadoria" 
+           inivalue="null" 
+           label="Data da Aposentadoria" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data da Aposentadoria" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013522" 
+           campo_api='' 
+           name="h25_contaraposentadoria" 
+           conteudo="date" 
+           description="Data que começa a contar a aposentadoria" 
+           inivalue="null" 
+           label="A contar de" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="A contar de" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013523" 
+           campo_api='' 
+           name="h25_processoaposentadoria" 
+           conteudo="int4" 
+           description="Indica se a aposentadoria possui processo." 
+           inivalue="0" 
+           label="Processo Aposentadoria" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo Aposentadoria" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013524" 
+           campo_api='' 
+           name="h25_nrprocessoaposentadoria" 
+           conteudo="varchar(20)" 
+           description="Número do Processo da Aposentadoria" 
+           inivalue="" 
+           label="Número do Processo" 
+           size="20" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Número do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013525" 
+           campo_api='' 
+           name="h25_anoprocessoaposentadoria" 
+           conteudo="int4" 
+           description="Ano do processo de Aposentadoria" 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013526" 
+           campo_api='' 
+           name="h25_portariaexoneracao" 
+           conteudo="varchar(20)" 
+           description="Portaria da Exoneração" 
+           inivalue="" 
+           label="Portaria da Exoneração" 
+           size="20" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Portaria da Exoneração" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013527" 
+           campo_api='' 
+           name="h25_dataexoneracao" 
+           conteudo="date" 
+           description="Data da Exoneração" 
+           inivalue="null" 
+           label="Data da Exoneração" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data da Exoneração" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013528" 
+           campo_api='' 
+           name="h25_contarexoneracao" 
+           conteudo="date" 
+           description="Data que inicia a exoneração" 
+           inivalue="null" 
+           label="A contar de" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="A contar de" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013529" 
+           campo_api='' 
+           name="h25_processoexoneracao" 
+           conteudo="int4" 
+           description="Indica se existe processo de exoneração." 
+           inivalue="0" 
+           label="Processo Exoneração" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo Exoneração" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013530" 
+           campo_api='' 
+           name="h25_nrprocessoexoneracao" 
+           conteudo="varchar(20)" 
+           description="Número do Processo de Exoneração" 
+           inivalue="" 
+           label="Número do Processo" 
+           size="20" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Número do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013531" 
+           campo_api='' 
+           name="h25_anoprocessoexoneracao" 
+           conteudo="int4" 
+           description="Ano do processo de exoneração" 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013532" 
+           campo_api='' 
+           name="h25_portariareintegracao" 
+           conteudo="varchar(20)" 
+           description="Portaria da Reintegração" 
+           inivalue="" 
+           label="Portaria da Reintegração" 
+           size="20" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Portaria da Reintegração" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013533" 
+           campo_api='' 
+           name="h25_datareintegracao" 
+           conteudo="date" 
+           description="Data da Reintegração" 
+           inivalue="null" 
+           label="Data da Reintegração" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data da Reintegração" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013534" 
+           campo_api='' 
+           name="h25_processoreintegracao" 
+           conteudo="int4" 
+           description="Processo Reintegração" 
+           inivalue="0" 
+           label="Processo Reintegração" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo Reintegração" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013535" 
+           campo_api='' 
+           name="h25_nrprocessoreintegracao" 
+           conteudo="varchar(20)" 
+           description="Número do Processo da Reintegração" 
+           inivalue="" 
+           label="Número do Processo" 
+           size="20" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Número do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013536" 
+           campo_api='' 
+           name="h25_anoprocessoreintegracao" 
+           conteudo="int4" 
+           description="Ano do processo de reintegração" 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013537" 
+           campo_api='' 
+           name="h25_regist" 
+           conteudo="int4" 
+           description="Código da Matrícula" 
+           inivalue="0" 
+           label="Código da Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013538" 
+           campo_api='' 
+           name="h25_publicacaoexoneracao" 
+           conteudo="date" 
+           description="Data da Publicação da Exoneração" 
+           inivalue="null" 
+           label="Data da Publicação" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data da Publicação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013550" 
+           campo_api='' 
+           name="h25_instit" 
+           conteudo="int4" 
+           description="Código da Instituição" 
+           inivalue="0" 
+           label="Código da Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013555" 
+           campo_api='' 
+           name="h25_hipleg" 
+           conteudo="int4" 
+           description="Hipótese legal para contratação de trabalhador temporário. Campo para envio do eSocial." 
+           inivalue="0" 
+           label="Hipótese contratação temporária" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Hipótese contratação temporária" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013551" 
+           campo_api='' 
+           name="h25_dtbase" 
+           conteudo="int4" 
+           description="Data base adicionada devido ao eSocial." 
+           inivalue="0" 
+           label="Data Base" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Base" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="h25_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="admissao" inner='t'>
+      <fieldfk name="h25_regist" reference="h07_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

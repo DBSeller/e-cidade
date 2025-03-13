@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_rhpeslocaltrab_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhpeslocaltrab_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $oGet             = db_utils::postMemory($_GET);
 
@@ -42,9 +42,9 @@ $oGet             = db_utils::postMemory($_GET);
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<? 
+<?php 
   db_app::load('scripts.js, prototype.js, strings.js, datagrid.widget.js, windowAux.widget.js, DBViewManutencaoLocalTrabalho.classe.js');
-  db_app::load('dbmessageBoard.widget.js, dbtextField.widget.js, estilos.css, grid.style.css');
+  db_app::load('dbmessageBoard.widget.js, dbtextField.widget.js, dbtextFieldData.widget.js, estilos.css, grid.style.css');
 ?>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -52,8 +52,8 @@ $oGet             = db_utils::postMemory($_GET);
   <tr> 
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
     <center>
-      <?
-      include("forms/db_frmrhpeslocaltrab.php");
+      <?php
+      include(modification("forms/db_frmrhpeslocaltrab.php"));
       ?>
     </center>
     </td>

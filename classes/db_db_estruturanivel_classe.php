@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,33 +29,33 @@
 //CLASSE DA ENTIDADE db_estruturanivel
 class cl_db_estruturanivel { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
+   var $rotulo          = null; 
+   var $query_sql       = null; 
+   var $numrows         = 0; 
    var $numrows_incluir = 0; 
    var $numrows_alterar = 0; 
    var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   var $erro_status     = null; 
+   var $erro_sql        = null; 
+   var $erro_banco      = null;  
+   var $erro_msg        = null;  
+   var $erro_campo      = null;  
+   var $pagina_retorno  = null; 
    // cria variaveis do arquivo 
-   var $db78_codestrut = 0; 
-   var $db78_nivel = 0; 
-   var $db78_descr = null; 
-   var $db78_tamanho = 0; 
-   var $db78_inicio = 0; 
+   var $db78_codestrut  = 0; 
+   var $db78_nivel      = 0; 
+   var $db78_descr      = null; 
+   var $db78_tamanho    = 0; 
+   var $db78_inicio     = 0; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
-                 db78_codestrut = int8 = Código 
-                 db78_nivel = int4 = Nível 
-                 db78_descr = varchar(40) = Descrição 
-                 db78_tamanho = int4 = Tamanho 
-                 db78_inicio = int4 = Inicio 
-                 ";
-   //funcao construtor da classe 
+	 var $campos          = "
+					                 db78_codestrut = int8        = Código 
+					                 db78_nivel     = int4        = Nível 
+					                 db78_descr     = varchar(40) = Descrição 
+					                 db78_tamanho   = int4        = Tamanho 
+					                 db78_inicio    = int4        = Inicio 
+					                 ";
+					   //funcao construtor da classe 
    function cl_db_estruturanivel() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("db_estruturanivel"); 
@@ -73,42 +73,42 @@ class cl_db_estruturanivel {
    // funcao para atualizar campos
    function atualizacampos($exclusao=false) {
      if($exclusao==false){
-       $this->db78_codestrut = ($this->db78_codestrut == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_codestrut"]:$this->db78_codestrut);
-       $this->db78_nivel = ($this->db78_nivel == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_nivel"]:$this->db78_nivel);
-       $this->db78_descr = ($this->db78_descr == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_descr"]:$this->db78_descr);
-       $this->db78_tamanho = ($this->db78_tamanho == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_tamanho"]:$this->db78_tamanho);
-       $this->db78_inicio = ($this->db78_inicio == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_inicio"]:$this->db78_inicio);
+       $this->db78_codestrut  = ($this->db78_codestrut == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_codestrut"]:$this->db78_codestrut);
+       $this->db78_nivel      = ($this->db78_nivel == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_nivel"]:$this->db78_nivel);
+       $this->db78_descr      = ($this->db78_descr == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_descr"]:$this->db78_descr);
+       $this->db78_tamanho    = ($this->db78_tamanho == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_tamanho"]:$this->db78_tamanho);
+       $this->db78_inicio     = ($this->db78_inicio == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_inicio"]:$this->db78_inicio);
      }else{
-       $this->db78_codestrut = ($this->db78_codestrut == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_codestrut"]:$this->db78_codestrut);
-       $this->db78_nivel = ($this->db78_nivel == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_nivel"]:$this->db78_nivel);
+       $this->db78_codestrut  = ($this->db78_codestrut == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_codestrut"]:$this->db78_codestrut);
+       $this->db78_nivel      =  ($this->db78_nivel == ""?@$GLOBALS["HTTP_POST_VARS"]["db78_nivel"]:$this->db78_nivel);
      }
    }
    // funcao para inclusao
    function incluir ($db78_codestrut,$db78_nivel){ 
       $this->atualizacampos();
      if($this->db78_descr == null ){ 
-       $this->erro_sql = " Campo Descrição nao Informado.";
-       $this->erro_campo = "db78_descr";
-       $this->erro_banco = "";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_sql    = " Campo Descrição nao Informado.";
+       $this->erro_campo  = "db78_descr";
+       $this->erro_banco  = "";
+       $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
      }
      if($this->db78_tamanho == null ){ 
-       $this->erro_sql = " Campo Tamanho nao Informado.";
-       $this->erro_campo = "db78_tamanho";
-       $this->erro_banco = "";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_sql    = " Campo Tamanho nao Informado.";
+       $this->erro_campo  = "db78_tamanho";
+       $this->erro_banco  = "";
+       $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
      }
      if($this->db78_inicio == null ){ 
-       $this->erro_sql = " Campo Inicio nao Informado.";
-       $this->erro_campo = "db78_inicio";
-       $this->erro_banco = "";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_sql    = " Campo Inicio nao Informado.";
+       $this->erro_campo  = "db78_inicio";
+       $this->erro_banco  = "";
+       $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
@@ -116,17 +116,17 @@ class cl_db_estruturanivel {
        $this->db78_codestrut = $db78_codestrut; 
        $this->db78_nivel = $db78_nivel; 
      if(($this->db78_codestrut == null) || ($this->db78_codestrut == "") ){ 
-       $this->erro_sql = " Campo db78_codestrut nao declarado.";
-       $this->erro_banco = "Chave Primaria zerada.";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_sql    = " Campo db78_codestrut nao declarado.";
+       $this->erro_banco  = "Chave Primaria zerada.";
+       $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
      }
      if(($this->db78_nivel == null) || ($this->db78_nivel == "") ){ 
-       $this->erro_sql = " Campo db78_nivel nao declarado.";
-       $this->erro_banco = "Chave Primaria zerada.";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_sql    = " Campo db78_nivel nao declarado.";
+       $this->erro_banco  = "Chave Primaria zerada.";
+       $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
@@ -149,67 +149,70 @@ class cl_db_estruturanivel {
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Niveis das estruturas ($this->db78_codestrut."-".$this->db78_nivel) nao Incluído. Inclusao Abortada.";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_banco = "Niveis das estruturas já Cadastrado";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_sql     = "Niveis das estruturas ($this->db78_codestrut."-".$this->db78_nivel) nao Incluído. Inclusao Abortada.";
+         $this->erro_msg     = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_banco   = "Niveis das estruturas já Cadastrado";
+         $this->erro_msg    .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Niveis das estruturas ($this->db78_codestrut."-".$this->db78_nivel) nao Incluído. Inclusao Abortada.";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_sql     = "Niveis das estruturas ($this->db78_codestrut."-".$this->db78_nivel) nao Incluído. Inclusao Abortada.";
+         $this->erro_msg     = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg    .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
-       $this->erro_status = "0";
+       $this->erro_status    = "0";
        $this->numrows_incluir= 0;
        return false;
      }
-     $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
-         $this->erro_sql .= "Valores : ".$this->db78_codestrut."-".$this->db78_nivel;
-     $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-     $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-     $this->erro_status = "1";
-     $this->numrows_incluir= pg_affected_rows($result);
+     $this->erro_banco      = "";
+     $this->erro_sql        = "Inclusao efetuada com Sucesso\\n";
+         $this->erro_sql   .= "Valores : ".$this->db78_codestrut."-".$this->db78_nivel;
+     $this->erro_msg        = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+     $this->erro_msg       .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+     $this->erro_status     = "1";
+     $this->numrows_incluir = pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->db78_codestrut,$this->db78_nivel));
      if(($resaco!=false)||($this->numrows!=0)){
        $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
+       $acount= pg_result($resac,0,0);
        $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
        $resac = db_query("insert into db_acountkey values($acount,5694,'$this->db78_codestrut','I')");
        $resac = db_query("insert into db_acountkey values($acount,5695,'$this->db78_nivel','I')");
-       $resac = db_query("insert into db_acount values($acount,899,5694,'','".AddSlashes(pg_result($resaco,0,'db78_codestrut'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,899,5695,'','".AddSlashes(pg_result($resaco,0,'db78_nivel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,899,5696,'','".AddSlashes(pg_result($resaco,0,'db78_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,899,5697,'','".AddSlashes(pg_result($resaco,0,'db78_tamanho'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,899,5698,'','".AddSlashes(pg_result($resaco,0,'db78_inicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount    values($acount,899,5694,'','".AddSlashes(pg_result($resaco,0,'db78_codestrut'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount    values($acount,899,5695,'','".AddSlashes(pg_result($resaco,0,'db78_nivel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount    values($acount,899,5696,'','".AddSlashes(pg_result($resaco,0,'db78_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount    values($acount,899,5697,'','".AddSlashes(pg_result($resaco,0,'db78_tamanho'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount    values($acount,899,5698,'','".AddSlashes(pg_result($resaco,0,'db78_inicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
    // funcao para alteracao
    function alterar ($db78_codestrut=null,$db78_nivel=null) { 
-      $this->atualizacampos();
+     
+
+   	 $this->atualizacampos();
      $sql = " update db_estruturanivel set ";
      $virgula = "";
      if(trim($this->db78_codestrut)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db78_codestrut"])){ 
        $sql  .= $virgula." db78_codestrut = $this->db78_codestrut ";
        $virgula = ",";
        if(trim($this->db78_codestrut) == null ){ 
-         $this->erro_sql = " Campo Código nao Informado.";
-         $this->erro_campo = "db78_codestrut";
-         $this->erro_banco = "";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_sql    = " Campo Código nao Informado.";
+         $this->erro_campo  = "db78_codestrut";
+         $this->erro_banco  = "";
+         $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
          return false;
        }
      }
      if(trim($this->db78_nivel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db78_nivel"])){ 
+     	 $db78_nivel = $this->db78_nivel;
        $sql  .= $virgula." db78_nivel = $this->db78_nivel ";
        $virgula = ",";
        if(trim($this->db78_nivel) == null ){ 
-         $this->erro_sql = " Campo Nível nao Informado.";
-         $this->erro_campo = "db78_nivel";
-         $this->erro_banco = "";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_sql    = " Campo Nível nao Informado.";
+         $this->erro_campo  = "db78_nivel";
+         $this->erro_banco  = "";
+         $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
          return false;
@@ -219,10 +222,10 @@ class cl_db_estruturanivel {
        $sql  .= $virgula." db78_descr = '$this->db78_descr' ";
        $virgula = ",";
        if(trim($this->db78_descr) == null ){ 
-         $this->erro_sql = " Campo Descrição nao Informado.";
-         $this->erro_campo = "db78_descr";
-         $this->erro_banco = "";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_sql    = " Campo Descrição nao Informado.";
+         $this->erro_campo  = "db78_descr";
+         $this->erro_banco  = "";
+         $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
          return false;
@@ -232,10 +235,10 @@ class cl_db_estruturanivel {
        $sql  .= $virgula." db78_tamanho = $this->db78_tamanho ";
        $virgula = ",";
        if(trim($this->db78_tamanho) == null ){ 
-         $this->erro_sql = " Campo Tamanho nao Informado.";
-         $this->erro_campo = "db78_tamanho";
-         $this->erro_banco = "";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_sql    = " Campo Tamanho nao Informado.";
+         $this->erro_campo  = "db78_tamanho";
+         $this->erro_banco  = "";
+         $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
          return false;
@@ -245,10 +248,10 @@ class cl_db_estruturanivel {
        $sql  .= $virgula." db78_inicio = $this->db78_inicio ";
        $virgula = ",";
        if(trim($this->db78_inicio) == null ){ 
-         $this->erro_sql = " Campo Inicio nao Informado.";
-         $this->erro_campo = "db78_inicio";
-         $this->erro_banco = "";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_sql    = " Campo Inicio nao Informado.";
+         $this->erro_campo  = "db78_inicio";
+         $this->erro_banco  = "";
+         $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
          return false;
@@ -258,9 +261,11 @@ class cl_db_estruturanivel {
      if($db78_codestrut!=null){
        $sql .= " db78_codestrut = $this->db78_codestrut";
      }
+    
      if($db78_nivel!=null){
        $sql .= " and  db78_nivel = $this->db78_nivel";
      }
+ 
      $resaco = $this->sql_record($this->sql_query_file($this->db78_codestrut,$this->db78_nivel));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
@@ -281,33 +286,33 @@ class cl_db_estruturanivel {
            $resac = db_query("insert into db_acount values($acount,899,5698,'".AddSlashes(pg_result($resaco,$conresaco,'db78_inicio'))."','$this->db78_inicio',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = db_query($sql);
+       $result = db_query($sql);
      if($result==false){ 
-       $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Niveis das estruturas nao Alterado. Alteracao Abortada.\\n";
-         $this->erro_sql .= "Valores : ".$this->db78_codestrut."-".$this->db78_nivel;
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       $this->erro_status = "0";
+       $this->erro_banco      = str_replace("\n","",@pg_last_error());
+       $this->erro_sql        = "Niveis das estruturas nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql       .= "Valores : ".$this->db78_codestrut."-".$this->db78_nivel;
+       $this->erro_msg        = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg       .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status     = "0";
        $this->numrows_alterar = 0;
        return false;
      }else{
        if(pg_affected_rows($result)==0){
-         $this->erro_banco = "";
-         $this->erro_sql = "Niveis das estruturas nao foi Alterado. Alteracao Executada.\\n";
-         $this->erro_sql .= "Valores : ".$this->db78_codestrut."-".$this->db78_nivel;
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "1";
+         $this->erro_banco      = "";
+         $this->erro_sql        = "Niveis das estruturas nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql       .= "Valores : ".$this->db78_codestrut."-".$this->db78_nivel;
+         $this->erro_msg        = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg       .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status     = "1";
          $this->numrows_alterar = 0;
          return true;
        }else{
-         $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
-         $this->erro_sql .= "Valores : ".$this->db78_codestrut."-".$this->db78_nivel;
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "1";
+         $this->erro_banco      = "";
+         $this->erro_sql        = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql       .= "Valores : ".$this->db78_codestrut."-".$this->db78_nivel;
+         $this->erro_msg        = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg       .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status     = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
        } 

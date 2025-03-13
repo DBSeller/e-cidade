@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);
 //parse_str($HTTP_SERVER_VARS['HTTP_USER_AGENT']);
@@ -38,7 +38,7 @@ if($e_linux > 0){
 }else{
   $troca_linha = "\r\n";
 }
-global $cfpess,$subpes, $db21_codcli ;
+global $cfpess,$subpes,$d08_carnes;
 
 $subpes = db_anofolha().'/'.db_mesfolha();
 
@@ -67,7 +67,7 @@ db_criatermometro('calculo_folha','Concluido...','blue',1,'Efetuando Geracao do 
 <?
 
 global $db_config;
-db_selectmax("db_config","select cgc,email, db21_codcli , cgc from db_config where codigo = ".db_getsession("DB_instit"));
+db_selectmax("db_config","select cgc,email,lower(trim(munic)) as d08_carnes , cgc from db_config where codigo = ".db_getsession("DB_instit"));
 
 global $d08_cgc,$d08_email; 
 global $fopag_dtpago,

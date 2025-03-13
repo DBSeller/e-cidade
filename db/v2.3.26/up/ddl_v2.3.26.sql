@@ -207,9 +207,9 @@ CREATE  INDEX pensaocontabancaria_regist_in                      ON pensaocontab
 CREATE UNIQUE INDEX pensaocontabancaria_regist_numcgm_anousu_mesusu_contabancaria_in ON pensaocontabancaria(rh139_regist,rh139_numcgm,rh139_anousu,rh139_mesusu,rh139_contabancaria);
 
 
-update pensao set r52_codbco = '000' where r52_codbco not in ( select db90_codban from db_bancos );
 
-update rhpesbanco set rh44_codban = '000' where rh44_codban not in ( select db90_codban from db_bancos );
+
+
 
 --
 -- Migração
@@ -285,6 +285,8 @@ select nextval('rhpessoalmovcontabancaria_rh138_sequencial_seq'), *
 -- Migração da tabela pensao
 -- Tarefa 94718
 ---
+update pensao set r52_codbco = '000' where r52_codbco not in ( select db90_codban from db_bancos );
+
 create table w_migracao_pensao_bancoagencia as
  select nextval('bancoagencia_db89_sequencial_seq'), *
    from (

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
   //
-  include("fpdf151/pdf.php");
+  include(modification("fpdf151/pdf.php"));
   // variaveis de cabeçalho
   
   parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
   $sql=base64_decode($sql); 
   
-  $pega = @pg_exec("select * from db_gerador where codger=$codigo");
+  $pega = @db_query("select * from db_gerador where codger=$codigo");
   $tsql= @pg_result($pega,0,"sqlger");
   if(@$libera==true&&$tsql==$sql){
-    $busca= pg_exec("select * from db_gerador where codger=$codigo");
+    $busca= db_query("select * from db_gerador where codger=$codigo");
     $limite= pg_result($busca,0,5);
     $tvisualizacao= pg_result($busca,0,6);
     $intercalar1= pg_result($busca,0,7);
@@ -48,7 +48,7 @@
     $limite=0;
   }
   
-  $resultsql = pg_exec(str_replace('\\','',$sql." limit 1" ));
+  $resultsql = db_query(str_replace('\\','',$sql." limit 1" ));
   
   $rotulocampo = new rotulocampo;
   $clrotulolov = new rotulolov;
@@ -261,7 +261,7 @@ border: 2px outset #999999;
                   $largura =(($clrotulolov->tamanho>strlen($clrotulolov->titulo)?$clrotulolov->tamanho:strlen($clrotulolov->titulo))*2)+2;
 
                   if(@$libera==true&&$tsql==$sql){
-                    $consult= pg_exec("select * from db_gerpref where codger = $codigo");
+                    $consult= db_query("select * from db_gerpref where codger = $codigo");
                     $tcabecfonte =@pg_result($consult,$i,2);
                     $tcabectamanho = @pg_result($consult,$i,3);
                     $tcabecn = @pg_result($consult,$i,4);
@@ -404,7 +404,7 @@ border: 2px outset #999999;
               $largura =(($clrotulolov->tamanho>strlen($clrotulolov->titulo)?$clrotulolov->tamanho:strlen($clrotulolov->titulo))*2)+2;
 
               if(@$libera==true&&$tsql==$sql){
-                $consult= pg_exec("select * from db_gerpref where codger=$codigo");
+                $consult= db_query("select * from db_gerpref where codger=$codigo");
                 $tcorpfonte = @pg_result($consult,$i,12);
                 $tcorpopcao = @pg_result($consult,$i,13);
                 $tcorptamanho = @pg_result($consult,$i,14);

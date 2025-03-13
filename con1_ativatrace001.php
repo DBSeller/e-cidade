@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($_SERVER);
 db_postmemory($_POST);
 
@@ -88,12 +88,80 @@ if (!empty($lParametroExibeMenu) && $lParametroExibeMenu === "false") {
     <legend>Opções do Trace Log </legend>
 
     <fieldset class="separator">
+      <legend>DML</legend>
+      <table>
+        <tr>
+          <td>
+            <input type="checkbox" id="mostra_select" class="comandos" checked />
+          </td>
+          <td>
+            <label for="mostra_select" class="bold">Select</label>
+          </td>
+
+          <td>
+            <input type="checkbox" id="mostra_insert" class="comandos" checked />
+          </td>
+          <td>
+            <label for="mostra_insert" class="bold">Insert</label>
+          </td>
+
+          <td>
+            <input type="checkbox" id="mostra_update" class="comandos" checked />
+          </td>
+          <td>
+            <label for="mostra_update" class="bold">Update</label>
+          </td>
+
+          <td>
+            <input type="checkbox" id="mostra_delete" class="comandos" checked />
+          </td>
+          <td>
+            <label for="mostra_delete" class="bold">Delete</label>
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+
+    <fieldset class="separator">
+      <legend>DDL</legend>
+      <table>
+        <tr>
+          <td>
+            <input type="checkbox" id="mostra_create" class="comandos" checked />
+          </td>
+          <td>
+            <label for="mostra_create" class="bold">Create</label>
+          </td>
+
+          <td>
+            <input type="checkbox" id="mostra_alter" class="comandos" checked />
+          </td>
+          <td>
+            <label for="mostra_alter" class="bold">Alter</label>
+          </td>
+
+          <td>
+            <input type="checkbox" id="mostra_drop" class="comandos" checked />
+          </td>
+          <td>
+            <label for="mostra_drop" class="bold">Drop</label>
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+
+    <fieldset class="separator">
       <legend>Consultas SQL:</legend>
 
       <table class="form-container">
         <tr>
           <td><label for="mostra_account">Exibe Consultas do Account?</label></td>
           <td><input type="CHECKBOX" id="mostra_account" /></td>
+        </tr>
+
+        <tr>
+          <td><label for="mostra_consultas_padrao">Exibe Consultas Padrão?</label></td>
+          <td><input type="CHECKBOX" id="mostra_consultas_padrao" /></td>
         </tr>
       </table>
 
@@ -161,8 +229,6 @@ try {
       var oBotaoTestar     = document.getElementById('testar');
       var oBotaoAcompanhar = document.getElementById('btnAcompanharTraceLog');
 
-
-
       oBotaoAtivar.onclick = function() {
         salvarDados(true);
       };
@@ -196,7 +262,21 @@ try {
             }
           }
         );
-      }
+      };
+
+      $('mostra_select').onclick = function() {
+
+        $('mostra_account').disabled          = false;
+        $('mostra_consultas_padrao').disabled = false;
+        if( !$('mostra_select').checked ) {
+
+          $('mostra_account').disabled = true;
+          $('mostra_account').checked  = false;
+
+          $('mostra_consultas_padrao').disabled = true;
+          $('mostra_consultas_padrao').checked  = false;
+        }
+      };
 
       /**
        * Valida de tracelog está ativo
@@ -226,6 +306,7 @@ try {
             }
 
             document.getElementById('mostra_account').checked            = oResposta.oTracelog.lShowAccount;
+            document.getElementById('mostra_consultas_padrao').checked   = oResposta.oTracelog.lShowDefault;
             document.getElementById('mostra_nome_fonte').checked         = oResposta.oTracelog.lShowSourceInfo;
             document.getElementById('mostra_funcao').checked             = oResposta.oTracelog.lShowFunctionName;
             document.getElementById('mostra_horario').checked            = oResposta.oTracelog.lShowTime;
@@ -236,13 +317,26 @@ try {
             document.getElementById('testar').disabled                   = !oResposta.oTracelog.lActive;
             document.getElementById('btnAcompanharTraceLog').disabled    = !oResposta.oTracelog.lActive;
 
-            document.getElementById('mostra_account').disabled           = oResposta.oTracelog.lActive;
-            document.getElementById('mostra_nome_fonte').disabled        = oResposta.oTracelog.lActive;
-            document.getElementById('mostra_funcao').disabled            = oResposta.oTracelog.lActive;
-            document.getElementById('mostra_horario').disabled           = oResposta.oTracelog.lActive;
-            document.getElementById('mostra_backtrace_completo').disabled= oResposta.oTracelog.lActive;
+            if( oResposta.oTracelog.lActive === true ) {
 
-            document.getElementById('link_tracelog').href                = '#';
+              $$('.comandos').each(function( oElemento ) {
+
+                oElemento.checked  = false;
+                oElemento.disabled = true;
+              });
+
+              oResposta.oTracelog.aComandos.each( function( sComando ) {
+                $('mostra_' + sComando).checked = true;
+              });
+            }
+
+            document.getElementById('mostra_account').disabled            = oResposta.oTracelog.lActive;
+            document.getElementById('mostra_consultas_padrao').disabled   = oResposta.oTracelog.lActive;
+            document.getElementById('mostra_nome_fonte').disabled         = oResposta.oTracelog.lActive;
+            document.getElementById('mostra_funcao').disabled             = oResposta.oTracelog.lActive;
+            document.getElementById('mostra_horario').disabled            = oResposta.oTracelog.lActive;
+            document.getElementById('mostra_backtrace_completo').disabled = oResposta.oTracelog.lActive;
+            document.getElementById('link_tracelog').href                 = '#';
 
             if ( oResposta.oTracelog.sFilePath != '' ) {
 
@@ -250,12 +344,13 @@ try {
               document.getElementById('link_tracelog').onclick = function() {
                 js_arquivo_abrir( oResposta.oTracelog.sFilePath );
               };
-            };
+            }
 
           }}
         );
+
         return lAtivo;
-      };
+      }
 
       function salvarDados( lAtivo ) {
 
@@ -263,10 +358,27 @@ try {
         oDadosTraceLog.sExec             = "salvar";
         oDadosTraceLog.lActive           = lAtivo;
         oDadosTraceLog.lShowAccount      = document.getElementById('mostra_account').checked;
+        oDadosTraceLog.lShowDefault      = document.getElementById('mostra_consultas_padrao').checked;
         oDadosTraceLog.lShowSourceInfo   = document.getElementById('mostra_nome_fonte').checked;
         oDadosTraceLog.lShowFunctionName = document.getElementById('mostra_funcao').checked;
         oDadosTraceLog.lShowTime         = document.getElementById('mostra_horario').checked;
         oDadosTraceLog.lShowBackTrace    = document.getElementById('mostra_backtrace_completo').checked;
+        oDadosTraceLog.aComandos         = new Array();
+
+        $$('.comandos').each(function( oElemento ) {
+
+          if( oElemento.checked ) {
+
+            var aComandos = oElemento.id.split( '_' );
+            oDadosTraceLog.aComandos.push( aComandos[1] );
+          }
+        });
+
+        if( lAtivo && oDadosTraceLog.aComandos.length == 0 ) {
+
+          alert( 'É necessário selecionar ao menos um comando a ser exibido.' );
+          return;
+        }
 
         new Ajax.Request(
           "con1_ativatrace.RPC.php",
@@ -287,7 +399,7 @@ try {
             }
           }
         );
-      };
+      }
 
       function acompanharTraceLog() {
 
@@ -304,13 +416,13 @@ try {
                                   'scrollbars=1,' +
                                   'resizable=0');
         oJanela.moveTo(0,0);
-      };
+      }
 
     }
   )();
 } catch ( mErro ) {
   console.log(mErro);
-};
+}
 
   </script>
 </html>

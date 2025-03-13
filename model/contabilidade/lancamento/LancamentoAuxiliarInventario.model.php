@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("LancamentoAuxiliarBase.model.php");
-require_once("interfaces/ILancamentoAuxiliar.interface.php");
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
 
 /**
  * Model para executar os lançamentos auxiliares de um inventario
  * @author Bruno Silva      <bruno.silva@dbseller.com.br>
  * @author Jeferson Belmiro <jeferson.belmiro@dbseller.com.br>
  * @package contabilidade
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.12 $
  */
 class LancamentoAuxiliarInventario extends LancamentoAuxiliarBase implements ILancamentoAuxiliar {
 

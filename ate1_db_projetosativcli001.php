@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_projetosativcli_classe.php");
-include("classes/db_db_projetoscliente_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_projetosativcli_classe.php"));
+include(modification("classes/db_db_projetoscliente_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cldb_projetosativcli = new cl_db_projetosativcli;
@@ -100,7 +100,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_projetosativcli.php");
+	include(modification("forms/db_frmdb_projetosativcli.php"));
 	?>
     </center>
 	</td>
@@ -112,8 +112,8 @@ if(isset($incluir)){
 if(isset($alterar) || isset($excluir) || isset($incluir)){
     db_msgbox($erro_msg);
     if($clpagordemrec->erro_campo!=""){
-        echo "<script> document.form1.".$cldb_projetosativcli->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-        echo "<script> document.form1.".$cldb_projetosativcli->erro_campo.".focus();</script>";
+        echo "<script> document.form1.".@$cldb_projetosativcli->erro_campo.".style.backgroundColor='#99A9AE';</script>";
+        echo "<script> document.form1.".@$cldb_projetosativcli->erro_campo.".focus();</script>";
     }
 }
 ?>

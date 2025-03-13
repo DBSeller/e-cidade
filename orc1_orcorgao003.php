@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcorgao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clorcorgao = new cl_orcorgao;
@@ -58,7 +58,7 @@ if(isset($excluir)){
   													where o41_anousu in $aAnousu and o41_orgao = $o40_orgao ";
  		//echo ($sSqlOrgaoUnidade)."<br>";
  		$mensagem  = "Usuário:\\n\\nFalha ao excluir orgão !\\n\\n.";
- 		$rsSqlOrgaoUnidade = pg_query($sSqlOrgaoUnidade);
+ 		$rsSqlOrgaoUnidade = db_query($sSqlOrgaoUnidade);
  		if (pg_num_rows($rsSqlOrgaoUnidade) > 0) {
  			$lerro = true;
  			$rsSqlOrgao = $clorcorgao->sql_record($clorcorgao->sql_query_file(null,null,"o40_descr",null,"o40_orgao = $o40_orgao"));
@@ -76,7 +76,7 @@ if(isset($excluir)){
  		if (!$lerro)	{
  			$sSqlPpaDotacao  = "select * from ppadotacao where o08_orgao = $o40_orgao and  o08_ano in $aAnousu ";
  			//die($sSqlPpaDotacao);
- 			$rsSqlPpaDotacao = pg_query($sSqlPpaDotacao);
+ 			$rsSqlPpaDotacao = db_query($sSqlPpaDotacao);
  			if (pg_num_rows($rsSqlPpaDotacao) > 0) {
  				$lerro = true;
  				$mensagem  = "Usuário:\\n\\n";
@@ -128,7 +128,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcorgao.php");
+	include(modification("forms/db_frmorcorgao.php"));
 	?>
     </center>
 	</td>

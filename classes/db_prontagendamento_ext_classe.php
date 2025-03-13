@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: Ambulatorial
 //CLASSE DA ENTIDADE prontagendamento
-require_once("db_prontagendamento_classe.php");
+require_once(modification("classes/db_prontagendamento_classe.php"));
 class cl_prontagendamento_ext extends cl_prontagendamento  { 
    // funcao do sql 
    function sql_query_ext ( $s102_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 

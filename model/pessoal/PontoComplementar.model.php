@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once 'model/pessoal/Ponto.model.php';
-require_once 'model/pessoal/RegistroPonto.model.php';
+require_once modification("model/pessoal/Ponto.model.php");
+require_once modification("model/pessoal/RegistroPonto.model.php");
 
 /**
  * Defição do Ponto Complementar de Um servidor
@@ -81,7 +81,7 @@ class PontoComplementar extends Ponto {
    */
   public static function getRubricasAutomaticas() {
 
-    require_once 'model/pessoal/RubricaRepository.model.php';
+    require_once modification("model/pessoal/RubricaRepository.model.php");
 
     $aRetorno     = array();
     $iInstituicao = db_getsession("DB_instit");

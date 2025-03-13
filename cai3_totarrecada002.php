@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
-include("classes/db_iptuconstr_classe.php");
-include("classes/db_iptuconstrdemo_classe.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
+include(modification("classes/db_iptuconstr_classe.php"));
+include(modification("classes/db_iptuconstrdemo_classe.php"));
 db_postmemory($HTTP_SERVER_VARS);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 
@@ -81,7 +81,7 @@ $sql = "select k02_estorc,k02_drecei,round(sum(k00_valor),2) as k00_valor
         group by  k02_estorc,k02_drecei";
 }
 //die($sql);
-$rsResult = pg_query($sql); 
+$rsResult = db_query($sql); 
 $numrows  = pg_num_rows($rsResult);
 if ($numrows == 0){
     db_redireciona('db_erros.php?fechar=true&db_erro=Nao existem valores a serem listados para o filtro selecionado.');

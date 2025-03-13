@@ -1,0 +1,26 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+    <campos>
+        <campo campo="cp06_logradouro"     label="descricao_rua"/>
+        <campo campo="cp06_codlocalidade"  label="codigo_rua"/>
+        <campo campo="cp05_localidades"    label="descricao_cidade"/>
+        <campo campo="cp05_codlocalidades" label="codigo_cidade"/>
+        <campo campo="cp03_sigla"      label="codigo_estado"/>
+        <campo campo="cp03_estado"     label="descricao_estado"/>
+        <campo campo="cp01_codbairro"  label="codigo_bairro"/>
+        <campo campo="cp01_bairro"     label="descricao_bairro"/>
+        <campo campo="1"               label="codigo_pais"/>
+        <campo campo="'BRASIL'"        label="descricao_pais"/>
+    </campos>
+    <from tabela="ceplocalidades"/>
+    <juncoes>
+        <join tipo="left"  tabela="cepestados"     condicao=" cp05_sigla = cp03_sigla"/>
+        <join tipo="left"  tabela="ceplogradouros" condicao=" cp06_codlocalidade = cp05_codlocalidades"/>
+        <join tipo="left"  tabela="cepbairros"     condicao=" cp01_sigla = cp03_sigla and cp01_codbairro = cp06_codbairroinicial "/>
+    </juncoes>
+    <filtros>
+        <filtro label="cep" condicao=" (case when cp05_situacao = 'C' then cp06_cep else cp05_cepinicial end) = '$cep' " obrigatorio="true"/>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao campos="cp05_sigla,cp05_localidades, cp06_logradouro "/>
+</consulta>

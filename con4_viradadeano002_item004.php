@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -78,7 +78,7 @@ if ($sqlerro == false) {
     $sqldestino = "select * from empparamnum where e29_anousu =  $anodestino limit 1";
     $resultdestino = db_query($sqldestino);
     $linhasdestino = pg_num_rows($resultdestino);
-    include("classes/db_empparamnum_classe.php");
+    include(modification("classes/db_empparamnum_classe.php"));
     $clempparamnum = new cl_empparamnum;
     if (($linhasorigem > 0) && ($linhasdestino == 0 )) {
       for ($e=0; $e<$linhasorigem; $e++) {

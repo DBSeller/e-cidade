@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -30,7 +30,7 @@
  * @author Matheus Felini <matheus.felini@dbseller.com.br>
  * @package orcamento
  * @subpackage programa
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.7 $
  *
  * @todo
  * model construído de forma básica, é necessário implementar as demais propriedades e métodos.
@@ -217,18 +217,23 @@ class ProgramaProjetoAtividade {
   /**
    * Remove o vínculo entre a iniciativa e um projeto/atividade
    * @param ProgramaIniciativa $oProgramaIniciativa
-   * @throws BusinessException
+   * @throws BusinessException|Exception
    * @return boolean true
    */
   public function removerIniciativa(ProgramaIniciativa $oProgramaIniciativa) {
 
+    $oProjetoAtividade = $oProgramaIniciativa->getProjetoAtividade();
+    if (empty($oProjetoAtividade)) {
+      throw new Exception("Não foi encontrado o Projeto/Atividade para a Iniciativa {$oProgramaIniciativa->getDescricao()}.");
+    }
+
   	$iCodigoProjeto        = $oProgramaIniciativa->getProjetoAtividade()->getCodigo();
     $oDaoVinculoIniciativa = db_utils::getDao("orciniciativavinculoprojativ");
-    
+
     $sWhereExclusao  = "     o149_iniciativa = {$oProgramaIniciativa->getCodigoSequencial()} ";
-    $sWhereExclusao .= " and o149_projativ   = {$this->iCodigoProjeto} ";
+    $sWhereExclusao .= " and o149_projativ   = {$iCodigoProjeto} ";
     $sWhereExclusao .= " and o149_anousu    >= {$this->iAno} ";
-    
+
     $oDaoVinculoIniciativa->excluir(null, $sWhereExclusao);
     if ($oDaoVinculoIniciativa->erro_status == "0") {
       throw new BusinessException("Não foi possível excluir o vínculo entre a iniciativa e o projeto/atividade.");

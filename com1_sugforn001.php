@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_pcsugforn_classe.php");
-require_once("classes/db_solicitem_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("model/CgmFactory.model.php");
-require_once("model/fornecedor.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_pcsugforn_classe.php"));
+require_once(modification("classes/db_solicitem_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/fornecedor.model.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
 $clpcsugforn = new cl_pcsugforn;
 $clsolicitem = new cl_solicitem;
 $clpcparam   = new cl_pcparam;
+$clSolicita  = new cl_solicita;
 
 $db_opcao         = 22;
 $db_botao         = false;
@@ -54,6 +55,11 @@ if(isset($alterar) || isset($excluir) || isset($incluir) || isset($opcao)){
   $clpcsugforn->pc40_solic = $pc40_solic;
   $clpcsugforn->pc40_numcgm = $pc40_numcgm;
   if(isset($incluir)){
+    if ($clSolicita->possuiFornecedorSugerido($pc40_solic) === true) {
+      $sqlerro = true;
+      $erro_msg  = 'Solicitação já possui fornecedor sugerido.';
+    }
+
     if($sqlerro==false){
       db_inicio_transacao();
       
@@ -118,7 +124,7 @@ if(isset($alterar) || isset($excluir) || isset($incluir) || isset($opcao)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 			<?
-			  include("forms/db_frmsugforn.php");
+			  include(modification("forms/db_frmsugforn.php"));
 			?>
     </center>
 	</td>

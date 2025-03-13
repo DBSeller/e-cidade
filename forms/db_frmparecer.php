@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -133,7 +133,7 @@ function js_salvar() {
 function js_retornaSalvar(oAjax) {
 
 	js_removeObj("msgBox");
-	var oRetorno = eval('('+oAjax.responseText+')');
+	var oRetorno = JSON.parse(oAjax.responseText);
 
   alert(oRetorno.message.urlDecode());
 	if (oRetorno.status == 1) {
@@ -149,7 +149,7 @@ function js_retornaSalvar(oAjax) {
 
     parent.document.formaba.a2.disabled = false;
     parent.document.formaba.a2.style.color = "black";
-	  top.corpo.iframe_a2.location.href = sUrlAbaTurmas;
+	  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href = sUrlAbaTurmas;
 	  parent.mo_camada("a2");
   }
 
@@ -174,7 +174,7 @@ function js_carregarParecer(iParecer) {
 function js_retornaParecer(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   var oListaPeriodos             = $('lista_periodos');
   var oListaDisciplinas          = $('lista_disciplinas');
@@ -223,7 +223,7 @@ function js_retornaParecer(oAjax) {
 
   parent.document.formaba.a2.disabled    = false;
   parent.document.formaba.a2.style.color = "black";
-  top.corpo.iframe_a2.location.href      = sUrlAbaTurmas;
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = sUrlAbaTurmas;
 }
 
 
@@ -244,7 +244,7 @@ function js_excluirParecer() {
 
 function js_retornoExcluiParecer(oAjax) {
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
   document.form1.pesquisar.click();
   document.form1.reset();
@@ -326,7 +326,7 @@ function js_apagarLinha(oAux) {
 
 function js_retornaApagarLinha(oAjax) {
 
-	var oRetorno = eval('('+oAjax.responseText+')');
+	var oRetorno = JSON.parse(oAjax.responseText);
 
 	if (oRetorno.status == 1) {
 

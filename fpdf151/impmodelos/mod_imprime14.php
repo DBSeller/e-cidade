@@ -164,7 +164,7 @@ $this->objpdf->AliasNbPages();
   //$this->objpdf->text($xcol+10,$xlin+236,"NO RODAPÉ DAS NOTAS FISCAIS DEVERÁ CONSTAR OBRIGATORIAMENTE:");
 
 
-include ("classes/db_db_config_classe.php");
+include(modification("classes/db_db_config_classe.php"));
 $cldb_config = new cl_db_config;
 
 /*

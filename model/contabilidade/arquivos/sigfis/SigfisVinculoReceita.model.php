@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,7 +30,6 @@
  * @author andrio.costa@dbseller.combr
  * @package contabilidade
  * @subpackage sigfis
- *
  */
 class SigfisVinculoReceita {
 
@@ -62,7 +61,7 @@ class SigfisVinculoReceita {
    * Retorna a instancia da classe
    * @return SigfisVinculoReceita
    */
-  protected function getInstance() {
+  protected static function getInstance() {
 
     if (self::$oInstance == null) {
       self::$oInstance = new SigfisVinculoReceita();
@@ -73,9 +72,9 @@ class SigfisVinculoReceita {
   /**
    * Verifica se a Receita passada no paramento possui vinculo com o sigfis
    * @param integer $iCodigoReceita codigo da Receita do e-cidade (orcfontes.o57_codfon)
-   * @return retorna objeto do vinculo , ou false em caso de nao existir o vinculo.
+   * @return integer|null retorna objeto do vinculo , ou false em caso de nao existir o vinculo.
    */
-  public function getVinculoReceita($iCodigoReceita) {
+  public static function getVinculoReceita($iCodigoReceita) {
    
     $aReceitas  = self::getInstance()->aListaReceita;
     $mRetorno = false;
@@ -90,4 +89,3 @@ class SigfisVinculoReceita {
     return $mRetorno;
   }
 }
-?>

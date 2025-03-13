@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -86,7 +86,7 @@ class cl_emprestimolocal {
        return false;
      }
      if($bi20_codigo == "" || $bi20_codigo == null ){
-       $result = @pg_query("select nextval('emprestimolocal_bi20_codigo_seq')"); 
+       $result = @db_query("select nextval('emprestimolocal_bi20_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: emprestimolocal_bi20_codigo_seq do campo: bi20_codigo"; 
@@ -97,7 +97,7 @@ class cl_emprestimolocal {
        }
        $this->bi20_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from emprestimolocal_bi20_codigo_seq");
+       $result = @db_query("select last_value from emprestimolocal_bi20_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $bi20_codigo)){
          $this->erro_sql = " Campo bi20_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -125,7 +125,7 @@ class cl_emprestimolocal {
                                 $this->bi20_codigo 
                                ,'$this->bi20_descr' 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -151,11 +151,11 @@ class cl_emprestimolocal {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->bi20_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,1008157,'$this->bi20_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,1008025,1008157,'','".AddSlashes(pg_result($resaco,0,'bi20_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1008025,1008158,'','".AddSlashes(pg_result($resaco,0,'bi20_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,1008157,'$this->bi20_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,1008025,1008157,'','".AddSlashes(pg_result($resaco,0,'bi20_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1008025,1008158,'','".AddSlashes(pg_result($resaco,0,'bi20_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -197,16 +197,16 @@ class cl_emprestimolocal {
      $resaco = $this->sql_record($this->sql_query_file($this->bi20_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1008157,'$this->bi20_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,1008157,'$this->bi20_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["bi20_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,1008025,1008157,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_codigo'))."','$this->bi20_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1008025,1008157,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_codigo'))."','$this->bi20_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["bi20_descr"]))
-           $resac = pg_query("insert into db_acount values($acount,1008025,1008158,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_descr'))."','$this->bi20_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1008025,1008158,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_descr'))."','$this->bi20_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Local de Empréstimo nao Alterado. Alteracao Abortada.\\n";
@@ -247,11 +247,11 @@ class cl_emprestimolocal {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1008157,'$bi20_codigo','E')");
-         $resac = pg_query("insert into db_acount values($acount,1008025,1008157,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1008025,1008158,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,1008157,'$bi20_codigo','E')");
+         $resac = db_query("insert into db_acount values($acount,1008025,1008157,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008025,1008158,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from emprestimolocal
@@ -267,7 +267,7 @@ class cl_emprestimolocal {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Local de Empréstimo nao Excluído. Exclusão Abortada.\\n";
@@ -301,7 +301,7 @@ class cl_emprestimolocal {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

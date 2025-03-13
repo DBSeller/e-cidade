@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010268' name='esocial.afastamentosesocial' description="Configuração de afastamentos que são considerados para o eSocial." prefix="eso08" label="Afastamentos do eSocial" type="0">
+  <fields>
+    <field codigo="1009674" 
+           campo_api='' 
+           name="eso08_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.afastamentosesocial_eso08_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009675" 
+           campo_api='' 
+           name="eso08_tipoasse" 
+           conteudo="int4" 
+           description="Vínculo com o tipo de assentamento." 
+           inivalue="0" 
+           label="Tipo de Assentamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Assentamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009700" 
+           campo_api='' 
+           name="eso08_grupomotivoafastamentoesocial" 
+           conteudo="int4" 
+           description="Vínculo com o grupo de afastamento do eSocial." 
+           inivalue="0" 
+           label="Grupo de motivo de afastamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Grupo de motivo de afastamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso08_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="tipoasse" inner='t'>
+      <fieldfk name="eso08_tipoasse" reference="h12_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="grupomotivoafastamentoesocial" inner='t'>
+      <fieldfk name="eso08_grupomotivoafastamentoesocial" reference="eso10_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

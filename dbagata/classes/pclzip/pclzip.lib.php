@@ -169,7 +169,7 @@
   //   Note that no real action is taken, if the archive does not exist it is not
   //   created. Use create() for that.
   // --------------------------------------------------------------------------------
-  function PclZip($p_zipname)
+  function __construct($p_zipname)
   {
     //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, 'PclZip::PclZip', "zipname=$p_zipname");
 
@@ -250,7 +250,7 @@
     // ----- Look for arguments
     if ($v_size > 1) {
       // ----- Get the arguments
-      $v_arg_list = &func_get_args();
+      $v_arg_list = func_get_args();
 
       // ----- Remove form the options list the first argument
       array_shift($v_arg_list);
@@ -413,7 +413,7 @@
     // ----- Look for arguments
     if ($v_size > 1) {
       // ----- Get the arguments
-      $v_arg_list = &func_get_args();
+      $v_arg_list = func_get_args();
 
       // ----- Remove form the options list the first argument
       array_shift($v_arg_list);
@@ -652,7 +652,7 @@
     // ----- Look for arguments
     if ($v_size > 0) {
       // ----- Get the arguments
-      $v_arg_list = &func_get_args();
+      $v_arg_list = func_get_args();
 
       // ----- Look for first arg
       if ((is_integer($v_arg_list[0])) && ($v_arg_list[0] > 77000)) {
@@ -810,7 +810,7 @@
     // ----- Look for arguments
     if ($v_size > 1) {
       // ----- Get the arguments
-      $v_arg_list = &func_get_args();
+      $v_arg_list = func_get_args();
 
       // ----- Remove form the options list the first argument
       array_shift($v_arg_list);
@@ -961,7 +961,7 @@
     }
 
     // ----- Get the arguments
-    $v_arg_list = &func_get_args();
+    $v_arg_list = func_get_args();
 
     // ----- Parse the options
     $v_result = $this->privParseOptions($v_arg_list, $v_size, $v_options,
@@ -3945,9 +3945,9 @@
 	if ($p_local_header['mtime'] != $p_central_header['mtime']) {
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "mtime" : TBC To Be Completed');
 	}
-	if ($p_local_header['filename_len'] != $p_central_header['filename_len']) {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "filename_len" : TBC To Be Completed');
-	}
+	// if ($p_local_header['filename_len'] != $p_central_header['filename_len']) {
+  //       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "filename_len" : TBC To Be Completed');
+	// }
 
 	// ----- Look for flag bit 3
 	if (($p_local_header['flag'] & 8) == 8) {
@@ -5201,6 +5201,3 @@
     return $p_path;
   }
   // --------------------------------------------------------------------------------
-
-
-?>

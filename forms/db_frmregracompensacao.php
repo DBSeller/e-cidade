@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -196,10 +196,10 @@ function js_verificaPercentual(oInput) {
       
 function js_pesquisak155_tiporegracompensacao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tiporegracompensacao','func_tiporegracompensacao.php?funcao_js=parent.js_mostratiporegracompensacao|k154_sequencial|k154_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiporegracompensacao','func_tiporegracompensacao.php?funcao_js=parent.js_mostratiporegracompensacao|k154_sequencial|k154_descricao','Pesquisa',true);
   }else{
      if(document.form1.k155_tiporegracompensacao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tiporegracompensacao','func_tiporegracompensacao.php?pesquisa_chave='+document.form1.k155_tiporegracompensacao.value+'&funcao_js=parent.js_mostratiporegracompensacaohide','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiporegracompensacao','func_tiporegracompensacao.php?pesquisa_chave='+document.form1.k155_tiporegracompensacao.value+'&funcao_js=parent.js_mostratiporegracompensacaohide','Pesquisa',false);
      }else{
        document.form1.k154_sequencial.value = ''; 
      }
@@ -222,10 +222,10 @@ function js_mostratiporegracompensacao(chave1,chave2){
 
 function js_pesquisak155_arretipoorigem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipoorigem|k00_tipo|k00_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipoorigem|k00_tipo|k00_descr','Pesquisa',true);
   }else{
      if(document.form1.k155_arretipoorigem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k155_arretipoorigem.value+'&funcao_js=parent.js_mostraarretipoorigemhide','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k155_arretipoorigem.value+'&funcao_js=parent.js_mostraarretipoorigemhide','Pesquisa',false);
      }else{
        document.form1.k00_descricaoorigem.value = ''; 
      }
@@ -247,15 +247,15 @@ function js_mostraarretipoorigem(chave1,chave2){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_regracompensacao','func_regracompensacao.php?funcao_js=parent.js_preenchepesquisa|k155_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_regracompensacao','func_regracompensacao.php?funcao_js=parent.js_preenchepesquisa|k155_sequencial','Pesquisa',true);
 }
 
 function js_pesquisak155_arretipodestino(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipodestino|k00_tipo|k00_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipodestino|k00_tipo|k00_descr','Pesquisa',true);
   }else{
      if(document.form1.k155_arretipodestino.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k155_arretipodestino.value+'&funcao_js=parent.js_mostraarretipodestinohide','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k155_arretipodestino.value+'&funcao_js=parent.js_mostraarretipodestinohide','Pesquisa',false);
      }else{
        document.form1.k00_descricaodestino.value = ''; 
      }
@@ -278,7 +278,7 @@ function js_mostraarretipodestino(chave1,chave2){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_regracompensacao','func_regracompensacao.php?funcao_js=parent.js_preenchepesquisa|k155_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_regracompensacao','func_regracompensacao.php?funcao_js=parent.js_preenchepesquisa|k155_sequencial','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave){

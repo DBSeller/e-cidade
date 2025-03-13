@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_aguacortemat_classe.php");
-include("classes/db_aguacortematmov_classe.php");
-include("classes/db_aguacortematnumpre_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_aguacortemat_classe.php"));
+include(modification("classes/db_aguacortematmov_classe.php"));
+include(modification("classes/db_aguacortematnumpre_classe.php"));
 $claguacortemat = new cl_aguacortemat;
   /*
 $claguacortematmov = new cl_aguacortematmov;
@@ -74,7 +74,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmaguacortemat.php");
+	include(modification("forms/db_frmaguacortemat.php"));
 	?>
     </center>
 	</td>
@@ -99,9 +99,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.aguacortematmov.disabled=false;
-         top.corpo.iframe_aguacortematmov.location.href='agu1_aguacortematmov001.php?x42_codmov=".@$x42_codmov."&x42_codcortemat=".@$x41_codcortemat."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguacortematmov.location.href='agu1_aguacortematmov001.php?x42_codmov=".@$x42_codmov."&x42_codcortemat=".@$x41_codcortemat."';
          parent.document.formaba.aguacortematnumpre.disabled=false;
-         top.corpo.iframe_aguacortematnumpre.location.href='agu1_aguacortematnumpre001.php?x44_codcortematnumpre=".@$x41_codcortematnumpre."&x44_codcortemat=".@$x41_codcortemat."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguacortematnumpre.location.href='agu1_aguacortematnumpre001.php?x44_codcortematnumpre=".@$x41_codcortematnumpre."&x44_codcortemat=".@$x41_codcortemat."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('aguacortematmov');";

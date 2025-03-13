@@ -61,7 +61,7 @@ db_input('fa30_c_concentracao',50,$Ifa30_c_concentracao,true,'text',$db_opcao,""
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_concentracao','func_far_concentracao.php?funcao_js=parent.js_preenchepesquisa|fa30_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_concentracao','func_far_concentracao.php?funcao_js=parent.js_preenchepesquisa|fa30_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_concentracao.hide();

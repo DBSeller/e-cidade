@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,18 +28,18 @@
 /**
  * 
  * @author Iuri Guntchnigg
- * @revision $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.5 $
  */
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("libs/db_liborcamento.php");
-include("fpdf151/assinatura.php");
-include("classes/db_orcparamrel_classe.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_libtxt.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oGet = db_utils::postMemory($_GET);
 
 $aMes = array( 1 => "janeiro",
@@ -84,7 +84,7 @@ $sSqlProgramas   .= "       inner join orcprograma on o54_anousu   = o87_orcprog
 $sSqlProgramas   .= "                             and o54_programa = o87_pactoprograma  ";
 $sSqlProgramas   .= " where o87_pactoplano = {$oGet->iPlano}";
 $rsProgramas      = db_query($sSqlProgramas);
-$aProgramas       = db_utils::getColectionByRecord($rsProgramas);
+$aProgramas       = db_utils::getCollectionByRecord($rsProgramas);
 
 $iTotalProgramas  = count($aProgramas); 
 /*
@@ -114,7 +114,7 @@ for ($iProg = 0; $iProg < $iTotalProgramas; $iProg++) {
   $sSqlProjetos   .= " where o87_pactoplano = {$oGet->iPlano} ";
   $sSqlProjetos   .= "   and o87_pactoprograma = {$aProgramas[$iProg]->o87_pactoprograma}";
   $rsProjetos      = db_query($sSqlProjetos);
-  $aProjetos       = db_utils::getColectionByRecord($rsProjetos);
+  $aProjetos       = db_utils::getCollectionByRecord($rsProjetos);
   $iTotalProjetos  = count($aProjetos);
   $aProgramas[$iProg]->janeiro   = 0; 
   $aProgramas[$iProg]->fevereiro = 0; 
@@ -173,7 +173,7 @@ for ($iProg = 0; $iProg < $iTotalProgramas; $iProg++) {
     $sSqlSubProjetos   .= "   and o87_orcprojativativprojeto = {$aProjetos[$iProj]->o87_orcprojativativprojeto}";
     $sSqlSubProjetos   .= "   and o87_pactoprograma          = {$aProgramas[$iProg]->o87_pactoprograma}";
     $rsSubProjetos     = db_query($sSqlSubProjetos);
-    $aSubProjetos      = db_utils::getColectionByRecord($rsSubProjetos);
+    $aSubProjetos      = db_utils::getCollectionByRecord($rsSubProjetos);
     $iTotalSubProjetos = count($aSubProjetos);
     for ($iSproj = 0; $iSproj < $iTotalSubProjetos; $iSproj++) {
       

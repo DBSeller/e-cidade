@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
 ?>
 <html>
 <head>
@@ -40,7 +40,6 @@ include("libs/db_utils.php");
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/libJsonJs.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/json2.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
@@ -226,10 +225,10 @@ include("libs/db_utils.php");
 
   function js_pesquisa_cgmorigem(mostra){
 	  if(mostra==true){
-	    js_OpenJanelaIframe('top.corpo','db_iframe_cgmorigem','func_nome.php?funcao_js=parent.js_mostracgmorigem1|z01_numcgm|z01_nome','Pesquisa',true);
+	    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgmorigem','func_nome.php?funcao_js=parent.js_mostracgmorigem1|z01_numcgm|z01_nome','Pesquisa',true);
 	  }else{
 	     if(document.form1.cgmorigem.value != ''){
-	       js_OpenJanelaIframe('top.corpo','db_iframe_cgmorigem','func_nome.php?pesquisa_chave='+document.form1.cgmorigem.value+'&funcao_js=parent.js_mostracgmorigem','Pesquisa',false);
+	       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgmorigem','func_nome.php?pesquisa_chave='+document.form1.cgmorigem.value+'&funcao_js=parent.js_mostracgmorigem','Pesquisa',false);
 	     }else{
 	       document.form1.cgmorigem.value = ''; 
 	     }
@@ -255,10 +254,10 @@ include("libs/db_utils.php");
 
 	function js_pesquisa_cgmdestino(mostra){
 		if(mostra==true){
-		    js_OpenJanelaIframe('top.corpo','db_iframe_cgmdestino','func_nome.php?funcao_js=parent.js_mostracgmdestino1|z01_numcgm|z01_nome','Pesquisa',true);
+		    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgmdestino','func_nome.php?funcao_js=parent.js_mostracgmdestino1|z01_numcgm|z01_nome','Pesquisa',true);
 		} else {
 		   if (document.form1.cgmdestino.value != '' && document.form1.cgmdestino.value != $('cgmorigem').value ){ 
-		     js_OpenJanelaIframe('top.corpo','db_iframe_cgmdestino','func_nome.php?pesquisa_chave='+document.form1.cgmdestino.value+'&funcao_js=parent.js_mostracgmdestino','Pesquisa',false);
+		     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgmdestino','func_nome.php?pesquisa_chave='+document.form1.cgmdestino.value+'&funcao_js=parent.js_mostracgmdestino','Pesquisa',false);
 		   } else {
 		     document.form1.cgmdestino.value = ''; 
 		   }
@@ -312,7 +311,7 @@ include("libs/db_utils.php");
   
   function js_retornoTransferencia(oAjax) {
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     alert(oRetorno.message.urlDecode());
     if (oRetorno.status == 2) {
@@ -327,7 +326,7 @@ include("libs/db_utils.php");
 	
 		js_removeObj('msgBox');
 		
-		var oRetorno = eval("("+oAjax.responseText+")");
+		var oRetorno = JSON.parse(oAjax.responseText);
 		
 		if (oRetorno.iStatus == 2) {
 		  alert(oRetorno.sMensagem);

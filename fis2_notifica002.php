@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-include("libs/db_sql.php");
-include("fpdf151/pdf1.php");
-include("classes/db_auto_classe.php");
-include("classes/db_autotipo_classe.php");
-include("classes/db_autousu_classe.php");
-include("classes/db_autonumpre_classe.php");
-include("classes/db_db_docparag_classe.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf1.php"));
+include(modification("classes/db_auto_classe.php"));
+include(modification("classes/db_autotipo_classe.php"));
+include(modification("classes/db_autousu_classe.php"));
+include(modification("classes/db_autonumpre_classe.php"));
+include(modification("classes/db_db_docparag_classe.php"));
 $cldb_docparag = new cl_db_docparag;
 $clauto = new cl_auto;
 $clautousu = new cl_autousu;

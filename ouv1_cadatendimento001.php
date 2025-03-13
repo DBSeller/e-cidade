@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_ouvidoriaatendimento_classe.php");
-require_once("classes/db_ouvidoriaatendimentoretornoender_classe.php");
-require_once("classes/db_ouvidoriaatendimentoretornotelefone_classe.php");
-require_once("classes/db_ouvidoriaatendimentoretornoemail_classe.php");
-require_once("classes/db_telefonetipo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_ouvidoriaatendimento_classe.php"));
+require_once(modification("classes/db_ouvidoriaatendimentoretornoender_classe.php"));
+require_once(modification("classes/db_ouvidoriaatendimentoretornotelefone_classe.php"));
+require_once(modification("classes/db_ouvidoriaatendimentoretornoemail_classe.php"));
+require_once(modification("classes/db_telefonetipo_classe.php"));
 
-require_once("classes/db_db_usuarios_classe.php");
-require_once("classes/db_db_depart_classe.php");
+require_once(modification("classes/db_db_usuarios_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
 
 
 $clTelefoneTipo = new cl_telefonetipo();
@@ -629,7 +629,7 @@ if  ( $db_opcao == 1 ) {
 
     js_removeObj("msgBox");
    
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
      
     js_validaIdentidicacao( aRetorno.lIdentificado );
     js_montaListaDocumentos( aRetorno.aListaDocumentos );
@@ -660,7 +660,7 @@ if  ( $db_opcao == 1 ) {
 
     js_removeObj("msgBox");
    
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     $('dataprevista').value =  aRetorno.sDataPrevista;
     
   }  
@@ -689,7 +689,7 @@ if  ( $db_opcao == 1 ) {
   function js_retornoConsultaDadosRequerente(oAjax){
 
     js_removeObj("msgBox");
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     
     $('tiposderetorno').value = Object.toJSON(aRetorno.aListaTipoRetorno);
     
@@ -1097,10 +1097,10 @@ if  ( $db_opcao == 1 ) {
 	function js_pesquisaTipoProcesso( lMostra ){
 	  
 	  if( lMostra ){
-	    js_OpenJanelaIframe('top.corpo','db_iframe_tipoproc','func_tipoprocdepto.php?depto='+$F('ov01_depart')+'&grupo=2&funcao_js=parent.js_mostraTipoProcesso1|p51_codigo|p51_descr','Tipo de Processo',true);
+	    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoproc','func_tipoprocdepto.php?depto='+$F('ov01_depart')+'&grupo=2&funcao_js=parent.js_mostraTipoProcesso1|p51_codigo|p51_descr','Tipo de Processo',true);
 	  }else{
 	     if( $F('ov01_tipoprocesso') != '' ){ 
-	       js_OpenJanelaIframe('top.corpo','db_iframe_tipoproc','func_tipoprocdepto.php?depto='+$F('ov01_depart')+'&grupo=2&pesquisa_chave='+$F('ov01_tipoprocesso')+'&funcao_js=parent.js_mostraTipoProcesso','Tipo de Processo',false);
+	       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoproc','func_tipoprocdepto.php?depto='+$F('ov01_depart')+'&grupo=2&pesquisa_chave='+$F('ov01_tipoprocesso')+'&funcao_js=parent.js_mostraTipoProcesso','Tipo de Processo',false);
 	     }else{
 	       document.form1.p51_descr.value = ''; 
 	     }
@@ -1148,7 +1148,7 @@ if  ( $db_opcao == 1 ) {
 
   function js_alteraCadastro(iCodigo,sTipo,iSeq){
     db_iframe_detalhes.hide();
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadcidadao','ouv1_cadcidadaoatendimento001.php?iCodigo='+iCodigo+'&iSeq='+iSeq+'&sTipo='+sTipo,'Detalhes',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadcidadao','ouv1_cadcidadaoatendimento001.php?iCodigo='+iCodigo+'&iSeq='+iSeq+'&sTipo='+sTipo,'Detalhes',true);
   }
   
   function js_confirmaSelecao(iCodigo,sTipo,iSeq,sNome){
@@ -1163,7 +1163,7 @@ if  ( $db_opcao == 1 ) {
 
 
   function js_pesquisaTitularAtendimento(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_titularatend','func_cgmcidadao.php?funcao_js=parent.js_mostraTitularAtend|codigo|db_seq|nome|tipo','Titular do Atendimento',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_titularatend','func_cgmcidadao.php?funcao_js=parent.js_mostraTitularAtend|codigo|db_seq|nome|tipo','Titular do Atendimento',true);
   }
 
   function js_mostraTitularAtend(iCodigo,iSequencial,sNome,sTipo){
@@ -1188,7 +1188,7 @@ if  ( $db_opcao == 1 ) {
         sQuery += '&sTipoTitular='+$F('tipotitular');
         sQuery += '&iGrupo=2';
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_listaProc','func_processoouvidoriacidadao.php'+sQuery,'Processo Existente',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_listaProc','func_processoouvidoriacidadao.php'+sQuery,'Processo Existente',true);
     
   }
 
@@ -1235,10 +1235,10 @@ if  ( $db_opcao == 1 ) {
     }    
     
     if( lMostra ){
-      js_OpenJanelaIframe('top.corpo','db_iframe_proc','func_protprocessoouvidoria.php?grupo=2&tipo='+$F('ov01_tipoprocesso')+'&funcao_js=parent.js_mostraProcesso1|p58_codproc|p58_requer','Processo Existente',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proc','func_protprocessoouvidoria.php?grupo=2&tipo='+$F('ov01_tipoprocesso')+'&funcao_js=parent.js_mostraProcesso1|p58_codproc|p58_requer','Processo Existente',true);
     } else {
       if( $F('ov09_protprocesso') != '' ){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_proc','func_protprocessoouvidoria.php?grupo=2&tipo='+$F('ov01_tipoprocesso')+'&pesquisa_chave='+$F('ov09_protprocesso')+'&funcao_js=parent.js_mostraProcesso','Processo Existente',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proc','func_protprocessoouvidoria.php?grupo=2&tipo='+$F('ov01_tipoprocesso')+'&pesquisa_chave='+$F('ov09_protprocesso')+'&funcao_js=parent.js_mostraProcesso','Processo Existente',false);
       }else{
         document.form1.requerprocesso.value = '';
         $('anexar').disabled                = true; 
@@ -1291,7 +1291,7 @@ if  ( $db_opcao == 1 ) {
   function js_retornoConsultaDadosTela(oAjax){
   
     js_removeObj("msgBox");
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     
     js_montaFormaReclamacaoPadrao(aRetorno.aListaFormaReclamacao);
     js_montaTipoRetornoPadrao(aRetorno.aListaTipoRetorno);
@@ -1399,7 +1399,7 @@ if  ( $db_opcao == 1 ) {
   
     js_removeObj("msgBox");
    
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     var sExpReg  = new RegExp('\\\\n','g');
   
     alert(aRetorno.sMsg.urlDecode().replace(sExpReg,'\n'));
@@ -2265,7 +2265,7 @@ if  ( $db_opcao == 1 ) {
   
     js_removeObj("msgBox");
    
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     var sExpReg  = new RegExp('\\\\n','g');
   
     if ( aRetorno.lErro ) {
@@ -2414,7 +2414,7 @@ if  ( $db_opcao == 1 ) {
   function js_retornoConsultaDadosRequerenteAltera(oAjax){
 
     js_removeObj("msgBox");
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     
     $('tiposderetorno').value = Object.toJSON(aRetorno.aListaTipoRetorno);
 
@@ -2510,7 +2510,7 @@ if  ( $db_opcao == 1 ) {
   
     js_removeObj("msgBox");
    
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     var sExpReg  = new RegExp('\\\\n','g');
   
     alert(aRetorno.sMsg.urlDecode().replace(sExpReg,'\n'));

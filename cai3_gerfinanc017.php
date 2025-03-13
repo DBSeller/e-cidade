@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_cgm_classe.php");
-include("fpdf151/pdf.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_issbase_classe.php");
+include(modification("classes/db_cgm_classe.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 $total  = 0;
@@ -38,7 +38,7 @@ if ( $numcgm == '' && $opcao != 'socios' ){
    $sql = "select * 
              from proprietario 
             where j01_matric = $matricula limit 1";
-   $result = pg_exec($sql);
+   $result = db_query($sql);
    db_fieldsmemory($result,0);
    $setor   = $j34_setor;
    $quadra  = $j34_quadra;
@@ -67,7 +67,7 @@ if ( $numcgm == '' && $opcao != 'socios' ){
    	                 inner join cgm on z01_numcgm = j42_numcgm 
    	           where j42_matric = $matricula";
    }
-   $result = pg_exec($sql);
+   $result = db_query($sql);
    
    if (pg_numrows($result) == 0 ) {
       db_redireciona("db_erros.php?fechar=true&db_erro=Proprietários/Promitentes nao Encontrados");
@@ -151,7 +151,7 @@ if ( $numcgm == '' && $opcao != 'socios' ){
    $sql = "select * 
              from cgm 
             where z01_numcgm = $numcgm";
-   $result = pg_exec($sql);
+   $result = db_query($sql);
    db_fieldsmemory($result,0);
    $head4 = "RELATÓRIO DE MATRÍCULAS CADASTRADAS";
    $head5 = $numcgm.' - '.$z01_nome;
@@ -175,8 +175,8 @@ if ( $numcgm == '' && $opcao != 'socios' ){
 
 
    $clsqlamatriculas = new cl_iptubase;
-   include("classes/db_loteloc_classe.php");
-   include("classes/db_cfiptu_classe.php");
+   include(modification("classes/db_loteloc_classe.php"));
+   include(modification("classes/db_cfiptu_classe.php"));
    $clloteloc = new cl_loteloc;
    $clcfiptu  = new cl_cfiptu;
   
@@ -190,7 +190,7 @@ if ( $numcgm == '' && $opcao != 'socios' ){
   
 
    $sql = $clsqlamatriculas->sqlmatriculas_nome_numero($numcgm, @$regracgm);
-   $result = pg_exec($sql);
+   $result = db_query($sql);
    $pdf->SetFont('arial','B',10);
    $pdf->multicell(0,6,'Dados das Matrículas',0,"C",0);
    $pdf->SetFont('arial','B',8);
@@ -275,7 +275,7 @@ if ( $numcgm == '' && $opcao != 'socios' ){
 } elseif ( $opcao == 'inscricao' ) {
 
    $sql = "select * from cgm where z01_numcgm = $numcgm";
-   $result = pg_exec($sql);
+   $result = db_query($sql);
    db_fieldsmemory($result,0);
    $head4 = "RELATÓRIO DE INSCRIÇÕES CADASTRADAS";
    $head5 = $numcgm.' - '.$z01_nome;
@@ -298,7 +298,7 @@ if ( $numcgm == '' && $opcao != 'socios' ){
 
    $clsqlinscricoes = new cl_issbase;
    $sql = $clsqlinscricoes->sqlinscricoes_nome($numcgm);
-   $result = pg_exec($sql);
+   $result = db_query($sql);
   
    $pdf->SetFont('arial','B',10);
    $pdf->multicell(0,6,'Dados das Inscrições',0,"C",0);

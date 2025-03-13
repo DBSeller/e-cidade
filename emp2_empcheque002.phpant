@@ -1,0 +1,219 @@
+<?
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
+include("fpdf151/pdf.php");
+include("libs/db_sql.php");
+include("classes/db_empagepag_classe.php");
+
+$clempagepag = new cl_empagepag;
+
+$clrotulo = new rotulocampo;
+$clrotulo->label('z01_nome');
+$clrotulo->label('e60_codemp');
+$clrotulo->label('e60_anousu');
+$clrotulo->label('e83_conta');
+$clrotulo->label('e83_descr');
+$clrotulo->label('k13_descr');
+$clrotulo->label('e86_cheque');
+$clrotulo->label('e86_data');
+$clrotulo->label('e82_codord');
+$clrotulo->label('e81_valor');
+
+db_postmemory($HTTP_POST_VARS);
+
+
+
+if(isset($dtini_ano) && $dtini_ano!=""){
+  $dtini = "$dtini_ano-$dtini_mes-$dtini_dia";
+}else{
+//  $dtini = date("Y-m-d",db_getsession("DB_datausu"));
+}
+
+$dbwhere=' 1=1 ';
+
+if(isset($dtini) && $dtini != ''){
+  $dbwhere .=" and  e86_data >= '$dtini' ";
+}
+if(isset($dtfim) && $dtfim != ''){
+  $dbwhere .=" and  e86_data <= '$dtfim' ";
+}
+
+
+
+if($ver == 'sem'){
+  $df = " not in ";
+}else{
+  $df = " in ";
+}
+if(isset($lista)){
+  $cod='';
+  $vir='';
+  for($i=0;$i<sizeof($lista);$i++){
+     $cod .= $vir.$lista[$i];
+     $vir = ', ';
+  }
+
+  $dbwhere .= " and  e83_codtipo $df  ($cod)  ";
+}
+
+
+
+$alt="5";
+$pdf = new PDF(); 
+$pdf->Open(); 
+$pdf->AliasNbPages(); 
+$head2 = "Empenhos pago por cheques";
+if($dtini != ''){
+  $head3 = "Data:".db_formatar($dtini,"d");
+}
+
+$pri=true;
+
+$pago = '0.00';
+$estorno = '0.00';
+
+$result = $clempagepag->sql_record($clempagepag->sql_query_pago(null,null,"distinct e83_conta,e83_descr,e83_codtipo","",$dbwhere));
+$numrows = $clempagepag->numrows; 
+//db_criatabela($result);
+$listou = false;
+for ($i = 0;$i < $numrows;$i++){
+  db_fieldsmemory($result,$i);
+
+  $sql = "select e86_data,e86_cheque,e81_valor,e60_codemp,e60_anousu,e82_codord,z01_nome,k13_descr
+          from empagepag
+	       inner join empagemov on e81_codmov = e85_codmov
+	       inner join empageconf on e81_codmov = e86_codmov
+	       inner join empagetipo on e85_codtipo = e83_codtipo
+	       inner join saltes on k13_conta = e83_conta
+	       left outer join empord on e82_codmov = e85_codmov
+	       left outer join empempenho on e81_numemp = e60_numemp
+	       left outer join cgm on z01_Numcgm = e60_numcgm
+	       left outer join pagordem on e50_codord = e82_codord
+	  where e85_codtipo = $e83_codtipo and $dbwhere
+	  order by e86_cheque
+	  ";   
+
+  $result05  = $clempagepag->sql_record($sql);
+
+//db_criatabela($result05);
+
+  $numrows05 = $clempagepag->numrows; 
+//db_criatabela($result05);exit;
+  $prim = true;
+  $codcheque = 0;
+  $trocacheque = false;
+  $totcheque = 0;
+  $vlrtot = 0;
+  for ($c = 0;$c < $numrows05;$c++){
+     db_fieldsmemory($result05,$c);
+
+     if($codcheque != $e86_cheque){
+       $codcheque = $e86_cheque;
+       $trocacheque = true;
+ 
+       $sqll = "select sum(e81_valor)
+          from empagepag
+	       inner join empagemov on e81_codmov = e85_codmov
+	       inner join empageconf on e81_codmov = e86_codmov
+	       inner join empagetipo on e85_codtipo = e83_codtipo
+	       inner join saltes on k13_conta = e83_conta
+	       left outer join empord on e82_codmov = e85_codmov
+	       left outer join empempenho on e81_numemp = e60_numemp
+	       left outer join cgm on z01_Numcgm = e60_numcgm
+	       left outer join pagordem on e50_codord = e82_codord
+	  where e85_codtipo = $e83_codtipo and $dbwhere and e86_cheque = $e86_cheque
+	  "; 
+       $result06  = pg_exec($sqll);
+       $valor = pg_result($result06,0,0);
+       $totcheque ++ ;
+       $vlrtot += $valor;
+     }else{
+       $trocacheque = false;
+     }
+      if (  ($pdf->gety() > $pdf->h -30)  || $prim==true|| $pri==true){
+	  
+	  if ( $pdf->gety() > $pdf->h -30 || $pri==true ){    
+  	     $pdf->addpage("P");
+	     $prox =true;
+	  }   
+	  if($pri == true || $prim == true){ 
+	    $prim = false;
+            $pri = false;
+	  }	 
+	  
+
+
+	  $pdf->setfillcolor(235);
+	  $pdf->setfont('arial','b',7);
+	  $pdf->cell(175,4,$RLe83_conta.":$e83_conta  $RLe83_descr:$e83_descr - $k13_descr",1,1,"C",1);
+
+	  
+	  $pdf->cell(20,4,$RLe86_data,1,0,"C",1);
+	  $pdf->cell(20,4,$RLe86_cheque,1,0,"C",1);
+	  $pdf->cell(20,4,$RLe81_valor,1,0,"C",1);
+	  $pdf->cell(15,4,$RLe60_codemp,1,0,"C",1);
+	  $pdf->cell(15,4,$RLe60_anousu,1,0,"C",1);
+	  $pdf->cell(10,4,$RLe82_codord,1,0,"C",1);
+	  $pdf->cell(15,4,$RLe81_valor,1,0,"C",1);
+	  $pdf->cell(60,4,$RLz01_nome,1,1,"C",1);
+	  $pdf->setfont('arial','',6);
+      }  
+
+      
+      $listou = true;
+      if($trocacheque==true){
+        $pdf->cell(20,4,db_formatar($e86_data,'d'),1,0,"C",0);
+        $pdf->cell(20,4,$e86_cheque,1,0,"R",0);
+        $pdf->cell(20,4,db_formatar($valor,'f'),1,0,"R",0);
+      }else{
+	$pdf->cell(60,4,' ',1,0,"L",0);
+      }
+      $pdf->cell(15,4,$e60_codemp,1,0,"R",0);
+      $pdf->cell(15,4,$e60_anousu,1,0,"C",0);
+      $pdf->cell(10,4,$e82_codord,1,0,"R",0);
+      $pdf->cell(15,4,db_formatar($e81_valor,'f'),1,0,"R",0);
+      $pdf->cell(60,4,$z01_nome,1,1,"L",0);
+   } 
+
+   $pdf->ln();
+}
+
+$pdf->cell(60,4,' Total de Cheques : ',1,0,"R",0);
+$pdf->cell(15,4,$totcheque,1,0,"R",0);
+$pdf->cell(25,4,' Total Pago: ',1,0,"R",0);
+$pdf->cell(15,4,db_formatar($vlrtot,'f'),1,0,"R",0);
+$pdf->cell(60,4,'',1,1,"L",0);
+
+if($listou==false){
+  echo "<script>
+  alert('Nâo existem lançamentos para este período e conta');
+  window.close();
+  </script>";
+}else{
+  $pdf->Output();
+}
+?>

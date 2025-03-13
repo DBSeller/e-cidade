@@ -86,9 +86,9 @@ db_input('q06_valor',15,$Iq06_valor,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaq06_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issvar','func_issvar.php?funcao_js=parent.js_mostraissvar1|q05_codigo|q05_numpre','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issvar','func_issvar.php?funcao_js=parent.js_mostraissvar1|q05_codigo|q05_numpre','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_issvar','func_issvar.php?pesquisa_chave='+document.form1.q06_codigo.value+'&funcao_js=parent.js_mostraissvar','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issvar','func_issvar.php?pesquisa_chave='+document.form1.q06_codigo.value+'&funcao_js=parent.js_mostraissvar','Pesquisa',false);
   }
 }
 function js_mostraissvar(chave,erro){
@@ -104,7 +104,7 @@ function js_mostraissvar1(chave1,chave2){
   db_iframe_issvar.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_issvarnotas','func_issvarnotas.php?funcao_js=parent.js_preenchepesquisa|q06_codigo|1','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issvarnotas','func_issvarnotas.php?funcao_js=parent.js_preenchepesquisa|q06_codigo|1','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_issvarnotas.hide();

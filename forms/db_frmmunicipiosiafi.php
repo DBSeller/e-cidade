@@ -70,7 +70,7 @@ $clmunicipiosiafi->rotulo->label();
 			    </td>
 			    <td>
 						<?
-						  require_once("classes/db_db_uf_classe.php");
+						  require_once(modification("classes/db_db_uf_classe.php"));
 						  
 						  $cldb_uf = new cl_db_uf();
 						  $rsUf    = $cldb_uf->sql_record($cldb_uf->sql_query_file(null,"db12_uf,db12_uf","db12_uf"));
@@ -101,7 +101,7 @@ $clmunicipiosiafi->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_municipiosiafi','func_municipiosiafi.php?funcao_js=parent.js_preenchepesquisa|q110_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_municipiosiafi','func_municipiosiafi.php?funcao_js=parent.js_preenchepesquisa|q110_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_municipiosiafi.hide();

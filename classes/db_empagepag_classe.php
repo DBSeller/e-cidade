@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -517,6 +517,7 @@ class cl_empagepag {
      $sql .= "      left  join empord  on e82_codmov = e81_codmov";
      $sql .= "      left  join empageconfgera on e90_codmov=e81_codmov ";
      $sql .= "      left  join empagedadosretmov on e76_codmov=e81_codmov ";
+     $sql .= "      left  join corempagemov on k12_codmov=e81_codmov ";
      $sql2 = "";
      if($dbwhere==""){
        if($e85_codmov!=null ){

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_workflow_classe.php");
-require_once("classes/db_workflowtipoproc_classe.php");
-require_once("classes/db_tipoproc_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_workflow_classe.php"));
+require_once(modification("classes/db_workflowtipoproc_classe.php"));
+require_once(modification("classes/db_tipoproc_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -137,7 +137,7 @@ fieldset table td:first-child {
     <td valign="top" bgcolor="#CCCCCC"> 
     <center>
       <?
-        include("forms/db_frmworkflow.php");
+        include(modification("forms/db_frmworkflow.php"));
       ?>
     </center>
   </td>
@@ -166,7 +166,7 @@ if (isset($oGet->chavepesquisa)) {
       function js_db_libera(){
          parent.document.formaba.workflow.disabled=false;
          parent.document.formaba.workflowativ.disabled=false;
-         top.corpo.iframe_workflowativ.location.href='hab1_workflowativ001.php?db112_sequencial={$oGet->chavepesquisa}';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_workflowativ.location.href='hab1_workflowativ001.php?db112_sequencial={$oGet->chavepesquisa}';
      ";
   
   if (isset($oGet->liberaaba)) {

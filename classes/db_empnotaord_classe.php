@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -451,5 +451,62 @@ class cl_empnotaord {
      }
      return $sql;
   }
+
+  function sql_matordem ( $m72_codnota=null, $m72_codordem=null, $campos="*", $ordem=null, $dbwhere="") {
+
+    $sql = "select ";
+    if($campos != "*" ) {
+
+      $campos_sql = split("#",$campos);
+      $virgula    = "";
+
+      for($i = 0; $i < sizeof($campos_sql); $i++) {
+
+        $sql     .= $virgula.$campos_sql[$i];
+        $virgula  = ",";
+      }
+    } else {
+      $sql .= $campos;
+    }
+
+    $sql .= " from empnotaord ";
+    $sql .= "      inner join matordem on m51_codordem = m72_codordem";
+    $sql2 = "";
+
+    if($dbwhere == "") {
+
+      if($m72_codnota != null ) {
+        $sql2 .= " where empnotaord.m72_codnota = $m72_codnota ";
+      }
+
+      if($m72_codordem != null ) {
+
+        if($sql2 != "") {
+          $sql2 .= " and ";
+        } else {
+          $sql2 .= " where ";
+        }
+
+        $sql2 .= " empnotaord.m72_codordem = $m72_codordem ";
+      }
+    } else if($dbwhere != "") {
+      $sql2 = " where $dbwhere";
+    }
+
+    $sql .= $sql2;
+    if($ordem != null ) {
+
+      $sql       .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula    = "";
+
+      for($i = 0; $i < sizeof($campos_sql); $i++) {
+
+        $sql    .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+
+    return $sql;
+  }
 }
-?>

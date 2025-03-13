@@ -1,38 +1,40 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+use App\Domain\Configuracao\Helpers\StorageHelper;
 
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory( $_POST );
 
 $escola = db_getsession("DB_coddepto");
 
@@ -59,6 +61,8 @@ $clrhpesdoc->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("rh01_numcgm");
 $clrotulo->label("z01_nome");
+$clrotulo->label("ed260_c_sigla");
+
 
 $db_opcao = 1;
 $db_botao = true;
@@ -72,6 +76,69 @@ if( isset( $cod_matricula ) ) {
   $where   = " case when ed20_i_tiposervidor = 1 then cgmrh.z01_numcgm else cgmcgm.z01_numcgm end = {$chavepesquisa}";
   $destino = "chavepesquisa={$chavepesquisa}";
 }
+
+$formacao = false;
+$posGraduacao = false;
+$semDocumentos = true;
+
+if (isset($chavepesquisa) && !empty($chavepesquisa)) {
+
+    $rsRecHumano = $clrechumano->sql_record($clrechumano->sql_query_escola( "", "distinct "."ed20_i_codigo", "", $where ) );
+    if (pg_num_rows($rsRecHumano) > 0) {
+      $recHumano = db_utils::fieldsMemory($rsRecHumano, 0)->ed20_i_codigo;
+    
+      $sqlFormacao = "select ed27_i_docformacao_estorage from formacao where ed27_i_rechumano =
+                    {$recHumano} and ed27_i_docformacao_estorage IS NOT NULL;";
+      $rsFormacao = db_query($sqlFormacao);
+
+      if (!$rsFormacao) {
+        db_msgbox('Não foi possível buscar a formação.');
+        return;
+      }
+
+      if (pg_num_rows($rsFormacao) > 0) {
+        $fileFormacao = array();
+        $formacaoHTML = array();
+        for ($iIndice = 0; $iIndice < pg_num_rows($rsFormacao); $iIndice++) {
+          $idFormacao = db_utils::fieldsMemory($rsFormacao, $iIndice)->ed27_i_docformacao_estorage;
+          $fileFormacao_ = !empty($idFormacao) ? basename(StorageHelper::downloadArquivo($idFormacao)): "" ;
+          $fileFormacao[$iIndice] = basename($fileFormacao_);
+          if(!empty($idFormacao) && isset($idFormacao)) {
+            $semDocumentos = false;
+            $formacao = true;
+            $formacaoHTML[$iIndice] = "<iframe name='frame_imagemFormacao{$iIndice}' id='frame_imagemFormacao{$iIndice}' src='edu4_alunodocumentoformacao.php' width='56' height='40' frameborder='1' scrolling='no'></iframe>";
+          }
+        }
+      }
+    }
+
+    $sqlPosGraduacao = "select ed183_docpos_estorage from escola.rhformacaosuperior where ed183_cgm =
+                        {$chavepesquisa} and ed183_docpos_estorage IS NOT NULL;";
+    $rsPosGraduacao = db_query($sqlPosGraduacao);
+
+
+    if (!$rsPosGraduacao) {
+        db_msgbox('Não foi possível buscar a formação.');
+        return;
+    }
+
+    if (pg_num_rows($rsPosGraduacao) > 0) {
+      $filePosGraduacao = array();
+      $posGraduacaoHTML = array();
+      for ($iIndice = 0; $iIndice < pg_num_rows($rsPosGraduacao); $iIndice++) {
+        $idPosGraduacao = db_utils::fieldsMemory($rsPosGraduacao, $iIndice)->ed183_docpos_estorage;
+        $filePosGraduacao_ = !empty($idPosGraduacao) ? basename(StorageHelper::downloadArquivo($idPosGraduacao)): "" ;
+        $filePosGraduacao[$iIndice] = basename($filePosGraduacao_);
+        if(!empty($idPosGraduacao) && isset($idPosGraduacao)) {
+          $semDocumentos = false;
+          $posGraduacao = true;
+          $posGraduacaoHTML[$iIndice] = "<iframe name='frame_imagemPosGraduacao{$iIndice}' id='frame_imagemPosGraduacao{$iIndice}' src='edu4_alunodocumentoposgraduacao.php' width='56' height='40' frameborder='1' scrolling='no'></iframe>";
+        }
+      }
+    }
+    
+}
+
 ?>
 <html>
 <head>
@@ -116,7 +183,7 @@ if( isset( $cod_matricula ) ) {
     <?php
       if( $evento == 1 ) {
 
-        include("funcoes/db_func_rechumanonovo.php");
+        include(modification("funcoes/db_func_rechumanonovo.php"));
         $result = $clrechumano->sql_record($clrechumano->sql_query_escola( "", "distinct ".$camposrechumano, "", $where ) );
     ?>
     <tr>
@@ -186,7 +253,7 @@ if( isset( $cod_matricula ) ) {
     <?php
       if( $evento == 2 ) {
 
-        include("funcoes/db_func_rechumanonovo.php");
+        include(modification("funcoes/db_func_rechumanonovo.php"));
         $result = $clrechumano->sql_record($clrechumano->sql_query_escola( "", "distinct ".$camposrechumano, "", $where ) );
         db_fieldsmemory( $result, 0 );
     ?>
@@ -197,9 +264,31 @@ if( isset( $cod_matricula ) ) {
           <table border="1" width="100%" bgcolor="#f3f3f3" cellspacing="0" cellpading="4">
             <tr>
               <td>
+                <?=$Lz01_cgccpf?> <?=$z01_cgccpf == "" ? "Não Informado" : $z01_cgccpf?>
+                &nbsp;&nbsp;
+                <b>NIS:</b> <?=$ed20_c_nis == "" ? "Não Informado" : $ed20_c_nis?>
+                &nbsp;&nbsp;
+                <?=$Led20_c_passaporte?> <?=$ed20_c_passaporte == "" ? "Não Informado" : $ed20_c_passaporte?>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <?=$Lz01_ident?> <?=$z01_ident == "" ? "Não Informado" : $z01_ident?>
                 &nbsp;&nbsp;
-                <?=$Lz01_cgccpf?> <?=$z01_cgccpf == "" ? "Não Informado" : $z01_cgccpf?>
+                <strong>UF da Identidade:</strong> <?=$ed260_c_sigla == "" ? "Não Informado" : $ed260_c_sigla?>
+                &nbsp;&nbsp;
+
+                <?php
+                $dtIdentidade = "Não Informado";
+                if ( $ed20_d_dataident != "" ) {
+                  $oDtIdentidade = new DBDate( $ed20_d_dataident );
+                  $dtIdentidade  = $oDtIdentidade->getDate( DBDate::DATA_PTBR );
+                }
+                ?>
+
+                <?=$Led20_d_dataident?> <?=$dtIdentidade?>
+                &nbsp;&nbsp;
+                <?=$Led20_c_identcompl?> <?=$ed20_c_identcompl == "" ? "Não Informado" : $ed20_c_identcompl?>
               </td>
             </tr>
             <tr>
@@ -223,37 +312,73 @@ if( isset( $cod_matricula ) ) {
                 <?=$Lrh16_ctps_n?> <?=$rh16_ctps_n == 0 ? "Não Informado" : $rh16_ctps_n?>
                 &nbsp;&nbsp;
                 <?=$Lrh16_ctps_s?> <?=$rh16_ctps_s == 0 ? "Não Informado" : $rh16_ctps_s?>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <?=$Lrh16_ctps_d?> <?=$rh16_ctps_d == 0 ? "Não Informado" : $rh16_ctps_d?>
                 &nbsp;&nbsp;
                 <?=$Lrh16_ctps_uf?> <?=$rh16_ctps_uf == "" ? "Não Informado" : $rh16_ctps_uf?>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <?=$Lrh16_pis?> <?=$rh16_pis == "" ? "Não Informado" : $rh16_pis?>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <?=$Lrh16_carth_n?> <?=$rh16_carth_n == "" ? "Não Informado" : $rh16_carth_n?>
                 &nbsp;&nbsp;
-                <?=$Lr16_carth_cat?> <?=$r16_carth_cat == "" ? "Não Informado" : $r16_carth_cat?>
-                &nbsp;&nbsp;
-                <?=$Lrh16_carth_val?> <?=$rh16_carth_val == "" ? "Não Informado" : db_formatar( $rh16_carth_val, 'd' )?>
+                <?=$Lrh16_pis?> <?=$rh16_pis == 0 ? "Não Informado" : $rh16_pis?>
               </td>
             </tr>
           </table>
+        </fieldset>
+        <br>
+        <fieldset style="background: #f3f3f3; border: 2px solid #000000;">
+          <legend style="background: #f3f3f3;">Documentos Anexados:</legend>
+            <table >
+              <tr>
+                <?php  
+                  if($formacao) {
+                ?>
+                    <td>
+                      <fieldset>
+                        <legend><b>Formação:</b></legend>
+                            <?php 
+                              foreach ($formacaoHTML as $key=> $iformacaoHTML) { 
+                                echo $iformacaoHTML; 
+                            ?>
+                            <script>
+                              frame_imagemFormacao<?php echo $key?>.location.href="edu4_alunodocumentoformacao.php?imagem_gerada=<?php echo $fileFormacao[$key]?>";
+                            </script>
+                            <?php
+                              }
+                            ?>
+                      </fieldset>
+                    </td>
+                <?php 
+                  } if($posGraduacao) { 
+                ?>
+                  <td>
+                    <fieldset>
+                      <legend><b>Pós Graduação:</b></legend>
+                        <?php 
+                          foreach ($posGraduacaoHTML as $key=> $iposGraduacaoHTML) { 
+                            echo $iposGraduacaoHTML; 
+                        ?>
+                        <script>
+                          frame_imagemPosGraduacao<?php echo $key?>.location.href="edu4_alunodocumentoposgraduacao.php?imagem_gerada=<?php echo $filePosGraduacao[$key]?>";
+                        </script>
+                        <?php
+                         }
+                        ?>
+                    </fieldset>
+                  </td>
+                <?php 
+                  } if($semDocumentos) { 
+                ?>
+                  <td>
+                    Nenhum Documento anexado
+                  </td>
+                <?php 
+                  } 
+                ?>
+              </tr>
+            </table>
         </fieldset>
       </td>
     </tr>
     <?php
       }
       if( $evento == 3 ) {
-        require_once 'edu3_professorescola003.php';
+        require_once modification("edu3_professorescola003.php");
       }
 
       if( $evento == 4 ) {
@@ -278,7 +403,7 @@ if( isset( $cod_matricula ) ) {
           if( $evento == 5 ) {
         ?>
         <fieldset style="background:#f3f3f3;border:2px solid #000000">
-          <legend class="cabec"><b>Disponibilidade</b></legend>
+          <legend class="cabec"><b>Horários de Regência</b></legend>
           <table>
             <tr>
               <label class="bold">Vínculos Escola: </label>

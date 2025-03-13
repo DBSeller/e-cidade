@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_sql.php");
-require_once ("classes/db_conplanoreduz_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_conplanoreduz_classe.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 $head3 = "Consistência do Plano de Contas";
@@ -48,7 +48,7 @@ $sWhereDespesas .= "   and c61_instit    in($sInstit) ";
 
 $sSqlDespesa  = $sSqlPlano.$sWhereDespesas." order by c60_estrut";
 $rsDespesas   = db_query($sSqlDespesa);
-$aDespesas    = db_utils::getColectionByRecord($rsDespesas);
+$aDespesas    = db_utils::getCollectionByRecord($rsDespesas);
 
 $sWhereReceitas  = " where (c61_codigo = 1) ";
 $sWhereReceitas .= "   and c60_estrut ilike '4%' ";
@@ -57,7 +57,7 @@ $sWhereReceitas .= "   and c61_instit    in($sInstit) ";
 
 $sSqlReceitas = $sSqlPlano.$sWhereReceitas." order by c60_estrut";
 $rsReceitas   = db_query($sSqlReceitas);
-$aReceitas    = db_utils::getColectionByRecord($rsReceitas);
+$aReceitas    = db_utils::getCollectionByRecord($rsReceitas);
    
 $pdf = new PDF();
 $pdf->Open();

@@ -1,37 +1,37 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_almox_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
 
 $cldb_almox = new cl_db_almox;
 
@@ -42,18 +42,33 @@ $db_botao = false;
 if(isset($alterar)){
   $sqlerro=false;
   db_inicio_transacao();
-  $cldb_almox->alterar($m91_codigo);
-  if($cldb_almox->erro_status==0){
-    $sqlerro=true;
-  } 
-  $erro_msg = $cldb_almox->erro_msg; 
-  db_fim_transacao($sqlerro);
-   $db_opcao = 2;
-   $db_botao = true;
+  $sqlAlmoxExistente = $cldb_almox->sql_query_file(
+      null,
+      '*',
+      null,
+      "m91_depto = {$m91_depto}"
+  );
+  $rsAlmoxExistente = $cldb_almox->sql_record($sqlAlmoxExistente);
+
+  $lErroDepartamentoExistente = false;
+  if ($cldb_almox->numrows > 0) {
+      $depositoExistente = pg_fetch_array($rsAlmoxExistente);
+      $erro_msg = "O departamento {$m91_depto} já está cadastrado como depósito (Código do Depósito: {$depositoExistente['m91_codigo']}).";
+      $sqlerro = true;
+  } else {
+      $cldb_almox->alterar($m91_codigo);
+      if($cldb_almox->erro_status==0) {
+          $sqlerro=true;
+      }
+      $erro_msg = $cldb_almox->erro_msg;
+  }
+    db_fim_transacao($sqlerro);
+    $db_opcao = 2;
+    $db_botao = true;
 }else if(isset($chavepesquisa)){
    $db_opcao = 2;
    $db_botao = true;
-   $result = $cldb_almox->sql_record($cldb_almox->sql_query($chavepesquisa)); 
+   $result = $cldb_almox->sql_record($cldb_almox->sql_query($chavepesquisa));
    db_fieldsmemory($result,0);
 }
 ?>
@@ -68,10 +83,10 @@ if(isset($alterar)){
 <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <center>
 <table border="0" style="padding-top:15px" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td align="center" bgcolor="#CCCCCC"> 
-	  <?
-	    include("forms/db_frmdb_almox.php");
+  <tr>
+    <td align="center" bgcolor="#CCCCCC">
+	  <?php
+	    include(modification("forms/db_frmdb_almox.php"));
 	  ?>
     </td>
   </tr>
@@ -79,7 +94,7 @@ if(isset($alterar)){
 </center>
 </body>
 </html>
-<?
+<?php
 if (isset($alterar)) {
   if ($sqlerro==true) {
     db_msgbox($erro_msg);
@@ -96,7 +111,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_almoxdepto.disabled=false;
-         top.corpo.iframe_db_almoxdepto.location.href='mat1_matdb_almoxdepto001.php?codalmox=".@$m91_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_almoxdepto.location.href='mat1_matdb_almoxdepto001.php?codalmox=".@$m91_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_almoxdepto');";

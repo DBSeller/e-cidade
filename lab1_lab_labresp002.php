@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -14,7 +14,7 @@
  *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
  *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
  *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
+ *  detalhes.
  *                                                                    
  *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
  *  junto com este programa; se nao, escreva para a Free Software     
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lab_labresp_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lab_labresp_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cllab_labresp = new cl_lab_labresp;
@@ -66,7 +66,7 @@ if(isset($incluir)){
    }else{
      $db_opcao=1;
    }
-   $db_botao = true;
+   db_botao = true;
 }
 ?>
 <html>
@@ -94,7 +94,7 @@ if(isset($incluir)){
     <center>
      <fieldset style='width: 75%;'> <legend><b>Lab Responsável</b></legend>
 	<?
-	include("forms/db_frmlab_labresp.php");
+	include(modification("forms/db_frmlab_labresp.php"));
 	?>
 	</fieldset>
     </center>

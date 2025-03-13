@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,20 +26,20 @@
  */
 
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_libcontabilidade.php");
-require_once ("libs/db_liborcamento.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_orcprojlan_classe.php");
-require_once ("classes/db_orcprojeto_classe.php");
-require_once ("classes/db_orcsuplemlan_classe.php");
-require_once ("classes/db_orcsuplem_classe.php");
-require_once ("classes/db_orcsuplemretif_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_orcprojlan_classe.php"));
+require_once(modification("classes/db_orcprojeto_classe.php"));
+require_once(modification("classes/db_orcsuplemlan_classe.php"));
+require_once(modification("classes/db_orcsuplem_classe.php"));
+require_once(modification("classes/db_orcsuplemretif_classe.php"));
 
-require_once ("dbforms/db_suplementacao.php");
+require_once(modification("dbforms/db_suplementacao.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -122,18 +122,20 @@ if (isset ($Desprocessar)) {
 	}
 
 	db_fim_transacao($erro);
+//	db_fim_transacao(true);
 
 	if ($erro == false) {
 		db_msgbox("Operação efetuada com sucesso.");
 		db_redireciona("orc4_despsuplem001.php");
 	}
-} else
-	if (isset ($chavepesquisa) && $chavepesquisa != "") {
-		$rr = $clorcprojeto->sql_record($clorcprojeto->sql_query_file($chavepesquisa));
-		db_fieldsmemory($rr, 0);
-	} else {
-		$db_opcao = 22;
-	}
+} else {
+    if (isset ($chavepesquisa) && $chavepesquisa != "") {
+        $rr = $clorcprojeto->sql_record($clorcprojeto->sql_query_file($chavepesquisa));
+        db_fieldsmemory($rr, 0);
+    } else {
+        $db_opcao = 22;
+    }
+}
 ?>
 <html>
 <head>
@@ -147,7 +149,7 @@ if (isset ($Desprocessar)) {
 
 <center>
   <?php
-  require_once ("forms/db_frmdespsuplem.php");
+  require_once(modification(Modification::getFile("forms/db_frmdespsuplem.php")));
   ?>
 </center>
 <?

@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_marca_classe.php");
-include("classes/db_localmarca_classe.php");
-include("classes/db_transfmarca_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_marca_classe.php"));
+include(modification("classes/db_localmarca_classe.php"));
+include(modification("classes/db_transfmarca_classe.php"));
 ?>
 <html>
 <head>

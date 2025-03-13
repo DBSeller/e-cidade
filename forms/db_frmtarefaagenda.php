@@ -26,8 +26,8 @@
  */
 
 //MODULO: atendimento
-include("classes/db_db_usuarios_classe.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_usuarios            = new cl_db_usuarios;
 $cltarefa_agenda->rotulo->label();
@@ -115,8 +115,8 @@ db_input('at13_horafim',5, @$at13_horafim, true, 'text', $db_opcao,"onchange='js
   <tr>
     <tr>
   	<td nowrap colspan="2" align="right">
-  	<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> 
-		<input name="novo" type="button" id="cancelar" value="Novo" onclick="js_cancelar();" <?=($db_opcao==1||isset($db_opcaoal)?"style='visibility:hidden;'":"")?>>
+  	<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?>> 
+		<input name="novo" type="button" id="cancelar" value="Novo" onclick="js_cancelar();" <?=($db_opcao==1||isset($db_opcaoal)?"style='display:none;'":"")?>>
   	 </td>
   </tr>	
   
@@ -149,7 +149,7 @@ db_input('at13_horafim',5, @$at13_horafim, true, 'text', $db_opcao,"onchange='js
                inner join db_usuarios on at77_id_usuario = id_usuario
           where at77_tarefa = $at13_tarefa
           order by at77_dataagenda";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if ( pg_numrows($result) > 0 ){
     ?>
     <table border="1">
@@ -295,6 +295,6 @@ function js_cancelar(){
 }
 function js_voltar() {
   parent.mo_camada('tarefa')
-  top.corpo.iframe_tarefa.document.form1.bt_voltar.click();	
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefa.document.form1.bt_voltar.click();	
 }
 </script>

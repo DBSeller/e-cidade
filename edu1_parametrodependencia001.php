@@ -1,39 +1,39 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_libdicionario.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_libdicionario.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulo('parametroprogressaoparcial');
 $oRotulo->label('ed112_habilitado');
@@ -60,7 +60,9 @@ $oRotulo->label('ed112_justificativa');
       width: 100%;
     }
     .tabelas .primeiraColuna {
+/* ATENCAO: PLUGIN ParametroProgressaoParcial - Não apagar o conteudo primeiraColuna - INICIO - NAO REMOVER */
       width: 250px;
+/* ATENCAO: PLUGIN ParametroProgressaoParcial - Não apagar o conteudoprimeiraColuna - FIM - NAO REMOVER */
     }
     .fieldhr {
       border: none;
@@ -148,6 +150,7 @@ $oRotulo->label('ed112_justificativa');
                 ?>
               </td>
             </tr>
+            <!-- ATENCAO: PLUGIN ParametroProgressaoParcial - Linha Formulario - INSTALADO AQUI - NAO REMOVER -->
           </table>
         </fieldset>
         <fieldset class='fieldhr' id='etapas'>
@@ -200,7 +203,7 @@ function js_getDados() {
 function js_retornoDados(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   $('ed112_habilitado').value                   = oRetorno.dados.lHabilitado;
   $('ed112_formacontrole').value                = oRetorno.dados.iFormaControle;
@@ -226,7 +229,7 @@ function js_retornoDados(oJson) {
 
     js_liberaCampoDesbloqueado();
   }
-
+  /* ATENCAO: PLUGIN ParametroProgressaoParcial - lDependenciaMesmaDisciplina - INSTALADO AQUI - NAO REMOVER */
 }
 
 /**
@@ -389,6 +392,7 @@ function js_salvar() {
   oParametro.iFormaControle                = $F('ed112_formacontrole');
   oParametro.lControlaFrequencia           = $F('ed112_controlefrequencia') == 'true' ? true : false;
   oParametro.lDisciplinaEliminaDependencia = $F('ed112_disciplinaeliminadependencia')  == 'true' ? true : false;
+  /* ATENCAO: PLUGIN ParametroProgressaoParcial - dependenciamesmadisciplina - INSTALADO AQUI - NAO REMOVER */
   oParametro.aEtapas                       = new Array();
   oParametro.sJustificativa                = encodeURIComponent(tagString($F('ed112_justificativa')));
   var aEtapasMarcadas                   = oTreeViewEtapas.getNodesChecked();
@@ -404,7 +408,7 @@ function js_salvar() {
       $('ed112_quantidadedisciplinas').focus();
       return false;
     }
-    if (oParametro.aEtapas.lenght == 0) {
+    if (oParametro.aEtapas.length == 0) {
 
       alert('Nenhuma Etapa informada.');
       return false;
@@ -426,11 +430,17 @@ function js_salvar() {
 function js_retornoSalvar(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   alert(oRetorno.message.urlDecode());
+
+  if ( oRetorno.status == 1 ) {
+    location.href = 'edu1_parametrodependencia001.php';
+  }
 }
 var iTamanhoFieldSetCampos    = $('FieldSetCampos').scrollHeight;
 var ItamanhoDisponivel        = (document.body.clientHeight - iTamanhoFieldSetCampos) - 300;
-//$('ctnTreeView').style.height = ItamanhoDisponivel;
+
+/* ATENCAO: PLUGIN ParametroProgressaoParcial - js_liberaDependenciaMesmaDisciplina - INSTALADO AQUI - NAO REMOVER */
+
 </script>

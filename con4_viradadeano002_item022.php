@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 $oDaoIptuTabelasConfig = db_utils::getDao("iptutabelasconfig");
-require_once('model/ViradaIPTUFactory.model.php');
+require_once(modification('model/ViradaIPTUFactory.model.php'));
 
 db_atutermometro(1, 2, 'termometroitem', 1, $sMensagemTermometroItem);
 
@@ -43,7 +43,7 @@ if ($sqlerro == false) {
       throw new Exception($sMensagem);
   	}
   	
-    $aListaTabelasConfig = db_utils::getColectionByRecord($rsTablasConfig);
+    $aListaTabelasConfig = db_utils::getCollectionByRecord($rsTablasConfig);
     foreach ($aListaTabelasConfig as $oTabelaConfig) {
         
       $oViradaIPTU = ViradaIPTUFactory::getInstance($oTabelaConfig->nomearq);

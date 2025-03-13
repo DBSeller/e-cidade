@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_calendario_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcalendario = new cl_calendario;
 $db_opcao = 22;
@@ -87,8 +87,8 @@ $clrotulo->label("ed52_c_passivo");
       </td>
      </tr>
      <tr>
-      <td nowrap title="<?=@$Ted52_c_passivo?>">
-       <?=@$Led52_c_passivo?>
+      <td nowrap title="Inativo">
+       <b>Inativo:</b>
       </td>
       <td>
        <?
@@ -115,9 +115,20 @@ $clrotulo->label("ed52_c_passivo");
 </html>
 <?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
 <script>
-function js_pesquisar(){
- js_OpenJanelaIframe('','db_iframe_calendario','func_calendarioativo.php?funcao_js=parent.js_preenchepesquisa|ed52_i_codigo','Pesquisa Calendários',true);
+var iModulo         = <?=db_getsession("DB_modulo")?>;
+var sFuncaoPesquisa = 'func_calendarioativo.php'
+/**
+ * Verificamos o modulo que o usuario esta logado, para que seja apresentada a funcao de pesquisa com os calendarios
+ * corretos
+ */
+if (iModulo != 1100747) {
+  sFuncaoPesquisa = 'func_calendariobase.php';
 }
+
+function js_pesquisar(){
+ js_OpenJanelaIframe('','db_iframe_calendario',sFuncaoPesquisa+'?funcao_js=parent.js_preenchepesquisa|ed52_i_codigo','Pesquisa Calendários',true);
+}
+
 function js_preenchepesquisa(chave){
  db_iframe_calendario.hide();
  <?

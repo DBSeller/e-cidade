@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_utils.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("classes/db_conplano_classe.php");
-require_once ("classes/db_conplanoexe_classe.php");
-require_once ("classes/db_orctiporec_classe.php");
-require_once ("classes/db_conplanoconta_classe.php");
-require_once ("classes/db_conplanocontabancaria_classe.php");
-require_once ("classes/db_orcfontes_classe.php");
-require_once ("classes/db_orcelemento_classe.php");
-require_once ("classes/db_conlancamval_classe.php");
-require_once ("classes/db_conplanoreduz_classe.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_conparametro_classe.php");
-require_once ("classes/db_db_config_classe.php");
-require_once ("libs/db_libcontabilidade.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_conplano_classe.php"));
+require_once(modification("classes/db_conplanoexe_classe.php"));
+require_once(modification("classes/db_orctiporec_classe.php"));
+require_once(modification("classes/db_conplanoconta_classe.php"));
+require_once(modification("classes/db_conplanocontabancaria_classe.php"));
+require_once(modification("classes/db_orcfontes_classe.php"));
+require_once(modification("classes/db_orcelemento_classe.php"));
+require_once(modification("classes/db_conlancamval_classe.php"));
+require_once(modification("classes/db_conplanoreduz_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_conparametro_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
 
 $c63_codigooperacao = "";
 
@@ -362,29 +362,29 @@ else if (isset ($chavepesquisa)) {
   		}
   		if (isset ($bloqueada) && $bloqueada == 'true') {
   			echo "<script>
-							                         top.corpo.document.formaba.reduzido.style.visibility='hidden';
-							                         top.corpo.iframe_reduzido.disable='true';
+							                         (window.CurrentWindow || parent.CurrentWindow).corpo.document.formaba.reduzido.style.visibility='hidden';
+							                         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_reduzido.disable='true';
 							                 </script>";
   		} else {
 	  		echo "<script>
-						                         top.corpo.iframe_reduzido.disable='false';
-						                         top.corpo.document.formaba.reduzido.style.visibility='visible';
+						                         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_reduzido.disable='false';
+						                         (window.CurrentWindow || parent.CurrentWindow).corpo.document.formaba.reduzido.style.visibility='visible';
 						                 </script>";
-  			echo "<script> top.corpo.iframe_reduzido.location.href='con1_conplano004.php?c60_codcon=$c60_codcon';</script>";
+  			echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_reduzido.location.href='con1_conplano004.php?c60_codcon=$c60_codcon';</script>";
   		}
   	} else {
 	  	echo "<script>
-              top.corpo.iframe_reduzido.disable='false';
-		          top.corpo.document.formaba.reduzido.style.visibility='visible';
-  		        top.corpo.iframe_reduzido.location.href='con1_conplano004.php?c60_codcon=$c60_codcon';
+              (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_reduzido.disable='false';
+		          (window.CurrentWindow || parent.CurrentWindow).corpo.document.formaba.reduzido.style.visibility='visible';
+  		        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_reduzido.location.href='con1_conplano004.php?c60_codcon=$c60_codcon';
               parent.mo_camada('reduzido');
             </script>";
 	  }
 
     echo "<script>
-              top.corpo.document.formaba.grupos.style.visibility='visible';
-		          top.corpo.iframe_grupos.disable='false';
-              top.corpo.iframe_grupos.location.href = 'con1_congrupo004.php?c21_anousu=$anousu&c21_codcon=$c60_codcon';
+              (window.CurrentWindow || parent.CurrentWindow).corpo.document.formaba.grupos.style.visibility='visible';
+		          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_grupos.disable='false';
+              (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_grupos.location.href = 'con1_congrupo004.php?c21_anousu=$anousu&c21_codcon=$c60_codcon';
 		      </script>";
  }
 }
@@ -419,7 +419,7 @@ else if (isset ($chavepesquisa)) {
                 parent.document.formaba.reduzido.disabled ='true';
   	      </script>";
 			}
-		    include ("forms/db_frmconplano.php");
+		    include(modification("forms/db_frmconplano.php"));
 		  ?>
     </center>
 	</td>

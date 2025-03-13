@@ -1,40 +1,42 @@
 <?php
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
+/**
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
  *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
  *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
  *  02111-1307, USA.                                                  
  *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
 
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_arretipo_classe.php"));
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_arretipo_classe.php");
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
 
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+$oGet   = db_utils::postMemory($_GET);
+$aWhere = array();
 
 $clarretipo = new cl_arretipo();
 $clarretipo->rotulo->label("k00_tipo"); 
@@ -45,10 +47,9 @@ if (isset($chave_k00_tipo) && !DBNumber::isInteger($chave_k00_tipo)) {
 }
 
 if(isset($oGet->k03_tipo)){
-	$wheretipo = " and arretipo.k03_tipo in($oGet->k03_tipo) ";
-}else{
-	$wheretipo = "";
+  $aWhere[] = "arretipo.k03_tipo in({$oGet->k03_tipo})";
 }
+
 $chave_k00_descr = isset($chave_k00_descr) ? stripslashes($chave_k00_descr) : '';
 
 ?>
@@ -106,19 +107,21 @@ $chave_k00_descr = isset($chave_k00_descr) ? stripslashes($chave_k00_descr) : ''
         if (!isset($campos)) {
 
           if (file_exists("funcoes/db_func_arretipo.php")) {
-            include("funcoes/db_func_arretipo.php");
+            include(modification("funcoes/db_func_arretipo.php"));
           } else {
             $campos = "arretipo.*";
           }
         }
 
         if (isset($chave_k00_tipo) && (trim($chave_k00_tipo) != "")) {
-	         $sql = $clarretipo->sql_query($chave_k00_tipo,$campos, "k00_tipo");
-        } else if (isset($chave_k00_descr) && (trim($chave_k00_descr)!="") ){
-	         $sql = $clarretipo->sql_query("", $campos, "k00_descr"," k00_descr like '$chave_k00_descr%' ");
-        } else {
-           $sql = $clarretipo->sql_query("", $campos, "k00_tipo","");
+          $aWhere[] = "k00_tipo = {$chave_k00_tipo}";
         }
+
+        if (isset($chave_k00_descr) && (trim($chave_k00_descr) != "") ) {
+          $aWhere[] = "k00_descr like '{$chave_k00_descr}%'";
+        }
+
+        $sql = $clarretipo->sql_query("", $campos, "k00_descr", implode(' AND ', $aWhere));
 
         $repassa = array();
         if (isset($chave_k00_descr) && isset($chave_k00_tipo)) {
@@ -130,7 +133,10 @@ $chave_k00_descr = isset($chave_k00_descr) ? stripslashes($chave_k00_descr) : ''
 
         if ($pesquisa_chave != null && $pesquisa_chave != "") {
 
-          $result = $clarretipo->sql_record($clarretipo->sql_query($pesquisa_chave));
+          $aWhere[] = "k00_tipo = {$pesquisa_chave}";
+
+          $sSql   = $clarretipo->sql_query(null, '*', null, implode(' AND ', $aWhere));
+          $result = $clarretipo->sql_record($sSql);
           if ($clarretipo->numrows != 0) {
 
             db_fieldsmemory($result, 0);
@@ -150,10 +156,12 @@ $chave_k00_descr = isset($chave_k00_descr) ? stripslashes($chave_k00_descr) : ''
 </table>
 </body>
 </html>
-<?php if (!isset($pesquisa_chave)) { ?>
-  <script>
-  </script>
-<?php } ?>
 <script>
   js_tabulacaoforms("form2", "chave_k00_descr", true, 1, "chave_k00_descr", true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

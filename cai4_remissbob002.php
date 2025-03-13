@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-include("libs/db_conn.php");
-require("libs/db_stdlib.php");
-include("libs/db_sql.php");
+include(modification("libs/db_conn.php"));
+require(modification("libs/db_stdlib.php"));
+include(modification("libs/db_sql.php"));
 
 define('FPDF_FONTPATH','fpdf151/font/');
-require('fpdf151/fpdf.php');
+require(modification('fpdf151/fpdf.php'));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 if(!isset($DB_login)) {
   parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));

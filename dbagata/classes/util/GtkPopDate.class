@@ -38,7 +38,7 @@ class GtkPopDate
     {
         global $Pixmaps;
         $this->Mask = $Mask;
-        $tooltip = &new GtkTooltips;
+        $tooltip = new GtkTooltips;
         
         $this->Mask = $Mask;
         
@@ -47,8 +47,8 @@ class GtkPopDate
         $newmask = str_replace('mm',   '99',    $newmask);
         $newmask = str_replace('dd',   '99',    $newmask);
         
-        $this->entry = &new GtkEntryMask($newmask);
-        $this->widget = $box = &new GtkHBox;
+        $this->entry = new GtkEntryMask($newmask);
+        $this->widget = $box = new GtkHBox;
         $this->button = new Button(array($this, 'DateSel'), _a('Date Selection'), $Pixmaps['popdate'], ICONBUTTON, $isdir, true);
         $this->button->set_relief(GTK_RELIEF_NONE);
         
@@ -130,10 +130,10 @@ class GtkPopDate
     function DateSel()
     {
         $this->janela = new GtkWindow;
-        $this->janela->connect_object('key_press_event', array(&$this,'KeyTest'), $this->janela);
+        $this->janela->connect_object('key_press_event', array($this,'KeyTest'), $this->janela);
         $this->janela->set_position(GTK_WIN_POS_CENTER);
-        $this->calendar = $calendar = &new GtkCalendar;
-        $calendar->connect_object('day-selected-double-click', array(&$this, 'GetDate'), &$calendar);
+        $this->calendar = $calendar = new GtkCalendar;
+        $calendar->connect_object('day-selected-double-click', array($this, 'GetDate'), &$calendar);
         
         // posiciona na data atual
         $ano_pos = strpos($this->Mask, 'yyyy');

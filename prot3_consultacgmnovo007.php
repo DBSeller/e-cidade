@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("model/CgmFactory.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("model/CgmFactory.model.php"));
 
 $oGet = db_utils::postMemory($_GET, false);
 
@@ -48,6 +48,10 @@ $oDaoDbUsuarios   = db_utils::getDao('db_usuarios');
 $sSqlBuscaUsuario = $oDaoDbUsuarios->sql_query_file($oRegistroCgm->z01_login, 'nome');
 $rsBuscaUsuario   = $oDaoDbUsuarios->sql_record($sSqlBuscaUsuario);
 $oRegistroUsuario = db_utils::fieldsMemory($rsBuscaUsuario, 0);
+
+$clcgmalt = new cl_cgmalt();
+
+$rsVerificaAlt = $clcgmalt->sql_record($clcgmalt->sql_query_file(null, "*", null, "z05_numcgm = $oGet->cgm and z05_tipo_alt = 'A'"));
 ?>
 <html>
 <head>
@@ -81,7 +85,13 @@ $oRegistroUsuario = db_utils::fieldsMemory($rsBuscaUsuario, 0);
 		</tr>
 		<tr>
 			<td>
-				<strong>Ultima Alteração: </strong>
+				<?php if ($clcgmalt->numrows > 0) { ?>
+					<strong style="color:blue;">
+						<a  href="#" onclick="js_pesquisacgmalt('<?php echo $oGet->cgm ?>');">Alterações:</a>
+					</strong>
+				<?php } else { ?>
+					<strong>Ultima Alteração: </strong>
+				<?php } ?>
 			</td>
 			<td class="valores">
 				<?php 
@@ -91,4 +101,20 @@ $oRegistroUsuario = db_utils::fieldsMemory($rsBuscaUsuario, 0);
 		</tr>
 	</table>
 </body>
+
+<script>
+
+	function js_pesquisacgmalt(numcgm) {
+		js_OpenJanelaIframe(
+			'parent',
+			'db_iframe_cgmaltres',
+			'func_cgmaltresum.php?pesquisa_numcgm=' + numcgm + '&funcao_js=parent.js_mostracgmalt|z05_sequencia|z05_numcgm',
+			'Pesquisa',
+			true,
+			0,
+			0,
+			screen.availWidth - 100
+		);
+	}
+</script>
 </html>

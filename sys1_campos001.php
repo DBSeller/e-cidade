@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
 
-parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
+parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']), $queryString);
+
+foreach ($queryString as $key => $value) {
+    ${$key} = $value;
+}
 
 if(isset($campodefault)){
   $retorno = $campodefault;
@@ -46,7 +50,7 @@ if(isset($retorno)){
 		  left outer join db_sysarqmod m
 		  on m.codarq = a.codarq
 		  where c.codcam = $retorno";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if(isset($HTTP_POST_VARS["modulo"]) && $HTTP_POST_VARS["modulo"] == "")
     $HTTP_POST_VARS["modulo"] = pg_result($result,0,"codmod");
   if(isset($HTTP_POST_VARS["tabela"]) && $HTTP_POST_VARS["tabela"] == "")
@@ -85,7 +89,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   else $maiusculo = 'f';
   if(isset($vautocompl)) $autocompl = 't';
   else $autocompl = 'f';
-  $result = pg_exec("select nextval('db_syscampo_codcam_seq')");
+  $result = db_query("select nextval('db_syscampo_codcam_seq')");
   $codcam = pg_result($result,0,0);
   if((substr($conteudo,0,4)=="date") && empty($valorinicial)){
     $valorinicial = "null";
@@ -100,28 +104,28 @@ if(isset($HTTP_POST_VARS["incluir"])) {
     $valorinicial = "f";
   } 
 
-  $result = pg_query("select nomecam from db_syscampo where nomecam ='$nomecam'");
+  $result = db_query("select nomecam from db_syscampo where nomecam ='$nomecam'");
   $numrows = @pg_num_rows($result);
   if($numrows>0){
     $processamento = "4";
     $erro_msg      = "Inclusão abortada! \\n O campo $nomecam já foi incluido!";
   }else{  
-      pg_exec("BEGIN");
-      pg_exec("insert into db_syscampo 
+      db_query("BEGIN");
+      db_query("insert into db_syscampo 
 	       values($codcam,'$nomecam','$conteudo','$descricao','$valorinicial',
 			      '$rotulo',$tamanho,'$nulo','$maiusculo','$autocompl',$aceitatipo,'$tipoobj','$rotulorel')") or die("Erro(43) inserindo em db_syscampo");
       if($codcampai!=0){
-	 pg_exec("insert into db_syscampodep
+	 db_query("insert into db_syscampodep
 		  values($codcam,'$codcampai')") or die("Erro(43) inserindo em db_syscampodep");
       }
       if(isset($itensdef)){
 	$numArray = sizeof($itensdef);
 	for($i = 0;$i < $numArray;$i++) {
 	  $aux = split("#&",$itensdef[$i]);
-	      pg_exec("insert into db_syscampodef values(".$codcam.",'".$aux[0]."','".$aux[1]."')") or die("Erro(44) inserindo em db_syscampodef");
+	      db_query("insert into db_syscampodef values(".$codcam.",'".$aux[0]."','".$aux[1]."')") or die("Erro(44) inserindo em db_syscampodef");
 	}
       }
-      pg_exec("END");
+      db_query("END");
       $processamento = 1;
        unset($nomecam,$conteudo,$tamanho,$descricao,$rotulo,$valorinicial,$codcampai);
   }    
@@ -143,7 +147,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   }else{
      $autocompl= 'f';
   }
-  pg_exec("BEGIN");
+  db_query("BEGIN");
   if($conteudo == "char" || $conteudo == "varchar")
     if($tamanho == "")
 	  db_erro("Tamanho do tipo não pode ser vazio");
@@ -167,7 +171,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
 
   $pode_ir=true;
   
-  $result05 = pg_query("select codcam as codcamal from db_syscampo where nomecam ='$nomecam'");
+  $result05 = db_query("select codcam as codcamal from db_syscampo where nomecam ='$nomecam'");
   $numrows = @pg_num_rows($result);
   if($numrows>0){
     db_fieldsmemory($result05,0);
@@ -177,7 +181,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
     }   
   }
   if($pode_ir==true){  
-    pg_exec("update db_syscampo set nomecam  = '$nomecam',
+    db_query("update db_syscampo set nomecam  = '$nomecam',
 						    conteudo = '$conteudo',
 				    descricao     = '$descricao',
 								    valorinicial = '$valorinicial',
@@ -191,31 +195,31 @@ if(isset($HTTP_POST_VARS["incluir"])) {
 				    rotulorel  = '$rotulorel'
 		     where codcam = $codcam") or die("Erro(65) inserindo em db_syscampo");
 
-    pg_exec("delete from db_syscampodep where codcam = $codcam") or die("Erro(43) Alterando em db_syscampodep");
+    db_query("delete from db_syscampodep where codcam = $codcam") or die("Erro(43) Alterando em db_syscampodep");
     if($codcampai!=0){
-       pg_exec("insert into db_syscampodep
+       db_query("insert into db_syscampodep
 		values($codcam,'$codcampai')") or die("Erro(43) inserindo em db_syscampodep");
     }
 
-    pg_exec("delete from db_syscampodef where codcam = $codcam") or die("Erro(44) Alterando em db_syscampodef");
+    db_query("delete from db_syscampodef where codcam = $codcam") or die("Erro(44) Alterando em db_syscampodef");
     if(isset($itensdef)){
       $numArray = sizeof($itensdef);
       for($i = 0;$i < $numArray;$i++) {
 	$aux = split("#&",$itensdef[$i]);
-	    pg_exec("insert into db_syscampodef values(".$codcam.",'".$aux[0]."','".$aux[1]."')") or die("Erro(44) inserindo em db_syscampodef");
+	    db_query("insert into db_syscampodef values(".$codcam.",'".$aux[0]."','".$aux[1]."')") or die("Erro(44) inserindo em db_syscampodef");
       }
     }
     $processamento = 2;
   } 
-  pg_exec("END");
+  db_query("END");
 //  db_redireciona();
 ////////////////EXCLUIR//////////////
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("BEGIN");
-  pg_exec("delete from db_syscampodef where codcam = $codcam") or die("Erro(44) Excluindo em db_syscampodef");
-  pg_exec("delete from db_syscampodep where codcam = $codcam") or die("Erro(43) Excluindo em db_syscampodep");
-  pg_exec("delete from db_syscampo    where codcam = $codcam") or die("Erro(72) Excluindo em db_syscampo");			
-  pg_exec("END");
+  db_query("BEGIN");
+  db_query("delete from db_syscampodef where codcam = $codcam") or die("Erro(44) Excluindo em db_syscampodef");
+  db_query("delete from db_syscampodep where codcam = $codcam") or die("Erro(43) Excluindo em db_syscampodep");
+  db_query("delete from db_syscampo    where codcam = $codcam") or die("Erro(72) Excluindo em db_syscampo");			
+  db_query("END");
   $processamento = 3;
 }
 
@@ -429,30 +433,18 @@ input {
                 <option value='0'>Campo Principal...</option>
                 <?
                 if(isset($campodefault)){
-                    echo "<option selected  value='$retorno'>$campdes</option>";
-		}
+                    echo "<option selected  value='$campodefault'>$campdes</option>";
+		            }
                 if(isset($codcam)){
+
                   $sql="Select nomecam as nom,codcampai as pai from db_syscampodep inner join db_syscampo on db_syscampo.codcam=codcampai  where db_syscampodep.codcam = $codcam";
-                  $result = pg_query($sql);
-  	          if(pg_numrows($result)>0){
-		    db_fieldsmemory($result,0);
-                     echo "<option selected value='$pai'>$nom</option>";
-		  }   
+                  $result = db_query($sql);
+  	              if(pg_numrows($result)>0){
+
+		                db_fieldsmemory($result,0);
+                    echo "<option selected value='$pai'>$nom</option>";
+		              }   
                	}	    
-		/*
-		  if(!isset($codcampai)){
-                     $result = pg_exec("Select codcampai from db_syscampodep where codcam = $codcam");
-		     if(pg_numrows($result)>0){
-		       $codcampai = pg_result($result,0,'codcampai');
-		     }else{
-		       $codcampai = 0;
-		     }
-		  }
-                  $result = pg_exec("Select codcam,nomecam from db_syscampo where not nomecam like 'DB_%' order by nomecam");
-				  for($ic=0;$ic<pg_numrows($result);$ic++){
-                    echo "<option ".(pg_result($result,$ic,'codcam')==$codcampai?"selected":"")." value='".pg_result($result,$ic,'codcam')."'>".pg_result($result,$ic,'nomecam')."</option>";
-			 	  }
-                */				  
 				?>
               </select>
 	      </td>
@@ -498,7 +490,7 @@ input {
                     <select multiple name="itensdef[]" onChange="js_mostradef(this)" size="13" id="itensdef" style="width:300">
                       <?
 					  if(isset($retorno)){
-				        $result = pg_exec("select * from db_syscampodef where codcam = ".$retorno);
+				        $result = db_query("select * from db_syscampodef where codcam = ".$retorno);
 					    $numrows = pg_numrows($result);
 					    for($i = 0;$i < $numrows;$i++)
 					      echo "<option value=\"".pg_result($result,$i,"defcampo")."#&".pg_result($result,$i,"defdescr")."\">".pg_result($result,$i,"defcampo")."</option>\n";
@@ -562,7 +554,7 @@ input {
                 <option value="4" <? echo @$aceitatipo=="4"?"selected":"" ?>>Números 
                 Casa Dec.</option>
                 <option value="5" <? echo @$aceitatipo=="5"?"selected":"" ?>> 
-                Vardadeiro/Falso</option>
+                Verdadeiro/Falso</option>
               </select></td>
           </tr>
           <tr style='display:none'> 
@@ -609,7 +601,7 @@ input {
 <script>
 
 function js_documentacao_iframe(){
-  js_OpenJanelaIframe('top.corpo','db_iframe','func_db_syscampo.php?funcao_js=parent.js_recebecampo|codcam|nomecam','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_syscampo.php?funcao_js=parent.js_recebecampo|codcam|nomecam','Pesquisa',true);
 }
 
 function js_recebecampo(chave,nome){
@@ -629,9 +621,9 @@ function js_recebecampo(chave,nome){
 function js_alteracao_iframe(){
   nomecam = document.form1.nomecam.value;1
   if(nomecam!=""){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_db_syscampo.php?chave_nomecam='+nomecam+'&funcao_js=parent.js_alteracampo|0','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_syscampo.php?chave_nomecam='+nomecam+'&funcao_js=parent.js_alteracampo|0','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_db_syscampo.php?funcao_js=parent.js_alteracampo|0','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_syscampo.php?funcao_js=parent.js_alteracampo|0','Pesquisa',true);
   }    
 }
 

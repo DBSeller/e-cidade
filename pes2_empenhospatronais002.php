@@ -1,32 +1,32 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -39,14 +39,14 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 
 $sql_prev1 = "select distinct r33_ppatro
-        from inssirf 
-        where r33_anousu = $ano 
-          and r33_mesusu = $mes 
+        from inssirf
+        where r33_anousu = $ano
+          and r33_mesusu = $mes
           and r33_codtab in ($selec)
           and r33_codtab > 2
           and r33_instit = ".db_getsession('DB_instit') ;
 
-$res_prev1 = pg_query($sql_prev1);
+$res_prev1 = db_query($sql_prev1);
 $rub_ded1 = '';
 $rub_virg = '';
 if(pg_numrows($res_prev1) > 1){
@@ -88,14 +88,14 @@ if(pg_numrows($res_prev1) > 1){
 
 $sql_prev = "select distinct (cast(r33_codtab as integer)- 2) as r33_codtab,
               case when r33_codtab = 2 then 'FGTS' else r33_nome end as r33_nome
-        from inssirf 
-        where r33_anousu = $ano 
-          and r33_mesusu = $mes 
+        from inssirf
+        where r33_anousu = $ano
+          and r33_mesusu = $mes
           and r33_codtab in ($selec)
           and r33_codtab > 1
           and r33_instit = ".db_getsession('DB_instit') ;
 
-$res_prev = pg_query($sql_prev);
+$res_prev = db_query($sql_prev);
 
 $descr_prev = '';
 $tab_prev   = '';
@@ -117,32 +117,32 @@ if($salario == 's'){
   $descr_arq = 'SALÁRIO';
   $sql = "
 
-  select 
+  select
          rh26_orgao,
          o40_descr,
          rh26_unidade,
          o41_descr,
          rh25_projativ,
          o55_descr,
-         rh25_recurso,
+         o15_recurso,
          o15_descr,
          inss,
          ded
-  from 
+  from
   (
-  select 
+  select
          rh26_orgao,
          o41_descr,
          rh26_unidade,
          o40_descr,
          rh25_projativ,
          o55_descr,
-         rh25_recurso,
+         o15_recurso,
          o15_descr,
-         round(sum(inss),2) as inss, 
-         round(sum(ded),2) as ded 
+         round(sum(inss),2) as inss,
+         round(sum(ded),2) as ded
 
-  from 
+  from
 
   (
   select rh02_regist as r01_regist,
@@ -152,21 +152,21 @@ if($salario == 's'){
          rh02_instit,
          case when r14_rubric = '$rub_base' then r14_valor else 0 end as inss
          ".($rub_base == 'R991' || $rub_ded1== ''?',0 as ded':",case when r14_rubric in ($rub_ded1) then r14_valor else 0 end as ded")."
-  from gerfsal 
-       inner join rhpessoalmov on rh02_anousu = r14_anousu 
-                              and rh02_mesusu = r14_mesusu 
+  from gerfsal
+       inner join rhpessoalmov on rh02_anousu = r14_anousu
+                              and rh02_mesusu = r14_mesusu
                               and rh02_regist = r14_regist
-                              and rh02_instit = r14_instit                
-       inner join rhpessoal    on rh01_regist = rh02_regist												
+                              and rh02_instit = r14_instit
+       inner join rhpessoal    on rh01_regist = rh02_regist
        left join rhpespadrao   on rh03_seqpes = rhpessoalmov.rh02_seqpes
-       inner join cgm on rh01_numcgm = z01_numcgm  
-  where r14_anousu = $ano 
+       inner join cgm on rh01_numcgm = z01_numcgm
+  where r14_anousu = $ano
     and r14_mesusu = $mes
     and r14_instit = ".db_getsession("DB_instit")."
     and r14_rubric in ('$rub_base'$rub_ded)
     ".($tab_prev == 0?'':" and rh02_tbprev in ($tab_prev)")."
 
-  union
+  union all
 
   select rh02_regist as r01_regist,
          z01_nome,
@@ -176,11 +176,11 @@ if($salario == 's'){
          case when r48_rubric = '$rub_base' then r48_valor else 0 end as inss
          ".($rub_base == 'R991' || $rub_ded1== ''?',0 as ded':",case when r48_rubric in ($rub_ded1) then r48_valor else 0 end as ded")."
   from gerfcom
-       inner join rhpessoalmov on rh02_anousu = r48_anousu 
-                              and rh02_mesusu = r48_mesusu 
+       inner join rhpessoalmov on rh02_anousu = r48_anousu
+                              and rh02_mesusu = r48_mesusu
                               and rh02_regist = r48_regist
-                              and rh02_instit = r48_instit                
-       inner join rhpessoal    on rh01_regist = rh02_regist												
+                              and rh02_instit = r48_instit
+       inner join rhpessoal    on rh01_regist = rh02_regist
        left join rhpespadrao   on rh03_seqpes = rhpessoalmov.rh02_seqpes
        inner join cgm on rh01_numcgm = z01_numcgm
   where r48_anousu = $ano
@@ -188,8 +188,8 @@ if($salario == 's'){
     and r48_instit = ".db_getsession("DB_instit")."
     and r48_rubric in ('$rub_base'$rub_ded)
     ".($tab_prev == 0?'':" and rh02_tbprev in ($tab_prev)")."
-                   
-  union
+
+  union all
 
   select rh02_regist as r01_regist,
          z01_nome,
@@ -199,11 +199,11 @@ if($salario == 's'){
          case when r20_rubric = '$rub_base' then r20_valor else 0 end as inss
          ".($rub_base == 'R991' || $rub_ded1== ''?',0 as ded':",case when r20_rubric in ($rub_ded1) then r20_valor else 0 end as ded")."
   from gerfres
-       inner join rhpessoalmov on rh02_anousu = r20_anousu 
-                              and rh02_mesusu = r20_mesusu 
+       inner join rhpessoalmov on rh02_anousu = r20_anousu
+                              and rh02_mesusu = r20_mesusu
                               and rh02_regist = r20_regist
-                              and rh02_instit = r20_instit                
-       inner join rhpessoal    on rh01_regist = rh02_regist												
+                              and rh02_instit = r20_instit
+       inner join rhpessoal    on rh01_regist = rh02_regist
        left join rhpespadrao   on rh03_seqpes = rhpessoalmov.rh02_seqpes
        inner join cgm on rh01_numcgm = z01_numcgm
   where r20_anousu = $ano
@@ -211,7 +211,7 @@ if($salario == 's'){
     and r20_instit = ".db_getsession("DB_instit")."
     and r20_rubric in ('$rub_base'$rub_ded)
     ".($tab_prev == 0?'':" and rh02_tbprev in ($tab_prev)")."
-                   
+
   ) as x
   left join rhlota on rh02_lota = r70_codigo
                   and r70_instit = ".db_getsession("DB_instit")."
@@ -232,7 +232,7 @@ if($salario == 's'){
         rh26_unidade,
         o41_descr,
         rh25_projativ,
-        rh25_recurso,
+        o15_recurso,
         o15_descr,
         o55_descr
   order by
@@ -241,7 +241,7 @@ if($salario == 's'){
         rh26_unidade,
         o41_descr,
         rh25_projativ,
-        rh25_recurso,
+        o15_recurso,
         o15_descr,
         o55_descr
   ) as xxxx
@@ -250,32 +250,32 @@ if($salario == 's'){
   $descr_arq = '13o. SALÁRIO';
   $sql = "
 
-  select 
+  select
          rh26_orgao,
          o40_descr,
          rh26_unidade,
          o41_descr,
          rh25_projativ,
          o55_descr,
-         rh25_recurso,
+         o15_recurso,
          o15_descr,
          inss,
          ded
-  from 
+  from
   (
-  select 
+  select
          rh26_orgao,
          o41_descr,
          rh26_unidade,
          o40_descr,
          rh25_projativ,
          o55_descr,
-         rh25_recurso,
+         o15_recurso,
          o15_descr,
-         round(sum(inss),2) as inss, 
-         round(sum(ded),2) as ded 
+         round(sum(inss),2) as inss,
+         round(sum(ded),2) as ded
 
-  from 
+  from
 
   (
   select rh02_regist as r01_regist,
@@ -285,15 +285,15 @@ if($salario == 's'){
          rh02_instit,
          case when r35_rubric = '$rub_base' then r35_valor else 0 end as inss
          ".($rub_base == 'R991' || $rub_ded1== ''?',0 as ded':",case when r35_rubric in ($rub_ded1) then r35_valor else 0 end as ded")."
-  from gerfs13 
-       inner join rhpessoalmov on rh02_anousu = r35_anousu 
-                              and rh02_mesusu = r35_mesusu 
+  from gerfs13
+       inner join rhpessoalmov on rh02_anousu = r35_anousu
+                              and rh02_mesusu = r35_mesusu
                               and rh02_regist = r35_regist
-                              and rh02_instit = r35_instit                
-       inner join rhpessoal    on rh01_regist = rh02_regist												
+                              and rh02_instit = r35_instit
+       inner join rhpessoal    on rh01_regist = rh02_regist
        left join rhpespadrao   on rh03_seqpes = rhpessoalmov.rh02_seqpes
-       inner join cgm on rh01_numcgm = z01_numcgm  
-  where r35_anousu = $ano 
+       inner join cgm on rh01_numcgm = z01_numcgm
+  where r35_anousu = $ano
     and r35_mesusu = $mes
     and r35_instit = ".db_getsession("DB_instit")."
     and r35_rubric in ('$rub_base'$rub_ded)
@@ -318,7 +318,7 @@ if($salario == 's'){
         rh26_unidade,
         o41_descr,
         rh25_projativ,
-        rh25_recurso,
+        o15_recurso,
         o15_descr,
         o55_descr
   order by
@@ -327,7 +327,7 @@ if($salario == 's'){
         rh26_unidade,
         o41_descr,
         rh25_projativ,
-        rh25_recurso,
+        o15_recurso,
         o15_descr,
         o55_descr
   ) as xxxx
@@ -343,7 +343,7 @@ $head6 = "PERÍODO : ".$mes." / ".$ano;
 //echo $sql ; exit;
 //echo "patronal --> $r33_ppatro" ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
@@ -351,9 +351,9 @@ if ($xxnum == 0){
 
 }
 
-$pdf = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+$pdf = new PDF();
+$pdf->Open();
+$pdf->AliasNbPages();
 $total = 0;
 $pdf->setfillcolor(235);
 $pdf->setfont('arial','b',8);
@@ -413,13 +413,13 @@ for($x = 0; $x < pg_numrows($result);$x++){
      $proj= $rh25_projativ;
    }
    $pdf->setfont('arial','',6);
-//     if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){ 
+//     if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){
 //       $pat = $inss / 100 * 20;
 //     }else{
        $pat   = round($inss / 100 * $r33_ppatro,2);
 //     }
      $pdf->cell(10,$alt,'',0,0,"C",0);
-     $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
+     $pdf->cell(15,$alt,$o15_recurso,0,0,"C",0);
      $pdf->cell(70,$alt,$o15_descr,0,0,"L",0);
      $pdf->cell(18,$alt,db_formatar($inss,'f'),0,0,"R",0);
      $pdf->cell(18,$alt,db_formatar($pat,'f'),0,0,"R",0);
@@ -431,7 +431,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
        $pdf->cell(18,$alt,db_formatar($ded,'f'),0,0,"R",0);
      }
      $pdf->cell(18,$alt,db_formatar(($pat + $extra - $ded),'f'),0,1,"R",0);
-//   if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){ 
+//   if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){
 //     $val_pat      += (($inss+$sub)/100)*20;
 //   }else{
    $val_pat      += round((($inss)/100)*$r33_ppatro,2);
@@ -455,5 +455,5 @@ for($x = 0; $x < pg_numrows($result);$x++){
    $pdf->cell(18,$alt,db_formatar($val_pat + $val_extra - $val_ded,'f'),0,1,"R",0);
 
 $pdf->Output();
-   
+
 ?>

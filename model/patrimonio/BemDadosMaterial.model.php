@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -45,6 +45,9 @@ final class BemDadosMaterial {
   
   protected $isEmpenhoSistema;
   
+  protected $anoEmpenho;
+
+  protected $iCodigoEmpenho;
   /**
    * 
    */
@@ -52,7 +55,7 @@ final class BemDadosMaterial {
     
     if (!empty($iBem)) {
       
-      $oDaoBensMaterial = db_utils::getDao("bensmater");
+      $oDaoBensMaterial = new cl_bensmater();
       $sSqlDados        = $oDaoBensMaterial->sql_query_bensmater($iBem);
       $rsDados          = $oDaoBensMaterial->sql_record($sSqlDados);
       if ($oDaoBensMaterial->numrows > 0) {
@@ -60,10 +63,13 @@ final class BemDadosMaterial {
         $oDadosMaterial = db_utils::fieldsMemory($rsDados, 0);
         $this->setDataGarantia(db_formatar($oDadosMaterial->t53_garant, "d"));
         $this->setEmpenho($oDadosMaterial->t53_empen);
+        $this->setAnoEmpenho(db_getsession("DB_anousu"));
         if ($oDadosMaterial->e60_numemp != '') {
           
           $this->setEmpenho($oDadosMaterial->e60_numemp);
           $this->setEmpenhoSistema(true); 
+          $this->setAnoEmpenho($oDadosMaterial->e60_anousu);
+          $this->setCodigoEmpenho($oDadosMaterial->e60_codemp);
           $this->sNomeCredor = $oDadosMaterial->z01_nome;
         }
         
@@ -73,6 +79,20 @@ final class BemDadosMaterial {
         unset($oDadosMaterial);
       }
     }
+  }
+  /**
+   * Seta o ano do empenho
+   * @param string $anoEmpenho
+   */
+  public function setAnoEmpenho($ano) {
+    $this->anoEmpenho = $ano;
+  }
+  /**
+   * Retorna o ano do empenho
+   * @return string $anoEmpenho
+   */
+  public function getAnoEmpenho() {
+    return $this->anoEmpenho;
   }
   /**
    * @return unknown
@@ -96,6 +116,12 @@ final class BemDadosMaterial {
     return $this->iEmpenho;
   }
   
+   /**
+   * @return unknown
+   */
+  public function getCodigoEmpenho() {
+    return $this->iCodigoEmpenho;
+  }
   /**
    * @return unknown
    */
@@ -143,6 +169,13 @@ final class BemDadosMaterial {
     $this->iEmpenho = $iEmpenho;
   }
   
+   /**
+   * Define o Código do Empenho
+   * @param integer $iEmpenho
+   */
+  public function setCodigoEmpenho($iCodigoEmpenho) {
+    $this->iCodigoEmpenho = $iCodigoEmpenho;
+  }
   /**
    * Define se o Empenho é do sistema
    * @param boolean $isEmpenhoSistema
@@ -172,8 +205,8 @@ final class BemDadosMaterial {
    */
   public function salvar() {
     
-    $oDaoBensMaterialEmpenho = db_utils::getDao("bensmaterialempempenho");
-    $oDaoBensMaterial        = db_utils::getDao("bensmater");
+    $oDaoBensMaterialEmpenho = new cl_bensmaterialempempenho();
+    $oDaoBensMaterial        = new cl_bensmater();
     if (!empty($this->iBem)) {
       
       $oDaoBensMaterialEmpenho->excluir(null, "t11_bensmaterial={$this->iBem}");

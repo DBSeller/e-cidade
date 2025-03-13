@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 
 //MODULO: secretariadeeducacao
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 $clAlterarExcluir = new cl_iframe_alterar_excluir;
 
 $oDaoAreaConhecimento->rotulo->label();
@@ -136,7 +136,7 @@ function js_buscaAreasConhecimento() {
 
 function js_retornoBuscaArea(oRetorno) {
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus == 0) {
 

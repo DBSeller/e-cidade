@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lote_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $cllote = new cl_lote;
 $db_opcao = 1;
 $db_botao = true;
@@ -62,7 +62,7 @@ if ($HTTP_POST_VARS["db_opcao"]=="Incluir"){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmlote.php");
+	include(modification("forms/db_frmlote.php"));
 	?>
     </center>
 	</td>

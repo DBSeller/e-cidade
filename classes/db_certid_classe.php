@@ -1,71 +1,71 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: dividaativa
 //CLASSE DA ENTIDADE certid
-class cl_certid { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $v13_certid = 0; 
-   var $v13_dtemis_dia = null; 
-   var $v13_dtemis_mes = null; 
-   var $v13_dtemis_ano = null; 
-   var $v13_dtemis = null; 
-   var $v13_memo = 0; 
-   var $v13_login = null; 
-   var $v13_instit = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_certid {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $v13_certid = 0;
+   var $v13_dtemis_dia = null;
+   var $v13_dtemis_mes = null;
+   var $v13_dtemis_ano = null;
+   var $v13_dtemis = null;
+   var $v13_memo = 0;
+   var $v13_login = null;
+   var $v13_instit = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 v13_certid = int4 = certidao 
-                 v13_dtemis = date = data de emissao 
-                 v13_memo = oid = texto da certidao 
-                 v13_login = varchar(8) = login do usuario 
-                 v13_instit = int4 = Cod. Instituição 
+                 v13_certid = int4 = certidao
+                 v13_dtemis = date = data de emissao
+                 v13_memo = oid = texto da certidao
+                 v13_login = varchar(8) = login do usuario
+                 v13_instit = int4 = Cod. Instituição
                  ";
-   //funcao construtor da classe 
-   function cl_certid() { 
+   //funcao construtor da classe
+   public function __construct() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("certid"); 
+     $this->rotulo = new rotulo("certid");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   public function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -74,7 +74,7 @@ class cl_certid {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->v13_certid = ($this->v13_certid == ""?@$GLOBALS["HTTP_POST_VARS"]["v13_certid"]:$this->v13_certid);
        if($this->v13_dtemis == ""){
@@ -93,9 +93,9 @@ class cl_certid {
      }
    }
    // funcao para inclusao
-   function incluir ($v13_certid){ 
+   public function incluir ($v13_certid){
       $this->atualizacampos();
-     if($this->v13_dtemis == null ){ 
+     if($this->v13_dtemis == null ){
        $this->erro_sql = " Campo data de emissao nao Informado.";
        $this->erro_campo = "v13_dtemis_dia";
        $this->erro_banco = "";
@@ -104,7 +104,7 @@ class cl_certid {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v13_memo == null ){ 
+     if($this->v13_memo == null ){
        $this->erro_sql = " Campo texto da certidao nao Informado.";
        $this->erro_campo = "v13_memo";
        $this->erro_banco = "";
@@ -113,7 +113,7 @@ class cl_certid {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v13_login == null ){ 
+     if($this->v13_login == null ){
        $this->erro_sql = " Campo login do usuario nao Informado.";
        $this->erro_campo = "v13_login";
        $this->erro_banco = "";
@@ -122,7 +122,7 @@ class cl_certid {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v13_instit == null ){ 
+     if($this->v13_instit == null ){
        $this->erro_sql = " Campo Cod. Instituição nao Informado.";
        $this->erro_campo = "v13_instit";
        $this->erro_banco = "";
@@ -131,8 +131,8 @@ class cl_certid {
        $this->erro_status = "0";
        return false;
      }
-       $this->v13_certid = $v13_certid; 
-     if(($this->v13_certid == null) || ($this->v13_certid == "") ){ 
+       $this->v13_certid = $v13_certid;
+     if(($this->v13_certid == null) || ($this->v13_certid == "") ){
        $this->erro_sql = " Campo v13_certid nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -141,21 +141,21 @@ class cl_certid {
        return false;
      }
      $sql = "insert into certid(
-                                       v13_certid 
-                                      ,v13_dtemis 
-                                      ,v13_memo 
-                                      ,v13_login 
-                                      ,v13_instit 
+                                       v13_certid
+                                      ,v13_dtemis
+                                      ,v13_memo
+                                      ,v13_login
+                                      ,v13_instit
                        )
                 values (
-                                $this->v13_certid 
-                               ,".($this->v13_dtemis == "null" || $this->v13_dtemis == ""?"null":"'".$this->v13_dtemis."'")." 
-                               ,$this->v13_memo 
-                               ,'$this->v13_login' 
-                               ,$this->v13_instit 
+                                $this->v13_certid
+                               ,".($this->v13_dtemis == "null" || $this->v13_dtemis == ""?"null":"'".$this->v13_dtemis."'")."
+                               ,$this->v13_memo
+                               ,'$this->v13_login'
+                               ,$this->v13_instit
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = " ($this->v13_certid) nao Incluído. Inclusao Abortada.";
@@ -191,16 +191,16 @@ class cl_certid {
        $resac = db_query("insert into db_acount values($acount,100,10576,'','".AddSlashes(pg_result($resaco,0,'v13_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($v13_certid=null) { 
+   public function alterar ($v13_certid=null) {
       $this->atualizacampos();
      $sql = " update certid set ";
      $virgula = "";
-     if(trim($this->v13_certid)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_certid"])){ 
+     if(trim($this->v13_certid)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_certid"])){
        $sql  .= $virgula." v13_certid = $this->v13_certid ";
        $virgula = ",";
-       if(trim($this->v13_certid) == null ){ 
+       if(trim($this->v13_certid) == null ){
          $this->erro_sql = " Campo certidao nao Informado.";
          $this->erro_campo = "v13_certid";
          $this->erro_banco = "";
@@ -210,10 +210,10 @@ class cl_certid {
          return false;
        }
      }
-     if(trim($this->v13_dtemis)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_dtemis_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["v13_dtemis_dia"] !="") ){ 
+     if(trim($this->v13_dtemis)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_dtemis_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["v13_dtemis_dia"] !="") ){
        $sql  .= $virgula." v13_dtemis = '$this->v13_dtemis' ";
        $virgula = ",";
-       if(trim($this->v13_dtemis) == null ){ 
+       if(trim($this->v13_dtemis) == null ){
          $this->erro_sql = " Campo data de emissao nao Informado.";
          $this->erro_campo = "v13_dtemis_dia";
          $this->erro_banco = "";
@@ -222,11 +222,11 @@ class cl_certid {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["v13_dtemis_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["v13_dtemis_dia"])){
          $sql  .= $virgula." v13_dtemis = null ";
          $virgula = ",";
-         if(trim($this->v13_dtemis) == null ){ 
+         if(trim($this->v13_dtemis) == null ){
            $this->erro_sql = " Campo data de emissao nao Informado.";
            $this->erro_campo = "v13_dtemis_dia";
            $this->erro_banco = "";
@@ -237,10 +237,10 @@ class cl_certid {
          }
        }
      }
-     if(trim($this->v13_memo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_memo"])){ 
+     if(trim($this->v13_memo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_memo"])){
        $sql  .= $virgula." v13_memo = $this->v13_memo ";
        $virgula = ",";
-       if(trim($this->v13_memo) == null ){ 
+       if(trim($this->v13_memo) == null ){
          $this->erro_sql = " Campo texto da certidao nao Informado.";
          $this->erro_campo = "v13_memo";
          $this->erro_banco = "";
@@ -250,10 +250,10 @@ class cl_certid {
          return false;
        }
      }
-     if(trim($this->v13_login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_login"])){ 
+     if(trim($this->v13_login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_login"])){
        $sql  .= $virgula." v13_login = '$this->v13_login' ";
        $virgula = ",";
-       if(trim($this->v13_login) == null ){ 
+       if(trim($this->v13_login) == null ){
          $this->erro_sql = " Campo login do usuario nao Informado.";
          $this->erro_campo = "v13_login";
          $this->erro_banco = "";
@@ -263,10 +263,10 @@ class cl_certid {
          return false;
        }
      }
-     if(trim($this->v13_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_instit"])){ 
+     if(trim($this->v13_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v13_instit"])){
        $sql  .= $virgula." v13_instit = $this->v13_instit ";
        $virgula = ",";
-       if(trim($this->v13_instit) == null ){ 
+       if(trim($this->v13_instit) == null ){
          $this->erro_sql = " Campo Cod. Instituição nao Informado.";
          $this->erro_campo = "v13_instit";
          $this->erro_banco = "";
@@ -300,7 +300,7 @@ class cl_certid {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->v13_certid;
@@ -328,14 +328,14 @@ class cl_certid {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($v13_certid=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function excluir ($v13_certid=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($v13_certid));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -365,7 +365,7 @@ class cl_certid {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$v13_certid;
@@ -393,11 +393,11 @@ class cl_certid {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -419,10 +419,10 @@ class cl_certid {
       }
      return $result;
    }
-   function sql_query ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -437,15 +437,15 @@ class cl_certid {
     $sql2 = "";
     if($dbwhere==""){
       if($v13_certid!=null ){
-        $sql2 .= " where certid.v13_certid = $v13_certid "; 
-      } 
+        $sql2 .= " where certid.v13_certid = $v13_certid ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -454,10 +454,10 @@ class cl_certid {
     }
     return $sql;
   }
-   function sql_query_file ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_file ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -470,15 +470,15 @@ class cl_certid {
     $sql2 = "";
     if($dbwhere==""){
       if($v13_certid!=null ){
-        $sql2 .= " where certid.v13_certid = $v13_certid "; 
-      } 
+        $sql2 .= " where certid.v13_certid = $v13_certid ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -487,10 +487,10 @@ class cl_certid {
     }
     return $sql;
   }
-   function sql_query_ini ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_ini ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -504,15 +504,15 @@ class cl_certid {
     $sql2 = "";
     if($dbwhere==""){
       if($v13_certid!=null ){
-        $sql2 .= " where certid.v13_certid = $v13_certid "; 
-      } 
+        $sql2 .= " where certid.v13_certid = $v13_certid ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -521,10 +521,10 @@ class cl_certid {
     }
     return $sql;
   }
-   function sql_query_tip ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_tip ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -542,15 +542,15 @@ class cl_certid {
     $sql2 = "";
     if($dbwhere==""){
       if($v13_certid!=null ){
-        $sql2 .= " where certid.v13_certid = $v13_certid "; 
-      } 
+        $sql2 .= " where certid.v13_certid = $v13_certid ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -559,11 +559,11 @@ class cl_certid {
     }
     return $sql;
   }
-  
-   function sql_query_cgm ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+   public function sql_query_cgm ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -582,15 +582,15 @@ class cl_certid {
     $sql2 = "";
     if($dbwhere==""){
       if($v13_certid!=null ){
-        $sql2 .= " where certid.v13_certid = $v13_certid "; 
-      } 
+        $sql2 .= " where certid.v13_certid = $v13_certid ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -599,11 +599,11 @@ class cl_certid {
     }
     return $sql;
   }
-  
-  function sql_query_inicial_cda ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+  public function sql_query_inicial_cda ( $v13_certid=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -623,15 +623,15 @@ class cl_certid {
     $sql2 = "";
     if($dbwhere==""){
       if($v13_certid!=null ){
-        $sql2 .= " where certid.v13_certid = $v13_certid "; 
-      } 
+        $sql2 .= " where certid.v13_certid = $v13_certid ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -640,11 +640,11 @@ class cl_certid {
     }
     return $sql;
   }
-  
-  function sql_query_origem_termo_parcelamento ($iNumpre, $iNumpar) {
-   
+
+  public function sql_query_origem_termo_parcelamento ($iNumpre, $iNumpar) {
+
     $iInstituicao = db_getsession('DB_instit');
-    
+
     $sSql  = "select distinct                                                                          \n";
     $sSql .= "       arreoldcalc.k00_arreoldcalc,                                                      \n";
     $sSql .= "       arreold.k00_receit,                                                               \n";
@@ -695,32 +695,56 @@ class cl_certid {
     $sSql .= " inner join histcalc   on histcalc.k01_codigo   = arreold.k00_hist                       \n";
     $sSql .= " where v01_numpre = {$iNumpre}                                                           \n";
     $sSql .= "   and v01_numpar = {$iNumpar}                                                           \n";
-    
+
     return $sSql;
   }
 
-  public function sql_queryCertidao ($iCodigoPesquisa = null, $sTipoPesquisa = 'certidao', $sCampos) {
-    
+  public function sql_queryCertidao ($iCodigoPesquisa = null, $sTipoPesquisa = 'certidao', $sCampos, $lBuscarReparcelamento = false) {
+
     $iInstituicao  = db_getsession('DB_instit');
-    
+
     $sWhereTipo    = '';
-    
+
     if ($sTipoPesquisa == 'matricula') {
-      
+
       $sWhereTipo  = " inner join arrematric on arrematric.k00_numpre = divida.v01_numpre  ";
       $sWhereTipo .= " where k00_matric                               = {$iCodigoPesquisa} ";
-      
+
     } else if ($sTipoPesquisa == 'inscricao') {
-    
+
       $sWhereTipo  = " inner join arreinscr on arreinscr.k00_numpre   = divida.v01_numpre  ";
       $sWhereTipo .= " where k00_inscr                                = {$iCodigoPesquisa} ";
-    
+
     } elseif ($sTipoPesquisa == 'cgm') {
       $sWhereTipo .= " inner join arrenumcgm on arrenumcgm.k00_numpre   = divida.v01_numpre  ";
       $sWhereTipo .= " where arrenumcgm.k00_numcgm                      = {$iCodigoPesquisa}  ";
-    
-    } 
-    
+
+    }
+
+    $sSqlParametro = "(select coalesce((select v04_envolcdaiptu from pardiv where v04_instit = {$iInstituicao} limit 1), 0))";
+    $sSqlMatricula = "(select k00_matric from arrematric where k00_numpre = v01_numpre limit 1)";
+
+    $sCampoCgm  = "case when exists(select * from arrematric where k00_numpre = v01_numpre) then                           ";
+    $sCampoCgm .= "     (select riNumcgm from fc_busca_envolvidos(false, {$sSqlParametro}, 'M', {$sSqlMatricula}) limit 1) ";
+    $sCampoCgm .= " else v01_numcgm end                                                                                    ";
+
+    $sCampoReparcelamento  = " case ";
+    $sCampoReparcelamento .= "   when exists(select * from arrematric where k00_numpre = arrecad.k00_numpre) then ";
+    $sCampoReparcelamento .= "      ( select riNumcgm ";
+    $sCampoReparcelamento .= "          from fc_busca_envolvidos( false, ";
+    $sCampoReparcelamento .= "                                    ( select coalesce( (select v04_envolcdaiptu ";
+    $sCampoReparcelamento .= "                                                                from pardiv ";
+    $sCampoReparcelamento .= "                                                               where v04_instit = 1 ";
+    $sCampoReparcelamento .= "                                                               limit 1), 0) ), ";
+    $sCampoReparcelamento .= "                                     'M', ";
+    $sCampoReparcelamento .= "                                     ( select k00_matric ";
+    $sCampoReparcelamento .= "                                         from arrematric ";
+    $sCampoReparcelamento .= "                                        where k00_numpre = arrecad.k00_numpre limit 1) ) ";
+    $sCampoReparcelamento .= "         limit 1) ";
+    $sCampoReparcelamento .= "   else ";
+    $sCampoReparcelamento .= "      arrenumcgm.k00_numcgm ";
+    $sCampoReparcelamento .= " end ";
+
     $sSqlCertidao  = "select $sCampos                                                     \n";
     $sSqlCertidao .= "                                                          \n";
     $sSqlCertidao .= "                                                          \n";
@@ -733,6 +757,9 @@ class cl_certid {
     $sSqlCertidao .= "               v13_dtemis     as data_emissao,                                             \n";
     $sSqlCertidao .= "               v13_instit     as instituicao,                                              \n";
     $sSqlCertidao .= "               v15_observacao as observacao,                                               \n";
+    $sSqlCertidao .= "               v01_numpar     as numpar,                                                   \n";
+    $sSqlCertidao .= "               v01_numpre     as numpre,                                                   \n";
+    $sSqlCertidao .= "               {$sCampoCgm}   as numcgm,                                                   \n";
     $sSqlCertidao .= "               case                                                                        \n";
     $sSqlCertidao .= "                 when v15_parcial is true or v15_parcial is null                           \n";
     $sSqlCertidao .= "                   then false                                                              \n";
@@ -745,7 +772,7 @@ class cl_certid {
     $sSqlCertidao .= "         inner join divida     on divida.v01_coddiv        = certdiv.v14_coddiv            \n";
     $sSqlCertidao .= "                              and divida.v01_instit        = {$iInstituicao}               \n";
     if ($sTipoPesquisa == 'certidao') {
-      $sSqlCertidao .= "       where certid.v13_certid                           = {$iCodigoPesquisa}            \n";
+      $sSqlCertidao .= "       where certid.v13_certid                           in ({$iCodigoPesquisa})         \n";
     } else {
       $sSqlCertidao .= "         {$sWhereTipo}                                                                   \n";
     }
@@ -756,6 +783,9 @@ class cl_certid {
     $sSqlCertidao .= "               v15_data    as data_emissao,                                                \n";
     $sSqlCertidao .= "               v15_instit  as instituicao,                                                 \n";
     $sSqlCertidao .= "               v15_observacao as observacao,                                               \n";
+    $sSqlCertidao .= "               v01_numpar     as numpar,                                                   \n";
+    $sSqlCertidao .= "               v01_numpre     as numpre,                                                   \n";
+    $sSqlCertidao .= "               {$sCampoCgm}   as numcgm,                                                   \n";
     $sSqlCertidao .= "               case                                                                        \n";
     $sSqlCertidao .= "                 when v15_parcial is true or v15_parcial is null                           \n";
     $sSqlCertidao .= "                   then false                                                              \n";
@@ -768,10 +798,13 @@ class cl_certid {
     $sSqlCertidao .= "         inner join divida     on divida.v01_coddiv        = acertdiv.v14_coddiv           \n";
     $sSqlCertidao .= "                              and divida.v01_instit        = {$iInstituicao}               \n";
     if ($sTipoPesquisa == 'certidao') {
-      $sSqlCertidao .= "       where acertid.v15_certid                          = {$iCodigoPesquisa}            \n";
+      $sSqlCertidao .= "       where acertid.v15_certid                          in ({$iCodigoPesquisa} )        \n";
     } else {
       $sSqlCertidao .= "         {$sWhereTipo}                                                                   \n";
     }
+
+    $sCampoCgm = str_replace("v01_numpre", "v07_numpre", $sCampoCgm);
+
     $sSqlCertidao .= "                                                                                           \n";
     $sSqlCertidao .= "    union                                                                                  \n";
     $sSqlCertidao .= "                                                                                           \n";
@@ -779,6 +812,15 @@ class cl_certid {
     $sSqlCertidao .= "               v13_dtemis     as data_emissao,                                             \n";
     $sSqlCertidao .= "               v13_instit     as instituicao,                                              \n";
     $sSqlCertidao .= "               v15_observacao as observacao,                                               \n";
+    $sSqlCertidao .= "               v07_totpar     as numpar,                                                   \n";
+    $sSqlCertidao .= "               v07_numpre     as numpre,                                                   \n";
+
+    if ( $lBuscarReparcelamento ) {
+      $sSqlCertidao .= "               {$sCampoReparcelamento}   as numcgm,                                                  \n";
+    } else {
+      $sSqlCertidao .= "               {$sCampoCgm}   as numcgm,                                                   \n";
+    }
+
     $sSqlCertidao .= "               case                                                                        \n";
     $sSqlCertidao .= "                 when v15_parcial is true or v15_parcial is null                           \n";
     $sSqlCertidao .= "                   then false                                                              \n";
@@ -788,11 +830,22 @@ class cl_certid {
     $sSqlCertidao .= "          from certid                                                                      \n";
     $sSqlCertidao .= "          left join acertid    on acertid.v15_certid       = certid.v13_certid             \n";
     $sSqlCertidao .= "         inner join certter    on certter.v14_certid       = certid.v13_certid             \n";
-    $sSqlCertidao .= "         inner join termodiv   on termodiv.parcel          = certter.v14_parcel            \n";
-    $sSqlCertidao .= "         inner join divida     on divida.v01_coddiv        = termodiv.coddiv               \n";
-    $sSqlCertidao .= "                              and divida.v01_instit        = {$iInstituicao}               \n";
+    $sSqlCertidao .= "         inner join termo      on certter.v14_parcel       = termo.v07_parcel              \n";
+    $sSqlCertidao .= "                              and termo.v07_instit         = {$iInstituicao}               \n";
+
+    if ( $lBuscarReparcelamento ) {
+
+      $sSqlCertidao .= "         inner join arrecad    on arrecad.k00_numpre    = termo.v07_numpre              \n";
+      $sSqlCertidao .= "         inner join arrenumcgm on arrecad.k00_numpre    = arrenumcgm.k00_numpre              \n";
+    } else {
+
+      $sSqlCertidao .= "         inner join termodiv   on termodiv.parcel          = certter.v14_parcel            \n";
+      $sSqlCertidao .= "         inner join divida     on divida.v01_coddiv        = termodiv.coddiv               \n";
+      $sSqlCertidao .= "                              and divida.v01_instit        = {$iInstituicao}               \n";
+    }
+
     if ($sTipoPesquisa == 'certidao') {
-      $sSqlCertidao .= "       where  certid.v13_certid                          = {$iCodigoPesquisa}            \n";
+      $sSqlCertidao .= "       where  certid.v13_certid                          in ({$iCodigoPesquisa})         \n";
     } else {
       $sSqlCertidao .= "         {$sWhereTipo}                                                                   \n";
     }
@@ -802,6 +855,9 @@ class cl_certid {
     $sSqlCertidao .= "               v15_data       as data_emissao,                                             \n";
     $sSqlCertidao .= "               v15_instit     as instituicao,                                              \n";
     $sSqlCertidao .= "               v15_observacao as observacao,                                               \n";
+    $sSqlCertidao .= "               v07_totpar     as numpar,                                                   \n";
+    $sSqlCertidao .= "               v07_numpre     as numpre,                                                   \n";
+    $sSqlCertidao .= "               {$sCampoCgm}   as numcgm,                                                   \n";
     $sSqlCertidao .= "               case                                                                        \n";
     $sSqlCertidao .= "                 when v15_parcial is true or v15_parcial is null                           \n";
     $sSqlCertidao .= "                   then false                                                              \n";
@@ -809,13 +865,15 @@ class cl_certid {
     $sSqlCertidao .= "                end as anulado,                                                            \n";
     $sSqlCertidao .= "               'Parcelamento' as tipo_cda                                                  \n";
     $sSqlCertidao .= "          from acertid                                                                     \n";
-    $sSqlCertidao .= "         inner join acertter   on acertter.v14_certid      = acertid.v15_certid            \n";
-    $sSqlCertidao .= "         inner join termodiv   on termodiv.parcel          = acertter.v14_parcel           \n";
+    $sSqlCertidao .= "         inner join acertter   on acertter.v14_certid   = acertid.v15_certid               \n";
+    $sSqlCertidao .= "         inner join termodiv   on termodiv.parcel       = acertter.v14_parcel              \n";
     $sSqlCertidao .= "         inner join divida     on divida.v01_coddiv        = termodiv.coddiv               \n";
     $sSqlCertidao .= "                              and divida.v01_instit        = {$iInstituicao}               \n";
+    $sSqlCertidao .= "         inner join termo      on acertter.v14_parcel   = termo.v07_parcel                 \n";
+    $sSqlCertidao .= "                              and termo.v07_instit      = {$iInstituicao}                  \n";
     $sSqlCertidao .= "                                                                                           \n";
     if ($sTipoPesquisa == 'certidao') {
-      $sSqlCertidao .= "       where acertid.v15_certid                          = {$iCodigoPesquisa}            \n";
+      $sSqlCertidao .= "       where acertid.v15_certid                          in ({$iCodigoPesquisa})         \n";
     } else {
       $sSqlCertidao .= "         {$sWhereTipo}                                                                   \n";
     }
@@ -831,13 +889,12 @@ class cl_certid {
     $sSqlCertidao .= "    left join vara                on vara.v53_codvara                = processoforo.v70_vara \n";
     $sSqlCertidao .= "    left join localiza            on localiza.v54_codlocal           = inicial.v50_codlocal  \n";
     $sSqlCertidao .= "    left join cgm as cgm_advogado on cgm_advogado.z01_numcgm         = inicial.v50_advog ";
-    
+
     return $sSqlCertidao;
-    
   }
-  
-  public function sql_queryConsultaCertidao($sWhere) {
-    
+
+  public function sql_queryConsultaCertidao($sWhere, $certidao = null) {
+
     $sSql  = "select certidao    as dl_Certidao,         ";
     $sSql .= "       data        as dl_Data,             ";
     $sSql .= "       instituicao as dl_Instituicao,      ";
@@ -847,20 +904,247 @@ class cl_certid {
     $sSql .= "               v13_instit as instituicao,  ";
     $sSql .= "               'Ativa'    as situacao      ";
     $sSql .= "          from certid                      ";
+
+    if (!empty($certidao)) {
+      $sSql .= "     where  v13_certid = {$certidao}         ";
+    }
+
     $sSql .= "         union                             ";
     $sSql .= "        select v15_certid as certidao,     ";
     $sSql .= "               v15_data   as data,         ";
     $sSql .= "               v15_instit as instituicao,  ";
     $sSql .= "               'Anulada'  as situacao      ";
-    $sSql .= "          from acertid) as x               ";  
-    
-    if (isset($sWhere) and $sWhere != '') {
-      
-      $sSql .= " where {$sWhere}";
-      
+    $sSql .= "          from acertid                     ";
+
+    if (!empty($certidao)) {
+      $sSql .= "     where  v15_certid = {$certidao}         ";
     }
-    
+
+    $sSql .= " ) as x               ";
+
+    if (isset($sWhere) and $sWhere != '') {
+
+      $sSql .= " where {$sWhere}";
+
+    }
+
     return $sSql;
-  }                                                                                                                    
+  }
+
+  public function sql_queryConsultaCertidaoSituacaoDebito($sWhere, $certidao = null) {
+
+    $sSql = "SELECT DISTINCT certid,
+               CASE
+                    WHEN aberto IS NOT NULL THEN 'Aberto'
+                    WHEN quitado IS NOT NULL THEN 'Quitado'
+                    WHEN parcelado IS NOT NULL THEN 'Parcelado'
+                    WHEN suspenso IS NOT NULL THEN 'Suspenso'
+                    WHEN compensado IS NOT NULL THEN 'Compensado'
+                    WHEN cancelado IS NOT NULL THEN 'Cancelado'
+                    WHEN prescrito IS NOT NULL THEN 'Prescrito'
+                    ELSE 'Não Localizado'
+               END AS situacao
+              FROM
+                   (SELECT v14_certid AS certid,
+                   
+                   (SELECT DISTINCT k00_numpre AS aberto
+                   FROM arrecad
+                   WHERE v01_numpre = k00_numpre
+                   AND v01_numpar = k00_numpar
+                   LIMIT 1) AS aberto,
+                   
+                   (SELECT DISTINCT k00_numpre AS cancelado
+                   FROM arrecant
+                   INNER JOIN cancdebitosreg ON k00_numpre = k21_numpre
+                   AND k00_numpar = k21_numpar
+                   AND k00_receit = k21_receit
+                   INNER JOIN cancdebitosprocreg ON k21_sequencia = k24_cancdebitosreg
+                   WHERE v01_numpre = k00_numpre
+                   AND v01_numpar = k00_numpar
+                   LIMIT 1) AS cancelado,
+                   
+                   (SELECT DISTINCT b.k00_numpre AS quitado
+                   FROM arrecant a
+                   INNER JOIN arrepaga b ON a.k00_numpre = b.k00_numpre
+                   AND a.k00_numpar = b.k00_numpar
+                   AND a.k00_receit = b.k00_receit
+                   WHERE v01_numpre = a.k00_numpre
+                   AND v01_numpar = a.k00_numpar
+                   LIMIT 1) AS quitado,
+                   
+                   (SELECT DISTINCT k30_numpre AS prescrito
+                   FROM arreprescr
+                   WHERE v01_numpre = k30_numpre
+                   AND v01_numpar = k30_numpar
+                   AND k30_anulado = FALSE
+                   LIMIT 1) AS prescrito,
+                   
+                   (SELECT DISTINCT k00_numpre AS suspenso
+                   FROM suspensao
+                   INNER JOIN arresusp ON k00_suspensao = ar18_sequencial
+                   LEFT  JOIN suspensaofinaliza ON ar19_suspensao = ar18_sequencial
+                   WHERE k00_numpre = v01_numpre
+                   AND k00_numpar = v01_numpar
+                   AND ar19_suspensao IS NULL
+                   LIMIT 1) AS suspenso,
+                   
+                   (SELECT DISTINCT inicial AS parcelado
+                   FROM termoini
+                   INNER JOIN termo ON parcel = v07_parcel
+                   INNER JOIN inicialcert ON inicial = v51_inicial
+                   WHERE v51_certidao = v14_certid
+                   AND v07_situacao = 1
+                   LIMIT 1) AS parcelado,
+                   
+                   (SELECT DISTINCT k00_numpre
+                   FROM arreckey
+                   INNER JOIN abatimentoarreckey ON k00_sequencial = k128_arreckey
+                   INNER JOIN abatimento ON k128_abatimento = k125_sequencial
+                   AND k125_tipoabatimento = 4
+                   WHERE k00_numpre = v01_numpre
+                   LIMIT 1) AS compensado
+                   FROM divida
+                   INNER JOIN certdiv ON v01_coddiv = v14_coddiv
+                   WHERE v14_certid = $certidao) AS n order by situacao;";
+            
+    return $sSql;
+  }
+
+  /**
+   * Buscamos so dados da certidão no arrecad
+   *
+   * @param  string  $sCampos
+   * @param  integer $iCertidao
+   *
+   * @return string   query pronta
+   */
+  public function sql_query_arrecad($sCampos, $iCertidao) {
+
+    $sSql  = " select case                                                               ";
+    $sSql .= "          when certter.v14_certid is not null then                         ";
+    $sSql .= "            'PARCELAMENTO'                                                 ";
+    $sSql .= "          else                                                             ";
+    $sSql .= "            case                                                           ";
+    $sSql .= "              when certdiv.v14_certid is not null then                     ";
+    $sSql .= "                'DIVIDA'                                                   ";
+    $sSql .= "            end                                                            ";
+    $sSql .= "        end as tipo,                                                       ";
+    $sSql .= "        {$sCampos}                                                         ";
+    $sSql .= " from certid                                                               ";
+    $sSql .= "      left join certdiv on certid.v13_certid = certdiv.v14_certid          ";
+    $sSql .= "      left join divida on divida.v01_coddiv = certdiv.v14_coddiv           ";
+    $sSql .= "      left join certter on certid.v13_certid = certter.v14_certid          ";
+    $sSql .= "      left join termo on  certter.v14_parcel = termo.v07_parcel            ";
+    $sSql .= "      inner join arrecad on (     divida.v01_numpre = arrecad.k00_numpre   ";
+    $sSql .= "                              and divida.v01_numpar = arrecad.k00_numpar ) ";
+    $sSql .= "                         or termo.v07_numpre = arrecad.k00_numpre          ";
+    $sSql .= " where certid.v13_certid in ({$iCertidao})                                 ";
+
+    return $sSql;
+  }
+
+  /**
+   * Buscamos os dados das movimentações da certidão
+   *
+   * @param  int    $iSequencial  sequencial da certidão
+   * @param  string $sCampos      Campos do select
+   *
+   * @return string               query montada
+   */
+  public function sql_query_movimentacao( $iSequencial = null, $sCampos = "*" ) {
+
+    $sSql  = " select {$sCampos} ";
+    $sSql .= "   from certid ";
+    $sSql .= "        inner join certidcartorio on v31_certid = v13_certid ";
+    $sSql .= "        inner join certidmovimentacao on v31_sequencial = v32_certidcartorio ";
+    $sSql .= "  where v31_certid = {$iSequencial} ";
+    $sSql .= "  order by v32_sequencial desc ";
+
+    return $sSql;
+  }
+
+  /**
+   * Criamos a query que busca os abatimentos da certidão
+   *
+   * @param  integer $iCertidao
+   * @param  string  $sCampos
+   * @param  integer $iTipoAbatimento
+   *
+   * @return string  query pronta
+   */
+  public function sql_query_abatimento( $iCodigoCertidao, $sCampos = "*", $iTipoAbatimento = 1 ) {
+
+    $sSql  = " select {$sCampos}                                                                 ";
+    $sSql .= "   from certid                                                                     ";
+    $sSql .= "        inner join certidcartorio on v31_certid = v13_certid                       ";
+    $sSql .= "        inner join certidcartoriorecibopaga on v33_certidcartorio = v31_sequencial ";
+    $sSql .= "        inner join recibopaga on v33_numnov = k00_numnov                           ";
+    $sSql .= "        inner join arreckey on recibopaga.k00_numpre = arreckey.k00_numpre         ";
+    $sSql .= "        inner join abatimentoarreckey on k128_arreckey = arreckey.k00_sequencial   ";
+    $sSql .= "        inner join abatimento on k128_abatimento = k125_sequencial                 ";
+    $sSql .= "  where v13_certid in ({$iCodigoCertidao})                                         ";
+    $sSql .= "    and k125_tipoabatimento = {$iTipoAbatimento}                                   ";
+
+    return $sSql;
+  }
+
+  /**
+   * Verifica se possui possui pagamento Parcial ou Total para certidão
+   * @param  integer $iCodigoCertidao          Código da certidão
+   * @param  boolean $lVerificaPagamentoParcial Parcial ou Total
+   * @return mix     booleand / Object
+   */
+  public function sql_query_verificaPagamento( $iCodigoCertidao, $lVerificaPagamentoParcial = false ){
+
+    $sSql  = "select distinct 'Pagamento Total'   as v32_tipo,                                          ";
+    $sSql .= "                v82_descricao       as v31_cartorio,                                      ";
+    $sSql .= "                arrepaga.k00_dtpaga as data_pagamento                                     ";
+    $sSql .= "  from certid                                                                             ";
+    $sSql .= "       inner join certidcartorio           on v31_certid         = v13_certid             ";
+    $sSql .= "       inner join cartorio                 on v31_cartorio       = v82_sequencial         ";
+    $sSql .= "       inner join certidcartoriorecibopaga on v33_certidcartorio = v31_sequencial         ";
+    $sSql .= "       inner join recibopaga               on v33_numnov         = k00_numnov             ";
+    $sSql .= "                                          and k00_conta         <> 0                      ";
+    $sSql .= "       inner join arrepaga                 on recibopaga.k00_numpre = arrepaga.k00_numpre ";
+    $sSql .= "                                          and recibopaga.k00_numpar = arrepaga.k00_numpar ";
+    $sSql .= "                                          and recibopaga.k00_receit = arrepaga.k00_receit ";
+
+    if($lVerificaPagamentoParcial) {
+
+      $sSql  = "select distinct 'Pagamento Parcial' as v32_tipo,                                        ";
+      $sSql .= "                v82_descricao       as v31_cartorio,                                    ";
+      $sSql .= "                k125_datalanc       as data_pagamento                                   ";
+      $sSql .= " from certid                                                                            ";
+      $sSql .= "      inner join certidcartorio           on v31_certid          = v13_certid           ";
+      $sSql .= "      inner join cartorio                 on v31_cartorio        = v82_sequencial       ";
+      $sSql .= "      inner join certidcartoriorecibopaga on v33_certidcartorio  = v31_sequencial       ";
+      $sSql .= "      inner join recibopaga               on v33_numnov          = k00_numnov           ";
+      $sSql .= "      inner join abatimentorecibo         on k127_numpreoriginal = v33_numnov           ";
+      $sSql .= "      inner join abatimento               on k127_abatimento     = k125_sequencial      ";
+    }
+
+    $sSql .= " where v13_certid = {$iCodigoCertidao}                                                    ";
+
+    return $sSql;
+  }
+
+  public function sql_queryBuscarOcorrenciasCda($certidao)
+  {
+      $sql  = " SELECT cct.sequencial, cct.data_ocorrencia AS data, ";
+      $sql .= "        co.descricao AS dl_Situacao ";
+      $sql .= "   FROM plugins.cdacartoriotransmissao cct ";
+      $sql .= "        INNER JOIN plugins.cdaocorrencia co ON co.codigo = cct.codigo_ocorrencia ";
+      $sql .= "        INNER JOIN plugins.cdacartorio cc ON cc.sequencial = cct.cdacartorio ";
+      $sql .= "  WHERE cc.codigocda = {$certidao} ";
+      $sql .= " UNION ALL";
+      $sql .= " SELECT 0, certid.v13_dtemis AS data, ";
+      $sql .= "        'Adicionada à fila para envio' AS dl_Situacao ";
+      $sql .= "   FROM plugins.cdacartorio ";
+      $sql .= "        INNER JOIN certid ON certid.v13_certid = cdacartorio.codigocda ";
+      $sql .= "  WHERE cdacartorio.codigocda = {$certidao} AND cdacartorio.liberada = 'f'";
+      $sql .= "  ORDER BY 1 desc ";
+
+      return $sql;
+  }
+
 }
-?>

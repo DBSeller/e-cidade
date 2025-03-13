@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010548' name='arrecadacao.taxaslancadasdepart' description="Tabela que guarda os departamentos vinculado as taxas" prefix="ar45" label="Departamento Taxas Lançadas" type="0">
+  <fields>
+    <field codigo="1011190" 
+           campo_api='' 
+           name="ar45_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela taxaslancadasdepart" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.taxaslancadasdepart_ar45_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011191" 
+           campo_api='' 
+           name="ar45_taxaslancadas" 
+           conteudo="int4" 
+           description="Código da taxa referenciando a tabela taxaslancadas." 
+           inivalue="0" 
+           label="Código Taxas" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Taxas" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011192" 
+           campo_api='' 
+           name="ar45_departamento" 
+           conteudo="int4" 
+           description="Código do departamento." 
+           inivalue="0" 
+           label="Departamento" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Departamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ar45_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="taxaslancadas" inner='false' right='true'>
+      <fieldfk name="ar45_taxaslancadas" reference="ar44_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

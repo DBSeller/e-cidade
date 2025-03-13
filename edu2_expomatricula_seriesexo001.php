@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_matricula_classe.php");
-require_once("classes/db_calendario_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_escoladiretor_classe.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_matricula_classe.php"));
+require_once(modification("classes/db_calendario_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_escoladiretor_classe.php"));
+require_once(modification("libs/db_utils.php"));
 $oDaoEscolaDiretor = db_utils::getdao('escoladiretor');
 db_postmemory($HTTP_POST_VARS);
 $oDaoMatricula     = db_utils::getdao('matricula');
@@ -274,7 +274,7 @@ function js_escola(escola) {
 function js_retornoPesquisaCalendario(oRetorno) {
 
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {
@@ -322,7 +322,7 @@ function js_tipoensino(escola) {
 
 function js_retornoPesquisaTipoEnsino(oRetorno) {
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {
@@ -371,7 +371,7 @@ function js_nivelensino(tipoensino) {
 function js_retornoPesquisaNivelEnsino(oRetorno) {
 
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {
@@ -416,7 +416,7 @@ function js_Assinatura(escola) {
 
 function js_retornoPesquisaAssinatura(oRetorno) {
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {

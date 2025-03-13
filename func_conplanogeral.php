@@ -1,7 +1,7 @@
 <?PHP
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_conplano_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_conplano_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -42,6 +42,9 @@ $clconplano->rotulo->label("c60_descr");
 $clconplano->rotulo->label("c60_estrut");
 $clrotulo = new rotulocampo;
 $clrotulo->label("c61_reduz");
+
+$get = (object)filter_input_array(INPUT_GET);
+
 ?>
 <html>
 <head>
@@ -109,7 +112,7 @@ $clrotulo->label("c61_reduz");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_conplano.php")==true){
-             include("funcoes/db_func_conplano.php");
+             include(modification("funcoes/db_func_conplano.php"));
            }else{
            $campos = "conplano.*";
            }
@@ -128,30 +131,59 @@ $clrotulo->label("c61_reduz");
           exit;
         }
 
-        if(isset($chave_c60_codcon) && (trim($chave_c61_reduz)!="") ){
-	         $sql = $clconplano->sql_query_geral(null,null,$campos,"c60_codcon"," c60_anousu=$anousu and  c61_reduz=$chave_c61_reduz");
-        }elseif(isset($chave_c60_codcon) && (trim($chave_c60_codcon)!="") ){
-	         $sql = $clconplano->sql_query_geral($chave_c60_codcon,$anousu,$campos,"c60_codcon");
-        }else if(isset($chave_c60_estrut) && (trim($chave_c60_estrut)!="") ){
-	         $sql = $clconplano->sql_query_geral("",null,$campos,"c60_codcon"," c60_anousu=$anousu and c60_estrut like '$chave_c60_estrut%' ");
-        }else if(isset($chave_c60_descr) && (trim($chave_c60_descr)!="") ){
-	         $sql = $clconplano->sql_query_geral("",null,$campos,"c60_descr"," c60_anousu=$anousu and   upper(c60_descr) like '$chave_c60_descr%' ");
-        }else if( isset($tipo_sql) ){         
-             $sql = $clconplano->sql_query_reduz("",$campos.",c61_reduz as db_c61_reduz,c60_estrut as db_c60_estrut","c60_estrut","c60_anousu=$anousu");
-        }else{        	
-             $sql = $clconplano->sql_query_geral("",$anousu,$campos,"c60_estrut","c60_anousu=".db_getsession("DB_anousu"));
-        }
+          $where = array();
+
+          if (isset($get->previsao)) {
+              $where[] = "c61_instit = " . db_getsession('DB_instit');
+              $where[] = "c61_reduz IS NOT NULL";
+          }
+
+          if (isset($get->sistema)) {
+              $where[] = "c60_codsis = {$get->sistema}";
+          }
+          if (isset($chave_c60_codcon) && (trim($chave_c61_reduz) != "")) {
+              $where[] = "c60_anousu = {$anousu}";
+              $where[] = "c61_reduz = {$chave_c61_reduz}";
+              $sql = $clconplano->sql_query_geral(null, null, $campos, 'c60_codcon', implode(' AND ', $where));
+          } elseif (isset($chave_c60_codcon) && (trim($chave_c60_codcon) != "")) {
+              $sql = $clconplano->sql_query_geral($chave_c60_codcon, $anousu, $campos, 'c60_codcon',
+                  implode(' AND ', $where));
+          } else {
+              if (isset($chave_c60_estrut) && (trim($chave_c60_estrut) != "")) {
+                  $where[] = "c60_anousu = {$anousu}";
+                  $where[] = "c60_estrut LIKE '{$chave_c60_estrut}%'";
+                  $sql = $clconplano->sql_query_geral("", null, $campos, "c60_codcon", implode(' AND ', $where));
+              } else {
+                  if (isset($chave_c60_descr) && (trim($chave_c60_descr) != "")) {
+                      $where[] = "c60_anousu = {$anousu}";
+                      $where[] = "upper(c60_descr) LIKE '$chave_c60_descr%'";
+                      $sql = $clconplano->sql_query_geral("", null, $campos, "c60_descr", implode(' AND ', $where));
+                  } else {
+                      if (isset($tipo_sql)) {
+                          $where[] = "c60_anousu = {$anousu}";
+                          $sql = $clconplano->sql_query_reduz("",
+                              $campos . ",c61_reduz as db_c61_reduz,c60_estrut as db_c60_estrut", "c60_estrut",
+                              implode(' AND ', $where));
+                      } else {
+                          $where[] = "c60_anousu = {$anousu}";
+                          $sql = $clconplano->sql_query_geral("", $anousu, $campos, "c60_estrut",
+                              implode(' AND ', $where));
+                      }
+                  }
+              }
+          }
 
         db_lovrot($sql,15,"()","",$funcao_js);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
           $result = $clconplano->sql_record($clconplano->sql_query(null,null,"*",null,"c60_codcon = $pesquisa_chave and c60_anousu = $anousu"));
-          if($clconplano->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$c60_descr',false, '{$c60_estrut}');</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-          }
+
+            if ($clconplano->numrows != 0) {
+                db_fieldsmemory($result, 0);
+                echo "<script>" . $funcao_js . "('$c60_descr',false, '{$c60_estrut}');</script>";
+            } else {
+                echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
+            }
         }else{
 	       echo "<script>".$funcao_js."('',false);</script>";
         }
@@ -171,3 +203,9 @@ if ((isset($campofoco) && $campofoco != "")) {
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

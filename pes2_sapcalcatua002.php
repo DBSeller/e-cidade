@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -93,7 +93,7 @@ order by z01_nome
   ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit;
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
@@ -138,7 +138,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
 	       and rh31_regist = $rh01_regist 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       db_fieldsmemory($res1,0);
@@ -153,7 +153,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       db_fieldsmemory($res3,0);

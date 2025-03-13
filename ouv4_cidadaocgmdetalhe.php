@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cidadao_classe.php");
-include("dbforms/db_funcoes.php");
-include ("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cidadao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_app.utils.php"));
 $db_opcao = 1;
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_GET_VARS);
@@ -74,7 +74,7 @@ $sQueryCidadaoCgm .= "	 	 where c.ov02_sequencial = $ov02_sequencial and ov02_at
 
 //echo $sQueryCidadaoCgm;
 
-$rsQueryCidadaoCgm = pg_query($sQueryCidadaoCgm);
+$rsQueryCidadaoCgm = db_query($sQueryCidadaoCgm);
 
 $cidadao_false = true;;
 if(pg_num_rows($rsQueryCidadaoCgm)>0){
@@ -102,7 +102,7 @@ if (isset($ov03_numcgm) && trim($ov03_numcgm) != "" && $z01_numcgm == ""){
 	$sQueryCgm .= " 		from cgm						";
 	$sQueryCgm .= " 			where z01_numcgm = $ov03_numcgm	";
 	
-	$rsQueryCgm = pg_query($sQueryCgm);
+	$rsQueryCgm = db_query($sQueryCgm);
 	if(pg_num_rows($rsQueryCgm) > 0){
 
 		db_fieldsmemory($rsQueryCgm,0);

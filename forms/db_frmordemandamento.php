@@ -26,11 +26,11 @@
  */
  
   db_getsession(); 
-  $resultPesquisaNome = pg_exec("select nome from db_usuarios where id_usuario = $DB_id_usuario");
+  $resultPesquisaNome = db_query("select nome from db_usuarios where id_usuario = $DB_id_usuario");
   $nomeUsuario = pg_result($resultPesquisaNome,0,0);
   
   //seleciona todos os departamentos e verifica o total de registros encontrados
-  $departamentos = pg_exec("select * from db_depart");
+  $departamentos = db_query("select * from db_depart");
   $numeroDepartamentos = pg_numrows($departamentos);
 
   //para cada departamento encontrado verifica quais sao seus usuarios e separa em arrays
@@ -38,7 +38,7 @@
 
     echo "\n\n<script>\n";
     for ($i=0;$i<$numeroDepartamentos;$i++) {
-	  $usu =  pg_exec("select us.id_usuario, us.nome 
+	  $usu =  db_query("select us.id_usuario, us.nome 
 	                   from db_usuarios us
         	           inner join db_depusu du 
 		        	   on du.id_usuario = us.id_usuario
@@ -80,7 +80,7 @@
           <tr> 
             <td width="12%" nowrap style="font-size:13px" >Data inicial:</td>
             <td width="34%" nowrap  style="font-size:13px"> 
-             <? include ("dbforms/db_funcoes.php") ;
+             <? include(modification("dbforms/db_funcoes.php")) ;
 		  db_data("dtini",date("d"),date("m"),date("Y"));
 		  ?>
             </td>
@@ -112,7 +112,7 @@
 				  <select name="depto" id="depto" onChange="vai(eval(this.options[this.selectedIndex].value))">
 				  <? 
 				    $descratual = pg_result($result,0,"descrdepto");
-					$listaDepartamentos = pg_exec("select * from db_depart where descrdepto not like '$descratual'");
+					$listaDepartamentos = db_query("select * from db_depart where descrdepto not like '$descratual'");
 					$numdep = pg_numrows($listaDepartamentos);
  				    echo "<option selected value=\"".strtolower(str_replace(" ","_",pg_result($result,0,"descrdepto")))."\">".pg_result($result,0,"descrdepto")."</option>";
 					for ($i=0;$i<$numdep;$i++) {
@@ -130,7 +130,7 @@
 					$coddepartamento = pg_result($result,0,"coddepto");
 					$nome = pg_result($result,0,"nomeusureceb");
 					if ($nome=="") {$nome=$nomeUsuario;}
-					$listanomes = pg_exec("select u.id_usuario , d.nome
+					$listanomes = db_query("select u.id_usuario , d.nome
 				                     from db_depusu u 
 									 inner join db_usuarios d
 									 on d.id_usuario = u.id_usuario

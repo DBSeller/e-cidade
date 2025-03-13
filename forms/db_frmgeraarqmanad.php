@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -254,7 +254,7 @@ function js_GerarArquivo(){
   
 function js_saida(oAjax) {
 
-    var obj = eval("(" + oAjax.responseText + ")");
+    var obj = JSON.parse(oAjax.responseText);
   
     if (obj.status && obj.status == 2){
        js_removeObj("msgBox");

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("fpdf151/pdf2.php");
-include("libs/db_libdocumento.php");
-include("classes/db_notificacao_classe.php");
-include("classes/db_db_config_classe.php");
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("fpdf151/pdf2.php"));
+include(modification("libs/db_libdocumento.php"));
+include(modification("classes/db_notificacao_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
 $cldb_config     = new cl_db_config;
 $clnotificacao   = new cl_notificacao;
 db_postmemory($HTTP_POST_VARS);
@@ -43,9 +43,7 @@ $resultinst = $cldb_config->sql_record($cldb_config->sql_query(db_getsession("DB
 db_fieldsmemory($resultinst,0,true);
 
 //$head1 = 'Departamento de Fazenda';
-$pdf = new PDF2(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+
 
 $contr = '';
 if (isset($campo)){
@@ -59,38 +57,102 @@ if (isset($campo)){
 }
 
 //die( $clnotificacao->sql_noticontri($contribuicao,"","","contrinot.d08_notif,contrib.d07_contri as d08_contr, contricalc.d09_matric as d08_matric, contricalc.d09_numpre,contrib.d07_valor,edital.d01_numero,ruas.j14_nome,ruas.j14_tipo,edital.d01_numtot,edital.d01_perunica,d01_privenc, proprietario.z01_nome,proprietario.z01_ender,proprietario.z01_numero,proprietario.z01_munic,proprietario.z01_uf,proprietario.z01_cep,proprietario.z01_compl,proprietario.z01_numcgm","",$contr,"proprietario.z01_nome"));
-$sSQlNotificações =            $clnotificacao->sql_noticontri($contribuicao,
+
+
+$sCamposss = "
+contrinot.d08_notif, 
+contrib.d07_contri as d08_contr,
+contricalc.d09_matric as d08_matric,
+contricalc.d09_numpre,
+contrib.d07_valor,
+edital.d01_numero,
+ruas.j14_nome,
+ruas.j14_tipo,
+edital.d01_numtot,
+edital.d01_perunica,
+d01_privenc,
+d01_receit,
+d01_data,
+proprietario.z01_nome,
+proprietario.z01_ender,
+proprietario.z01_numero,
+proprietario.z01_munic,
+proprietario.z01_uf,
+proprietario.z01_cep,
+proprietario.z01_compl,
+proprietario.z01_numcgm
+";
+
+
+
+
+$sData = ucwords(strtolower($munic)).", ".date('d',db_getsession("DB_datausu"))." de ".db_mes(date('m',db_getsession("DB_datausu")))." de ".date('Y',db_getsession("DB_datausu")).".";
+
+$sCampos = "
+       
+       contrinot.d08_notif     ,
+       edital.d01_numero         as edital, 
+       edital.d01_numtot         as tot_parcelas, 
+       edital.d01_perunica       as desc_unica,
+       edital.d01_receit         as receit, 
+       edital.d01_privenc        as dt_vcto, 
+       to_char(edital.d01_data, 'DD/MM/YYYY')           as dt_edital, 
+       edital.d01_codedi         as seq_edital,
+       edital.d01_descr          as desc_edital,
+       contricalc.d09_matric     as matric,
+       contricalc.d09_numpre     as numpre, 
+       contrib.d07_contri        as d08_contr,
+       contrib.d07_valor         as vlr_contr, 
+       contrib.d07_vlrdes        as desc_unica,
+       contrib.d07_venal         as vlr_venal,
+       editalrua.d02_profun      as profundidade,
+       editalrua.d02_valorizacao as valorizacao,
+       ruas.j14_nome, 
+       ruas.j14_tipo, 
+       ruastipo.j88_sigla,
+       ruastipo.j88_descricao,
+       proprietario.z01_numcgm,
+       proprietario.z01_nome,
+       z01_nomecompleto         as nomecompleto,
+       proprietario.z01_cgccpf  as cpfcnpj,
+       proprietario.z01_ender, 
+       proprietario.z01_numero, 
+       proprietario.z01_compl, 
+       z01_bairro               as bairro,
+       z01_munic                as z01_munic , 
+       z01_munic                as municipio ,
+       proprietario.z01_uf, 
+       proprietario.z01_cep, 
+       j40_refant,
+       j34_setor                as setorimovel,
+       j34_quadra               as quadraimovel,
+       j34_lote                 as loteimovel,
+       j34_bairro               as bairroimovel,
+       j06_setorloc,
+       j06_quadraloc,
+       j06_lote,
+       d01_numero
+
+";
+
+
+$sSQlNotificações =            $clnotificacao->sql_noticontribuicao($contribuicao,
                                                                     "",
                                                                     "",
-                                                                    "contrinot.d08_notif, 
-                                                                     contrib.d07_contri as d08_contr,
-                                                                     contricalc.d09_matric as d08_matric,
-                                                                     contricalc.d09_numpre,
-                                                                     contrib.d07_valor,
-                                                                     edital.d01_numero,
-                                                                     ruas.j14_nome,
-                                                                     ruas.j14_tipo,
-                                                                     edital.d01_numtot,
-                                                                     edital.d01_perunica,
-                                                                     d01_privenc,
-                                                                     d01_receit,
-                                                                     d01_data,
-                                                                     proprietario.z01_nome,
-                                                                     proprietario.z01_ender,
-                                                                     proprietario.z01_numero,
-                                                                     proprietario.z01_munic,
-                                                                     proprietario.z01_uf,
-                                                                     proprietario.z01_cep,
-                                                                     proprietario.z01_compl,
-                                                                     proprietario.z01_numcgm",
+                                                                    $sCampos,
                                                                      "",
                                                                      $contr,
                                                                      "proprietario.z01_nome"
                                                                    );
 
+            
+//echo $sSQlNotificações;die();
+
 $result = $clnotificacao->sql_record($sSQlNotificações);                                                                   
 
-                                                                     
+                      
+
+
 if ($clnotificacao->numrows == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Sem notificações a serem geradas. Verifique!');
 }
@@ -99,13 +161,24 @@ $oDocumento->getParagrafos();
 $oDocAssinatura    = new libdocumento(1707);
 $oDocAssinatura->getParagrafos();
 $aCodigoAssinatura = $oDocAssinatura->aParagrafos[1]->db02_texto;
+
+
+$pdf = new pdf(); 
+$pdf->Open(); 
+$pdf->AliasNbPages(); 
+$pdf->SetFont('Arial','',13);     
+
 if ( $tiporel == 1 ) {
-    
+   
    for($x=0;$x < $clnotificacao->numrows;$x++){
-     
+      
       $oNotif = db_utils::fieldsmemory($result,$x);
+      
+      
+      $head2 = "Notificação de Contribuição de Melhoria: ".$oNotif->d08_notif;
+      
       $pdf->AddPage();
-      $pdf->SetFont('Arial','',13);
+      
       $oNotif->xtipo = "Rua ";
       if($oNotif->j14_tipo == 'A'){
          $oNotif->xtipo = "Av. ";
@@ -134,11 +207,109 @@ if ( $tiporel == 1 ) {
       $oDocumento->ender         = $ender;
       $oDocumento->bairro        = $bairro;
       $oDocumento->munic         = $munic;
+
+
+$oDocumento->d08_notif          = $oNotif->d08_notif;
+$oDocumento->d01_receit         = $oNotif->d01_receit;
+$oDocumento->d01_data           = $oNotif->d01_data;
+$oDocumento->d01_codedi         = $oNotif->d01_codedi;
+$oDocumento->d01_descr          = $oNotif->d01_descr;
+$oDocumento->d09_numpre         = $oNotif->d09_numpre;
+$oDocumento->d07_contri         = $oNotif->d07_contri;
+$oDocumento->d07_vlrdes         = $oNotif->d07_vlrdes;
+$oDocumento->d02_profun         = $oNotif->d02_profun;
+$oDocumento->j14_tipo           = $oNotif->j14_tipo;
+$oDocumento->j88_sigla          = $oNotif->j88_sigla;
+$oDocumento->j88_descricao      = $oNotif->j88_descricao;
+$oDocumento->d09_matric         = $oNotif->d09_matric;
+$oDocumento->d07_venal          = $oNotif->d07_venal;
+$oDocumento->d02_valorizacao    = $oNotif->d02_valorizacao;
+$oDocumento->j40_refant         = $oNotif->j40_refant;
+$oDocumento->j34_setor          = $oNotif->j34_setor;
+$oDocumento->j34_quadra         = $oNotif->j34_quadra;
+$oDocumento->j34_lote           = $oNotif->j34_lote;
+$oDocumento->j34_bairro         = $oNotif->j34_bairro;
+$oDocumento->j06_setorloc       = $oNotif->j06_setorloc;
+$oDocumento->j06_quadraloc      = $oNotif->j06_quadraloc;
+$oDocumento->j06_lote           = $oNotif->j06_lote;
+$oDocumento->z01_numcgm         = $oNotif->z01_numcgm;
+$oDocumento->z01_nome           = $oNotif->z01_nome;
+$oDocumento->z01_nomecompleto   = $oNotif->z01_nomecompleto;
+$oDocumento->z01_cgccpf         = $oNotif->z01_cgccpf;
+$oDocumento->z01_ender          = $oNotif->z01_ender;
+$oDocumento->z01_numero         = $oNotif->z01_numero;
+$oDocumento->z01_compl          = $oNotif->z01_compl;
+$oDocumento->z01_bairro         = $oNotif->z01_bairro;
+$oDocumento->z01_munic          = $oNotif->z01_munic;
+$oDocumento->z01_uf             = $oNotif->z01_uf;
+$oDocumento->z01_cep            = $oNotif->z01_cep;
+$oDocumento->d01_numero         = $oNotif->d01_numero   ;
+
+
+
+
+
+$oDocumento->d01_numero     = $oNotif->d01_numero   ;
+$oDocumento->d08_notif      = $oNotif->d08_notif     ;
+$oDocumento->edital         = $oNotif->edital        ;
+$oDocumento->tot_parcelas   = $oNotif->tot_parcelas  ;
+$oDocumento->desc_unica     = $oNotif->desc_unica    ;
+$oDocumento->receit         = $oNotif->receit        ;
+$oDocumento->dt_vcto        = $oNotif->dt_vcto       ;
+$oDocumento->dt_edital      = $oNotif->dt_edital     ;
+$oDocumento->seq_edital     = $oNotif->seq_edital    ;
+$oDocumento->desc_edital    = $oNotif->desc_edital   ;
+$oDocumento->matric         = $oNotif->matric        ;
+$oDocumento->numpre         = $oNotif->numpre        ;
+$oDocumento->d08_contr      = $oNotif->d08_contr     ;
+$oDocumento->vlr_contr      = $oNotif->vlr_contr     ;
+$oDocumento->desc_unica     = $oNotif->desc_unica    ;
+$oDocumento->vlr_venal      = $oNotif->vlr_venal     ;
+$oDocumento->profundidade   = $oNotif->profundidade  ;
+$oDocumento->valorizacao    = $oNotif->valorizacao   ;
+$oDocumento->j14_nome       = $oNotif->j14_nome      ;
+$oDocumento->j14_tipo       = $oNotif->j14_tipo      ;
+$oDocumento->j88_sigla      = $oNotif->j88_sigla     ;
+$oDocumento->j88_descricao  = $oNotif->j88_descricao ;
+$oDocumento->z01_numcgm     = $oNotif->z01_numcgm    ;
+$oDocumento->z01_nome       = $oNotif->z01_nome      ;
+$oDocumento->nomecompleto   = $oNotif->nomecompleto  ;
+$oDocumento->cpfcnpj        = $oNotif->cpfcnpj       ;
+$oDocumento->z01_ender      = $oNotif->z01_ender     ;
+$oDocumento->z01_numero     = $oNotif->z01_numero    ;
+$oDocumento->z01_compl      = $oNotif->z01_compl     ;
+$oDocumento->bairro         = $oNotif->bairro        ;
+$oDocumento->z01_munic      = $oNotif->z01_munic     ;
+$oDocumento->municipio      = $oNotif->municipio     ;
+$oDocumento->z01_uf         = $oNotif->z01_uf        ;
+$oDocumento->z01_cep        = $oNotif->z01_cep       ;
+$oDocumento->j40_refant     = $oNotif->j40_refant    ;
+$oDocumento->setorimovel    = $oNotif->setorimovel   ;
+$oDocumento->quadraimovel   = $oNotif->quadraimovel  ;
+$oDocumento->loteimovel     = $oNotif->loteimovel    ;
+$oDocumento->bairroimovel   = $oNotif->bairroimovel  ;
+$oDocumento->j06_setorloc   = $oNotif->j06_setorloc  ;
+$oDocumento->j06_quadraloc  = $oNotif->j06_quadraloc ;
+$oDocumento->j06_lote       = $oNotif->j06_lote      ;
+
+
+
+
+
+
+
+
+     //quebraPagina( $pdf );
+
+
+
+
+
       $aParagrafosNotificacao = $oDocumento->getDocParagrafos();
-      $pdf->multicell(0,4,ucwords(strtolower($munic)).", ".date('d',db_getsession("DB_datausu"))." de ".db_mes(date('m',db_getsession("DB_datausu")))." de ".date('Y',db_getsession("DB_datausu")).".",0,"R",0);
+      //$pdf->multicell(0,4,ucwords(strtolower($munic)).", ".date('d',db_getsession("DB_datausu"))." de ".db_mes(date('m',db_getsession("DB_datausu")))." de ".date('Y',db_getsession("DB_datausu")).".",0,"R",0);
       $pdf->ln(5);
       $pdf->SetFont('Arial','B',13);
-      $pdf->multicell(0,6,"Notificação de Contribuição de Melhoria: ".$oNotif->d08_notif,0,"C",0);
+      //$pdf->multicell(0,6,"Notificação de Contribuição de Melhoria: ".$oNotif->d08_notif,0,"C",0);
       $pdf->SetFont('Arial','',13);
       $pdf->ln(5);
       $pdf->setx(35);
@@ -146,7 +317,7 @@ if ( $tiporel == 1 ) {
       $pdf->ln(5);
       foreach ($aParagrafosNotificacao as $iIndex => $oParagrafo) {
       	$pdf->multicell(0,6,$oParagrafo->oParag->db02_texto,0,
-      	               $oParagrafo->oParag->db02_alinhamento,0,$oParagrafo->oParag->db02_inicia);
+                        $oParagrafo->oParag->db02_alinhamento,0,$oParagrafo->oParag->db02_inicia);
       }
       $pdf->ln(5);
       $pdf->ln(5);
@@ -155,16 +326,21 @@ if ( $tiporel == 1 ) {
       if ($aCodigoAssinatura != "") {
         eval($aCodigoAssinatura);  
       }
-      $pdf->text(10,244,"Ilmo Sr.(a) ");
-      $pdf->SetFont('Arial','',10);
-      $pdf->text(10,250,$oNotif->z01_nome);
-      $pdf->text(10,256,$oNotif->z01_ender.", ".$oNotif->z01_numero." ".$oNotif->z01_compl);
-      $pdf->text(10,262,$oNotif->z01_munic." - ".$oNotif->z01_uf);
-      $pdf->text(10,268,$oNotif->z01_cep);
-      
+
+
+      $pdf->multicell(0,6,"$sData ",0,"L",0);
+      $pdf->ln();
+
    }
+
+
+
+
+
+
 } elseif( $tiporel == 2 ) {
   
+
    $pdf->addpage();
    $pdf->setfillcolor(235);
    $pdf->setfont('arial','b',8);

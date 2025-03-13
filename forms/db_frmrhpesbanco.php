@@ -112,10 +112,10 @@ db_input('rh44_dvconta',2,$Irh44_dvconta,true,'text',$db_opcao,"")
 <script>
 function js_pesquisarh44_seqpes(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoalmov','func_rhpessoalmov.php?funcao_js=parent.js_mostrarhpessoalmov1|rh02_seqpes|rh02_seqpes','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoalmov','func_rhpessoalmov.php?funcao_js=parent.js_mostrarhpessoalmov1|rh02_seqpes|rh02_seqpes','Pesquisa',true);
   }else{
      if(document.form1.rh44_seqpes.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoalmov','func_rhpessoalmov.php?pesquisa_chave='+document.form1.rh44_seqpes.value+'&funcao_js=parent.js_mostrarhpessoalmov','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoalmov','func_rhpessoalmov.php?pesquisa_chave='+document.form1.rh44_seqpes.value+'&funcao_js=parent.js_mostrarhpessoalmov','Pesquisa',false);
      }else{
        document.form1.rh02_seqpes.value = ''; 
      }
@@ -135,10 +135,10 @@ function js_mostrarhpessoalmov1(chave1,chave2){
 }
 function js_pesquisarh44_codban(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_bancos','func_db_bancos.php?funcao_js=parent.js_mostradb_bancos1|db90_codban|db90_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_bancos','func_db_bancos.php?funcao_js=parent.js_mostradb_bancos1|db90_codban|db90_descr','Pesquisa',true);
   }else{
      if(document.form1.rh44_codban.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_bancos','func_db_bancos.php?pesquisa_chave='+document.form1.rh44_codban.value+'&funcao_js=parent.js_mostradb_bancos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_bancos','func_db_bancos.php?pesquisa_chave='+document.form1.rh44_codban.value+'&funcao_js=parent.js_mostradb_bancos','Pesquisa',false);
      }else{
        document.form1.db90_descr.value = ''; 
      }
@@ -157,7 +157,7 @@ function js_mostradb_bancos1(chave1,chave2){
   db_iframe_db_bancos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpesbanco','func_rhpesbanco.php?funcao_js=parent.js_preenchepesquisa|rh44_seqpes','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpesbanco','func_rhpesbanco.php?funcao_js=parent.js_preenchepesquisa|rh44_seqpes','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpesbanco.hide();

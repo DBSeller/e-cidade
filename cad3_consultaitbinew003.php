@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_itbi_classe.php");
-include("classes/db_itbinome_classe.php");
-include("classes/db_itbimatric_classe.php");
-include("classes/db_itbiavalia_classe.php");
-include("classes/db_itbicgm_classe.php");
-include("classes/db_itbilogin_classe.php");
-include("classes/db_itburbano_classe.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_itbi_classe.php"));
+include(modification("classes/db_itbinome_classe.php"));
+include(modification("classes/db_itbimatric_classe.php"));
+include(modification("classes/db_itbiavalia_classe.php"));
+include(modification("classes/db_itbicgm_classe.php"));
+include(modification("classes/db_itbilogin_classe.php"));
+include(modification("classes/db_itburbano_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
@@ -106,7 +106,7 @@ if(isset($it01_guia) && trim($it01_guia) != "" ){
   }
   $db_opcao = 3;  
   $db_botao=false;
-  include("forms/db_frmitbiconsulta.php");
+  include(modification("forms/db_frmitbiconsulta.php"));
   echo "<script>document.form1.db_opcao.type='hidden'</script>";
   echo "<script>document.form1.pesquisar.type='hidden'</script>";
 }

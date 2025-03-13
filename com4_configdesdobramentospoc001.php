@@ -28,20 +28,20 @@
 /**
  * 
  * @author I
- * @revision $Author: dbluizmarcelo $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.3 $
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-require("libs/db_app.utils.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empparametro_classe.php");
-include("classes/db_desdobramentosliberadosordemcompra_classe.php");
-include("classes/db_orcelemento_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+require(modification("libs/db_app.utils.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empparametro_classe.php"));
+include(modification("classes/db_desdobramentosliberadosordemcompra_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
 
 $clorcelemento  = new cl_orcelemento;
 $clempparametro = new cl_empparametro;
@@ -182,7 +182,7 @@ function js_pesquisaElementos() {
 function js_retornoPesquisa(oAjax) {
   
   js_removeObj("msgbox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 1) {
     js_openPesquisaElementosLiberados(oRetorno.aItens,oRetorno.aItens.length);
@@ -274,7 +274,7 @@ function js_liberardesdobramentos() {
 function js_retornoLiberarDesdobramentos(oAjax) {
   
   js_removeObj("msgbox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 1) {
   

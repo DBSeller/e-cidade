@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Factory para controle do tipo de cálculo do item de um contrato
  * @author  matheus.felini@dbseller.com.br
  * @package contrato
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.6 $
  */
 class AcordoItemTipoCalculoFactory {
   
@@ -51,7 +51,7 @@ class AcordoItemTipoCalculoFactory {
        */
       case 1:
 
-        require_once("model/contrato/AcordoItemTipoCalculoMesQuantidade.model.php");
+        require_once(modification("model/contrato/AcordoItemTipoCalculoMesQuantidade.model.php"));
         $oTipoCalculo = new AcordoItemTipoCalculoMesQuantidade();
       break;
 
@@ -60,7 +60,7 @@ class AcordoItemTipoCalculoFactory {
        */
       case 2:
 
-        require_once("model/contrato/AcordoItemTipoCalculoMesDia.model.php");
+        require_once(modification("model/contrato/AcordoItemTipoCalculoMesDia.model.php"));
         $oTipoCalculo = new AcordoItemTipoCalculoMesDia();
       break;
 
@@ -69,7 +69,7 @@ class AcordoItemTipoCalculoFactory {
        */
       case 3:
         
-        require_once("model/contrato/AcordoItemTipoCalculoMesComercial.model.php");
+        require_once(modification("model/contrato/AcordoItemTipoCalculoMesComercial.model.php"));
         $oTipoCalculo = new AcordoItemTipoCalculoMesComercial();
       break;
 
@@ -78,7 +78,7 @@ class AcordoItemTipoCalculoFactory {
        */
       case 4:
         
-        require_once("model/contrato/AcordoItemTipoCalculoValor.model.php");
+        require_once(modification("model/contrato/AcordoItemTipoCalculoValor.model.php"));
         $oTipoCalculo = new AcordoItemTipoCalculoValor();
         
       break;
@@ -88,7 +88,7 @@ class AcordoItemTipoCalculoFactory {
        */
       case 5:
         
-        require_once("model/contrato/AcordoItemTipoCalculoQuantidade.model.php");
+        require_once(modification("model/contrato/AcordoItemTipoCalculoQuantidade.model.php"));
         $oTipoCalculo = new AcordoItemTipoCalculoQuantidade();
       break;
       

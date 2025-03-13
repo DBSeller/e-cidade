@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_leitor_classe.php");
-require_once ("classes/db_biblioteca_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_leitor_classe.php"));
+require_once(modification("classes/db_biblioteca_classe.php"));
 
 $clleitor     = new cl_leitor;
 $clbiblioteca = new cl_biblioteca;
@@ -78,7 +78,7 @@ if (isset($valor)) {
           WHERE $where bi16_codigo = $valor
             AND bi17_codigo = $bi17_codigo
           GROUP BY bi16_codigo, ov02_sequencial, ov02_nome, ov02_cnpjcpf, bi07_nome";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $linhas = pg_numrows($result);
   ?>
   <table width="100%" border="0" cellspacing="1" cellpading="3" >
@@ -141,7 +141,7 @@ if (isset($valor)) {
                              WHERE bi18_carteira = $bi16_codigo
                              $where2
                              ORDER BY bi18_retirada desc,bi21_entrega desc";
-                $result_emp = pg_exec($sql_emp);
+                $result_emp = db_query($sql_emp);
                 $linhas_emp = pg_numrows($result_emp);
             ?>
             <tr bgcolor="<?=$cor?>">

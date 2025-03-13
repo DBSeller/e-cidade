@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -41,7 +41,7 @@ class Conexao {
   
   public function __construct() {
     
-    require(realpath('libs/db_conn.php'));
+    require(modification(realpath('libs/db_conn.php')));
     
     $sConexao       = "host={$DB_SERVIDOR} port={$DB_PORTA} dbname={$DB_BASE} user={$DB_USUARIO} password={$DB_SENHA}";
     $this->pConexao = pg_connect($sConexao);

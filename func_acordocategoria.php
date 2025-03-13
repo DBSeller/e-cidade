@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,122 +25,128 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_acordocategoria_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"], $queryString);
+
 $clacordocategoria = new cl_acordocategoria;
 $clacordocategoria->rotulo->label("ac50_sequencial");
 $clacordocategoria->rotulo->label("ac50_descricao");
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link href="estilos.css" rel="stylesheet" type="text/css">
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
+<table height="100%" border="0" align="center" cellspacing="0" bgcolor="#CCCCCC">
+  <tr>
     <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tac50_sequencial?>">
-              <?=$Lac50_sequencial?>
+      <table width="35%" border="0" align="center" cellspacing="0">
+        <form name="form2" method="post" action="">
+          <tr>
+            <td width="4%" align="right" nowrap title="<?php echo  $Tac50_sequencial ?>">
+                <?php echo  $Lac50_sequencial ?>
             </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("ac50_sequencial",10,$Iac50_sequencial,true,"text",4,"","chave_ac50_sequencial");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tac50_descricao?>">
-              <?=$Lac50_descricao?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("ac50_descricao",50,$Iac50_descricao,true,"text",4,"","chave_ac50_descricao");
-		       ?>
+            <td width="96%" align="left" nowrap>
+                <?php
+                db_input("ac50_sequencial", 10, $Iac50_sequencial, true, "text", 4, "", "chave_ac50_sequencial");
+                ?>
             </td>
           </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_acordocategoria.hide();">
-             </td>
+          <tr>
+            <td width="4%" align="right" nowrap title="<?php echo  $Tac50_descricao ?>">
+                <?php echo  $Lac50_descricao ?>
+            </td>
+            <td width="96%" align="left" nowrap>
+                <?php
+                db_input("ac50_descricao", 50, $Iac50_descricao, true, "text", 4, "", "chave_ac50_descricao");
+                ?>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center">
+              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+              <input name="limpar" type="reset" id="limpar" value="Limpar">
+              <input name="Fechar" type="button" id="fechar" value="Fechar"
+                     onClick="parent.db_iframe_acordocategoria.hide();">
+            </td>
           </tr>
         </form>
-        </table>
-      </td>
+      </table>
+    </td>
   </tr>
-  <tr> 
-    <td align="center" valign="top"> 
-      <?
-      if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           if(file_exists("funcoes/db_func_acordocategoria.php")==true){
-             include("funcoes/db_func_acordocategoria.php");
-           }else{
-           $campos = "acordocategoria.*";
-           }
-        }
+  <tr>
+    <td align="center" valign="top">
+        <?php
+        if (!isset($pesquisa_chave)) {
+            if (isset($campos) == false) {
+                if (file_exists("funcoes/db_func_acordocategoria.php") == true) {
+                    include(modification("funcoes/db_func_acordocategoria.php"));
+                } else {
+                    $campos = "acordocategoria.*";
+                }
+            }
 
-        $sWhere = " 1 = 1 ";
-        if (isset($lBloqueiaDump)) {
-          $sWhere .= " and ac50_sequencial >= 3000 "; 
-        }
-        
-        if (isset($chave_ac50_sequencial) && (trim($chave_ac50_sequencial)!="") ){
+            $sWhere = " 1 = 1 ";
+            if (isset($lBloqueiaDump)) {
+                $sWhere .= " and ac50_sequencial >= 3000 ";
+            }
 
-           $sWhere .= " and ac50_sequencial = $chave_ac50_sequencial "; 
-	         $sql     = $clacordocategoria->sql_query(null, $campos, "ac50_sequencial", $sWhere);
-	         
-        } else if (isset($chave_ac50_descricao) && (trim($chave_ac50_descricao)!="")) {
+            if (isset($chave_ac50_sequencial) && (trim($chave_ac50_sequencial) != "")) {
 
-	         $sql = $clacordocategoria->sql_query("", $campos, "ac50_descricao", 
-                                                " ac50_descricao like '$chave_ac50_descricao%' and {$sWhere} ");
-        }else{
-           $sql = $clacordocategoria->sql_query("",$campos,"ac50_sequencial","{$sWhere}");
+                $sWhere .= " and ac50_sequencial = $chave_ac50_sequencial ";
+                $sql = $clacordocategoria->sql_query(null, $campos, "ac50_sequencial", $sWhere);
+
+            } else {
+                if (isset($chave_ac50_descricao) && (trim($chave_ac50_descricao) != "")) {
+
+                    $sql = $clacordocategoria->sql_query("", $campos, "ac50_descricao",
+                      " ac50_descricao like '$chave_ac50_descricao%' and {$sWhere} ");
+                } else {
+                    $sql = $clacordocategoria->sql_query("", $campos, "ac50_sequencial", "{$sWhere}");
+                }
+            }
+            $repassa = array();
+            if (isset($chave_ac50_descricao)) {
+                $repassa = array(
+                  "chave_ac50_sequencial" => $chave_ac50_sequencial,
+                  "chave_ac50_descricao"  => $chave_ac50_descricao
+                );
+            }
+            db_lovrot($sql, 15, "()", "", $funcao_js, "", "NoMe", $repassa);
+        } else {
+            if ($pesquisa_chave != null && $pesquisa_chave != "") {
+                $result = $clacordocategoria->sql_record($clacordocategoria->sql_query($pesquisa_chave));
+                if ($clacordocategoria->numrows != 0) {
+                    db_fieldsmemory($result, 0);
+                    echo "<script>" . $funcao_js . "('$ac50_descricao',false);</script>";
+                } else {
+                    echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
+                }
+            } else {
+                echo "<script>" . $funcao_js . "('',false);</script>";
+            }
         }
-        $repassa = array();
-        if(isset($chave_ac50_descricao)){
-          $repassa = array("chave_ac50_sequencial"=>$chave_ac50_sequencial,"chave_ac50_descricao"=>$chave_ac50_descricao);
-        }
-        db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clacordocategoria->sql_record($clacordocategoria->sql_query($pesquisa_chave));
-          if($clacordocategoria->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$ac50_descricao',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-          }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
-        }
-      }
-      ?>
-     </td>
-   </tr>
+        ?>
+    </td>
+  </tr>
 </table>
 </body>
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>
 <script>
-js_tabulacaoforms("form2","chave_ac50_descricao",true,1,"chave_ac50_descricao",true);
+  js_tabulacaoforms("form2", "chave_ac50_descricao", true, 1, "chave_ac50_descricao", true);
+</script>
+<script type="text/javascript">
+  (function() {
+    var query = frameElement.getAttribute('name').replace('IF', ''),
+      input = document.querySelector('input[value="Fechar"]');
+    input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+  })();
 </script>

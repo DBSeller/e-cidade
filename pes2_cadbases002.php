@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r08_codigo');
@@ -42,23 +42,23 @@ $head3 = "CADASTRO DE BASES";
 $head4 = "PERÍODO : ".$mes." / ".$ano;
 
 if($ordem == 'a'){
-  $xordem = " order by r08_descr ";
+  $xordem = " order by rh32_descr ";
   $head6  = "Ordem Alfabética";
 }else{
-  $xordem = " order by r08_codigo ";
+  $xordem = " order by rh32_base ";
   $head6  = "Ordem Numérica";
 }
-$sql = "
-        select *
-	from bases 
-	where r08_anousu = $ano 
-	  and r08_mesusu = $mes and r08_instit = ".db_getsession("DB_instit")."
- 
-	$xordem
-       ";
+$sql = "select  rh32_base   as r08_codigo, 
+                rh32_descr  as r08_descr,
+                rh32_calqua as r08_calqua,
+                rh32_mesant as r08_mesant,
+                rh32_pfixo  as r08_pfixo
+      	from rhbases 
+        where rh32_instit = ".db_getsession("DB_instit")."
+      	$xordem ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){

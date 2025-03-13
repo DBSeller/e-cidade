@@ -59,7 +59,7 @@ $clmatparaminstit->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_matparaminstit','func_matparaminstit.php?funcao_js=parent.js_preenchepesquisa|m10_instit','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matparaminstit','func_matparaminstit.php?funcao_js=parent.js_preenchepesquisa|m10_instit','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_matparaminstit.hide();

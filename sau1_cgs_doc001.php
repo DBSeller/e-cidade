@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cgs_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_stdlibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cgs_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_stdlibwebseller.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcgs = new cl_cgs;
 $clcgs_und = new cl_cgs_und;
@@ -50,7 +50,7 @@ $z01_d_ultalt_ano = date("Y");
 
 if( !isset($z01_v_munic ) ){
   $query_dbconfig =  "select munic as z01_v_munic, uf as z01_v_uf  from db_config where prefeitura is true";
-  $result_dbconfig = pg_query($query_dbconfig);
+  $result_dbconfig = db_query($query_dbconfig);
   db_fieldsmemory($result_dbconfig,0);
 }
 
@@ -81,7 +81,7 @@ if(isset($incluir) || isset($alterar) ){
    <br>
    <center>
    <fieldset style="width:95%">
-    <?include("forms/db_frmsaudoc.php");?>
+    <?include(modification("forms/db_frmsaudoc.php"));?>
    </fieldset>
    </center>
   </td>
@@ -114,7 +114,7 @@ if(isset($incluir)){
            <script>
                  parent.document.formaba.a1.disabled = true;
                  parent.document.formaba.a1.style.color = "black";
-                 top.corpo.iframe_a1.location.href="sau1_cgs_und001.php";
+                 (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href="sau1_cgs_und001.php";
                  parent.mo_camada('a1');
                 </script>
        <?

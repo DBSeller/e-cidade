@@ -1,375 +1,313 @@
 <?php
-/*
- *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
- *                            www.dbseller.com.br
- *                         e-cidade@dbseller.com.br
- *
- *  Este programa e software livre; voce pode redistribui-lo e/ou
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
- *  publicada pela Free Software Foundation; tanto a versao 2 da
- *  Licenca como (a seu criterio) qualquer versao mais nova.
- *
- *  Este programa e distribuido na expectativa de ser util, mas SEM
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
- *  detalhes.
- *
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
- *  junto com este programa; se nao, escreva para a Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- *  02111-1307, USA.
- *
- *  Copia da licenca no diretorio licenca/licenca_en.txt
- *                                licenca/licenca_pt.txt
- */
-
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("agu3_conscadastro_002_classe.php");
-
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-
-// Instancia Classes
-//$claguabase    = new cl_aguabase();
-
-if( !isset($cod_matricula) ) {
-	$matriculaSelecionada = 0;
-} else {
-
-	$matriculaSelecionada = $cod_matricula;
-
-	$Consulta = new ConsultaAguaBase($matriculaSelecionada);
-
-	if( !($result = $Consulta->RecordSetAguaBase()) ) {
-		$matriculaSelecionada = 0;
-	}
-
-	// Rotulos
-	$claguabase = $Consulta->GetAguaBaseDAO();
-	$claguabase->rotulo->label();
-}
-
-$sql = "select * from aguaconstr where x11_matric = $matriculaSelecionada";
-$res = db_query($sql);
-if(pg_num_rows($res)>0) {
-	$x01_tipoimovel="Predio";
-} else {
-	$x01_tipoimovel="Terreno";
-}
-
- /***********************************************************************************************/
- // Verifica se encontrou a matrícula. Caso não tenha encontrado exibe a mensagem abaixo.
+  /*
+   *     E-cidade Software Publico para Gestao Municipal
+   *  Copyright (C) 2009  DBseller Servicos de Informatica
+   *                            www.dbseller.com.br
+   *                         e-cidade@dbseller.com.br
+   *
+   *  Este programa e software livre; voce pode redistribui-lo e/ou
+   *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+   *  publicada pela Free Software Foundation; tanto a versao 2 da
+   *  Licenca como (a seu criterio) qualquer versao mais nova.
+   *
+   *  Este programa e distribuido na expectativa de ser util, mas SEM
+   *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+   *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+   *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+   *  detalhes.
+   *
+   *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+   *  junto com este programa; se nao, escreva para a Free Software
+   *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+   *  02111-1307, USA.
+   *
+   *  Copia da licenca no diretorio licenca/licenca_en.txt
+   *                                licenca/licenca_pt.txt
+   */
+  
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("agu3_conscadastro_002_classe.php"));
+  require_once(modification("dbforms/verticalTab.widget.php"));
+  
+  parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+  
+  $clrotulo = new rotulocampo;
+  $clrotulo->label('j01_matric');
+  $clrotulo->label('x01_numcgm');
+  $clrotulo->label('z01_nome');
+  $clrotulo->label('x01_codrua');
+  $clrotulo->label('j14_nome');
+  $clrotulo->label('x01_numero');
+  $clrotulo->label('x01_codbairro');
+  $clrotulo->label('x01_distrito');
+  $clrotulo->label('x01_zona');
+  $clrotulo->label('x01_quadra');
+  $clrotulo->label('x01_orientacao');
+  $clrotulo->label('x01_rota');
+  $clrotulo->label('x01_qtdeconomia');
+  $clrotulo->label('x01_dtcadastro');
+  $clrotulo->label('x01_qtdponto');
+  $clrotulo->label('x01_obs');
+  
+  if(isset($cod_matricula) ) {
+    
+    $iMatriculaSelecionada = $cod_matricula;
+  
+    $oConsulta  = new ConsultaAguaBase($iMatriculaSelecionada);
+    $oResultado = $oConsulta->RecordSetAguaBase();
+    
+    if (empty($oResultado)) {
+      db_redireciona("db_erros.php?db_erro=Matrícula não cadastrada.");
+    }
+    
+    $oDadosMatricula = db_utils::fieldsMemory($oResultado, 0, null);
+  
+  } else {
+    db_redireciona("db_erros.php?db_erro=Nenhuma Matrícula Informada.");
+  }
+  
+  $oDaoImobiliaria  = new cl_imobil;
+  
+  $sSql  = "SELECT j44_numcgm, z01_nome                       \n";
+  $sSql .= "  FROM imobil                                     \n";
+  $sSql .= "       inner join cgm on z01_numcgm = j44_numcgm  \n";
+  $sSql .= " WHERE j44_matric = {$iMatriculaSelecionada}      \n";
+  
+  $rsImobiliaria = $oDaoImobiliaria->sql_record($sSql);
+  
+  $sDadosImobiliaria = ' - ';
+  if($oDaoImobiliaria->numrows > 0) {
+    
+    $oDadosImobiliaria  = db_utils::fieldsMemory($rsImobiliaria, 0);
+    
+    $sDadosImobiliaria = "{$oDadosImobiliaria->j44_numcgm} - {$oDadosImobiliaria->z01_nome}";
+  }
+  
+  $sSqlTipoImovel    = "SELECT * FROM aguaconstr WHERE x11_matric = {$iMatriculaSelecionada}";
+  $oResultTipoImovel = db_query($sSqlTipoImovel);
+   
+  $sTipoImovel = "Terreno";
+   
+  if (pg_num_rows($oResultTipoImovel) > 0) {
+    $sTipoImovel = "Prédio";
+  } 
 ?>
 <html>
-<head>
-<title>Dados do imóvel - BIC</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script>
-function js_Impressao1() {
-  window.open('agu3_conscadastro_impressao.php?tipo=1&parametro=<?=$cod_matricula?>','','location=0,HEIGHT=600,WIDTH=600');
-}
-function js_Impressao() {
-  var geracalculo = confirm('Imprimir Demonstrativo de Cálculo?');
-  window.open('agu3_conscadastro_impressao.php?tipo=2&geracalculo='+geracalculo+'&parametro=<?=$cod_matricula?>','','location=0,HEIGHT=600,WIDTH=600');
-}
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
+    <link href="estilos/tab.style.css" rel="stylesheet" type="text/css">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <style>
+      .valores {
+        background-color: #FFFFFF;
+        padding-left: 10px;
+      }
+    </style>
+    <script type="text/javascript">
+      
+      function js_Impressao() { 
+        
+        var lGeraCalculo = confirm('Imprimir Demonstrativo de Cálculo?');
+        window.open('agu3_conscadastro_impressao.php?tipo=2&geracalculo=' + lGeraCalculo + 
+                    '&parametro=<?php echo $oDadosMatricula->x01_matric; ?>','','location=0,HEIGHT=600,WIDTH=600');
+      }
+    </script>
+  </head>
+
+  <body>
+    <fieldset style="width: 99%">
+      <legend>
+        <b>Dados Cadastrais do Imóvel ( <?php echo $sTipoImovel?> ) </b>
+        <?php
+          if (!empty($oDadosMatricula->j01_baixa)) {
+            
+            $sAviso  = "<span class='aviso'>";
+            $sAviso .= "  <font color='red'><b>Matrícula Baixada</b></font>";
+            $sAviso .= "</span>";
+            
+            echo $sAviso;
+          }
+        ?>
+      </legend>
+      <table>
+        <tr>
+          <td title="<?php echo $Tj01_matric; ?>" style="width: 120px;">
+            <?php echo $Lj01_matric; ?>
+          </td>
+          <td title="<?php echo $Tj01_matric; ?>" nowrap class='valores' style="width: 300px;">
+            <?php echo $oDadosMatricula->x01_matric; ?>
+          </td>
+          <td style="width: 10px;"></td>
+          <td title="<?php echo $Tx01_numcgm; ?>" style="width: 110px;">
+            <?php db_ancora($Lx01_numcgm,"js_JanelaAutomatica('cgm',' . $oDadosMatricula->x01_numcgm . ')", 2); ?>
+          </td>
+          <td title="<?php echo $Tz01_nome; ?>" nowrap class='valores' style="width: 300px;">
+            <?php echo $oDadosMatricula->z01_nome; ?>
+          </td>
+        </tr>
+        <tr>
+          <td title="<?php echo $Tx01_codbairro; ?>">
+            <?php echo $Lx01_codrua; ?>
+          </td>
+          <td title="<?php echo $Tx01_codrua; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_codrua; ?>
+            -
+            <?php echo $oDadosMatricula->j14_nome; ?>
+            ,
+            <?php echo $oDadosMatricula->x01_numero; ?>
+          </td>
+          <td></td>
+          <td title="<?php echo $Tx01_codbairro; ?>">
+            <b><?php echo $Lx01_codbairro; ?></b>
+          </td>
+          <td title="<?php echo $Tx01_codbairro; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->j13_descr; ?>
+          </td>
+        </tr>
+        <tr>
+          <td title="<?php echo $Tx01_distrito; ?>">
+          <?php echo $Lx01_distrito; ?>  
+          </td>
+          <td title="<?php echo $Tx01_distrito; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_distrito; ?>
+          </td>
+          <td></td>
+          <td title="<?php echo $Tx01_zona; ?>">
+            <?php echo $Lx01_zona; ?>
+          </td>
+          <td title="<?php echo $Tx01_zona; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_zona; ?> 
+          </td>
+        </tr>
+        <tr>
+          <td title="<?php echo $Tx01_quadra;?>">
+            <b><?php echo $Lx01_quadra; ?></b>
+          </td>
+          <td nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_quadra; ?>
+          </td>
+          <td></td>
+          <td title="<?php echo $Tx01_numero; ?>">
+            <b><?php echo $Lx01_numero; ?></b>
+          </td>
+          <td nowrap class='valores' title="<?php echo $Tx01_numero; ?>">
+            <?php echo $oDadosMatricula->x01_numero; ?>
+          </td>
+        </tr>
+        <tr>
+          <td title="<?php echo $Tx01_orientacao; ?>">
+            <b><?php echo $Lx01_orientacao; ?></b>
+          </td>
+          <td title="<?php echo $Tx01_orientacao; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_orientacao; ?>
+          </td>
+          <td></td>
+          <td title="<?php echo $Tx01_rota; ?>">
+            <b><?php echo $Lx01_rota; ?></b>
+          </td>
+          <td title="<?php echo $Lx01_rota; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_rota; ?>
+          </td>
+        </tr>
+        <tr>
+          <td title="<?php echo $Tx01_qtdeconomia; ?>">
+            <b><?php echo $Lx01_qtdeconomia; ?><b>
+          </td>
+          <td title="<?php echo $Tx01_qtdeconomia; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_qtdeconomia; ?>
+          </td>
+          <td></td>
+          <td title="<?php echo $Tx01_dtcadastro; ?>">
+            <b><?php echo $Lx01_dtcadastro; ?></b>
+          </td>
+          <td style="padding-right: 10px" title="<?php echo $Tx01_dtcadastro; ?>" nowrap class='valores'>
+            <?php echo db_formatar($oDadosMatricula->x01_dtcadastro, 'd'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td title="<?php echo $Tx01_qtdponto; ?>">
+            <b><?php echo $Lx01_qtdponto; ?></b>
+          </td>
+          <td title="<?php echo $Tx01_qtdponto; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_qtdponto; ?>
+          </td>
+          <td></td>
+          <td title="Imobiliária">
+            <b>Imobiliária:</b>
+          </td>
+          <td style="padding-right: 10px;" width="500px" title="<?php echo $Lx01_obs; ?>" nowrap class='valores'>
+            <?php echo $sDadosImobiliaria; ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5"></td>
+        </tr>
+        <tr>
+          <td title="<?php echo $Tx01_obs; ?>">
+            <b><?php echo $Lx01_obs; ?></b>
+          </td>
+          <td colspan="4" style="padding-right: 10px;" title="<?php echo $Lx01_obs; ?>" nowrap class='valores'>
+            <?php echo $oDadosMatricula->x01_obs; ?>
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+    <fieldset style="width: 99%">
+      <legend>
+        <b>Detalhamento</b>
+      </legend>
+      <?php
+        $sLink = 'agu3_conscadastro_002_detalhes.php?solicitacao=';  
+      
+        $oTabDetalhes = new verticalTab("detalhesemp", 300);
+        
+        $oTabDetalhes->add("CaracteristicaImovel", "Caracteristicas do Imóvel",
+            "{$sLink}CaracteristicasDoImovel&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("Isencoes", "Isenções",
+            "{$sLink}Isencoes&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("Construcao", "Construções",
+            "{$sLink}Construcoes&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("Hidrometros", "Hidrômetros",
+            "{$sLink}Hidrometro&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("Leituras", "Leituras" ,
+            "{$sLink}Leitura&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("Calculo", "Cálculo",
+            "{$sLink}Calculo&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("ImprimeBIC", "Imprime BIC", "javascript:");
+        
+        $oTabDetalhes->add("HistoricoDeCortes", "Histórico de Cortes",
+            "{$sLink}Corte&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("Condominio", "Condomínio",
+            "{$sLink}Condominio&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("Ocorrencias", "Ocorrências",
+            "{$sLink}Ocorrencia&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->add("BaixasDeImoveis", "Baixas de Imóveis",
+            "{$sLink}BaixaImoveis&parametro={$oDadosMatricula->x01_matric}");
+        
+        $oTabDetalhes->show();
+      ?>
+    </fieldset>
+  </body>
+<script type="text/javascript">
+
+  $('ImprimeBIC').observe("click", function() {
+    js_Impressao();
+  });
 </script>
-</head>
-
-<body class="body-default">
-<?
-if ($matriculaSelecionada == 0) {
-   $db_erro = "Matricula nao cadastrada";
-?>
-<center>
-<table width="75%" border="1" cellpadding="0" cellspacing="0">
-  <tr>
-    <td align="center"><font color="#FF0000" size="3" face="Arial, Helvetica, sans-serif">Notifica&ccedil;&atilde;o do Sistema:</font></td>
-  </tr>
-  <tr>
-    <td height="56" align="center"><font size="2" face="Arial, Helvetica, sans-serif"><br>
-    <?
-	echo @$db_erro;
-	?>
-     </font></td>
-  </tr>
-  <tr>
-      <td align="center">
-</td>
-  </tr>
-</table>
-</center>
-<?php
- /***********************************************************************************************/
- // Se encontrou a matrícula, exibe tabela com a descrição do imóvel.
-} else {
- db_fieldsmemory($result,0);
-  ?>
-<table width="100%" height="100%" border="0" align="center" cellpadding="0" cellspacing="2">
-  <tr bgcolor="#CCCCCC">
-    <td colspan="4" align="center"><font color="#333333"><strong>&nbsp;DADOS CADASTRAIS
-      DO IM&Oacute;VEL (&nbsp;
-      <?=$x01_tipoimovel?>
-      &nbsp;)&nbsp;</strong>
-	  </td>
-  </tr>
-
-  <tr>
-    <!-- X01_MATRIC  :  Z01_NOME -->
-    <td width=10% align="right" nowrap bgcolor="#CCCCCC">
-		<?=$Lx01_matric?>;
-	</td>
-
-    <td align="left" nowrap bgcolor="#FFFFFF">
-		<font color="#666666">
-			<strong><?=$x01_matric?></strong>
-		</font>
-	</td>
-
- 	<td width=10% align="right" nowrap bgcolor="#CCCCCC" title='Clique aqui para outros dados do contribuinte'>
-    	<?db_ancora($Lx01_numcgm,"js_JanelaAutomatica('cgm','$x01_numcgm')",2);?>
-	</td>
-
-    <td align="left" nowrap bgcolor="#FFFFFF">
-		<font color="#666666">
-			<strong><?=$z01_nome?></strong>
-		</font>
-	</td>
-
-  </tr>
-
-  <!-- LOGRADOURO  :  BAIRRO -->
-  <tr>
-	<td width=10% align="right" bgcolor="#CCCCCC">
-		<?=$Lx01_codrua?>
-	</td>
-
-	<td bgcolor="#FFFFFF">
-		<font color="#666666">
-			<strong>
-				<?=$x01_codrua?>
-				-
-				<?=$j14_nome?>
-				,
-				<?=$x01_numero?>
-			</strong>
-		</font>
-	</td>
-
-	<td width=10% align="right" bgcolor="#CCCCCC">
-		<?=$Lx01_codbairro?>
-	</td>
-	<td bgcolor="#FFFFFF">
-		<font color="#666666">
-			<strong>
-   				<?=$j13_descr?>
-			</strong>
-		</font>
-	</td>
-  </tr>
-
-  <!-- DISTRITO  :  ZONA -->
-  <tr>
-	<td width=10% align="right" bgcolor="#CCCCCC">
-		<?=$Lx01_distrito?>
-    </td>
-	<td bgcolor="#FFFFFF">
-      <font color="#666666">
-        <strong><?=$x01_distrito?></strong>
-      </font>
-    </td>
-
-    <td width=10% align="right" bgcolor="#CCCCCC">
-      <!-- ZONA -->
-      <?=$Lx01_zona?>
-    </td>
-
-    <td bgcolor="#FFFFFF">
-	  <font color="#666666">
-        <strong><?=$x01_zona?></strong>
-      </font>
-    </td>
-  </tr>
-
-  <!-- QUADRA  :  NUMERO -->
-  <tr>
-    <td width=10% align="right" bgcolor="#CCCCCC">
-      <?=$Lx01_quadra?>
-    </td>
-
-    <td bgcolor="#FFFFFF">
-      <font color="#666666">
-        <strong><?=$x01_quadra?></strong>
-      </font>
-    </td>
-
-    <td width=10% align="right" bgcolor="#CCCCCC">
-      <?=$Lx01_numero?>
-    </td>
-
-    <td bgcolor="#FFFFFF">
-      <font color="#666666">
-        <strong><?=$x01_numero?></strong>
-      </font>
-    </td>
-  </tr>
-
-  <!-- ORIENTACAO  :  ROTA -->
-  <tr>
-    <td width=10% align="right" bgcolor="#CCCCCC">
-      <?=$Lx01_orientacao?>
-    </td>
-    <td bgcolor="#FFFFFF">
-      <font color="#666666">
-        <strong><?=$x01_orientacao?></strong>
-      </font>
-    </td>
-
-    <td width=10% align="right" bgcolor="#CCCCCC">
-      <?=$Lx01_rota?>
-    </td>
-    <td bgcolor="#FFFFFF">
-	  <font color="#666666">
-        <strong><?=$x01_rota?></strong>
-      </font>
-    </td>
-  </tr>
-
-  <!-- QTDECONOMIA  :  DTCADASTRO -->
-  <tr>
-	<td width=10% align="right" bgcolor="#CCCCCC">
-		<?=$Lx01_qtdeconomia?>
-	</td>
-	<td bgcolor="#FFFFFF">
-		<font color="#666666">
-			<strong>
-   				<?=$x01_qtdeconomia?>
-			</strong>
-		</font>
-	</td>
-
-	<td width=10% align="right" bgcolor="#CCCCCC">
-		<?=$Lx01_dtcadastro?>
-	</td>
-	<td bgcolor="#FFFFFF">
-		<font color="#666666">
-			<strong>
-				<?=db_formatar($x01_dtcadastro, 'd')?>
-			</strong>
-		</font>
-	</td>
-  </tr>
-
-  <!-- QTDPONTO  :  OBS -->
-  <tr>
-	<td width=10% align="right" bgcolor="#CCCCCC">
-		<?=$Lx01_qtdponto?>
-	</td>
-	<td bgcolor="#FFFFFF">
-		<font color="#666666">
-			<strong>
-   				<?=$x01_qtdponto?>
-			</strong>
-		</font>
-	</td>
-
-	<td width=10% align="right" bgcolor="#CCCCCC">
-		<?=$Lx01_obs?>
-	</td>
-	<td bgcolor="#FFFFFF">
-		<font color="#666666">
-			<strong>
-				<?=$x01_obs?>
-			</strong>
-		</font>
-	</td>
-  </tr>
-
-  <tr>
-    <td colspan="4" align="left"><table width="100%" height="100%" border="0" align="left" cellpadding="0" cellspacing="0">
-        <tr valign="top">
-          <td width="16%"><table width="80%" border="0" cellspacing="2" cellpadding="0">
-              <tr>
-                <td title="Caracteristicas do Imóvel" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand" ><a href="agu3_conscadastro_002_detalhes.php?solicitacao=CaracteristicasDoImovel&parametro=<?=$x01_matric?>" target="iframeDetalhes">
-					&nbsp;Caracter&iacute;sticas</a>
-				</td>
-              </tr>
-              <tr>
-                <td title="Isenções Lançadas" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=Isencoes&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-					&nbsp;Isen&ccedil;&otilde;es</a>
-				</td>
-              </tr>
-              <tr>
-                <td title="Construções" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=Construcoes&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-					Constru&ccedil;&otilde;es</a>
-				</td>
-              </tr>
-              <tr>
-                <td title="Endereço de Entrega do Carnê" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=EnderecoDeEntrega&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-					Endere&ccedil;o entrega</a>
-				</td>
-              </tr>
-
-			  <tr>
-                <td title="Hidrômetros Cadastrados" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=Hidrometro&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-					Hidrômetros</a>
-				</td>
-              </tr>
-
-              <tr>
-                <td title="Leituras efetuadas" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=Leitura&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-					Leituras</a>
-				</td>
-              </tr>
-
-			  <tr>
-                <td title="Cálculo Efetuado no Exercício" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=Calculo&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-					C&aacute;lculo</a>
-				</td>
-              </tr>
-              <tr>
-                <td title="Imprime Boletim Informações do Imóvel" align="center" title="Imprime Boletim de Informações Cadastrais Completa" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href='' onClick="js_Impressao();return false;" >
-					Imprime BIC</a>
-				</td>
-              </tr>
-              <tr>
-                <td title="Histórico de Cortes" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=Corte&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-					Hist&oacute;rico de Cortes</a>
-				</td>
-              </tr>
-
-              <tr>
-		       <td title="Condomínio" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=Condominio&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-		          Condomínio</a>
-		       </td>
-              </tr>
-
-              <tr>
-		       <td title="Ocorrências" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=Ocorrencia&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-		          Ocorrências</a>
-		       </td>
-              </tr>
-           <tr>
-           <td title="BaixaImóveis" align="center" nowrap bgcolor="#CCCCCC" style="cursor:hand"><a href="agu3_conscadastro_002_detalhes.php?solicitacao=BaixaImoveis&parametro=<?=$cod_matricula?>" target="iframeDetalhes">
-              Baixas de Imóveis</a>
-           </td>
-        </tr>
-            </table></td>
-          <td width="84%" align="left"> <iframe align="middle" height="100%" frameborder="0" marginheight="0" marginwidth="0" name="iframeDetalhes" width="100%">
-            </iframe> </td>
-        </tr>
-      </table></td>
-  </tr>
-
-</table>
-  <?php
-}  // fecha chave que mostra a descricao da propriedade
-?>
-</body>
 </html>

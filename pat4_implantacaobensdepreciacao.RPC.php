@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("model/patrimonio/Bem.model.php");
-require_once("model/patrimonio/BemCedente.model.php");
-require_once("model/patrimonio/BemClassificacao.model.php");
-require_once("model/patrimonio/PlacaBem.model.php");
-require_once("model/patrimonio/BemHistoricoMovimentacao.model.php");
-require_once("model/patrimonio/BemDadosImovel.model.php");
-require_once("model/patrimonio/BemDadosMaterial.model.php");
-require_once("model/patrimonio/BemTipoAquisicao.php");
-require_once("model/patrimonio/BensParametroPlaca.model.php");
-require_once("model/patrimonio/BemTipoDepreciacao.php");
-require_once("model/patrimonio/depreciacao/CalculoBem.model.php");
-require_once("model/patrimonio/depreciacao/PlanilhaCalculo.model.php");
-require_once("model/patrimonio/depreciacao/FormulaCalculo.model.php");
-require_once("std/DBNumber.php");
-require_once("model/CgmFactory.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("model/patrimonio/Bem.model.php"));
+require_once(modification("model/patrimonio/BemCedente.model.php"));
+require_once(modification("model/patrimonio/BemClassificacao.model.php"));
+require_once(modification("model/patrimonio/PlacaBem.model.php"));
+require_once(modification("model/patrimonio/BemHistoricoMovimentacao.model.php"));
+require_once(modification("model/patrimonio/BemDadosImovel.model.php"));
+require_once(modification("model/patrimonio/BemDadosMaterial.model.php"));
+require_once(modification("model/patrimonio/BemTipoAquisicao.php"));
+require_once(modification("model/patrimonio/BensParametroPlaca.model.php"));
+require_once(modification("model/patrimonio/BemTipoDepreciacao.php"));
+require_once(modification("model/patrimonio/depreciacao/CalculoBem.model.php"));
+require_once(modification("model/patrimonio/depreciacao/PlanilhaCalculo.model.php"));
+require_once(modification("model/patrimonio/depreciacao/FormulaCalculo.model.php"));
+require_once(modification("std/DBNumber.php"));
+require_once(modification("model/CgmFactory.model.php"));
 
 $oRetorno          = new stdClass();
 $oRetorno->status  = 1;

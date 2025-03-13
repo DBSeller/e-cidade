@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -1215,7 +1215,7 @@ function gera_ponto_salario($diferenca_ferias=null){
    }
    if ($diferenca_ferias == "n") {
       
-     if(db_at($mtipo,"01 02 03 04 05 06 07 09 12 13 14") > 0) {
+     if(db_at($mtipo,"01 02 03 04 05 06 07 09 12 13 14 15") > 0) {
        
         $nsalar = dias_gozo_no_mes_inicial($r30_peri,$r30_perf,$mtipo,$nsaldo);
         

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -200,7 +200,8 @@ abstract class ExportacaoCensoBase {
       $oDocenteCenso         = new DadosCensoDocente($iCodigoDocente);
       $oDocenteCenso->setAnoCenso($this->iAnoCenso);
       $oDocenteCenso->setCodigoEscola($this->iCodigoEscola);
-      $oDocenteCenso->setDataCenso($this->dtBaseCenso);
+      $oDataCenso = new DBDate( $this->dtBaseCenso );
+      $oDocenteCenso->setDataCenso( $oDataCenso );
 
       $this->oDadosDocente         = new stdClass;
       $this->oDadosDocente->registro30 = $oDocenteCenso->getDadosIdentificacao();

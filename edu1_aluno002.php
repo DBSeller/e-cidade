@@ -1,33 +1,7 @@
-<?
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -50,17 +24,18 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_jsplibwebseller.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+use App\Domain\Configuracao\Helpers\StorageHelper;
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+parse_str( $_SERVER["QUERY_STRING"] );
+db_postmemory( $_POST );
 
 $oDaoAluno           = new cl_aluno();
 $oDaoAlunoAltera     = new cl_alunoaltera();
@@ -69,15 +44,33 @@ $oDaoCensoUf         = new cl_censouf();
 $oDaoCensoMunic      = new cl_censomunic();
 $oDaoCensoOrgEmissRg = new cl_censoorgemissrg();
 $oDaoCensoCartorio   = new cl_censocartorio();
-
 $db_opcao = 2;
 $db_botao = true;
 
 if (isset($alterar)) {
-	
+
   $db_opcao = 2;
   $db_botao = true;
+    $cartorio = $_POST['matri_cartorio'];
+    if (!empty($cartorio)){
+      $dao = new cl_censocartorio();
+      $sql = $dao->sql_query_file(null, '*', null, " ed291_i_serventia = {$cartorio}");
+      $rs = db_query($sql);
+      if ($rs && pg_num_rows($rs) === 0) {
+          $dao->ed291_i_codigo = null;
+          $dao->ed291_c_nome = $_POST['nome_cartorio'];
+          $dao->ed291_i_serventia = $_POST['matri_cartorio'];
+          $dao->ed291_i_censomunic = $_POST['ed47_i_censomuniccert'];
+          $dao->ed291_i_codigocenso = null;
 
+          $dao->incluir(null);
+          if($dao->erro_status == 0) {
+              db_msgbox( "Erro ao inserir novo cartório." . $dao->erro_msg);
+              $_rollback = true;
+          }
+          $oDaoAluno->ed47_i_censocartorio = $dao->ed291_i_codigo;
+      }
+    }
   /**
    * Valida se o cartão do SUS é válido conforme funções
    */
@@ -92,23 +85,93 @@ if (isset($alterar)) {
   }
 
   db_inicio_transacao();
+    $rs = db_query($oDaoAluno->sql_query_file($ed47_i_codigo));
+    $dados = db_utils::fieldsMemory($rs, 0);
+    $oDaoAluno->ed47_paisresidencia = $dados->ed47_paisresidencia;
+    $oDaoAluno->ed47_localizacaodiferenciada = $dados->ed47_localizacaodiferenciada;
 
+  if( !isset( $ed47_c_certidaocart ) ) {
+    $oDaoAluno->ed47_c_certidaocart = '';
+  }
+
+  if( !isset( $ed47_i_censomuniccert ) ) {
+    $oDaoAluno->ed47_i_censomuniccert = null;
+  }
+
+  if( !isset( $ed47_i_censoufcert ) ) {
+    $oDaoAluno->ed47_i_censoufcert = null;
+  }
+
+  if( !isset( $ed47_i_censoufident ) ) {
+    $oDaoAluno->ed47_i_censoufident = null;
+  }
+
+  if( !isset( $ed47_i_censoorgemissrg ) ) {
+    $oDaoAluno->ed47_i_censoorgemissrg = null;
+  }
+
+  $oDaoAluno->ed47_visto = $ed47_visto;
+  $oDaoAluno->ed47_rnm = $ed47_rnm;
   $oDaoAluno->ed47_certidaomatricula = $ed47_certidaomatricula;
   $oDaoAluno->alterar($ed47_i_codigo);
-  
+
   if ($oDaoAluno->erro_status == "0") {
-    
+
     $_rollback = true;
-  
+
   } else {
     $_rollback = false;
   }
-  
+
   db_fim_transacao($_rollback);
+
+  try {
+    db_query("begin");
+    $arquivoCertidao = "";
+    $rs = db_query($oDaoAluno->sql_query_file(null,"ed47_i_certidado_estorage  as idCertidao",null, "ed47_i_codigo = $chavepesquisa"));
+    $dados = db_utils::fieldsMemory($rs, 0);
+    $arquivoCertidao = !empty($dados->idcertidao) ? StorageHelper::downloadArquivo($dados->idcertidao) : "";
+    $namecertidao = @trim($GLOBALS["HTTP_POST_VARS"]["oid_arquivoCertidao"]);
+
+    if ($namecertidao != "" && $arquivoCertidao != $namecertidao) {
+      $idFileCertidao = StorageHelper::uploadArquivo($namecertidao, null, true);
+      $sqlAlunoCertidao   = "UPDATE escola.aluno set ed47_i_certidado_estorage = {$idFileCertidao} ";
+      $sqlAlunoCertidao  .= "where ed47_i_codigo = $chavepesquisa";
+      $rs = pg_query($sqlAlunoCertidao);
+      // if(pg_numrows($rs)!=false) {
+      //   throw new Exception("Erro ao atualizar imagem certidão de Nascimento");
+      // }
+
+    }
+
+    $arquivoCpf = "";
+    $rs = db_query($oDaoAluno->sql_query_file(null,"ed47_i_cpf_estorage  as idCpf",null, "ed47_i_codigo = $chavepesquisa"));
+    $dados = db_utils::fieldsMemory($rs, 0);
+    $arquivoCpf = !empty($dados->idcpf) ? StorageHelper::downloadArquivo($dados->idcpf) : "";
+    $namecpf = @trim($GLOBALS["HTTP_POST_VARS"]["oid_arquivoCPF"]);
+
+    if ($namecpf != "" && $arquivoCpf != $namecpf) {
+      $idFileCpf = StorageHelper::uploadArquivo($namecpf, null, true);
+      $sqlAlunoCpf   = "UPDATE escola.aluno set ed47_i_cpf_estorage = {$idFileCpf} ";
+      $sqlAlunoCpf  .= "where ed47_i_codigo = $chavepesquisa";
+      $rs = pg_query($sqlAlunoCpf);
+
+      // if(pg_numrows($rs)!=false) {
+      //   throw new Exception("Erro ao atualizar imagem cpf");
+      // }
+
+    }
+
+    db_query("end");
+  } catch (Exception $oErro) {
+    db_query("rollback");
+    print_r($oErro->getMessage());
+    db_msgbox($oErro->getMessage());
+  }
 }
 
 if (isset($chavepesquisa)) {
-	
+
   $db_opcao = 2;
   $sSql     = $oDaoAluno->sql_query($chavepesquisa);
   $rsResult = $oDaoAluno->sql_record($sSql);
@@ -142,7 +205,7 @@ if (isset($chavepesquisa)) {
             </select>
           </fieldset>
           <fieldset style="width:95%"><legend><b>Documentação do Aluno</b></legend>
-            <?include("forms/db_frmaluno.php");?>
+            <?include(modification("forms/db_frmaluno.php"));?>
           </fieldset>
         </center>
       </td>
@@ -150,24 +213,24 @@ if (isset($chavepesquisa)) {
   </table>
 </body>
 </html>
-<?
+<?php
 if (isset($alterar)) {
-	
+
   if ($oDaoAluno->erro_status == "0") {
-  	
+
     $oDaoAluno->erro(true,false);
     $db_botao = true;
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    
+
     if ($oDaoAluno->erro_campo != "") {
-    	
+
       echo "<script> document.form1.".$oDaoAluno->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$oDaoAluno->erro_campo.".focus();</script>";
-      
+
     }
-    
+
   } else {
-  	
+
     $oDaoAluno->erro(true,false);
     db_redireciona("edu1_aluno002.php?chavepesquisa=$chavepesquisa");
   }
@@ -176,6 +239,20 @@ if (isset($alterar)) {
 if (isset($excluirfoto)) {
   db_redireciona("edu1_aluno002.php?chavepesquisa=$chavepesquisa");
 }
+
+if ( isset( $excluircpf ) ) {
+  $sqlAlunoCpf   = "UPDATE escola.aluno set ed47_i_cpf_estorage = null ";
+  $sqlAlunoCpf  .= "where ed47_i_codigo = $chavepesquisa";
+  $rs = pg_query($sqlAlunoCpf);
+  db_redireciona("edu1_aluno002.php?chavepesquisa=$chavepesquisa");
+}
+if ( isset( $excluircertidao ) ) {
+  $sqlAlunoCertidao   = "UPDATE escola.aluno set ed47_i_certidado_estorage = null ";
+  $sqlAlunoCertidao  .= "where ed47_i_codigo = $chavepesquisa";
+  $rs = pg_query($sqlAlunoCertidao);
+  db_redireciona("edu1_aluno002.php?chavepesquisa=$chavepesquisa");
+}
+
 ?>
 <script>
 /**
@@ -189,7 +266,7 @@ function js_verificaOpcaoSelecionada() {
 
   var lDesabilitaCampos = false;
   var iNacionalidade    = <?=$ed47_i_nacion?>;
-  
+
   if ($('possuiDocumentacao').value != '0') {
     lDesabilitaCampos = true;
   }
@@ -197,7 +274,7 @@ function js_verificaOpcaoSelecionada() {
   setFormReadOnly($('frmDocumentacaoAluno'), lDesabilitaCampos);
 
   if (!lDesabilitaCampos) {
-    
+
     $('ed47_i_codigo').readOnly                     = true;
     $('ed47_i_codigo').style.backgroundColor        = '#DEB887';
     $('ed47_v_nome').readOnly                       = true;
@@ -216,35 +293,53 @@ function js_verificaOpcaoSelecionada() {
     $('ed47_d_dtemissao').style.backgroundColor     = '#E6E4F1';
     $('ed47_d_dtvencimento').style.backgroundColor  = '#E6E4F1';
     $('ed47_v_cpf').style.backgroundColor           = '#E6E4F1';
-    
+    $('ed47_cartaosus').style.backgroundColor           = '#E6E4F1';
+    $('ed47_rnm').readOnly                 = true;
+    $('ed47_rnm').style.backgroundColor           = '#DEB887';
+    $('ed47_visto').readOnly                 = true;
+    $('ed47_visto').style.backgroundColor           = '#DEB887';
     if (iNacionalidade != 3) {
-    
+
       $('ed47_c_passaporte').readOnly               = true;
       $('ed47_c_passaporte').style.backgroundColor  = '#DEB887';
     }
   }
-
+console.log(iNacionalidade);
   if (iNacionalidade == 3 && $('possuiDocumentacao').value == '0') {
 
 	  setFormReadOnly($('frmDocumentacaoAluno'), true);
-  	$('ed47_c_passaporte').readOnly               = false;
-    $('ed47_c_passaporte').style.backgroundColor  = '#E6E4F1';
+      $('ed47_c_passaporte').readOnly               = false;
+      $('ed47_c_passaporte').style.backgroundColor  = '#E6E4F1';
+
+      $('ed47_rnm').readOnly               = false;
+      $('ed47_rnm').style.backgroundColor  = '#E6E4F1';
+
+      $('ed47_visto').readOnly               = false;
+      $('ed47_visto').style.backgroundColor  = '#E6E4F1';
+
+      $('ed47_v_cpf').readOnly               = false;
+      $('ed47_v_cpf').style.backgroundColor  = '#E6E4F1';
+
+      $('ed47_cartaosus').readOnly               = false;
+      $('ed47_cartaosus').style.backgroundColor  = '#E6E4F1';
   }
-  
+    if (iNacionalidade == 3 && $('possuiDocumentacao').value == '0') {
+
+    }
   $('alterar').disabled                 = false;
   $('ed47_t_obs').style.backgroundColor = "#E6E4F1";
   $('ed47_t_obs').readOnly              = false;
-  
+
   $('ed47_v_contato').style.backgroundColor = "#E6E4F1";
   $('ed47_v_contato').readOnly              = false;
-  
+
 }
 
 $('possuiDocumentacao').observe("change", function() {
 
   js_salvaSituacao();
   js_verificaOpcaoSelecionada();
-  
+
 });
 
 /**
@@ -269,7 +364,8 @@ function js_verificaSituacaoDocumentacao() {
 
 function js_retornoVerificaSituacaoDocumentacao(oResponse) {
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
+
 
   if (oRetorno.iStatus == 1) {
 
@@ -313,7 +409,7 @@ function js_salvaSituacao() {
 
 function js_retornoSalvaSituacao(oResponse) {
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.iStatus != 1) {
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -374,7 +374,6 @@ class cl_baseatoserie {
      $sql .= "      inner join serie  on  serie.ed11_i_codigo = baseatoserie.ed279_i_serie";
      $sql .= "      inner join atolegal  on  atolegal.ed05_i_codigo = baseato.ed278_i_atolegal";
      $sql .= "      inner join escolabase  on  escolabase.ed77_i_codigo = baseato.ed278_i_escolabase";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = serie.ed11_i_codcenso";
      $sql .= "      inner join ensino  on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
      $sql2 = "";
      if($dbwhere==""){

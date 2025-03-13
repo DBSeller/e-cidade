@@ -1,7 +1,7 @@
 <?php
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -32,6 +32,8 @@ class AtributoValorReferenciaNumerico {
   protected $iValorAbsurdoInicio;
 
   protected $iValorAbsurdoFim;
+
+  protected $sCalculavel;//MARCO adicionado 12-02-2015
 
   /**
    * Número de casas decimais para apresentação dos valores de referência e resultado.
@@ -84,6 +86,7 @@ class AtributoValorReferenciaNumerico {
 
         $oDadosReferencia = db_utils::fieldsMemory($rsReferencia, 0);
         $this->setCodigo($iCodigo);
+        $this->setCalculavel($oDadosReferencia->la30_c_calculavel);//MARCO adicionado 12-02-2015
         $this->setValorAbsurdoMaximo($oDadosReferencia->la30_f_absurdomax);
         $this->setValorAbsurdoMinimo($oDadosReferencia->la30_f_absurdomin);
         $this->setValorMinimo($oDadosReferencia->la30_f_normalmin);
@@ -110,6 +113,22 @@ class AtributoValorReferenciaNumerico {
     }
   }
 
+  //MARCO adicionado 12-02-2015
+	/**
+   * @param mixed $iValorAbsurdoFim
+   */
+  public function setCalculavel($sCalculavel) {
+    $this->sCalculavel = $sCalculavel;
+  }
+
+  /**
+   * @return mixed
+   */
+  public function getCalculavel() {
+    return $this->sCalculavel;
+  }
+  //END MARCO
+
   /**
    * @param mixed $iValorAbsurdoFim
    */
@@ -121,7 +140,7 @@ class AtributoValorReferenciaNumerico {
    * @return mixed
    */
   public function getValorAbsurdoMaximo() {
-    return $this->iValorAbsurdoFim;
+    return str_replace(',', '.', $this->iValorAbsurdoFim);
   }
 
   /**
@@ -135,7 +154,7 @@ class AtributoValorReferenciaNumerico {
    * @return mixed
    */
   public function getValorAbsurdoMinimo() {
-    return $this->iValorAbsurdoInicio;
+    return str_replace(',', '.', $this->iValorAbsurdoInicio);
   }
 
   /**
@@ -149,7 +168,7 @@ class AtributoValorReferenciaNumerico {
    * @return mixed
    */
   public function getValorMaximo() {
-    return $this->iValorFim;
+    return str_replace(',', '.', $this->iValorFim);
   }
 
   /**
@@ -163,7 +182,7 @@ class AtributoValorReferenciaNumerico {
    * @return mixed
    */
   public function getValorMinimo() {
-    return $this->iValorInicio;
+    return str_replace(',', '.', $this->iValorInicio);
   }
 
   /**
@@ -209,6 +228,13 @@ class AtributoValorReferenciaNumerico {
    */
   public function getSexos() {
     return $this->aSexos;
+  }
+
+  /**
+   * @return array
+   */
+  public function limpaSexos() {
+    $this->aSexos = array();
   }
 
   /**
@@ -269,6 +295,7 @@ class AtributoValorReferenciaNumerico {
      $this->removerDadosAuxiliares();
     }
 
+    $oDaoReferenciaNumerica->la30_c_calculavel = $this->getCalculavel();
     $oDaoReferenciaNumerica->la30_f_normalmin  = $this->getValorMinimo();
     $oDaoReferenciaNumerica->la30_f_normalmax  = $this->getValorMaximo();
     $oDaoReferenciaNumerica->la30_f_absurdomin = $this->getValorAbsurdoMinimo();
@@ -291,8 +318,10 @@ class AtributoValorReferenciaNumerico {
     }
 
     if ($oDaoReferenciaNumerica->erro_status == 0) {
-      throw new BusinessException("Erro ao salvar dados da Referencia numerica");
+      throw new BusinessException("Erro ao salvar dados da Referencia numerica: " . $oDaoReferenciaNumerica->erro_sql);
     }
+
+    $oDaoTipoRefenciaSexo->excluir(null, 'la60_tiporeferencialnumerico =' . $this->iCodigo);
 
     foreach ($this->aSexos as $sSexo) {
 
@@ -318,14 +347,17 @@ class AtributoValorReferenciaNumerico {
       throw new BusinessException("Erro ao salvar dados da idade  da Referência numerica");
     }
 
-    if ($this->getTipoCalculo() > 0) {
+    if ($this->getTipoCalculo() > 0) {//MARCO ALTERADO $this->getTipoCalculo() == 0
 
-      $oDaoReferenciaCalculo->la61_atributobase = $this->getAtributoBase()->getCodigo();
+      if ( $this->getTipoCalculo() == 2 && $this->getAtributoBase()->getCodigo() != null ) {
+        $oDaoReferenciaCalculo->la61_atributobase = $this->getAtributoBase()->getCodigo();
+      }
+
       $oDaoReferenciaCalculo->la61_tipocalculo  = $this->getTipoCalculo();
       $oDaoReferenciaCalculo->la61_tiporeferencialnumerico = $this->iCodigo;
       $oDaoReferenciaCalculo->incluir(null);
       if ($oDaoReferenciaCalculo->erro_status == 0) {
-        throw new BusinessException("Erro ao salvar dados de calculo da Referência numerica");
+        throw new BusinessException("Erro ao salvar dados de calculo da Referência numerica: " . $oDaoReferenciaCalculo->erro_sql);
       }
     }
   }

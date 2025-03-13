@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-//require("libs/db_conecta.php");
-require("libs/db_conn.php");
-include("classes/db_eduinfotable_classe.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+//require(modification("libs/db_conecta.php"));
+require(modification("libs/db_conn.php"));
+include(modification("classes/db_eduinfotable_classe.php"));
 
 
 //temporário
@@ -48,7 +48,7 @@ $erro = false;
 for ( $x=0; $x<$cleduinfotable->numrows; $x++ ){
      db_fieldsmemory( $result_table, $x );
      $sql = "select * from pg_class where relname = '".$e200_c_tabela."' ";
-     $result = pg_query( $sql );
+     $result = db_query( $sql );
      if( pg_numrows( $result ) == 0 ){
           echo "\nTabela não encontrada em 'pg_class' [$e200_c_tabela]\n";
           $erro = true;
@@ -66,7 +66,7 @@ if( $erro == false ){
           //seleciona tabela e colunas
           fputs( $fd, "\nTABELA|$e200_c_tabela" );
           $sql = "select * from $e200_c_tabela";
-          $result = pg_query( $sql );
+          $result = db_query( $sql );
           
           //pega colunas
           fputs( $fd, "\nCOLUNAS|" );

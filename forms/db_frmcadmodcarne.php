@@ -109,7 +109,7 @@ db_select('k47_tipoconvenio',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadmodcarne','func_cadmodcarne.php?funcao_js=parent.js_preenchepesquisa|k47_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadmodcarne','func_cadmodcarne.php?funcao_js=parent.js_preenchepesquisa|k47_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadmodcarne.hide();

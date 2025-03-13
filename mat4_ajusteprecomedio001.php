@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 ?>
 <html>
@@ -210,7 +210,7 @@ function js_ajustaPrecoMedio() {
 function js_retornoAjustaPrecoMedio(oAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.status == 1) {
       
@@ -250,7 +250,7 @@ function js_getPrecoMedioAtual(iCodMaterial) {
 
 function js_retornoPrecoAtual(oAjax) {
     
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.status == 1) {
       
@@ -265,11 +265,11 @@ function js_retornoPrecoAtual(oAjax) {
 function js_pesquisaMaterial(mostra){
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_material','func_matmater.php?funcao_js=parent.js_mostraMaterial1|m60_codmater|m60_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_material','func_matmater.php?funcao_js=parent.js_mostraMaterial1|m60_codmater|m60_descr','Pesquisa',true);
   } else {
   
      if(document.form1.m60_codmater.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_material','func_matmater.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostraMaterial','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_material','func_matmater.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostraMaterial','Pesquisa',false);
      }else{
        document.form1.m60_codmater.value = ''; 
      }

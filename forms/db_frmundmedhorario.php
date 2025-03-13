@@ -24,7 +24,7 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-<?
+
 //MODULO: saude
 $clundmedhorario->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -69,10 +69,10 @@ function js_undmedicos(){
 }
 function js_pesquisasd30_i_diasemana(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_diasemana','func_diasemana.php?funcao_js=parent.js_mostradiasemana1|ed32_i_codigo|ed32_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_diasemana','func_diasemana.php?funcao_js=parent.js_mostradiasemana1|ed32_i_codigo|ed32_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.sd30_i_diasemana.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_diasemana','func_diasemana.php?pesquisa_chave='+document.form1.sd30_i_diasemana.value+'&funcao_js=parent.js_mostradiasemana','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_diasemana','func_diasemana.php?pesquisa_chave='+document.form1.sd30_i_diasemana.value+'&funcao_js=parent.js_mostradiasemana','Pesquisa',false);
      }else{
        document.form1.ed32_i_codigo.value = ''; 
      }
@@ -160,7 +160,7 @@ function js_mostramedicos1(chave1,chave2){
   db_iframe_medicos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_undmedhorario','func_undmedhorario.php?funcao_js=parent.js_preenchepesquisa|sd30_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_undmedhorario','func_undmedhorario.php?funcao_js=parent.js_preenchepesquisa|sd30_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_undmedhorario.hide();

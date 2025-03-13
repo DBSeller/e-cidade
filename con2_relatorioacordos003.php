@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("ac16_sequencial");
@@ -360,7 +360,7 @@ function js_pesquisaac50_descricao(mostra) {
 
 	  if (mostra == true) {
 
-	    js_OpenJanelaIframe('top.corpo.iframe_acordo',
+	    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
 	                        'db_iframe_acordocategoria',
 	                        'func_acordocategoria.php?funcao_js=parent.js_mostraacordocategoria1|'+
 	                        'ac50_sequencial|ac50_descricao',
@@ -371,7 +371,7 @@ function js_pesquisaac50_descricao(mostra) {
 
 	    if ($('ac50_sequencial').value != '') {
 
-	      js_OpenJanelaIframe('top.corpo.iframe_acordo',
+	      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
 	                          'db_iframe_acordocategoria',
 	                          'func_acordocategoria.php?pesquisa_chave='+$F('ac50_sequencial')+
 	                          '&funcao_js=parent.js_mostraacordocategoria',
@@ -426,7 +426,7 @@ function js_pesquisaAcordoComissao(mostra) {
 
   if (mostra == true) {
   
-    js_OpenJanelaIframe('top.corpo.iframe_acordo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo', 
                         'db_iframe_comissao', 
                         'func_acordocomissao.php?funcao_js=parent.js_mostracomissao1|'+
                         'ac08_sequencial|ac08_descricao',
@@ -437,7 +437,7 @@ function js_pesquisaAcordoComissao(mostra) {
   
     if ($('ac08_sequencial').value != '') { 
     
-      js_OpenJanelaIframe('top.corpo.iframe_acordo',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                           'db_iframe_comissao',
                           'func_acordocomissao.php?pesquisa_chave='+$F('ac08_sequencial')+
                           '&funcao_js=parent.js_mostracomissao',

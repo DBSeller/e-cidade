@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_liborcamento.php");
-include("classes/db_matordemitement_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_matordemitement_classe.php"));
 
 $clmatordemitement = new cl_matordemitement;
 
@@ -59,12 +59,12 @@ if ($clmatordemitement->erro_status==0){
   db_msgbox("Erro ao lançar itens!!");
   db_msgbox($erro);
 }else{
-  echo "<script>parent.itens.document.form1.submit();</script>";
+  echo "<script>parent.document.form1.submit();</script>";
 }
 }else if (isset($excluir)&&$excluir!=""){
   if (isset($atualizaquant)&&$atualizaquant!=""){
       $sql="delete from matordemitement";
-      $result_deleta=pg_exec($sql);
+      $result_deleta=db_query($sql);
   }else{
     db_inicio_transacao();
     $sqlerro=false;
@@ -78,7 +78,7 @@ if ($clmatordemitement->erro_status==0){
       db_msgbox("Erro ao excluir itens!!");
       db_msgbox($erro);
     }else{
-       echo "<script>parent.itens.document.form1.submit();</script>";
+       echo "<script>parent.document.form1.submit();</script>";
     }
   }
 }

@@ -68,7 +68,7 @@ db_textarea('pc59_obs',5,40,$Ipc59_obs,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pccertif','func_pccertif.php?funcao_js=parent.js_preenchepesquisa|pc59_certif','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pccertif','func_pccertif.php?funcao_js=parent.js_preenchepesquisa|pc59_certif','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_pccertif.hide();

@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *  E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("dbforms/db_classesgenericas.php");
+
 $gform = new cl_formulario_rel_pes;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -39,41 +41,21 @@ $clrotulo->label('DBtxt27');
 $clrotulo->label('DBtxt28');
 $clrotulo->label('r44_selec');
 $clrotulo->label('r44_descr');
-db_postmemory($HTTP_POST_VARS);
+
+db_postmemory($_POST);
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/classes/DBViewFormularioFolha/CompetenciaFolha.js"></script>
-
-
-<script>
-
-function js_emite(){
-
-  jan = window.open('pes2_pensalim002.php?selecao=' + $F('r44_selec')  +
-                                          '&ordem=' + $F('ordem')      +
-                                           '&func=' + $F('func')       +
-                                     '&tipoquebra=' + $F('tipoquebra') +
-                                           '&tipo=' + $F('tipo')       +
-                                            '&ano=' + $F('ano')   +
-                                            '&mes=' + $F('mes') ,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-  jan.moveTo(0,0);
-}
-</script>  
-<link href="estilos.css" rel="stylesheet" type="text/css">
+  <title>DBSeller Informática Ltda - Página Inicial</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Expires" content="0">
+  <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-  <form name="form1" method="post" action="" class="container">
+  <form action="" name="form1" method="post" class="container">
     <fieldset>
       <legend>Pensão Alimentícia</legend>
-      <table align="center" class="form-container">
-
+      <table align="center" class="form-container"> 
         <tr>
           <td>
             <label>Competência: </label>
@@ -82,115 +64,198 @@ function js_emite(){
         </tr>
         <tr>
           <td>
-            <?php db_ancora('Seleção: ','js_pesquisaSelecao(true)', 1)?>
+            <?php db_ancora('Seleção: ','js_pesquisaSelecao(true)', 1); ?>
           </td>
           <td>
-            <?php
-              db_input('r44_selec', 10, $Ir44_selec, true, 'text', 1," onchange='js_pesquisaSelecao(false)' class='field-size2' ");
-              db_input('r44_descr', 40, $Ir44_descr, true, 'text', 3,"class='field-size7'");
-            ?>
+            <?php db_input('r44_selec', 10, $Ir44_selec, true, 'text', 1, 'onchange="js_pesquisaSelecao(false)" class="field-size2"'); ?>
+            <?php db_input('r44_descr', 40, $Ir44_descr, true, 'text', 3, 'class="field-size7"'); ?>
           </td>
         </tr>
+        <tr>
+          <td title="Tipo">
+            <label>Tipo de Folha: </label>
+          </td>
+          <td align="left">
+            <?php
+              $aTipoFolha = array(
+                's' => 'Salário',
+                'c' => 'Complementar',
+                '3' => '13o. Salário',
+                'r' => 'Rescisão'
+              );
 
-        <tr>
-          <td title="Tipo" ><label>Tipo de Folha: </label></td>
-          <td align="left">
-            <?php
-              $v = array("s"=>"Salário", "c"=>"Complementar", "3"=>"13o. Salário","r"=>"Rescisão");
-              db_select('tipo',$v,true,4,"");
+              if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+                $aTipoFolha['u'] = 'Suplementar';
+              }
+
+              db_select('tipo', $aTipoFolha, true, 4, '');
             ?>
           </td>
         </tr>
         <tr>
-          <td><label>Imprime Funcionário: </label></td>
+          <td>
+            <label>Imprime Funcionário: </label>
+          </td>
           <td align="left">
             <?php
-            $aImprimeFuncionarios = array("n"=>"Não", "s"=>"Sim");
-            db_select('func', $aImprimeFuncionarios, true, 4, "");
+            $aImprimeFuncionarios = array(
+              'n' => 'Não',
+              's' => 'Sim'
+            );
+
+            db_select('func', $aImprimeFuncionarios, true, 4, '');
             ?>
           </td>
         </tr>
         <tr id="tr_tipoQuebra">
-          <td title="Tipo de Quebra" ><label>Tipo de Quebra: </label>
+          <td title="Tipo de Quebra">
+            <label>Tipo de Quebra:</label>
           </td>
           <td align="left">
             <?php
-              $aTipoQuebra = array("b"=>"Banco", "a"=>"Agência");
-              db_select('tipoquebra', $aTipoQuebra, true, 4, "");
+              $aTipoQuebra = array(
+                'b' => 'Banco',
+                'a' => 'Agência'
+              );
+
+              db_select('tipoquebra', $aTipoQuebra, true, 4, '');
             ?>
           </td>
         </tr>
-        <tr id = "tr_ordem">
-          <td title="Ordem" ><label>Ordem: </label></td>
+        <tr id="tr_ordem">
+          <td title="Ordem">
+            <label>Ordem: </label>
+          </td>
           <td align="left">
             <?php
-            $aOrdem = array("a"=>"Alfabética", "n"=>"Numérica");
-            db_select('ordem', $aOrdem, true, 4, "");
+            $aOrdem = array(
+              'a' => 'Alfabética',
+              'n' => 'Numérica'
+            );
+
+            db_select('ordem', $aOrdem, true, 4, '');
             ?>
           </td>
         </tr>
+        <tr>
+          <td title="Observação" >
+            Mostrar Observações :
+          </td>
+          <td>
+            <?php
+              
+              $xv = array("f" => "NÃO",
+                          "t" => "SIM");
+              db_select('mostraobservacao', $xv, true, 4, "");
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div id="ctnBancos" style="width:100%">
+          </td>
+        <tr>
       </table>
     </fieldset>
-    <table width="530">
-      <tr>
-          <td colspan="2" align = "center"> 
-            <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >
-          </td>
-        </tr>
-    </table>
+    <input type="button" name="emite2" value="Processar" id="emite2" onclick="js_emite()">
   </form>
-<?
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
+  <?php db_menu(); ?>
 </body>
 </html>
+<script src="scripts/prototype.js"></script>
+<script src="scripts/scripts.js"></script>
+<script src="scripts/strings.js"></script>
+<script src="scripts/classes/DBViewFormularioFolha/CompetenciaFolha.js"></script>
+<script src="scripts/widgets/DBLancador.widget.js"></script>
+<script src="scripts/widgets/DBToogle.widget.js"></script>
 <script>
 
-(function(){
+(function() {
 
   $('tr_ordem').style.display = 'none';
 
   var oCompetencia = new DBViewFormularioFolha.CompetenciaFolha(true);
-      oCompetencia.renderizaFormulario($('competencia'));
+  oCompetencia.renderizaFormulario($('competencia'));
 
-  $('func').observe('change', function(){
-    
+  $('func').observe('change', function() {
+
     if ($(this).value == 's') {
-      
+
       $('tr_tipoQuebra').style.display = 'none';
-      $('tr_ordem').style.display      = '';
+      $('tr_ordem').style.display = '';
     } else {
-      
+
       $('tr_tipoQuebra').style.display = '';
-      $('tr_ordem').style.display      = 'none';
-      $('ordem').value                = 'a';
+      $('tr_ordem').style.display = 'none';
+      $('ordem').value = 'a';
     }
   })
 })();
 
-function js_pesquisaSelecao(lMostra){
+var oLancador = new DBLancador('oLancador');
+oLancador.setNomeInstancia('oLancador');
+oLancador.setLabelAncora('Banco: ');
+oLancador.setLabelValidacao('Banco');
+oLancador.setParametrosPesquisa('func_db_bancos.php', ['db90_codban', 'db90_descr']);
+oLancador.setGridHeight(100);
+oLancador.setTextoFieldset("Seleção de bancos para emissão");
+oLancador.show($('ctnBancos'));
 
-  var sUrl = 'func_selecao.php?funcao_js=parent.js_mostraSelecao|r44_selec|r44_descr';
+var oToogleBancos = new DBToogle('flsdoLancador', false);
 
-  if (!lMostra) {
-    sUrl = 'func_selecao.php?pesquisa_chave=' + $F('r44_selec') + '&funcao_js=parent.js_mmostraSelecaoDescricao';  
-  }
+function js_emite() {
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_selecao', sUrl, 'Pesquisa de Seleção', lMostra);
+  var aBancos = oLancador.getRegistros(false);
+  var separador = "";
+  var bancos = "";
+  aBancos.each(
+    function (oRegistro) {
+      bancos += separador+""+oRegistro.sCodigo;
+      separador = ",";
+    }
+  );
+  
+  var aParams = [
+    'selecao='          + $F('r44_selec'),
+    'ordem='            + $F('ordem'),
+    'func='             + $F('func'),
+    'tipoquebra='       + $F('tipoquebra'),
+    'tipo='             + $F('tipo'),
+    'ano='              + $F('ano'),
+    'mes='              + $F('mes'),
+    'mostraobservacao=' + $F('mostraobservacao'),
+    'bancos='           + bancos
+  ];
+
+  var jan = window.open(
+    'pes2_pensalim002.php?' + aParams.join('&'),
+    '',
+    'width=' + (screen.availWidth - 5) + ',height=' + (screen.availHeight - 40) + ',scrollbars=1,location=0'
+  );
+  
+  jan.moveTo(0, 0);
 }
 
-function js_mostraSelecao(sSelecao, sDescricao){
+function js_pesquisaSelecao(lMostra) {
+
+  var sUrl = 'func_selecao.php?funcao_js=parent.js_mostraSelecao|r44_selec|r44_descr';
+  if (!lMostra) {
+    sUrl = 'func_selecao.php?pesquisa_chave=' + $F('r44_selec') + '&funcao_js=parent.js_mmostraSelecaoDescricao';
+  }
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_selecao', sUrl, 'Pesquisa de Seleção', lMostra);
+}
+
+function js_mostraSelecao(sSelecao, sDescricao) {
 
   $('r44_selec').value = sSelecao;
   $('r44_descr').value = sDescricao;
   db_iframe_selecao.hide();
 }
 
-function js_mmostraSelecaoDescricao(sDescricao, lErro){
+function js_mmostraSelecaoDescricao(sDescricao, lErro) {
 
-  $('r44_descr').value = sDescricao; 
-
-  if (lErro){
+  $('r44_descr').value = sDescricao;
+  if (lErro) {
     $('r44_selec').value = '';
   }
 }

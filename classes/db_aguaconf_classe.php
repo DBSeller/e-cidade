@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -52,6 +52,8 @@ class cl_aguaconf {
    var $x18_consumoesgoto = 0; 
    var $x18_consumoagua = 0; 
    var $x18_cartipoimovei = 0; 
+   var $x18_receitadebitorecalculo = 0; 
+   var $x18_receitacreditorecalculo = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  x18_anousu = int4 = Exercício 
@@ -64,6 +66,8 @@ class cl_aguaconf {
                  x18_consumoesgoto = int4 = Tipo Consumo Esgoto 
                  x18_consumoagua = int4 = Tipo Consumo Água 
                  x18_cartipoimovei = int4 = Característica Tipo Imóvel 
+                 x18_receitadebitorecalculo = int4 = Receita Débito Recalculo 
+                 x18_receitacreditorecalculo = int4 = Receita Crédito Recalculo 
                  ";
    //funcao construtor da classe 
    function cl_aguaconf() { 
@@ -93,14 +97,16 @@ class cl_aguaconf {
        $this->x18_consumoesgoto = ($this->x18_consumoesgoto == ""?@$GLOBALS["HTTP_POST_VARS"]["x18_consumoesgoto"]:$this->x18_consumoesgoto);
        $this->x18_consumoagua = ($this->x18_consumoagua == ""?@$GLOBALS["HTTP_POST_VARS"]["x18_consumoagua"]:$this->x18_consumoagua);
        $this->x18_cartipoimovei = ($this->x18_cartipoimovei == ""?@$GLOBALS["HTTP_POST_VARS"]["x18_cartipoimovei"]:$this->x18_cartipoimovei);
+       $this->x18_receitadebitorecalculo = ($this->x18_receitadebitorecalculo == ""?@$GLOBALS["HTTP_POST_VARS"]["x18_receitadebitorecalculo"]:$this->x18_receitadebitorecalculo);
+       $this->x18_receitacreditorecalculo = ($this->x18_receitacreditorecalculo == ""?@$GLOBALS["HTTP_POST_VARS"]["x18_receitacreditorecalculo"]:$this->x18_receitacreditorecalculo);
      }else{
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir (){ 
       $this->atualizacampos();
      if($this->x18_anousu == null ){ 
-       $this->erro_sql = " Campo Exercício nao Informado.";
+       $this->erro_sql = " Campo Exercício não informado.";
        $this->erro_campo = "x18_anousu";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -109,7 +115,7 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_carsemesgoto == null ){ 
-       $this->erro_sql = " Campo Característica Sem Esgoto nao Informado.";
+       $this->erro_sql = " Campo Característica Sem Esgoto não informado.";
        $this->erro_campo = "x18_carsemesgoto";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -118,7 +124,7 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_carsemagua == null ){ 
-       $this->erro_sql = " Campo Característica Sem Água nao Informado.";
+       $this->erro_sql = " Campo Característica Sem Água não informado.";
        $this->erro_campo = "x18_carsemagua";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -127,7 +133,7 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_arretipo == null ){ 
-       $this->erro_sql = " Campo Tipo de Débito nao Informado.";
+       $this->erro_sql = " Campo Tipo de Débito não informado.";
        $this->erro_campo = "x18_arretipo";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -136,7 +142,7 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_caresgoto == null ){ 
-       $this->erro_sql = " Campo Característica Esgoto nao Informado.";
+       $this->erro_sql = " Campo Característica Esgoto não informado.";
        $this->erro_campo = "x18_caresgoto";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -145,7 +151,7 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_caragua == null ){ 
-       $this->erro_sql = " Campo Característica Água nao Informado.";
+       $this->erro_sql = " Campo Característica Água não informado.";
        $this->erro_campo = "x18_caragua";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -154,7 +160,7 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_consumoexcesso == null ){ 
-       $this->erro_sql = " Campo Tipo Consumo Excesso nao Informado.";
+       $this->erro_sql = " Campo Tipo Consumo Excesso não informado.";
        $this->erro_campo = "x18_consumoexcesso";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -163,7 +169,7 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_consumoesgoto == null ){ 
-       $this->erro_sql = " Campo Tipo Consumo Esgoto nao Informado.";
+       $this->erro_sql = " Campo Tipo Consumo Esgoto não informado.";
        $this->erro_campo = "x18_consumoesgoto";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -172,7 +178,7 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_consumoagua == null ){ 
-       $this->erro_sql = " Campo Tipo Consumo Água nao Informado.";
+       $this->erro_sql = " Campo Tipo Consumo Água não informado.";
        $this->erro_campo = "x18_consumoagua";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -181,13 +187,19 @@ class cl_aguaconf {
        return false;
      }
      if($this->x18_cartipoimovei == null ){ 
-       $this->erro_sql = " Campo Característica Tipo Imóvel nao Informado.";
+       $this->erro_sql = " Campo Característica Tipo Imóvel não informado.";
        $this->erro_campo = "x18_cartipoimovei";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
+     }
+     if($this->x18_receitadebitorecalculo == null ){ 
+       $this->x18_receitadebitorecalculo = "null";
+     }
+     if($this->x18_receitacreditorecalculo == null ){ 
+       $this->x18_receitacreditorecalculo = "null";
      }
      $sql = "insert into aguaconf(
                                        x18_anousu 
@@ -200,6 +212,8 @@ class cl_aguaconf {
                                       ,x18_consumoesgoto 
                                       ,x18_consumoagua 
                                       ,x18_cartipoimovei 
+                                      ,x18_receitadebitorecalculo 
+                                      ,x18_receitacreditorecalculo 
                        )
                 values (
                                 $this->x18_anousu 
@@ -212,17 +226,19 @@ class cl_aguaconf {
                                ,$this->x18_consumoesgoto 
                                ,$this->x18_consumoagua 
                                ,$this->x18_cartipoimovei 
+                               ,$this->x18_receitadebitorecalculo 
+                               ,$this->x18_receitacreditorecalculo 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Parametros () nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Parametros () não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Parametros já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Parametros () nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Parametros () não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -231,15 +247,20 @@ class cl_aguaconf {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+     }
      return true;
    } 
    // funcao para alteracao
-   function alterar ( $oid=null ) { 
+   public function alterar ( $oid=null ) { 
       $this->atualizacampos();
      $sql = " update aguaconf set ";
      $virgula = "";
@@ -247,7 +268,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_anousu = $this->x18_anousu ";
        $virgula = ",";
        if(trim($this->x18_anousu) == null ){ 
-         $this->erro_sql = " Campo Exercício nao Informado.";
+         $this->erro_sql = " Campo Exercício não informado.";
          $this->erro_campo = "x18_anousu";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -260,7 +281,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_carsemesgoto = $this->x18_carsemesgoto ";
        $virgula = ",";
        if(trim($this->x18_carsemesgoto) == null ){ 
-         $this->erro_sql = " Campo Característica Sem Esgoto nao Informado.";
+         $this->erro_sql = " Campo Característica Sem Esgoto não informado.";
          $this->erro_campo = "x18_carsemesgoto";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -273,7 +294,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_carsemagua = $this->x18_carsemagua ";
        $virgula = ",";
        if(trim($this->x18_carsemagua) == null ){ 
-         $this->erro_sql = " Campo Característica Sem Água nao Informado.";
+         $this->erro_sql = " Campo Característica Sem Água não informado.";
          $this->erro_campo = "x18_carsemagua";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -286,7 +307,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_arretipo = $this->x18_arretipo ";
        $virgula = ",";
        if(trim($this->x18_arretipo) == null ){ 
-         $this->erro_sql = " Campo Tipo de Débito nao Informado.";
+         $this->erro_sql = " Campo Tipo de Débito não informado.";
          $this->erro_campo = "x18_arretipo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -299,7 +320,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_caresgoto = $this->x18_caresgoto ";
        $virgula = ",";
        if(trim($this->x18_caresgoto) == null ){ 
-         $this->erro_sql = " Campo Característica Esgoto nao Informado.";
+         $this->erro_sql = " Campo Característica Esgoto não informado.";
          $this->erro_campo = "x18_caresgoto";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -312,7 +333,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_caragua = $this->x18_caragua ";
        $virgula = ",";
        if(trim($this->x18_caragua) == null ){ 
-         $this->erro_sql = " Campo Característica Água nao Informado.";
+         $this->erro_sql = " Campo Característica Água não informado.";
          $this->erro_campo = "x18_caragua";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -325,7 +346,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_consumoexcesso = $this->x18_consumoexcesso ";
        $virgula = ",";
        if(trim($this->x18_consumoexcesso) == null ){ 
-         $this->erro_sql = " Campo Tipo Consumo Excesso nao Informado.";
+         $this->erro_sql = " Campo Tipo Consumo Excesso não informado.";
          $this->erro_campo = "x18_consumoexcesso";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -338,7 +359,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_consumoesgoto = $this->x18_consumoesgoto ";
        $virgula = ",";
        if(trim($this->x18_consumoesgoto) == null ){ 
-         $this->erro_sql = " Campo Tipo Consumo Esgoto nao Informado.";
+         $this->erro_sql = " Campo Tipo Consumo Esgoto não informado.";
          $this->erro_campo = "x18_consumoesgoto";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -351,7 +372,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_consumoagua = $this->x18_consumoagua ";
        $virgula = ",";
        if(trim($this->x18_consumoagua) == null ){ 
-         $this->erro_sql = " Campo Tipo Consumo Água nao Informado.";
+         $this->erro_sql = " Campo Tipo Consumo Água não informado.";
          $this->erro_campo = "x18_consumoagua";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -364,7 +385,7 @@ class cl_aguaconf {
        $sql  .= $virgula." x18_cartipoimovei = $this->x18_cartipoimovei ";
        $virgula = ",";
        if(trim($this->x18_cartipoimovei) == null ){ 
-         $this->erro_sql = " Campo Característica Tipo Imóvel nao Informado.";
+         $this->erro_sql = " Campo Característica Tipo Imóvel não informado.";
          $this->erro_campo = "x18_cartipoimovei";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -373,28 +394,42 @@ class cl_aguaconf {
          return false;
        }
      }
+     if(trim($this->x18_receitadebitorecalculo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x18_receitadebitorecalculo"])){ 
+        if(trim($this->x18_receitadebitorecalculo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x18_receitadebitorecalculo"])){ 
+           $this->x18_receitadebitorecalculo = "0" ; 
+        } 
+       $sql  .= $virgula." x18_receitadebitorecalculo = $this->x18_receitadebitorecalculo ";
+       $virgula = ",";
+     }
+     if(trim($this->x18_receitacreditorecalculo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x18_receitacreditorecalculo"])){ 
+        if(trim($this->x18_receitacreditorecalculo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x18_receitacreditorecalculo"])){ 
+           $this->x18_receitacreditorecalculo = "0" ; 
+        } 
+       $sql  .= $virgula." x18_receitacreditorecalculo = $this->x18_receitacreditorecalculo ";
+       $virgula = ",";
+     }
      $sql .= " where ";
 $sql .= "oid = '$oid'";     $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Parametros nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Parametros não Alterado. Alteração Abortada.\\n";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Parametros nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Parametros não foi Alterado. Alteração Executada.\\n";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
@@ -404,36 +439,37 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      } 
    } 
    // funcao para exclusao 
-   function excluir ( $oid=null ,$dbwhere=null) { 
+   public function excluir ( $oid=null ,$dbwhere=null) { 
+
      $sql = " delete from aguaconf
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
+     if (empty($dbwhere)) {
        $sql2 = "oid = '$oid'";
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Parametros nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Parametros não Excluído. Exclusão Abortada.\\n";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Parametros nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Parametros não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
@@ -443,9 +479,9 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -454,8 +490,8 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:aguaconf";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -465,5 +501,40 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
       }
      return $result;
    }
+   // funcao do sql 
+   public function sql_query ($oid = null, $campos = "aguaconf.oid,*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from aguaconf ";
+     $sql2 = "";
+     if (empty($dbwhere)) {
+       if (!empty($oid)) {
+          $sql2 = " where aguaconf.oid = '$oid'";
+       }
+     } else if (!empty($dbwhere)) {
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
+     }
+     return $sql;
+  }
+   // funcao do sql 
+   public function sql_query_file ($oid = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from aguaconf ";
+     $sql2 = "";
+     if (empty($dbwhere)) {
+     } else if (!empty($dbwhere)) {
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
+     }
+     return $sql;
+  }
+
 }
-?>

@@ -1,18 +1,18 @@
   /**
-   * @fileoverview Esse arquivo Cria uma div semelhante a um Hint contendo textos etc;
-   * @author       Rafael Lopes rafael.lopes@dbseller.com.br
-   *               Rafael Nery  rafael.nery@dbseller.com.br
-   * @revision $Author: dbandre.mello $
-   * @version  $Revision: 1.13 $
+   * Esse arquivo Cria uma div semelhante a um Hint contendo textos etc;
    *
-   * Classe que disponibiliza uma div como um hint
-   * @param {STRING} sInstancia Nome da instancia do Objeto
+   * @constructor
+   * @author       Rafael Lopes <rafael.lopes@dbseller.com.br>
+   *               Rafael Nery  <rafael.nery@dbseller.com.br>
+   * @version  $Revision: 1.17 $
+   * @revision $Author: dbrenan.silva $
+   *
+   * @param {String} sInstancia Nome da instancia do Objeto
    */
-
-
   DBHint = function(sInstancia) {
 
       var lUseMouse      = false;
+      var zIndexHint     = null;
       var me             = this;
       var sNameInstance  = sInstancia;
       var sTexto         = "";
@@ -38,7 +38,7 @@
        * Elementos do componente
        */
       var oDivContainer                       = document.createElement("DIV");
-      var oDivInterna                         = document.createElement("DIV");
+      this.oDivInterna                        = document.createElement("DIV");
       /**
        * Escreve as funções no elemento
        */
@@ -75,8 +75,8 @@
 
         sTexto = sText;
 
-        if ( typeof(oDivInterna) == "object" ) {
-          oDivInterna.innerHTML = sTexto;
+        if ( typeof(this.oDivInterna) == "object" ) {
+          this.oDivInterna.innerHTML = sTexto;
         }
       };
 
@@ -121,14 +121,14 @@
           oDivContainer.style.width           = iWidth + 'px';
         }
 
-        oDivInterna.id                      = sNameInstance+"divDBhintInterno";
-        oDivInterna.style.overflowX         = "hidden";
-        oDivInterna.style.overflowY         = "auto";
-        oDivInterna.style.padding           = iPadding + "px";
+        this.oDivInterna.id                      = sNameInstance+"divDBhintInterno";
+        this.oDivInterna.style.overflowX         = "hidden";
+        this.oDivInterna.style.overflowY         = "auto";
+        this.oDivInterna.style.padding           = iPadding + "px";
 
-        oDivInterna.innerHTML               = sTexto;
+        this.oDivInterna.innerHTML               = sTexto;
 
-        oDivContainer.appendChild(oDivInterna);
+        oDivContainer.appendChild(this.oDivInterna);
         document.body.appendChild(oDivContainer);
       };
 
@@ -146,6 +146,10 @@
         me.oDivContainer.style.display = '';
         me.oDivContainer.style.top     = me.getCoordinatesTop ( oCoordinates, oElemento ) + "px";
         me.oDivContainer.style.left    = me.getCoordinatesLeft( oCoordinates, oElemento ) + 'px';
+
+        if(zIndexHint != null) {
+          me.oDivContainer.style.zIndex  = zIndexHint;
+        }
       };
 
       /**
@@ -196,7 +200,9 @@
             break;
         }
         if (oScrollElement != null) {
-          iTop -= oScrollElement.scrollTop;
+
+          iTop  -= oScrollElement.scrollTop;
+
         }
         return iTop;
       }
@@ -224,6 +230,10 @@
           iLeft -= iWidth;
         }
 
+        if (oScrollElement != null) {
+          iLeft -= oScrollElement.scrollLeft;
+        }
+
         return iLeft;
       }
 
@@ -246,6 +256,9 @@
       this.setScrollElement = function(oElement) {
         oScrollElement = oElement;
       }
+      this.setZIndexHint = function(zIx) {
+        zIndexHint = zIx;
+      }
     };
 
 
@@ -258,23 +271,20 @@
 
   /**
    * Construtor automático do widget dos hints.
+   *
    * @param  Element oElemento Elemento do DOM que receberá o hint
    * @param  Object settings  objeto de configuração do hint
    *
    * @example
    *
-   *  *** O atributo [db-action="hint"] é opcional,
-   *  *** serve para montar automaticamente o hint no elemento via DBBootstrap
-   *  ***
-   *
+   *  <!-- O atributo [db-action="hint"] é opcional -->
+   *  <!-- serve para montar automaticamente o hint no elemento via DBBootstrap -->
    *  <input id="ID_DO_INPUT" db-action="hint" db-hint-text="TEXTO DO HINT" />
    *
    * @example
-   *
    *  DBHint.build($('ID_DO_INPUT'), {text: "TEXTO DO HINT"})
    *
    * @example
-   *
    *  DBHint.build($('ID_DO_INPUT')).setText("TEXTO DO HINT")
    *
    * @return DBHint retorna a instancia da classe DBHint

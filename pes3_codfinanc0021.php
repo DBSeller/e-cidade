@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhrubricas_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_rhrubricas_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 $clrhrubricas = new cl_rhrubricas;
@@ -168,7 +168,7 @@ function js_relatorio(){
 	
 	  if(!empty($rubric)) {
         ///////// VERIFICA SE A RUBRICA POSSUI SALÁRIO
- 	    $resultgerfsal = pg_exec("select * 
+ 	    $resultgerfsal = db_query("select * 
 	                              from gerfsal 
 		                          where     r14_rubric = '$rubric' 
                                         and r14_anousu = $ano 
@@ -180,7 +180,7 @@ function js_relatorio(){
           $temsalario = false;
 	    }
         ///////// VERIFICA SE A RUBRICA POSSUI FÉRIAS
- 	    $resultgerffer = pg_exec("select * 
+ 	    $resultgerffer = db_query("select * 
 	                              from gerffer 
 			                      where     r31_rubric = '$rubric' 
 			                            and r31_anousu = $ano 
@@ -192,7 +192,7 @@ function js_relatorio(){
           $temferias = false;
 	    }
         ///////// VERIFICA SE A RUBRICA POSSUI RESCISAO
- 	    $resultgerfres = pg_exec("select * 
+ 	    $resultgerfres = db_query("select * 
 	                              from gerfres 
                                   where     r20_rubric = '$rubric' 
 			                            and r20_anousu = $ano 
@@ -204,7 +204,7 @@ function js_relatorio(){
           $temrescisao = false;
 	    }
         ///////// VERIFICA SE A RUBRICA POSSUI ADIANTAMENTO	
- 	    $resultgerfadi = pg_exec("select * 
+ 	    $resultgerfadi = db_query("select * 
 	                              from gerfadi 
 			                      where     r22_rubric = '$rubric' 
 			                          and r22_anousu = $ano 
@@ -216,7 +216,7 @@ function js_relatorio(){
           $temadiantamento = false;
 	    }
         ///////// VERIFICA SE A RUBRICA POSSUI 13 SALÁRIO
- 	    $resultgerfs13 = pg_exec("select * 
+ 	    $resultgerfs13 = db_query("select * 
 	                              from gerfs13 
 			                      where     r35_rubric = '$rubric' 
 			                          and r35_anousu = $ano 
@@ -228,7 +228,7 @@ function js_relatorio(){
           $tem13salario = false;
 	    }
         ///////// VERIFICA SE A RUBRICA POSSUI complementar
- 	    $resultgerfcom = pg_exec("select * 
+ 	    $resultgerfcom = db_query("select * 
 	                              from gerfcom 
               		              where     r48_rubric = '$rubric' 
 			                            and r48_anousu = $ano 
@@ -240,7 +240,7 @@ function js_relatorio(){
           $temcomplementar = false;
 	    }
         ///////// VERIFICA SE A RUBRICA POSSUI ponto fixo
- 	    $resultgerffx = pg_exec("select * 
+ 	    $resultgerffx = db_query("select * 
 	                             from gerffx 
 			                     where     r53_rubric = '$rubric' 
 			                         and r53_anousu = $ano 

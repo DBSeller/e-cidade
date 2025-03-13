@@ -1,0 +1,17 @@
+<?xml version='1.0' ?>
+<processamento>
+    <versao>1.2</versao>    
+    <parametros>        
+        <parametro nome="cpf_cnpj" obrigatorio="true"  tipo="string"/>
+        <parametro nome="tipoOrigem" obrigatorio="true"  tipo="string"/>
+    </parametros>
+    <configuracoes>
+        <classe nome="\Ecidade\Tributario\Grm\WebService\Contribuinte" referencia="Contribuinte" parametros="" caminho="src/Tributario/Grm/WebService/Contribuinte.php" />
+        <exec>
+            <metodo referencia="Contribuinte" nome="setCpfCnpj" parametros="$cpf_cnpj" />
+            <metodo referencia="Contribuinte" nome="setTipoOrigem" parametros="$tipoOrigem" />
+            
+            <metodo referencia="Contribuinte" nome="getDadosContribuinte" parametros="" />
+        </exec>
+    </configuracoes>
+</processamento>

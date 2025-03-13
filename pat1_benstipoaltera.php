@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_bens_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_bens_classe.php"));
 $aux = new cl_arquivo_auxiliar;
 $clbens = new cl_bens;
 $clbens->rotulo->label();
@@ -63,8 +63,8 @@ function js_abre(){
     parent.document.formaba.bensimoveis.disabled=false;
     parent.document.formaba.bensmater.disabled=false;
     parent.document.formaba.bensbaix.disabled=false;
-    top.corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?global=true';
-    top.corpo.iframe_bensmater.location.href='pat1_bensmater001.php?global=true';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?global=true';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensmater.location.href='pat1_bensmater001.php?global=true';
     location.href="pat1_bens005.php?lista="+listagem+"&param="+param+"&ini="+ini+"&fim="+fim;;
   }else{
     alert("Informe corretamente o intervalo de código dos bens a ser alterados.");

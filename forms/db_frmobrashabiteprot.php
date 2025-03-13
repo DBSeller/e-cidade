@@ -73,10 +73,10 @@ db_input('p58_codproc',10,$Ip58_codproc,true,'text',3,'')
 <script>
 function js_pesquisaob19_codhab(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_obrashabite','func_obrashabite.php?funcao_js=parent.js_mostraobrashabite1|ob09_codhab|ob09_habite','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrashabite','func_obrashabite.php?funcao_js=parent.js_mostraobrashabite1|ob09_codhab|ob09_habite','Pesquisa',true);
   }else{
      if(document.form1.ob19_codhab.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_obrashabite','func_obrashabite.php?pesquisa_chave='+document.form1.ob19_codhab.value+'&funcao_js=parent.js_mostraobrashabite','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrashabite','func_obrashabite.php?pesquisa_chave='+document.form1.ob19_codhab.value+'&funcao_js=parent.js_mostraobrashabite','Pesquisa',false);
      }else{
        document.form1.ob09_habite.value = ''; 
      }
@@ -96,10 +96,10 @@ function js_mostraobrashabite1(chave1,chave2){
 }
 function js_pesquisaob19_codproc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
   }else{
      if(document.form1.ob19_codproc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.ob19_codproc.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.ob19_codproc.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
      }else{
        document.form1.p58_codproc.value = ''; 
      }
@@ -118,7 +118,7 @@ function js_mostraprotprocesso1(chave1,chave2){
   db_iframe_protprocesso.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_obrashabiteprot','func_obrashabiteprot.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrashabiteprot','func_obrashabiteprot.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_obrashabiteprot.hide();

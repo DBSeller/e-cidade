@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
-include("/tmp/par_cria_tabela.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("/tmp/par_cria_tabela.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(isset($sql)){
 $sql=base64_decode($sql);
@@ -79,7 +79,7 @@ td{
          $coluna.=$virgula.$colunas[$i];
          $virgula=",";
        } 
-       $result90= pg_query($sql);
+       $result90= db_query($sql);
        $numrows90= @pg_numrows($result90);  
          if($numrows90!=false && $numrows90>0){
             for($i=0; $i<$numrows90; $i++){

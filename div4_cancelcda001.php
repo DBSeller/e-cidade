@@ -1,48 +1,36 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'classes/db_certid_classe.php';
-require_once 'classes/db_certdiv_classe.php';
-require_once 'classes/db_certter_classe.php';
-require_once 'classes/db_arreforo_classe.php';
-require_once 'classes/db_arrecad_classe.php';
-require_once 'classes/db_inicialcert_classe.php';
-require_once 'classes/db_acertid_classe.php';
-require_once 'classes/db_acertdiv_classe.php';
-require_once 'classes/db_acertter_classe.php';
-require_once 'dbforms/db_funcoes.php';
-require_once 'dbforms/db_classesgenericas.php';
-require_once 'classes/db_listacda_classe.php';
-
-require_once 'classes/db_inicialnumpre_classe.php';
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_usuariosonline.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('dbforms/db_classesgenericas.php'));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -53,13 +41,12 @@ $clcertter          = new cl_certter;
 $clarrecad          = new cl_arrecad;
 $clarreforo         = new cl_arreforo;
 $clinicialcert      = new cl_inicialcert;
-$cllistacda         = new cl_listacda();
-
+$cllistacda         = new cl_listacda;
 $clinicialnumpre    = new cl_inicialnumpre;
-
 $clacertid          = new cl_acertid;
 $clacertdiv         = new cl_acertdiv;
 $clacertter         = new cl_acertter;
+$cl_desmembramentoinicialhistorico = new cl_desmembramentoinicialhistorico();
 $clrotulo           = new rotulocampo;
 $clrotulo->label("v13_certid");
 $clrotulo->label("v15_observacao");
@@ -67,7 +54,20 @@ $sqlerro  =false;
 $abil     =false;
 $erro_msg = '';
 
+if ( isset($processar) ) {
+
+  $oCertidao = new Certidao($v13_certid);
+
+  if ($oCertidao->isCobrancaExtrajudicial()) {
+
+    echo "<script>alert(\"Cancelamento Inválido! Certidão está em Cobrança Extrajudicial.\");</script>";
+    echo "<script>location.href='div4_cancelcda001.php'</script>";
+    exit;
+  }
+}
+
 if (isset($cancelar)&&$cancelar!=""){
+
 
   $sqlerro=false;
   $certidao=$v13_certid;
@@ -86,8 +86,9 @@ if (isset($cancelar)&&$cancelar!=""){
 
   if ($inclui==true){
     db_inicio_transacao();
-    //	db_msgbox(count($info));
+
     if (count($info)>0){
+
       $clacertid->v15_certid     = $certidao;
       $clacertid->v15_data       = date('Y-m-d',db_getsession("DB_datausu"));
       $clacertid->v15_hora       = db_hora();
@@ -103,17 +104,13 @@ if (isset($cancelar)&&$cancelar!=""){
       $clacertid->incluir(null);
       $v15_codigo=$clacertid->v15_codigo;
       if ($clacertid->erro_status==0){
+
         $sqlerro=true;
         $erro_msg=$clacertid->erro_msg;
-        //db_
       }
-      /*else{
-       $sqlerro=true;
-      $erro_msg="Não foi possivel realizar a operação!!Contate Suporte!!";
-      }*/
     }
     if (isset($tipodiv)&&$tipodiv=="normal"){
-      //  db_msgbox("normal");
+
       $sqlerro=false;
       for($w=0;$w<count($info);$w++){
         $dados=split('-',$info[$w]);
@@ -124,12 +121,12 @@ if (isset($cancelar)&&$cancelar!=""){
         if ($clcertdiv->numrows>0){
           $numrows_div=$clcertdiv->numrows;
           for($i=0;$i<$numrows_div;$i++){
+
             db_fieldsmemory($result_div,$i);
             $result_forotip=$clarreforo->sql_record($clarreforo->sql_query_file(null,"distinct k00_numpre,k00_numpar,k00_tipo",null,"k00_certidao=$certidao  and k00_numpre=$v01_numpre and k00_numpar=$v01_numpar"));
             if ($clarreforo->numrows>0){
               db_fieldsmemory($result_forotip,0);
             } else {
-              //		  	echo ("<br><br><br>".$clarreforo->sql_query_file(null,"distinct k00_numpre,k00_numpar,k00_tipo",null,"k00_certidao=$certidao  and k00_numpre=$v01_numpre and k00_numpar=$v01_numpar"));
               db_msgbox('Nao existem registros desta certidao na tabela arreforo! Contate suporte!');
               $sqlErro = true;
             }
@@ -137,7 +134,7 @@ if (isset($cancelar)&&$cancelar!=""){
               $clarrecad->k00_tipo=$k00_tipo;
               $clarrecad->alterar_arrecad("k00_numpre=$k00_numpre and k00_numpar=$k00_numpar");
               if ($clarrecad->erro_status==0){
-                //db_msgbox('1');
+
                 $sqlerro=true;
                 $erro_msg=$clarrecad->erro_msg;
                 break;
@@ -152,6 +149,7 @@ if (isset($cancelar)&&$cancelar!=""){
             if ($sqlerro==false){
               $result_certdiv=$clcertdiv->sql_record($clcertdiv->sql_query_file($certidao,$v01_coddiv));
               for($z=0;$z<$clcertdiv->numrows;$z++){
+
                 db_fieldsmemory($result_certdiv,$z);
                 $clacertdiv->v14_certid=$v14_certid;
                 $clacertdiv->v14_coddiv=$v14_coddiv;
@@ -192,6 +190,11 @@ if (isset($cancelar)&&$cancelar!=""){
                 $erro_msg=$clcertdiv->erro_msg;
               }
             }
+
+            if ($sqlerro==false){
+              $cl_desmembramentoinicialhistorico->deleteByQuery("v37_cda = $certidao or v37_cda_old = $certidao");
+            }
+
           }
         }
 
@@ -200,15 +203,14 @@ if (isset($cancelar)&&$cancelar!=""){
         if ($sqlerro==false){
           $clcertid->excluir($certidao);
           if ($clcertid->erro_status==0){
-            //db_msgbox('4');
+
             $sqlerro=true;
             $erro_msg=$clcertid->erro_msg;
           }
         }
       }
-      //      	  db_msgbox("normal22");
     }elseif (isset($tipodiv)&&$tipodiv=="parcel"){
-      //      	  db_msgbox("parcel");
+
       $sqlerro=false;
       for($w=0;$w<count($info);$w++){
         $dados=split('-',$info[$w]);
@@ -223,14 +225,17 @@ if (isset($cancelar)&&$cancelar!=""){
             if ($clarreforo->numrows>0){
               db_fieldsmemory($result_forotip,0);
             } else {
+
               $erro_msg = "cda $certidao inconsistente! ";
               $sqlerro = true;
               break;
             }
             if ($sqlerro==false){
+
               $clarrecad->k00_tipo=$k00_tipo;
               $clarrecad->alterar_arrecad("k00_numpre=$k00_numpre");
               if ($clarrecad->erro_status==0){
+
                 $sqlerro=true;
                 $erro_msg=$clarrecad->erro_msg;
                 break;
@@ -238,14 +243,17 @@ if (isset($cancelar)&&$cancelar!=""){
             }
             $clarreforo->excluir(null,"k00_certidao=$certidao and k00_numpre=$k00_numpre");
             if ($clarreforo->erro_status==0){
+
               $sqlerro=true;
               $erro_msg=$clarreforo->erro_msg;
               break;
             }
 
             if ($sqlerro==false){
+
               $result_certter=$clcertter->sql_record($clcertter->sql_query_file($certidao,$v07_parcel));
               for($z=0;$z<$clcertter->numrows;$z++){
+
                 db_fieldsmemory($result_certter,$z);
                 $clacertter->excluir($v14_certid,$v14_parcel);
                 $clacertter->v14_certid     = $v14_certid;
@@ -257,6 +265,7 @@ if (isset($cancelar)&&$cancelar!=""){
                 $clacertter->v14_codacertid = $v15_codigo;
                 $clacertter->incluir($v14_certid,$v14_parcel);
                 if ($clacertter->erro_status==0){
+
                   $sqlerro=true;
                   $erro_msg=$clacertter->erro_msg;
                 }
@@ -264,6 +273,7 @@ if (isset($cancelar)&&$cancelar!=""){
             }
 
             if ($sqlerro==false){
+
               $clcertter->v14_certid=$certidao;
               $clcertter->v14_parcel=$v07_parcel;
               $clcertter->excluir($certidao,$v07_parcel);
@@ -276,9 +286,11 @@ if (isset($cancelar)&&$cancelar!=""){
         }
       }
       if ($numreg!=0&&$numreg==count($info)){
+
         if ($sqlerro==false){
           $clcertid->excluir($certidao);
           if ($clcertid->erro_status==0){
+
             $sqlerro=true;
             $erro_msg=$clcertid->erro_msg;
           }
@@ -286,21 +298,20 @@ if (isset($cancelar)&&$cancelar!=""){
       }
     }
 
-
     /*********************************** SE O NUMPRE ESTIVER NA INICIALNUMPRE DELETA *******************************************/
-
     for($w=0;$w<count($info);$w++){
       $dados=split('-',$info[$w]);
       $numpre = $dados[1];
-      //        die($clinicialnumpre->sql_query_file(null,"*",null," v59_numpre = $numpre "));
       $result_ininumpre = $clinicialnumpre->sql_record($clinicialnumpre->sql_query_file(null,"*",null," v59_numpre = $numpre "));
       if ($clinicialnumpre->numrows > 0){
+
         $sqlerro = false;
         db_fieldsmemory($result_ininumpre,0);
         $clinicialnumpre->v59_inicial = $v59_inicial;
         $clinicialnumpre->v59_numpre  = $v59_numpre;
         $clinicialnumpre->excluir(null," v59_numpre = $v59_numpre ");
         if ($clinicialnumpre->erro_status == 0){
+
           $sqlerro  = true;
           $erro_msg = $clinicialnumpre->erro_msg;
           db_msgbox($erro_msg);
@@ -309,7 +320,6 @@ if (isset($cancelar)&&$cancelar!=""){
 
     }
     /***************************************************************************************************************************/
-    //$sqlerro  = true;
     db_fim_transacao($sqlerro);
   }
 }
@@ -325,10 +335,10 @@ if (isset($cancelar)&&$cancelar!=""){
 function js_submit_form(){
 js_gera_chaves();
 if (js_retorna_chaves().trim() == '') {
-  
+
   alert('Nenhum débito selecionado. Verificar');
   return false;
-  
+
 }
 document.form1.cancelar.value='cancelar';
 document.form1.submit();
@@ -336,40 +346,45 @@ document.form1.submit();
 </script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC>
+<body class="body-default">
 	<form class="container" name="form1" method="post" action="">
 			<?if (isset($processar)&&$processar!=""){?>
-			
+
 		<table class="form-container">
 			<tr>
-				<td colspan=2><?
-				$certidao=$v13_certid;
+				<td colspan=2><?php
+				$certidao = $v13_certid;
 
 				//Valida a CDA.
-				$sql_ini = "select v51_inicial,
-				(select parcel
-				from termoini
-				inner join termo on v07_parcel = parcel
-				where inicial = v59_inicial
-				and v07_situacao = 1 ) as parcel,
-				k00_numpre
-				from inicialcert
-				inner join inicialnumpre on v51_inicial = v59_inicial
-				left join termoini      on inicial     = v51_inicial
-				left join arrecad      on k00_numpre   = v59_numpre
-				where v51_certidao = ".$certidao;
-				//   die($sql_ini);
-				$result_inicial=$clinicialcert->sql_record($sql_ini);
+				$sSqlInicialCert = "select v51_inicial,
+
+				                           ( select parcel
+				                               from termoini
+				                                    inner join termo on v07_parcel = parcel
+				                              where inicial = v59_inicial
+				                                and v07_situacao = 1 ) as parcel,
+				                           k00_numpre
+				                      from inicialcert
+				                           inner join inicialnumpre on v51_inicial = v59_inicial
+				                           left join termoini       on inicial     = v51_inicial
+				                           left join arrecad        on k00_numpre  = v59_numpre
+				                     where v51_certidao = " . $certidao;
+
+				$rsInicialCert = $clinicialcert->sql_record($sSqlInicialCert);
 				if ($clinicialcert->numrows>0){
-				  db_fieldsmemory($result_inicial,0);
-				  	
-				  if ($parcel != "" || $k00_numpre == ""){
-				    db_msgbox('Esta CDA possui inicial Nº '.$v51_inicial.' - Quitada ou Parcelada\nTermo:'.$parcel.'\nOperação cancelada');
-				    db_redireciona("div4_cancelcda001.php");
-				    $inclui=false;
-				  }
-				  	
-				}
+
+          $aDebitosInicialCert = db_utils::getCollectionByRecord( $rsInicialCert );
+
+          foreach ($aDebitosInicialCert as $aDebito) {
+
+            if ($aDebito->parcel != "" || $aDebito->k00_numpre == ""){
+
+              db_msgbox('Esta CDA possui inicial Nº '.$aDebito->v51_inicial.' - Quitada ou Parcelada\nTermo:'.$aDebito->parcel.'\nOperação cancelada');
+              db_redireciona("div4_cancelcda001.php");
+              $inclui=false;
+            }
+          }
+        }
 
 				db_input("v13_certid",6,$Iv13_certid,true,"hidden",3);
 				$result_tip=$clcertid->sql_record($clcertid->sql_query_tip($certidao,"distinct v14_coddiv as normal,v14_parcel as parcel",null,"v13_certid = $certidao and v13_instit = ".db_getsession('DB_instit') ));
@@ -389,19 +404,19 @@ document.form1.submit();
 				  end as v01_obs ";
 
 				  $sql = $clcertdiv->sql_query_deb($certidao,null,"distinct v14_coddiv,v01_numpre,v01_numpar,v01_proced,v03_descr,v01_exerc, z01_nome, $case","v01_exerc","v13_certid = $certidao and divida.v01_instit = ".db_getsession('DB_instit')." and certid.v13_instit = ".db_getsession('DB_instit'));
-				  // echo($sql);
 				  $cliframe_seleciona->chaves = "v14_coddiv,v01_numpre,v01_numpar";
-				  /* mudar na linha de baixo */
 				  $cliframe_seleciona->campos  = "z01_nome,v14_coddiv,v01_numpre,v01_numpar,v01_proced,v03_descr,v01_exerc,v01_obs";
 				  $tipodiv="normal";
 				  db_input("tipodiv",6,'',true,"hidden",3);
 				}else if (isset($parcel)&&$parcel!=""){
+
 				  $sql=$clcertter->sql_query_deb($certidao,null,"distinct v14_parcel,v07_numpre,v07_dtlanc, z01_nome","v14_parcel","v13_certid = $certidao and certid.v13_instit = ".db_getsession('DB_instit'));
 				  $cliframe_seleciona->chaves = "v14_parcel,v07_numpre";
 				  $cliframe_seleciona->campos  = "z01_nome,v14_parcel,v07_numpre,v07_dtlanc";
 				  $tipodiv="parcel";
 				  db_input("tipodiv",6,'',true,"hidden",3);
 				}else{
+
 				  $sql=$clcertid->sql_query_tip("","*","","1=2");
 				  $cliframe_seleciona->chaves = "";
 				  $cliframe_seleciona->campos  = "";
@@ -412,7 +427,6 @@ document.form1.submit();
 				$cliframe_seleciona->legenda="Débitos a Cancelar";
 				$cliframe_seleciona->alignlegenda="left";
 				$cliframe_seleciona->sql=$sql;
-				// $cliframe_seleciona->sql_marca=$sql_marca;
 				$cliframe_seleciona->iframe_height ="250";
 				$cliframe_seleciona->iframe_width  ="750";
 				$cliframe_seleciona->dbscript      = "onclick='parent.js_controlanumpre(this.value,this.name);'";
@@ -425,26 +439,26 @@ document.form1.submit();
 			  <td title="<?=$Tv15_observacao?>" colspan="2">
 			    <fieldset class="separator">
 			      <legend><strong>Observação</strong></legend>
-    			    <?php 
+    			    <?php
     			      db_textarea('v15_observacao', 10, 100, $Iv15_observacao, true, 'text', 1, '','','',500);
     			    ?>
 			    </fieldset>
 			  </td>
 			</tr>
-			</table>	
+			</table>
 				<?}else{?>
 			<fieldset>
-			  <legend>Pesquisa CDA</legend>	
-			<table class="form-container">			
+			  <legend>Pesquisa CDA</legend>
+			<table class="form-container">
 			<tr>
-				<td nowrap title="<?=$Tv13_certid?>">				   
+				<td nowrap title="<?=$Tv13_certid?>">
 				    <?
-				      db_ancora($Lv13_certid,"js_pesquisa_certid(true);",1); 
-				    ?>				  
+				      db_ancora($Lv13_certid,"js_pesquisa_certid(true);",1);
+				    ?>
 				</td>
 				<td nowrap>
 				  <?
-				    db_input("v13_certid",10,$Iv13_certid,true,"text",4,"onchange='js_pesquisa_certid(false);'"); 
+				    db_input("v13_certid",10,$Iv13_certid,true,"text",4,"onchange='js_pesquisa_certid(false);'");
 				  ?>
 				</td>
 			</tr>
@@ -453,19 +467,15 @@ document.form1.submit();
 			<?}
 			if (isset($processar)&&$processar!=""){?>
 
-  				  <input name="cancelar1" id="Cancelar1" type="button" value="Processar" onclick="js_submit_form();"> 
-  				  <input name="voltar" id="voltar" type="button" value="Voltar" onclick="location.href='div4_cancelcda001.php'"> 
+  				  <input name="cancelar1" id="Cancelar1" type="button" value="Processar" onclick="js_submit_form();">
+  				  <input name="voltar" id="voltar" type="button" value="Voltar" onclick="location.href='div4_cancelcda001.php'">
   				  <?
-  				    db_input("cancelar",6,"",true,"hidden",3); 
+  				    db_input("cancelar",6,"",true,"hidden",3);
   				  ?>
-
 			<?}else{?>
-
   				  <input name="processar" id="processar" type="submit" value="Processar" onclick="return js_testacampo();">
-
 			<?}
 			?>
-
 
 		<?
 		db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
@@ -479,13 +489,13 @@ document.form1.submit();
 function js_controlanumpre(valor,nome){
 iframe = numpres;
 arr    = valor.split("_");
-numpre = arr[1];  
+numpre = arr[1];
 for(x = 0; x < iframe.document.form1.elements.length; x ++){
-  obj       = iframe.document.form1.elements[x]; 
-  arratu    = obj.value.split("_"); 
-  numpreatu = arratu[1];  
+  obj       = iframe.document.form1.elements[x];
+  arratu    = obj.value.split("_");
+  numpreatu = arratu[1];
   if (numpre == numpreatu && iframe.document.form1.elements.length > 1 && obj.checked == false && nome != obj.name){
-    obj.checked = true;		   		   
+    obj.checked = true;
   }else if (numpre == numpreatu && iframe.document.form1.elements.length > 1 && obj.checked == true && nome != obj.name){
     obj.checked = false;
   }
@@ -494,19 +504,19 @@ for(x = 0; x < iframe.document.form1.elements.length; x ++){
 
 function js_pesquisa_certid(mostra){
 if (mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_certid','func_certid.php?funcao_js=parent.js_mostracertid1|v13_certid','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_certid','func_certid.php?funcao_js=parent.js_mostracertid1|v13_certid','Pesquisa',true);
 }else{
-  if (document.form1.v13_certid.value != ''){ 
-    js_OpenJanelaIframe('top.corpo','db_iframe_certid','func_certid.php?pesquisa_chave='+document.form1.v13_certid.value+'&funcao_js=parent.js_mostracertid','Pesquisa',false);
+  if (document.form1.v13_certid.value != ''){
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_certid','func_certid.php?pesquisa_chave='+document.form1.v13_certid.value+'&funcao_js=parent.js_mostracertid','Pesquisa',false);
   }else{
-    document.form1.v13_certid.value = ''; 
+    document.form1.v13_certid.value = '';
   }
 }
 }
 function js_mostracertid(chave,erro){
-if (erro==true){ 
-  document.form1.v13_certid.value = ''; 
-  document.form1.v13_certid.focus(); 
+if (erro==true){
+  document.form1.v13_certid.value = '';
+  document.form1.v13_certid.focus();
 }
 }
 function js_mostracertid1(chave1){
@@ -516,7 +526,7 @@ db_iframe_certid.hide();
 function js_testacampo(func){
 if (document.form1.v13_certid.value==""){
   alert('Informe o número da certidão!');
-  document.form1.v13_certid.focus(); 
+  document.form1.v13_certid.focus();
   return false;
 }else{
   return true;
@@ -529,7 +539,7 @@ if (isset($cancelar)&&$cancelar!=""){
 if ($sqlerro==true){
   db_msgbox($erro_msg);
 }else{
-  db_msgbox('Cancelamento efetuado com Sucesso!');  
+  db_msgbox('Cancelamento efetuado com Sucesso!');
   echo "<script>location.href='div4_cancelcda001.php';</script>";
 }
 }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_pcorcamitem_classe.php");
-include("classes/db_pcorcamval_classe.php");
-include("classes/db_pcorcamjulg_classe.php");
-include("classes/db_pcorcamtroca_classe.php");
-include("classes/db_empparametro_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_pcorcamitem_classe.php"));
+include(modification("classes/db_pcorcamval_classe.php"));
+include(modification("classes/db_pcorcamjulg_classe.php"));
+include(modification("classes/db_pcorcamtroca_classe.php"));
+include(modification("classes/db_empparametro_classe.php"));
 $clpcorcamitem = new cl_pcorcamitem;
 $clpcorcamval = new cl_pcorcamval;
 $clpcorcamjulg = new cl_pcorcamjulg;

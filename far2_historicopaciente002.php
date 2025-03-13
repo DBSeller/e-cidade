@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 
 function nova_linha($pdf,$req, $lote, $data, $quantidade, $posologia)
@@ -115,7 +115,12 @@ if(!empty($medicamentos))
 
 $sql = "select trim(fa04_i_cgsund || '-' || z01_v_nome || ' CPF - ' || z01_v_cgccpf ) as nome,
                trim(fa06_i_matersaude||' - '|| m60_descr) as medicamento, fa07_i_matrequi,
-               fa04_d_data, m77_lote, substring(fa06_t_posologia,1,10) as Posologia, fa06_f_quant
+               fa04_d_data, m77_lote, substring(fa06_t_posologia,1,10) as Posologia, 
+               case 
+                  when fa09_f_quant is not null 
+                    then fa09_f_quant 
+                  else fa06_f_quant 
+                end as fa06_f_quant 
           from far_retiradaitens
             inner join far_retirada          on fa06_i_retirada=fa04_i_codigo
             inner join cgs_und               on z01_i_cgsund = fa04_i_cgsund
@@ -131,7 +136,7 @@ $sql = "select trim(fa04_i_cgsund || '-' || z01_v_nome || ' CPF - ' || z01_v_cgc
                 order by z01_v_nome, m60_descr, fa04_d_data desc;";
 
 //echo $sql;
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 
 if($linhas == 0 || count($cgss) <= 0)

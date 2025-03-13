@@ -14,7 +14,7 @@ $aRubricasDesc   = array();
 
 foreach ($this->aLinhasRelatorio as $iInd => $oLinhaRelatorio) {
 
-	if ( $iRecurso != $oLinhaRelatorio->rh72_recurso ) {
+	if ( $iRecurso != $oLinhaRelatorio->o15_recurso ) {
 
 		if ( $iInd != 0 ) {
 
@@ -52,10 +52,10 @@ foreach ($this->aLinhasRelatorio as $iInd => $oLinhaRelatorio) {
 		}
 		$this->objpdf->SetFont($sFonte,"B",$iFonte+3);
 		$this->objpdf->ln($iAlt*2);
-		$this->objpdf->cell(50, $iAlt,"{$oLinhaRelatorio->rh72_recurso} - {$oLinhaRelatorio->o15_descr}",0,1,"L");
+		$this->objpdf->cell(50, $iAlt,"{$oLinhaRelatorio->o15_recurso} - {$oLinhaRelatorio->o15_descr}",0,1,"L");
 		$this->objpdf->ln();
 		cabecalhoRelatorio($this->objpdf, $sFonte, $iAlt, $this->lRetencao);
-		$iRecurso = $oLinhaRelatorio->rh72_recurso;
+		$iRecurso = $oLinhaRelatorio->o15_recurso;
 
 	}
 
@@ -74,7 +74,7 @@ foreach ($this->aLinhasRelatorio as $iInd => $oLinhaRelatorio) {
 	$sLocalizacao  = str_pad($oLinhaRelatorio->rh72_orgao       ,2,"0",STR_PAD_LEFT);
 	$sLocalizacao .= ".".str_pad($oLinhaRelatorio->rh72_unidade ,2,"0",STR_PAD_LEFT);
 	$sLocalizacao .= ".".str_pad($oLinhaRelatorio->rh72_projativ,4,"0",STR_PAD_LEFT);
-	$sLocalizacao .= ".".str_pad($oLinhaRelatorio->rh72_recurso ,4,"0",STR_PAD_LEFT);
+	$sLocalizacao .= ".".str_pad($oLinhaRelatorio->o15_recurso ,4,"0",STR_PAD_LEFT);
 
 	$this->objpdf->SetFont($sFonte,"",$iFonte);
 	$this->objpdf->cell(8, $iAlt, $i, "TBR", 0, "R");
@@ -99,8 +99,8 @@ foreach ($this->aLinhasRelatorio as $iInd => $oLinhaRelatorio) {
 	  		$this->objpdf->AddPage();
 	  		cabecalhoRelatorio($this->objpdf, $sFonte, $iAlt, $this->lRetencao);
 	  		$this->objpdf->SetFont($sFonte,"",$iFonte);
-
 	  	}
+
 	  	$this->objpdf->cell(8, $iAlt, "", 0, 0, "R");
 	  	$this->objpdf->cell(17, $iAlt, "", 0, 0, "C");
 	  	$this->objpdf->cell(15, $iAlt, $oRetencao->rh73_rubric, 1, 0, "C");
@@ -148,6 +148,9 @@ $this->objpdf->cell(70, $iAlt,"Total Líquido"                           ,1,0,"L"
 $this->objpdf->cell(30, $iAlt,db_formatar($nTotalRec-$nTotalRecDesc,'f'),1,1,"R",0);
 $this->objpdf->ln();
 
+if ($this->objpdf->GetY() > $this->objpdf->h - 25){
+  $this->objpdf->AddPage();
+}
 
 $this->objpdf->SetFont($sFonte,"b",$iFonte+2);
 $this->objpdf->Cell(250, $iAlt, "Valor Bruto da Folha"                                   ,"TBR",0,"R",1);
@@ -187,5 +190,4 @@ function cabecalhoRelatorio (&$oPdf, $sFonte, $iAlt, $lRetencoes) {
 	  $oPdf->cell(15, $iAlt, "Código", 1, 0, "C", 1);
 	  $oPdf->cell(80, $iAlt, "Descrição", 1, 1, "C", 1);
 	}
-
 }

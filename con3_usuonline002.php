@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,9 +26,9 @@
  */
 
 //session_start();
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 
 ?>
 <html>
@@ -69,8 +69,8 @@ td {
 	  <th>Módulo</th>
     </tr>
     <?
-	pg_exec("delete from db_usuariosonline where uol_inativo < ".(time() - 300)." or uol_inativo is null") or die("erro(46) excluindo tabela db_usuariosonline");
-	$result = pg_exec("select * from db_usuariosonline order by uol_login");
+	db_query("delete from db_usuariosonline where uol_inativo < ".(time() - 300)." or uol_inativo is null") or die("erro(46) excluindo tabela db_usuariosonline");
+	$result = db_query("select * from db_usuariosonline order by uol_login");
 	$numrows = pg_numrows($result);
 	for($i = 0;$i < $numrows;$i++) {
         echo "<tr onclick=\"window.open('con3_usuonline113.php?id_usuario=".pg_result($result,$i,"uol_id")."&usuario=".pg_result($result,$i,"uol_login")."&hora=".pg_result($result,$i,"uol_hora")."&sairfora=2','','height=500,width=410,scrollbars=0')\" style=\"cursor: hand\" bgcolor=\"".($i%2==0?"#31CEB7":"#9EE9DE")."\">

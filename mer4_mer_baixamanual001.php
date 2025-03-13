@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("classes/db_mer_cardapiodata_classe.php");
-include("classes/db_mer_cardapio_classe.php");
-include("classes/db_mer_tprefeicao_classe.php");
-include("classes/db_mer_tipocardapio_classe.php");
-include("classes/db_diasemana_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_mer_cardapiodata_classe.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("classes/db_mer_tprefeicao_classe.php"));
+include(modification("classes/db_mer_tipocardapio_classe.php"));
+include(modification("classes/db_diasemana_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcalendario       = new cl_calendario;
 $clmer_cardapiodia  = new cl_mer_cardapiodia;
@@ -85,7 +85,7 @@ $erro               = false;
    <br>
    <center>
    <fieldset style="width:95%;height:100%;"><legend><b>Baixa Manual</b></legend>
-    <?include("forms/db_frmmerbaixamanual.php");?>
+    <?include(modification("forms/db_frmmerbaixamanual.php"));?>
    </fieldset>
    </center>
   </td>

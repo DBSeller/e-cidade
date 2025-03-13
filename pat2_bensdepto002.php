@@ -1,42 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_db_depart_classe.php");
-require_once("classes/db_bens_classe.php");
-require_once("classes/db_bensbaix_classe.php");
-require_once("classes/db_clabens_classe.php");
-require_once("classes/db_bensmater_classe.php");
-require_once("classes/db_bensimoveis_classe.php");
-require_once("classes/db_histbem_classe.php");
-require_once("classes/db_departdiv_classe.php");
+require_once modification("fpdf151/pdf.php");
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/db_sql.php");
+require_once modification("libs/db_libdocumento.php");
 
 define('NAO_AGRUPAR', 1);
 define('AGRUPAR_ORGAO', 2);
@@ -48,6 +43,8 @@ $oGet = db_utils::postMemory($_GET);
 
 $lNovaPagina = true;
 $lNovoCabecalho = false;
+$lClassificacao = ($oGet->classificacao == 1);
+
 
 $sTituloAgrupador = null;
 
@@ -94,6 +91,7 @@ $where_t52_instit = " t52_instit = ".db_getsession("DB_instit");
 $where           .= $and.$where_t52_instit;
 $sAnoUsu          = db_getsession("DB_anousu");
 
+
 /**
  * Escolheu departamento no formulario
  */
@@ -115,9 +113,9 @@ if ( !empty($depto) ) {
 }
 
 /**
- * Escolheu divisao no formulario 
+ * Escolheu divisao no formulario
  */
-if ( !empty($div) ) {
+if ( $div === '0' || !empty($div) ) {
 
   if (isset($depto) && $depto  != ""){
     $where_instit .= " and coddepto = $depto";
@@ -131,11 +129,15 @@ if ( !empty($div) ) {
     $assinatura = $z01_nome;
   }
 
-  $where .= " $and t33_divisao = $div";
+  if ($div === '0') {
+      $where .= " $and t33_divisao is null";
+  } else {
+      $where .= " $and t33_divisao = $div";
+  }
 }
 
 /**
- * Filtro de bens 
+ * Filtro de bens
  */
 if ( !empty($filtro_bens) ) {
 
@@ -192,7 +194,7 @@ if (isset($cboValor) && trim($cboValor) != "" && $cboValor == 1) {
 }
 
 /**
- * Ordenação 
+ * Ordenação
  */
 switch ( $iTipoAgrupamento ) {
 
@@ -206,7 +208,7 @@ switch ( $iTipoAgrupamento ) {
     $sOrder = "t52_depart, t30_codigo, t52_bem";
   break;
 
-  default : 
+  default :
     $sOrder = "t52_depart, t52_bem";
   break;
 }
@@ -227,9 +229,9 @@ if ($xxnum == 0) {
   db_redireciona('db_erros.php?fechar=true&db_erro=' . urlDecode($sMsg));
 }
 
-$pdf = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+$pdf = new PDF();
+$pdf->Open();
+$pdf->AliasNbPages();
 $pdf->SetAutoPageBreak(false);
 $total      = 0;
 $nSomaTotal = 0;
@@ -239,18 +241,41 @@ $alt       = 4;
 $depto_ant = "";
 
 // Texto do documento de TERMO DE RESPONSABILIDADE DO PATRIMONIO
-$sql_paragrafos = "select db02_texto
-  from db_tipodoc
-  inner join db_documento on db03_tipodoc = db08_codigo
-  inner join db_docparag  on db04_docum   = db03_docum
-  inner join db_paragrafo on db02_idparag = db04_idparag
-  where db08_codigo = 10
-  and db02_instit = ".db_getsession("DB_instit");
-$res_paragrafos = @db_query($sql_paragrafos);
+try {
+  $oLibDocumento = new libdocumento(10);
+  $aParagrafos   = $oLibDocumento->getDocParagrafos();
 
+} catch (Exception $e) {
+  $aParagrafos = array();
+}
+
+$aParagrafos = (empty($aParagrafos) ? array() : $aParagrafos);
+
+// plugin - TermoResponsabilidade: declara variável de controle de departamento e array de caracteres
 for ($x = 0; $x < pg_numrows($result); $x++) {
 
   db_fieldsmemory($result, $x);
+
+  /**
+   * Adicionado um controle de quebra para exibir o rodapé corretamente
+   */
+  if ($opcao_obs == "S" && !empty($aParagrafos) && $posicao == "B") {
+
+    $iAltura = 5;
+
+    if (trim($t52_obs) != "") {
+      $aLinhasObservacao = explode("\n", $t52_obs);
+
+      foreach ( $aLinhasObservacao as $sObservacao ) {
+
+        $iAltura += ($pdf->NbLines(277, $sObservacao) * 5);
+      }
+    }
+
+    if ($pdf->getY() + $iAltura > $pdf->h - 40) {
+      $lNovaPagina = true;
+    }
+  }
 
   $head1 = "TERMO DE RESPONSABILIDADE";
 
@@ -275,13 +300,13 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
   $sQueryOrgao  .= "        o41_orgao,    ";
   $sQueryOrgao  .= "        o41_unidade,  ";
   $sQueryOrgao  .= "        o41_descr     ";
-  $sQueryOrgao  .= "   from db_departorg  "; 
+  $sQueryOrgao  .= "   from db_departorg  ";
   $sQueryOrgao  .= "        inner join orcorgao   on db01_orgao   = o40_orgao    ";
   $sQueryOrgao  .= "                          and o40_anousu      = db01_anousu  ";
   $sQueryOrgao  .= "        inner join orcunidade on db01_unidade = o41_unidade  ";
   $sQueryOrgao  .= "                          and o41_anousu      = db01_anousu  ";
   $sQueryOrgao  .= "  where db01_coddepto = $t52_depart  ";
-  $sQueryOrgao  .= "    and db01_anousu   = $sAnoUsu and o41_orgao = o40_orgao   ";    
+  $sQueryOrgao  .= "    and db01_anousu   = $sAnoUsu and o41_orgao = o40_orgao   ";
 
   $resQueryOrgao = db_query($sQueryOrgao);
   if(pg_num_rows($resQueryOrgao) > 0) {
@@ -314,8 +339,8 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
   $sOrgao        = !empty($o40_descr)  ? "$o40_orgao - $o40_descr"   : null;
 
   /**
-   * - Define titulo do agrupador 
-   * - Verifica se deve imprimir novo cabecalho 
+   * - Define titulo do agrupador
+   * - Verifica se deve imprimir novo cabecalho
    */
   switch ( $iTipoAgrupamento ) {
 
@@ -332,7 +357,7 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
 
         if ( !empty($sUnidade) ) {
           $sTituloAgrupador .= ' / ' . $sUnidade;
-        } 
+        }
 
         if ( $iUnidadeAnterior != $o41_unidade ) {
           $lNovoCabecalho = true;
@@ -343,9 +368,9 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
 
     case AGRUPAR_DEPARTAMENTO :
     case AGRUPAR_DEPARTAMENTO_DIVISAO :
-      
+
       $sTituloAgrupador = $sDepartamento;
-      
+
       if ( $iDepartamentoAnterior != $t52_depart ) {
         $lNovoCabecalho = true;
       }
@@ -354,20 +379,20 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
 
         if ( !empty($sDivisao) ) {
           $sTituloAgrupador .= ' / ' . $sDivisao;
-        } 
+        }
 
         if ( $iDivisaoAnterior != $t30_codigo ) {
           $lNovoCabecalho = true;
         }
-      } 
+      }
 
     break;
 
   }
 
   $iDepartamentoAnterior = $t52_depart;
-  $iOrgaoAnterior        = $o40_orgao;
-  $iUnidadeAnterior      = $o41_unidade;
+  $iOrgaoAnterior        = isset($o40_orgao) ? $o40_orgao : '';
+  $iUnidadeAnterior      = isset($o41_unidade) ? $o41_unidade : '';
   $iDivisaoAnterior      = $t30_codigo;
 
   $res_situacaobem = $clhistbem->sql_record($clhistbem->sql_query(null,"t70_descr", "t56_histbem desc", "t52_bem = $t52_bem"));
@@ -377,16 +402,19 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
     db_fieldsmemory($res_situacaobem, 0);
   }
 
-  if ( $pdf->gety() > $pdf->h - 30 || $lNovaPagina ) {
+  if ( $pdf->gety() > $pdf->h - 40 || $lNovaPagina ) {
 
     $pdf->setfont('arial','b',8);
     if ($flag_todos == 1 && $x > 0) {
       if ($posicao == "B") {
 
-        for ($i = 0; $i < pg_numrows($res_paragrafos); $i++) {
+        foreach ($aParagrafos as $oParagrafo) {
 
-          db_fieldsmemory($res_paragrafos, $i);
-          $pdf->multicell(277, 5, $db02_texto, 0, "L");
+          if ($oParagrafo->oParag->db02_tipo == libparagrafo::TIPO_CODIGO_PHP) {
+            eval($oParagrafo->oParag->db02_texto);
+          } else {
+            $pdf->multicell(277, 5, $oParagrafo->oParag->db02_texto, 0, "L");
+          }
         }
       }
     }
@@ -394,10 +422,13 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
     $pdf->addpage('L');
     if ($x == 0) {
       if ($posicao == "A") {
-        for ($i = 0; $i < pg_numrows($res_paragrafos); $i++) {
+        foreach ($aParagrafos as $oParagrafo) {
 
-          db_fieldsmemory($res_paragrafos, $i);
-          $pdf->multicell(257,5,$db02_texto,0,"L");
+          if ($oParagrafo->oParag->db02_tipo == libparagrafo::TIPO_CODIGO_PHP) {
+            eval($oParagrafo->oParag->db02_texto);
+          } else {
+            $pdf->multicell(257,5,$oParagrafo->oParag->db02_texto,0,"L");
+          }
         }
         $pdf->ln(3);
       }
@@ -407,14 +438,20 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
 
       if ($posicao == "A") {
 
-        for ($i = 0; $i < pg_numrows($res_paragrafos); $i++) {
+        foreach ($aParagrafos as $oParagrafo) {
 
-          db_fieldsmemory($res_paragrafos, $i);
-          $pdf->multicell(257,5,$db02_texto,0,"L");
+          if ($oParagrafo->oParag->db02_tipo == libparagrafo::TIPO_CODIGO_PHP) {
+            eval($oParagrafo->oParag->db02_texto);
+          } else {
+            $pdf->multicell(257,5,$oParagrafo->oParag->db02_texto,0,"L");
+          }
         }
         $pdf->ln(3);
       }
     }
+
+    // plugin - TermoResponsabilidade: adicionados anexo II
+
 
     $pdf->setfont('arial','b',8);
 
@@ -424,24 +461,27 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
 
     $pdf->cell(12,$alt,"Código"         ,1 , 0, "C", 1);
     $pdf->cell(25,$alt,$RLt52_ident     ,1 , 0, "C", 1);
-    $pdf->cell(80,$alt,$RLt52_descr     ,1 , 0, "C", 1);
-    $pdf->cell(20,$alt,$RLt64_class     ,1 , 0, "C", 1);
-    if ($lValor) {
-      $pdf->cell(65,$alt,$RLt64_descr   , 1, 0, "L", 1);
-    } else {
-      $pdf->cell(80, $alt, $RLt64_descr   , 1, 0, "L", 1);
-    }
-    $pdf->cell(20, $alt, $RLt52_dtaqu     , 1, 0, "C", 1);
-    $pdf->cell(25, $alt, "Situação do bem", 1, 0, "C", 1);
-    if ($lValor) {
 
-      $pdf->cell(15,$alt,"Definição"    , 1, 0, "C", 1);
-      $pdf->cell(15,$alt,"Valor"   , 1, 1, "L", 1);
-    } else {
-      $pdf->cell(15,$alt,"Definição"    , 1, 1, "C", 1);
+    $iCelula = 80 + ($lClassificacao ? 0 : 100) + ($lValor ? 0 : 15);
+
+    $pdf->cell($iCelula,$alt, $RLt52_descr     ,1 , 0, "C", 1);
+
+    if ($lClassificacao) {
+      $pdf->cell(20,$alt,$RLt64_class     ,1 , 0, "C", 1);
+      $pdf->cell(80,$alt,$RLt64_descr   , 1, 0, "L", 1);
     }
+
+    $pdf->cell(20, $alt, $RLt52_dtaqu     , 1, 0, "C", 1);
+    $pdf->cell(25, $alt, "Situação do Bem", 1, 0, "C", 1);
+
+    if ($lValor) {
+      $pdf->cell(15,$alt,"Valor"   , 1, 1, "C", 1);
+    } else {
+      $pdf->ln();
+    }
+
     if ($opcao_obs == "S") {
-      $pdf->cell(277,$alt,"Características adicionais do bem",1,1,"L",1);
+      $pdf->cell(277,$alt,"Características Adicionais do Bem",1,1,"L",1);
     }
 
     if ($t53_codbem !="") {
@@ -466,48 +506,62 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
 
     $pdf->cell(12,$alt,"Código"         ,1 , 0, "C", 1);
     $pdf->cell(25,$alt,$RLt52_ident     ,1 , 0, "C", 1);
-    $pdf->cell(80,$alt,$RLt52_descr     ,1 , 0, "C", 1);
-    $pdf->cell(20,$alt,$RLt64_class     ,1 , 0, "C", 1);
-    if ($lValor) {
-      $pdf->cell(65,$alt,$RLt64_descr   , 1, 0, "L", 1);
-    } else {
-      $pdf->cell(80, $alt, $RLt64_descr   , 1, 0, "L", 1);
-    }
-    $pdf->cell(20, $alt, $RLt52_dtaqu     , 1, 0, "C", 1);
-    $pdf->cell(25, $alt, "Situação do bem", 1, 0, "C", 1);
-    if ($lValor) {
 
-      $pdf->cell(15,$alt,"Definição"    , 1, 0, "C", 1);
-      $pdf->cell(15,$alt,"Valor"   , 1, 1, "L", 1);
+    $iCelula = 80 + ($lClassificacao ? 0 : 100) + ($lValor ? 0 : 15);
+
+    $pdf->cell($iCelula,$alt, $RLt52_descr     ,1 , 0, "C", 1);
+
+    if ($lClassificacao) {
+      $pdf->cell(20,$alt,$RLt64_class     ,1 , 0, "C", 1);
+      $pdf->cell(80,$alt,$RLt64_descr   , 1, 0, "L", 1);
+    }
+
+    $pdf->cell(20, $alt, $RLt52_dtaqu     , 1, 0, "C", 1);
+    $pdf->cell(25, $alt, "Situação do Bem", 1, 0, "C", 1);
+
+    if ($lValor) {
+      $pdf->cell(15,$alt,"Valor"   , 1, 1, "C", 1);
     } else {
-      $pdf->cell(15,$alt,"Definição"    , 1, 1, "C", 1);
+      $pdf->ln();
     }
+
     if ($opcao_obs == "S") {
-      $pdf->cell(277,$alt,"Características adicionais do bem",1,1,"L",1);
+      $pdf->cell(277,$alt,"Características Adicionais do Bem",1,1,"L",1);
     }
-    
+
     $lNovoCabecalho = false;
   }
 
   $pdf->setfont('arial','',7);
+
+  $iCelula = 80 + ($lClassificacao ? 0 : 100) + ($lValor ? 0 : 15);
+  $alt = ($pdf->NbLines($iCelula, $t52_descr) * $alt);
+
   $pdf->cell(12, $alt, $t52_bem,   0, 0, "C", 0);
   $pdf->cell(25, $alt, $t52_ident, 0, 0, "C", 0);
-  $pdf->cell(80, $alt, $t52_descr, 0, 0, "L", 0);
-  $pdf->cell(20, $alt, $t64_class, 0, 0, "C", 0);
-  if ($lValor) {
-    $pdf->cell(65,$alt,substr($t64_descr,0,48),0,0,"L",0);
-  } else {
-    $pdf->cell(80,$alt,$t64_descr,0,0,"L",0);
-  }   
+
+  $posicaoY = $pdf->getY();
+
+  $pdf->MultiCell($iCelula, 4, $t52_descr, 0, "L");
+
+  $pdf->setY($posicaoY);
+  $pdf->setX($iCelula + 15 + 25 + 7);
+
+  if ($lClassificacao) {
+    $pdf->cell(20, $alt, $t64_class, 0, 0, "C", 0);
+    $pdf->cell(80,$alt,substr($t64_descr,0,48),0,0,"L",0);
+  }
+
   $pdf->cell(20,$alt,db_formatar($t52_dtaqu ,'d'),0,0,"C",0);
   $pdf->cell(25,$alt,substr(@$t70_descr,0,48),0,0,"C",0);
-  if ($lValor) {
 
-    $pdf->cell(15,$alt,$tipo,0,0,"L",0);
+  if ($lValor) {
     $pdf->cell(15,$alt,db_formatar($t52_valaqu,"f") , 0, 1, "R", 0);
   } else {
-    $pdf->cell(15,$alt,$tipo,0,1,"L",0);
+    $pdf->ln();
   }
+
+  $alt = 4;
 
   if ($opcao_obs == "S") {
 
@@ -538,9 +592,23 @@ for ($x = 0; $x < pg_numrows($result); $x++) {
     $nSomaTotal += $t52_valaqu;
   }
   $total ++;
+  // plugin - TermoResponsabilidade: atribui valor a variável de controle de departamento
 }
 
-if ($pdf->gety() + 17 > $pdf->h - 30){
+if ($pdf->gety() + 5 > $pdf->h - 40) {
+
+  if ($posicao == "B") {
+
+    foreach ($aParagrafos as $oParagrafo) {
+
+      if ($oParagrafo->oParag->db02_tipo == libparagrafo::TIPO_CODIGO_PHP) {
+        eval($oParagrafo->oParag->db02_texto);
+      } else {
+        $pdf->multicell(277,5,$oParagrafo->oParag->db02_texto,0,"L");
+      }
+    }
+  }
+
   $pdf->addpage('L');
 }
 
@@ -554,49 +622,57 @@ if ($lValor) {
   $pdf->cell(277,$alt, "Total de Registros  :  $total", 'T',1,"R",0);
 }
 
+// plugin - TermoResponsabilidade: adicionada declaração e assinaturas
+
 if ($posicao == "B") {
 
-  for ($i = 0; $i < pg_numrows($res_paragrafos); $i++) {
+  foreach ($aParagrafos as $oParagrafo) {
 
-    db_fieldsmemory($res_paragrafos, $i);
-    $pdf->multicell(277,5,$db02_texto,0,"L");
+    if ($oParagrafo->oParag->db02_tipo == libparagrafo::TIPO_CODIGO_PHP) {
+      eval($oParagrafo->oParag->db02_texto);
+    } else {
+      $pdf->multicell(277,5,$oParagrafo->oParag->db02_texto,0,"L");
+    }
   }
 }
 
 $pdf->ln(10);
 
-// ASSINATURA NO RODAPE
+// Assinatura no rodapé
 if (!isset($ass)) {
 
-  $sqlparag  = "select db02_texto ";
-  $sqlparag .= "  from db_documento ";
-  $sqlparag .= "       inner join db_docparag on db03_docum = db04_docum ";
-  $sqlparag .= "       inner join db_tipodoc on db08_codigo  = db03_tipodoc ";
-  $sqlparag .= "       inner join db_paragrafo on db04_idparag = db02_idparag ";
-  $sqlparag .= " where db03_tipodoc = 1401 and db03_instit = " . db_getsession("DB_instit")." order by db04_ordem ";
+  $sSqlParagrafo  = "select db02_texto ";
+  $sSqlParagrafo .= "  from db_documento ";
+  $sSqlParagrafo .= "       inner join db_docparag on db03_docum = db04_docum ";
+  $sSqlParagrafo .= "       inner join db_tipodoc on db08_codigo  = db03_tipodoc ";
+  $sSqlParagrafo .= "       inner join db_paragrafo on db04_idparag = db02_idparag ";
+  $sSqlParagrafo .= " where db03_tipodoc = 1401 and db03_instit = " . db_getsession("DB_instit")." order by db04_ordem ";
 
-  $resparag = @db_query($sqlparag);
+  $oResourceParagrafo = @db_query($sSqlParagrafo);
 
-  if (@pg_numrows($resparag) > 0) {
+  if (@pg_numrows($oResourceParagrafo) > 0) {
 
-    db_fieldsmemory($resparag,0);
+    db_fieldsmemory($oResourceParagrafo, 0);
     eval($db02_texto);
 
   } else {
 
-    $sqlparagpadrao  = "select db61_texto ";
-    $sqlparagpadrao .= "  from db_documentopadrao ";
-    $sqlparagpadrao .= "       inner join db_docparagpadrao  on db62_coddoc   = db60_coddoc ";
-    $sqlparagpadrao .= "       inner join db_tipodoc         on db08_codigo   = db60_tipodoc ";
-    $sqlparagpadrao .= "       inner join db_paragrafopadrao on db61_codparag = db62_codparag ";
-    $sqlparagpadrao .= " where db60_tipodoc = 1401 and db60_instit = " . db_getsession("DB_instit")." order by db62_ordem";
+    $sSqlParagrafoPadrao  = "select db61_texto ";
+    $sSqlParagrafoPadrao .= "  from db_documentopadrao ";
+    $sSqlParagrafoPadrao .= "       inner join db_docparagpadrao  on db62_coddoc   = db60_coddoc ";
+    $sSqlParagrafoPadrao .= "       inner join db_tipodoc         on db08_codigo   = db60_tipodoc ";
+    $sSqlParagrafoPadrao .= "       inner join db_paragrafopadrao on db61_codparag = db62_codparag ";
+    $sSqlParagrafoPadrao .= " where db60_tipodoc = 1401 and db60_instit = " . db_getsession("DB_instit")." order by db62_ordem";
 
-    $resparagpadrao = @db_query($sqlparagpadrao);
-    if (@pg_numrows($resparagpadrao) > 0) {
-      db_fieldsmemory($resparagpadrao,0);
+    $oResourceParagrafoPadrao = @db_query($sSqlParagrafoPadrao);
 
+    if (@pg_numrows($oResourceParagrafoPadrao) > 0) {
+
+      db_fieldsmemory($oResourceParagrafoPadrao, 0);
       eval($db61_texto);
+
     }
+
   }
 
 } else {
@@ -606,4 +682,5 @@ if (!isset($ass)) {
   $pdf->MultiCell(270,$alt, $ass,'',"R");
 }
 
+Header('Content-disposition: inline; filename=termo_responsabilidade_' . time() . '.pdf');
 $pdf->output();

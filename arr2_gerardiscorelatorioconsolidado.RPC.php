@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once "libs/db_stdlib.php";
-require_once "libs/db_utils.php";
-require_once "libs/db_app.utils.php";
-require_once "libs/db_conecta.php";
-require_once "libs/db_sessoes.php";
-require_once "libs/db_libpessoal.php";
-require_once "dbforms/db_funcoes.php";
-require_once "libs/JSON.php";
-require_once "std/DBDate.php";
-require_once "std/db_stdClass.php";
-require_once "libs/exceptions/DBException.php";
-require_once "libs/exceptions/BusinessException.php";
-require_once "libs/exceptions/ParameterException.php";
-require_once "libs/exceptions/FileException.php";
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_utils.php");
+require_once modification("libs/db_app.utils.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_libpessoal.php");
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("libs/JSON.php");
+require_once modification("std/DBDate.php");
+require_once modification("std/db_stdClass.php");
+require_once modification("libs/exceptions/DBException.php");
+require_once modification("libs/exceptions/BusinessException.php");
+require_once modification("libs/exceptions/ParameterException.php");
+require_once modification("libs/exceptions/FileException.php");
 
 $oJson     = new services_json();
 $oParam    = $oJson->decode(str_replace("\\", "", $_POST["json"]));
@@ -186,7 +186,7 @@ try {
             $sSqlCancDebitosProc = $oCancDebitosProc->sql_query_debitos_cancelados($sCampos, null, $sWhere);
             
             $rsCancDebitosProc   = $oCancDebitosProc->sql_record($sSqlCancDebitosProc);
-            $aCancDebitosProc    = db_utils::getColectionByRecord($rsCancDebitosProc);
+            $aCancDebitosProc    = db_utils::getCollectionByRecord($rsCancDebitosProc);
             
             foreach ( $aCancDebitosProc as $oDebitoCancelado ) {
               
@@ -245,7 +245,7 @@ try {
             $sSqlArrePrescr      = $oArrePrescr->sql_query_divida_prescrita($sCampos, null, $sWhere);
            
             $rsDividasPrescritas = $oArrePrescr->sql_record($sSqlArrePrescr);
-            $aDividasPrescritas  = db_utils::getColectionByRecord($rsDividasPrescritas);
+            $aDividasPrescritas  = db_utils::getCollectionByRecord($rsDividasPrescritas);
             
             foreach ( $aDividasPrescritas as $oDividasPrescritas ) {
               
@@ -379,7 +379,7 @@ try {
                                                                   db_formatar($oParam->dPeriodoFinal, "xxxv"));
            
            $rsDescontosCotaUnica = $oDaoReciboPaga->sql_record($sSqldescontoConcedUnica);
-           $aDescontosCotaUnica  = db_utils::getColectionByRecord($rsDescontosCotaUnica);
+           $aDescontosCotaUnica  = db_utils::getCollectionByRecord($rsDescontosCotaUnica);
            
            $aDadosDesconto = array();
            

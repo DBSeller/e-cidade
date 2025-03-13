@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_arrecant_classe.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_arrehist_classe.php");
-require_once("classes/db_cancdebitos_classe.php");
-require_once("classes/db_cancdebitosprot_classe.php");
-require_once("classes/db_cancdebitosreg_classe.php");
-require_once("classes/db_cancdebitossusp_classe.php");
-require_once("classes/db_cancdebitosproc_classe.php");
-require_once("classes/db_cancdebitosprocreg_classe.php");
-require_once("classes/db_cancdebitosconcarpeculiar_classe.php");
-require_once("classes/db_cancdebitosprocconcarpeculiar_classe.php");
-require_once("model/cancelamentoDebitos.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_arrecant_classe.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_arrehist_classe.php"));
+require_once(modification("classes/db_cancdebitos_classe.php"));
+require_once(modification("classes/db_cancdebitosprot_classe.php"));
+require_once(modification("classes/db_cancdebitosreg_classe.php"));
+require_once(modification("classes/db_cancdebitossusp_classe.php"));
+require_once(modification("classes/db_cancdebitosproc_classe.php"));
+require_once(modification("classes/db_cancdebitosprocreg_classe.php"));
+require_once(modification("classes/db_cancdebitosconcarpeculiar_classe.php"));
+require_once(modification("classes/db_cancdebitosprocconcarpeculiar_classe.php"));
+require_once(modification("model/cancelamentoDebitos.model.php"));
 
 $clarrecad                       = new cl_arrecad;
 $clarrecant                      = new cl_arrecant;
@@ -183,7 +183,7 @@ if (isset ($chavepesquisa)){
 <br><br>
 <center>
 <?
-require_once("forms/db_frmcanccancproc.php");
+require_once(modification("forms/db_frmcanccancproc.php"));
 ?>
 </center>
 </td>

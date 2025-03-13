@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
 <head>
@@ -112,7 +112,7 @@ input {
                      on a.codarq = am.codarq
                      $qr
                      order by codmod";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);
   $RecordsetTabMod = $result;
   if($numrows == 0) {
@@ -135,25 +135,25 @@ input {
     fputs($fd1,"<?\n");
     for($i = 0;$i < $numrows;$i++) {
 	  $varpk = ""; 
-      $pk = pg_exec("select a.nomearq,c.nomecam,p.sequen
+      $pk = db_query("select a.nomearq,c.nomecam,p.sequen
                        from db_sysprikey p
                             inner join db_sysarquivo a on a.codarq = p.codarq
                             inner join db_syscampo c   on c.codcam = p.codcam
                        where a.codarq = ".pg_result($result,$i,"codarq")."
 		       order by p.sequen");
-      $campo = pg_exec("select c.*
+      $campo = db_query("select c.*
                           from db_syscampo c
                                inner join db_sysarqcamp a   on a.codcam = c.codcam
                           where codarq = ".pg_result($result,$i,"codarq").
 			              " order by a.seqarq");
 	  $Ncampos = pg_numrows($campo);
 	  if($Ncampos > 0) {
-        fputs($fd1,'require("libs/db_stdlib.php");'."\n");
-        fputs($fd1,'require("libs/db_conecta.php");'."\n");
-        fputs($fd1,'include("libs/db_sessoes.php");'."\n");
-        fputs($fd1,'include("libs/db_usuariosonline.php");'."\n");
-        fputs($fd1,'include("classes/db_'.trim(pg_result($result,$i,"nomearq")).'_classe.php");'."\n");
-        fputs($fd1,'include("dbforms/db_funcoes.php");'."\n");
+        fputs($fd1,'require(modification("libs/db_stdlib.php"));'."\n");
+        fputs($fd1,'require(modification("libs/db_conecta.php"));'."\n");
+        fputs($fd1,'include(modification("libs/db_sessoes.php"));'."\n");
+        fputs($fd1,'include(modification("libs/db_usuariosonline.php"));'."\n");
+        fputs($fd1,'include(modification("classes/db_'.trim(pg_result($result,$i,"nomearq"))).'_classe.php");'."\n");
+        fputs($fd1,'include(modification("dbforms/db_funcoes.php"));'."\n");
         fputs($fd1,'db_postmemory($HTTP_SERVER_VARS);'."\n");
         fputs($fd1,'db_postmemory($HTTP_POST_VARS);'."\n");
         fputs($fd1,'$cl'.trim(pg_result($result,$i,"nomearq")).' = new cl_'.trim(pg_result($result,$i,"nomearq")).';'."\n");
@@ -197,7 +197,7 @@ input {
         fputs($fd1,'    <td height="100%" align="left" valign="top" bgcolor="#CCCCCC"> '."\n");
         fputs($fd1,'    <center>'."\n");
         fputs($fd1,'	<?'."\n");
-        fputs($fd1,'	include("forms/db_frm'.trim(pg_result($result,$i,"nomearq")).'.php");'."\n");
+        fputs($fd1,'	include(modification("forms/db_frm'.trim(pg_result($result,$i,"nomearq"))).'.php");'."\n");
         fputs($fd1,'	?>'."\n");
         fputs($fd1,'    </center>'."\n");
         fputs($fd1,'	</td>'."\n");
@@ -244,12 +244,12 @@ input {
     fputs($fd2,"<?\n");
     for($i = 0;$i < $numrows;$i++) {
 	  if($Ncampos > 0) {
-        fputs($fd2,'require("libs/db_stdlib.php");'."\n");
-        fputs($fd2,'require("libs/db_conecta.php");'."\n");
-        fputs($fd2,'include("libs/db_sessoes.php");'."\n");
-        fputs($fd2,'include("libs/db_usuariosonline.php");'."\n");
-        fputs($fd2,'include("classes/db_'.trim(pg_result($result,$i,"nomearq")).'_classe.php");'."\n");
-        fputs($fd2,'include("dbforms/db_funcoes.php");'."\n");
+        fputs($fd2,'require(modification("libs/db_stdlib.php"));'."\n");
+        fputs($fd2,'require(modification("libs/db_conecta.php"));'."\n");
+        fputs($fd2,'include(modification("libs/db_sessoes.php"));'."\n");
+        fputs($fd2,'include(modification("libs/db_usuariosonline.php"));'."\n");
+        fputs($fd2,'include(modification("classes/db_'.trim(pg_result($result,$i,"nomearq"))).'_classe.php");'."\n");
+        fputs($fd2,'include(modification("dbforms/db_funcoes.php"));'."\n");
         fputs($fd2,'db_postmemory($HTTP_SERVER_VARS);'."\n");
         fputs($fd2,'db_postmemory($HTTP_POST_VARS);'."\n");
         fputs($fd2,'$cl'.trim(pg_result($result,$i,"nomearq")).' = new cl_'.trim(pg_result($result,$i,"nomearq")).';'."\n");
@@ -314,7 +314,7 @@ input {
         fputs($fd2,'    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> '."\n");
         fputs($fd2,'    <center>'."\n");
         fputs($fd2,'	<?'."\n");
-        fputs($fd2,'	include("forms/db_frm'.trim(pg_result($result,$i,"nomearq")).'.php");'."\n");
+        fputs($fd2,'	include(modification("forms/db_frm'.trim(pg_result($result,$i,"nomearq"))).'.php");'."\n");
         fputs($fd2,'	?>'."\n");
         fputs($fd2,'    </center>'."\n");
         fputs($fd2,'	</td>'."\n");
@@ -345,12 +345,12 @@ input {
     fputs($fd3,"<?\n");
     for($i = 0;$i < $numrows;$i++) {
 	  if($Ncampos > 0) {
-        fputs($fd3,'require("libs/db_stdlib.php");'."\n");
-        fputs($fd3,'require("libs/db_conecta.php");'."\n");
-        fputs($fd3,'include("libs/db_sessoes.php");'."\n");
-        fputs($fd3,'include("libs/db_usuariosonline.php");'."\n");
-        fputs($fd3,'include("classes/db_'.trim(pg_result($result,$i,"nomearq")).'_classe.php");'."\n");
-        fputs($fd3,'include("dbforms/db_funcoes.php");'."\n");
+        fputs($fd3,'require(modification("libs/db_stdlib.php"));'."\n");
+        fputs($fd3,'require(modification("libs/db_conecta.php"));'."\n");
+        fputs($fd3,'include(modification("libs/db_sessoes.php"));'."\n");
+        fputs($fd3,'include(modification("libs/db_usuariosonline.php"));'."\n");
+        fputs($fd3,'include(modification("classes/db_'.trim(pg_result($result,$i,"nomearq"))).'_classe.php");'."\n");
+        fputs($fd3,'include(modification("dbforms/db_funcoes.php"));'."\n");
         fputs($fd3,'db_postmemory($HTTP_SERVER_VARS);'."\n");
         fputs($fd3,'db_postmemory($HTTP_POST_VARS);'."\n");
         fputs($fd3,'$cl'.trim(pg_result($result,$i,"nomearq")).' = new cl_'.trim(pg_result($result,$i,"nomearq")).';'."\n");
@@ -418,7 +418,7 @@ input {
         fputs($fd3,'    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> '."\n");
         fputs($fd3,'    <center>'."\n");
         fputs($fd3,'	<?'."\n");
-        fputs($fd3,'	include("forms/db_frm'.trim(pg_result($result,$i,"nomearq")).'.php");'."\n");
+        fputs($fd3,'	include(modification("forms/db_frm'.trim(pg_result($result,$i,"nomearq"))).'.php");'."\n");
         fputs($fd3,'	?>'."\n");
 		
         fputs($fd3,'    </center>'."\n");

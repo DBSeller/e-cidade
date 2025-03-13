@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_jsplibwebseller.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("dbforms/db_funcoes.php");
-require_once("sau4_atualizacao002.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("sau4_atualizacao002.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -375,7 +375,7 @@ function js_pesquisasd98_i_fechamento(mostra) {
 
   if (mostra == true) {
 
-     js_OpenJanelaIframe('top.corpo', 'db_iframe_sau_fechamento', 'func_sau_fechamento.php?'+
+     js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_sau_fechamento', 'func_sau_fechamento.php?'+
                          'funcao_js=parent.js_mostrasau_fechamento1|sd97_i_compmes|sd97_i_compano', 
                          'Pesquisa', true
                         );
@@ -384,7 +384,7 @@ function js_pesquisasd98_i_fechamento(mostra) {
 
     if (document.form1.sd98_i_fechamento.value != '') {
 
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_sau_fechamento', 'func_sau_fechamento.php?pesquisa_chave='+
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_sau_fechamento', 'func_sau_fechamento.php?pesquisa_chave='+
                           document.form1.sd98_i_fechamento.value+'&funcao_js=parent.js_mostrasau_fechamento', 
                           'Pesquisa', false
                          );
@@ -440,10 +440,23 @@ function iniciabarra(linhas) {
 
 <?
 
+
+function delTree($dir) {
+
+    $files = array_diff(scandir($dir), array('.','..'));
+
+    foreach ($files as $file) {
+        (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+    }
+
+    return rmdir($dir);
+}
+
 //Valida botão UPLOAD
 if (isset($upload)) {
   
   $sDestino = "tmp/".substr($_FILES['origem']['name'], 0, 22);
+  delTree($sDestino);
   @mkdir($sDestino);
 
   if (file_exists("bin/unzip")) {
@@ -885,7 +898,7 @@ if (isset($processar)) {
               $sStrInsert  = "insert into ".$aTabela[$iContArq]["tabela"]." (";                       
               $sStrInsert .= $aTabela[$iContArq]["campos"]." ) ";           
               $sStrInsert .= "values ( ".$aTabela[$iContArq]["nextval"].", ".$sStrValues." );";
-              $lRetornoIns = @pg_query($sStrInsert); 
+              $lRetornoIns = @db_query($sStrInsert); 
               if ($lRetornoIns == false) {
 
                 db_msgbox("Arquivo: $sArqTb \\nTabela: ".$aTabela[$iContArq]["tabela"]." \\n\\n".pg_errormessage());

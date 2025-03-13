@@ -1,0 +1,132 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo="1010330" name="escola.confirmacaorematricula" description="Renovação de Matrícula" prefix="edu01"
+       label="Renovação de Matrícula" type="0">
+    <fields>
+        <field codigo="1010033"
+               campo_api=""
+               name="edu01_sequencial"
+               conteudo="int4"
+               description="Sequencial"
+               inivalue="0"
+               label="Sequencial"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Sequencial"
+               reference=""
+               ispk="t"
+               hassequence="t">
+            <sequence name='escola.confirmacaorematricula_edu01_sequencial_seq'/>
+        </field>
+        <field codigo="1010034"
+               campo_api=""
+               name="edu01_escola"
+               conteudo="int4"
+               description="Escola"
+               inivalue="0"
+               label="Escola"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Escola"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+        <field codigo="1010035"
+               campo_api=""
+               name="edu01_calendario"
+               conteudo="int4"
+               description="Calendário"
+               inivalue="0"
+               label="Calendário"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Calendário"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+        <field codigo="1010036"
+               campo_api=""
+               name="edu01_turma"
+               conteudo="int4"
+               description="Turma"
+               inivalue="0"
+               label="Turma"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Turma"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+        <field codigo="1010037"
+               campo_api=""
+               name="edu01_aluno"
+               conteudo="int4"
+               description="Aluno"
+               inivalue="0"
+               label="Aluno"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Aluno"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+        <field codigo="1010038"
+               campo_api=""
+               name="edu01_criado_em"
+               conteudo="date"
+               description="Criado Em"
+               inivalue="0"
+               label="Criado Em"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Criado Em"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+    </fields>
+    <primarykey>
+        <fieldpk name="edu01_sequencial"/>
+    </primarykey>
+    <foreignkeys>
+        <foreignkey reference="escola" inner="t">
+            <fieldfk name="edu01_escola" reference="ed18_i_codigo"/>
+        </foreignkey>
+        <foreignkey reference="aluno" inner="t">
+            <fieldfk name="edu01_aluno" reference="ed47_i_codigo"/>
+        </foreignkey>
+        <foreignkey reference="calendario" inner="t">
+            <fieldfk name="edu01_calendario" reference="ed52_i_codigo"/>
+        </foreignkey>
+        <foreignkey reference="turma" inner="t">
+            <fieldfk name="edu01_turma" reference="ed57_i_codigo"/>
+        </foreignkey>
+    </foreignkeys>
+</table>

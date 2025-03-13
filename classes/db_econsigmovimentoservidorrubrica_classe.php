@@ -1,27 +1,27 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
  *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
  *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
  *  02111-1307, USA.                                                  
  *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
 
@@ -212,7 +212,7 @@ class cl_econsigmovimentoservidorrubrica {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($rh135_sequencial=null) { 
+   public function alterar ($rh135_sequencial=null) { 
       $this->atualizacampos();
      $sql = " update econsigmovimentoservidorrubrica set ";
      $virgula = "";
@@ -290,29 +290,29 @@ class cl_econsigmovimentoservidorrubrica {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->rh135_sequencial));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,20450,'$this->rh135_sequencial','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh135_sequencial"]) || $this->rh135_sequencial != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh135_sequencial"]) || $this->rh135_sequencial != "")
              $resac = db_query("insert into db_acount values($acount,3677,20450,'".AddSlashes(pg_result($resaco,$conresaco,'rh135_sequencial'))."','$this->rh135_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh135_econsigmovimentoservidor"]) || $this->rh135_econsigmovimentoservidor != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh135_econsigmovimentoservidor"]) || $this->rh135_econsigmovimentoservidor != "")
              $resac = db_query("insert into db_acount values($acount,3677,20451,'".AddSlashes(pg_result($resaco,$conresaco,'rh135_econsigmovimentoservidor'))."','$this->rh135_econsigmovimentoservidor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh135_rubrica"]) || $this->rh135_rubrica != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh135_rubrica"]) || $this->rh135_rubrica != "")
              $resac = db_query("insert into db_acount values($acount,3677,20452,'".AddSlashes(pg_result($resaco,$conresaco,'rh135_rubrica'))."','$this->rh135_rubrica',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh135_instit"]) || $this->rh135_instit != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh135_instit"]) || $this->rh135_instit != "")
              $resac = db_query("insert into db_acount values($acount,3677,20453,'".AddSlashes(pg_result($resaco,$conresaco,'rh135_instit'))."','$this->rh135_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh135_valor"]) || $this->rh135_valor != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh135_valor"]) || $this->rh135_valor != "")
              $resac = db_query("insert into db_acount values($acount,3677,20456,'".AddSlashes(pg_result($resaco,$conresaco,'rh135_valor'))."','$this->rh135_valor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "E-CONSIG Movimento Servidor Rubrica nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->rh135_sequencial;
@@ -321,8 +321,8 @@ class cl_econsigmovimentoservidorrubrica {
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
          $this->erro_sql = "E-CONSIG Movimento Servidor Rubrica nao foi Alterado. Alteracao Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->rh135_sequencial;
@@ -331,7 +331,7 @@ class cl_econsigmovimentoservidorrubrica {
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Alteração efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->rh135_sequencial;
@@ -344,13 +344,13 @@ class cl_econsigmovimentoservidorrubrica {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($rh135_sequencial=null,$dbwhere=null) { 
+   public function excluir ($rh135_sequencial=null,$dbwhere=null) { 
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($rh135_sequencial));
        } else { 
@@ -375,18 +375,18 @@ class cl_econsigmovimentoservidorrubrica {
      $sql = " delete from econsigmovimentoservidorrubrica
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($rh135_sequencial != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($rh135_sequencial)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " rh135_sequencial = $rh135_sequencial ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "E-CONSIG Movimento Servidor Rubrica nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$rh135_sequencial;
@@ -395,8 +395,8 @@ class cl_econsigmovimentoservidorrubrica {
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
          $this->erro_sql = "E-CONSIG Movimento Servidor Rubrica nao Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$rh135_sequencial;
@@ -405,7 +405,7 @@ class cl_econsigmovimentoservidorrubrica {
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$rh135_sequencial;
@@ -418,9 +418,9 @@ class cl_econsigmovimentoservidorrubrica {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -429,8 +429,8 @@ class cl_econsigmovimentoservidorrubrica {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:econsigmovimentoservidorrubrica";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -441,81 +441,47 @@ class cl_econsigmovimentoservidorrubrica {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $rh135_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from econsigmovimentoservidorrubrica ";
+   public function sql_query ($rh135_sequencial = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from econsigmovimentoservidorrubrica ";
      $sql .= "      inner join db_config  on  db_config.codigo = econsigmovimentoservidorrubrica.rh135_instit";
-     $sql .= "      inner join rhrubricas  on  rhrubricas.rh27_rubric = econsigmovimentoservidorrubrica.rh135_rubrica and  rhrubricas.rh27_instit = econsigmovimentoservidorrubrica.rh135_instit";
      $sql .= "      inner join econsigmovimentoservidor  on  econsigmovimentoservidor.rh134_sequencial = econsigmovimentoservidorrubrica.rh135_econsigmovimentoservidor";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = db_config.numcgm";
      $sql .= "      inner join db_tipoinstit  on  db_tipoinstit.db21_codtipo = db_config.db21_tipoinstit";
-     $sql .= "      inner join db_config  on  db_config.codigo = rhrubricas.rh27_instit";
-     $sql .= "      inner join rhtipomedia  on  rhtipomedia.rh29_tipo = rhrubricas.rh27_calc1";
-     $sql .= "      inner join rhpessoal  on  rhpessoal.rh01_regist = econsigmovimentoservidor.rh134_regist";
      $sql .= "      inner join econsigmovimento  as a on   a.rh133_sequencial = econsigmovimentoservidor.rh134_econsigmovimento";
+     $sql .= "      left  join econsigmotivo  on  econsigmotivo.rh147_sequencial = econsigmovimentoservidor.rh134_econsigmotivo";
      $sql2 = "";
-     if($dbwhere==""){
-       if($rh135_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($rh135_sequencial)) {
          $sql2 .= " where econsigmovimentoservidorrubrica.rh135_sequencial = $rh135_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $rh135_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from econsigmovimentoservidorrubrica ";
+   public function sql_query_file ($rh135_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from econsigmovimentoservidorrubrica ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($rh135_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($rh135_sequencial)){
          $sql2 .= " where econsigmovimentoservidorrubrica.rh135_sequencial = $rh135_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
 }
-?>

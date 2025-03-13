@@ -1,0 +1,14 @@
+[
+    {"value" : "1", "label" : "1 - Janeiro"},
+    {"value" : "2", "label" : "2 - Fevereiro"},
+    {"value" : "3", "label" : "3 - Março"},
+    {"value" : "4", "label" : "4 - Abril"},
+    {"value" : "5", "label" : "5 - Maio"},
+    {"value" : "6", "label" : "6 - Junho"},
+    {"value" : "7", "label" : "7 - Julho"},
+    {"value" : "8", "label" : "8 - Agosto"},
+    {"value" : "9", "label" : "9 - Setembro"},
+    {"value" : "10", "label" : "10 - Outubro"},
+    {"value" : "11", "label" : "11 - Novembro"},
+    {"value" : "12", "label" : "12 - Dezembro"}
+]

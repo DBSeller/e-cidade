@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -132,7 +132,7 @@ function js_getCgsCns() {
 
 function js_retornogetCgsCns(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.z01_i_cgsund == '') {
 
@@ -172,7 +172,7 @@ function js_proximaAba() {
   if (document.form1.vc16_i_cgs.value != '') {
 
     parent.document.formaba.a2.disabled = false;
-    top.corpo.iframe_a2.location.href   = 'vac4_vac_aplica005.php?iCgs='+document.form1.vc16_i_cgs.value+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'vac4_vac_aplica005.php?iCgs='+document.form1.vc16_i_cgs.value+
                                           '&z01_v_nome='+document.form1.z01_v_nome.value+
                                           '&idade='+document.form1.iIdade.value;
     parent.mo_camada('a2');
@@ -247,7 +247,7 @@ function js_mostra_cgs(chave1, chave2, sexo, nasc, mae) {
 
 function js_retornoIdade(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
  
   if (oRetorno.iStatus == 1) {
     $('iIdade').value = oRetorno.iAnos+' anos, '+oRetorno.iMeses+' meses e '+oRetorno.iDias+' dias.';

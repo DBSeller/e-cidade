@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <modification>
+  <file path="model/pessoal/ProcessamentoPonto.model.php">
+
+    <operation>
+      <search><![CDATA[$oDadosPonto = $this->getDadosPonto();]]></search>
+      <add position="before"><![CDATA[
+ArquivoConsignetRepository::importarPrePonto();
+        ]]></add>
+    </operation>
+
+  </file>
+
+  <file path="pes4_processamentodadosponto.RPC.php">
+
+    <operation>
+      <search><![CDATA[require_once ("libs/JSON.php");]]></search>
+      <add position="after"><![CDATA[
+require_once( Modification::getFile("model/pessoal/ProcessamentoPonto.model.php") );
+        ]]></add>
+    </operation>
+
+  </file>
+</modification> -->

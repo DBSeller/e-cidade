@@ -4,7 +4,7 @@ require_once("scripts/classes/DBViewLancamentoAvaliacao/DBViewLancamentoAvaliaca
  * Monta um select-multiple com os alunos da turma
  * @dependency Utiliza DBViewLancamentoAvaliacao.classe.js
  * @autor Fábio Esteves <fabio.esteves@dbseller.com.br>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.10 $
  *
  * @param {integer} iTurma código da turma
  * @param {integer} iEtapa código da etapa
@@ -24,7 +24,6 @@ DBViewAvaliacao.AlunoTurma = function (iTurma, iEtapa, lMultiple) {
    */
   this.iEtapa = iEtapa;
 
-
   /**
    * define se vai buscar alunos encerrados
    * @type {Boolean}
@@ -32,10 +31,29 @@ DBViewAvaliacao.AlunoTurma = function (iTurma, iEtapa, lMultiple) {
   this.lTrazerAlunosEncerrados = true;
 
   /**
+   * Define se devem ser carregados somente alunos com de origem de fora da rede, ou seja, com matrícula posterior a
+   * data de início do primeiro período do calendário
+   * @type {boolean}
+   */
+  this.lSomenteAlunosOrigemForaRede = false;
+  
+  /**
+   * Define se devem ser carregados somente alunos com data de matrícula maior que o primeiro período do calendário
+   * @type {boolean}
+   */
+  this.lMatriculaMaiorPrimeiroPeriodoCalendario = false;
+
+  /**
    * RPC para as requisições
    * @var {string}
    */
   this.sUrlRPC = 'edu4_turmas.RPC.php';
+
+  /**
+   * Coleção com os elementos selecionados
+   * @type {Array}
+   */
+  this.aElementosSelecionados = [];
 
   if (lMultiple == null) {
     lMultiple = false;
@@ -60,10 +78,8 @@ DBViewAvaliacao.AlunoTurma = function (iTurma, iEtapa, lMultiple) {
  * @returns void
  */
 DBViewAvaliacao.AlunoTurma.prototype.setAltura = function (sAltura) {
-
   this.oCboAlunos.style.height = sAltura;
 };
-
 
 /**
  * Define a largura do comboBox
@@ -74,11 +90,8 @@ DBViewAvaliacao.AlunoTurma.prototype.setAltura = function (sAltura) {
  * @returns void
  */
 DBViewAvaliacao.AlunoTurma.prototype.setLargura = function (sLargura) {
-
   this.oCboAlunos.style.width = sLargura;
 };
-
-
 
 /**
  * Adiciona uma classe css ao Elemento
@@ -89,7 +102,6 @@ DBViewAvaliacao.AlunoTurma.prototype.setLargura = function (sLargura) {
  * @returns void
  */
 DBViewAvaliacao.AlunoTurma.prototype.adicionaClasseCSS = function (sClass) {
-
   this.oCboAlunos.addClassName(sClass);
 };
 
@@ -101,10 +113,8 @@ DBViewAvaliacao.AlunoTurma.prototype.adicionaClasseCSS = function (sClass) {
  * @returns void
  */
 DBViewAvaliacao.AlunoTurma.prototype.trocarID = function (sID) {
-
   this.oCboAlunos.id = sId;
 };
-
 
 /**
  * Adiciona uma função para ser executada no event onchange
@@ -118,18 +128,19 @@ DBViewAvaliacao.AlunoTurma.prototype.onChangeCallBack = function (fFunction, sSc
   });
 };
 
-
 /**
  * Busca os alunos para preenchimento do select
  */
 DBViewAvaliacao.AlunoTurma.prototype.buscaAlunos = function () {
 
-  var oSelf                               = this;
-  var oParametros                         = new Object();
-      oParametros.exec                    = 'pesquisaAlunosTurma';
-      oParametros.iTurma                  = this.iTurma;
-      oParametros.iEtapa                  = this.iEtapa;
-      oParametros.lTrazerAlunosEncerrados = this.lTrazerAlunosEncerrados;
+  var oSelf                                               = this;
+  var oParametros                                         = new Object();
+      oParametros.exec                                    = 'pesquisaAlunosTurma';
+      oParametros.iTurma                                  = this.iTurma;
+      oParametros.iEtapa                                  = this.iEtapa;
+      oParametros.lTrazerAlunosEncerrados                 = this.lTrazerAlunosEncerrados;
+      oParametros.lSomenteAlunosOrigemForaRede            = this.lSomenteAlunosOrigemForaRede;
+      oParametros.lMatriculaMaiorPrimeiroPeriodoCalendario = this.lMatriculaMaiorPrimeiroPeriodoCalendario;
 
   var oDadosRequisicao            = new Object();
       oDadosRequisicao.method     = 'post';
@@ -148,16 +159,20 @@ DBViewAvaliacao.AlunoTurma.prototype.buscaAlunos = function () {
  */
 DBViewAvaliacao.AlunoTurma.prototype.retornoBuscaAlunos = function (oResponse) {
 
-
   js_removeObj("msgBoxA");
   var oSelf    = this;
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
+
+  oSelf.oCboAlunos.add(new Option("Selecione", ""));
 
   if (oRetorno.aAlunos.length > 0) {
 
-    oSelf.oCboAlunos.add(new Option("Selecione", ""));
-    oRetorno.aAlunos.each(function(oAluno) {
+    oSelf.oCboAlunos.options[0].setAttribute( 'data_matricula', '' );
+
+    oRetorno.aAlunos.each(function(oAluno, iSeq) {
+
       oSelf.oCboAlunos.add(new Option(oAluno.sNome.urlDecode(), oAluno.iMatricula));
+      oSelf.oCboAlunos.options[ iSeq + 1 ].setAttribute( 'data_matricula', oAluno.dtMatricula.urlDecode() );
     });
   }
 };
@@ -168,13 +183,18 @@ DBViewAvaliacao.AlunoTurma.prototype.retornoBuscaAlunos = function (oResponse) {
  */
 DBViewAvaliacao.AlunoTurma.prototype.getSelecionados = function() {
 
-  var aSelecionados = new Array();
-  var iOptions = this.oCboAlunos.options.length;
+  var aSelecionados                  = new Array();
+  var iOptions                       = this.oCboAlunos.options.length;
+  this.aElementosSelecionados.length = 0;
+
   for (var i = 0; i < iOptions; i++) {
 
     if (this.oCboAlunos.options[i].selected) {
+
+      this.aElementosSelecionados.push( this.oCboAlunos.options[i] );
       aSelecionados.push(this.oCboAlunos.options[i].value);
     }
+
   }
 
   return aSelecionados;
@@ -208,4 +228,27 @@ DBViewAvaliacao.AlunoTurma.prototype.removerSelecao = function() {
   for (var i = 0; i < iOptions; i++) {
     this.oCboAlunos.options[i].selected = false;
   }
+};
+
+/**
+ * Retorna um array com os elementos selecionados
+ * @returns {Array}
+ */
+DBViewAvaliacao.AlunoTurma.prototype.getElementosSelecionados = function() {
+
+  this.getSelecionados();
+  return this.aElementosSelecionados;
+};
+
+/**
+ * Seta se devem ser apresentados somente alunos com origem fora da rede, ou seja, com matrícula posterior a data de
+ * início ao primeiro período do calendário
+ * @param lSomenteAlunosOrigemForaRede
+ */
+DBViewAvaliacao.AlunoTurma.prototype.somenteAlunosOrigemForaRede = function( lSomenteAlunosOrigemForaRede ) {
+  this.lSomenteAlunosOrigemForaRede = lSomenteAlunosOrigemForaRede;
+};
+
+DBViewAvaliacao.AlunoTurma.prototype.matriculaMaiorPrimeiroPeriodoCalendario = function( lMatriculaMaiorPrimeiroPeriodoCalendario ) {
+  this.lMatriculaMaiorPrimeiroPeriodoCalendario = lMatriculaMaiorPrimeiroPeriodoCalendario;
 };

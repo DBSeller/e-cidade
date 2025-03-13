@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_solicita_classe.php");
-include("classes/db_solicitatipo_classe.php");
-include("classes/db_solicitem_classe.php");
-include("classes/db_pcdotac_classe.php");
-include("classes/db_pctipocompra_classe.php");
-include("classes/db_db_depart_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_solicita_classe.php"));
+include(modification("classes/db_solicitatipo_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_pctipocompra_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
 $clsolicita     = new cl_solicita;
 $clsolicitatipo = new cl_solicitatipo;
 $clsolicitem    = new cl_solicitem;
@@ -51,85 +51,104 @@ $info   = "";
 $sAcumulador = "";
 $sVirgula    = "";
 
-function monta_where($inp="",$par="",$descr_inp=""){
-  global $and;
-  $param_autoriza = "";
-  $where_autorizacao = "";
-  if(isset($inp) && trim($inp)!=""){
-    if($par == "S"){
-      $param_autoriza = " in ";
-    }else if($par == "N"){
-      $param_autoriza = " not in ";
+$condicoes = [];
+
+function montaQueryBetween($campo, $arg1, $arg2) {
+    return "{$campo} BETWEEN '{$arg1}' AND '{$arg2}'";
+}
+
+function montaQueryEquals($campo, $arg) {
+    return "{$campo} = '{$arg}'";
+}
+
+function montaQueryIn($campo, $arg, $notIn = false) {
+
+    if ($notIn === false) {
+        return "{$campo} NOT IN ({$arg})";
     }
-    $where_autorizacao .= $and.$descr_inp.$param_autoriza." (".$inp.") ";
-    $and = " and ";
-  }
-  return $where_autorizacao;
+
+    return "{$campo} IN ({$arg})";
 }
 
-$wsolicita = monta_where(@$inp_depart,@$par_depart ," pc10_depto ");
-if(isset($pc10_dataINI_dia) && trim($pc10_dataINI_dia)!="" && isset($pc10_dataINI_mes) && trim($pc10_dataINI_mes)!="" && isset($pc10_dataINI_ano) && trim($pc10_dataINI_ano)!=""){
-  $dt_ini = $pc10_dataINI_ano."-".$pc10_dataINI_mes."-".$pc10_dataINI_dia;
-}
-if(isset($pc10_dataFIM_dia) && trim($pc10_dataFIM_dia)!="" && isset($pc10_dataFIM_mes) && trim($pc10_dataFIM_mes)!="" && isset($pc10_dataFIM_ano) && trim($pc10_dataFIM_ano)!=""){
-  $dt_fim = $pc10_dataFIM_ano."-".$pc10_dataFIM_mes."-".$pc10_dataFIM_dia;
-}
-$msg_head = '';
-if(isset($dt_ini) && trim($dt_ini)!="" || isset($dt_fim) && trim($dt_fim)!=""){
-  if(isset($dt_ini) && isset($dt_fim)){
-    $wsolicita = $wsolicita . $and ." pc10_data between '".$dt_ini."' and '".$dt_fim."' ";
-    $msg_head  = "Período de solicitação entre ".db_formatar($dt_ini,"d")." e ".db_formatar($dt_fim,"d");
-  }else if(isset($dt_ini)){
-    $wsolicita = $wsolicita . $and ." pc10_data >= '".$dt_ini."' ";
-    $msg_head  = "Período de solicitação posterior a ".db_formatar($dt_ini,"d");
-  }else if(isset($dt_fim)){
-    $wsolicita = $wsolicita . $and ." pc10_data <= '". $dt_fim."' ";
-    $msg_head  = "Período de solicitação anterior a ".db_formatar($dt_fim,"d");
-  }
-  $and = " and ";
-}
-$wtipcompra = monta_where(@$inp_tipcom,@$par_tipcom," pc12_tipo ");
-$wmateriais = monta_where($inp_mater ,$par_mater ," pc16_codmater  ");
-$wdotacoes  = monta_where($inp_dotac ,$par_dotac ," pc13_coddot ");
-if(isset($wsolicita) && trim($wsolicita)!=""){
-  $where .= $wsolicita;
-}
-if(isset($pc10_numeroINI) && $pc10_numeroINI!="" || isset($pc10_numeroFIM) && $pc10_numeroFIM!=""){
-  $where_param = "";
-  if(isset($pc10_numeroINI) && isset($pc10_numeroFIM)){
-    $where_param = " pc10_numero between $pc10_numeroINI and $pc10_numeroFIM ";    
-  }else if($pc10_numeroINI){
-    $where_param = " pc10_numero >= $pc10_numeroINI ";
-  }else if($pc10_numeroFIM){
-    $where_param = " pc10_numero <= $pc10_numeroFIM ";
-  }
-  $where .= $and.$where_param;
-}
-if(isset($wtipcompra) && trim($wtipcompra)!=""){
-  $where .= $wtipcompra;
-}
-if(isset($wmateriais) && trim($wmateriais)!=""){
-  $where .= $wmateriais;
-}
-if(isset($wdotacoes) && trim($wdotacoes)!=""){
-  $where .= $wdotacoes;
+function montaQueryNotIn($campo, $arg) {
+    return "{$campo} NOT IN ({$arg})";
 }
 
-$mostra_aut = false;
-if ($situacao=="T"){
-     $mostra_aut = true;
-} else if ($situacao=="N"){
-     if (strlen($where) > 0){
-          $where .= " and ";
-     }
-     $where .= "e55_autori is null";
-} else if ($situacao=="A"){
-     if (strlen($where) > 0){
-          $where .= " and ";
-     }
-     $where .= "e55_autori is not null";
-     $mostra_aut = true;
+function montaQueryNull($campo, $isNull = true) {
+    if ($isNull) {
+        return "{$campo} IS NULL";
+    }
+
+    return "{$campo} IS NOT NULL";
 }
+
+$mostra_aut = true;
+
+foreach ($_POST as $key => $val) {
+    switch($key) {
+        case 'pc10_numeroINI':
+            $pc10_numeroINI = trim($pc10_numeroINI);
+            $pc10_numeroFIM = trim($pc10_numeroFIM);
+
+            if (!empty($pc10_numeroINI) && !empty($pc10_numeroFIM)) {
+                $condicoes[] = montaQueryBetween('pc10_numero', $pc10_numeroINI, $pc10_numeroFIM);
+            }
+            break;
+        case 'pc10_dataINI':
+            $pc10_dataINI = trim($pc10_dataINI);
+            $pc10_dataFIM = trim($pc10_dataFIM);
+
+            if (!empty($pc10_dataINI) && !empty($pc10_dataFIM)) {
+                $condicoes[] = montaQueryBetween('pc10_data', $pc10_dataINI, $pc10_dataFIM);
+            }
+
+            if (!empty($pc10_dataINI) && empty($pc10_dataFIM)) {
+                $condicoes[] = montaQueryEquals('pc10_data', $pc10_dataINI);
+            }
+            break;
+        case 'inp_dotac':
+            if (!empty(trim($inp_dotac))) {
+                $notIn = $par_dotac == 'S' ? true : false;
+                $condicoes[] = montaQueryIn('pc13_coddot', $inp_dotac, $notIn);
+            }
+            break;
+        case 'inp_depart':
+            if (!empty(trim($inp_depart))) {
+                $notIn = $par_depart == 'S' ? true : false;
+                $condicoes[] = montaQueryIn('pc10_depto', $inp_depart, $notIn);
+            }
+            break;
+        case 'inp_mater':
+            if (!empty(trim($inp_mater))) {
+                $notIn = $par_mater == 'S' ? true : false;
+                $condicoes[] = montaQueryIn('pc16_codmater', $inp_mater, $notIn);
+            }
+            break;
+        case 'inp_tipcom': 
+            if (!empty(trim($inp_tipcom))) {
+                $notIn = $par_tipcom == 'S' ? true : false;
+                $condicoes[] = montaQueryIn('pc12_tipo', $inp_tipcom, $notIn);
+            }
+            break;
+        case 'situacao':
+                if (!empty($situacao)) {
+                    
+                    if ($situacao === 'N') {
+                        $condicoes[] = montaQueryNull('e55_autori');
+                        $mostra_aut = false;
+                    }
+
+                    if ($situacao === 'A') {
+                        $condicoes[] = montaQueryNull('e55_autori', false);
+                    }
+                }
+            break;
+    }
+}
+
+$condicoes[] = montaQueryEquals('pc10_instit', db_getsession('DB_instit'));
+
+$where = implode(' AND ', $condicoes);
 
 if($ordem == "pc10_numero"){
   $info = "CÓDIGO DAS SOLICITAÇÕES";
@@ -140,11 +159,6 @@ if($ordem == "pc10_numero"){
 }else if ($ordem == "pc50_descr"){
   $info = "TIPO DE COMPRA";
 }
-
-if (strlen($where) > 0){
-  $where .= " and ";
-}
-$where .= "pc10_instit = ".db_getsession("DB_instit");
 
 $sCampos  = "pc10_numero,                                                       ";
 $sCampos .= "pc16_codmater,                                                     ";
@@ -220,9 +234,6 @@ $sSqlDados .= "         else pc13_coddot is not null ";
 $sSqlDados .= "       end                            ";
 $result_solicita = $clsolicita->sql_record($sSqlDados);
 $numrows = $clsolicita->numrows;
-
-//db_criatabela($result_solicita);
-
 
 if($numrows==0){
   db_redireciona('db_erros.php?fechar=true&db_erro=Não foram encontradas solicitações com os dados informados.');
@@ -306,15 +317,14 @@ for($i = 0; $i < $numrows;$i++){
   	if($pass==false){
       $pdf->cell(271,2,'',"T",1,"L",0);
     }
-    
-    $pdf->setfont('arial','B',8);
-    $pdf->cell(22, $alt,$pc10_numero                  ,0,0,"C",0);
-    $pdf->cell(22, $alt,$pc10_data                    ,0,0,"C",0);
-    $pdf->cell(91, $alt,$descrdepto                   ,0,0,"L",0);
-    $pdf->cell(105,$alt,$pc50_descr                   ,0,0,"L",0);
-    $pdf->cell(31, $alt,db_formatar($tot_sol,'f')     ,0,1,"R",0);
+
+    $pdf->setfont('arial', 'B', 8);
+    $pdf->cell(22, $alt, $pc10_numero, 0, 0, "C", 0);
+    $pdf->cell(22, $alt, date('d/m/Y', strtotime($pc10_data)), 0, 0, "C", 0);
+    $pdf->cell(91, $alt, $descrdepto, 0, 0, "L", 0);
+    $pdf->cell(105, $alt, $pc50_descr, 0, 0, "L", 0);
+    $pdf->cell(31, $alt, db_formatar($tot_sol, 'f'), 0, 1, "R", 0);
     $total++;
-    
   }
    
  
@@ -328,9 +338,9 @@ for($i = 0; $i < $numrows;$i++){
            $pdf->cell(84,$alt,"",0,0,"C",0);
        } else {
            $pdf->cell(62,$alt,"",0,0,"C",0);
-           $pdf->cell(22,$alt,$e55_autori,0,0,"C",0);
+           $pdf->cell(22,$alt,"$e55_autori",0,0,"C",0);
        }
-       $pdf->cell(22,$alt,$pc11_codigo,0,0,"C",0);
+       $pdf->cell(22,$alt, $pc16_codmater,0,0,"C",0);
        if (!isset($pc01_descrmater) || (isset($pc01_descrmater) && $pc01_descrmater=="")) {
          $pc01_descrmater = $pc11_resum;
        }

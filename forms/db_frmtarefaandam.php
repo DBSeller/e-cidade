@@ -26,9 +26,9 @@
  */
 
 //MODULO: atendimento
-include("classes/db_db_usuarios_classe.php");
-//include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefacadsituacao_classe.php");
+include(modification("classes/db_db_usuarios_classe.php"));
+//include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefacadsituacao_classe.php"));
 $cltarefa            = new cl_tarefa;
 $cldb_usuarios       = new cl_db_usuarios;
 //$cltarefasituacao    = new cl_tarefasituacao;
@@ -170,7 +170,8 @@ db_inputdata('at43_diaini',@$at43_diaini_dia,@$at43_diaini_mes,@$at43_diaini_ano
                </td>
     <td>
     <?
-    $y = array("0"=>"Normal","1"=>"SQL","2"=>"Atualiza menus");
+    //$y = array("0"=>"Normal","1"=>"SQL","2"=>"Atualiza menus");
+    $y = array("0"=>"Normal");
     db_select('at43_tipomov',$y,true,$db_opcao,"");
     ?>
    </td>
@@ -307,7 +308,7 @@ db_selectrecord('at48_situacao',($cltarefacadsituacao->sql_record($cltarefacadsi
 </form>
 <script>
 function js_pesquisa(){
-   js_OpenJanelaIframe('top.corpo','db_iframe_contarefa','func_contarefa.php?funcao_js=parent.js_preenchepesquisa|at40_sequencial&item_proc=andam&andamento=A','Tarefas',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contarefa','func_contarefa.php?funcao_js=parent.js_preenchepesquisa|at40_sequencial&item_proc=andam&andamento=A','Tarefas',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_contarefa.hide();
@@ -319,10 +320,10 @@ function js_preenchepesquisa(chave){
 }
 function js_pesquisaat43_tarefa(mostra){
    if (mostra == true){
-        js_OpenJanelaIframe('top.corpo','db_iframe_contarefa','func_contarefa.php?funcao_js=parent.js_mostrartarefa1|at40_sequencial|dl_tarefa&item_proc=andam&andamento=F','Tarefas',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contarefa','func_contarefa.php?funcao_js=parent.js_mostrartarefa1|at40_sequencial|dl_tarefa&item_proc=andam&andamento=F','Tarefas',true);
    } else {
         if (document.form2.at43_tarefa.value != ""){
-             js_OpenJanelaIframe('top.corpo','db_iframe_contarefa','func_contarefa.php?pesquisa_chave='+document.form2.at43_tarefa.value+'&funcao_js=parent.js_mostrartarefa&item_proc=andam&andamento=F','Tarefas',false);
+             js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contarefa','func_contarefa.php?pesquisa_chave='+document.form2.at43_tarefa.value+'&funcao_js=parent.js_mostrartarefa&item_proc=andam&andamento=F','Tarefas',false);
 	      }
    }
 }

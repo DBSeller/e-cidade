@@ -108,7 +108,7 @@ if($ed110_i_numsuspdisc==0){
 <script>
 function js_pesquisaed119_i_progmatricula(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_progmatricula','func_progmatricula.php?funcao_js=parent.js_mostraprogmatricula1|ed112_i_codigo|ed112_i_rhpessoal|z01_nome|ed112_d_datainicio|ed107_c_descr','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progmatricula','func_progmatricula.php?funcao_js=parent.js_mostraprogmatricula1|ed112_i_codigo|ed112_i_rhpessoal|z01_nome|ed112_d_datainicio|ed107_c_descr','Pesquisa',true);
  }
 }
 function js_mostraprogmatricula1(chave1,chave2,chave3,chave4,chave5){
@@ -141,7 +141,7 @@ function js_data(){
  }
 }
 function js_pesquisa(){
- js_OpenJanelaIframe('top.corpo','db_iframe_progsuspdisc','func_progsuspdisc.php?funcao_js=parent.js_preenchepesquisa|ed119_i_codigo','Pesquisa Suspensão Disciplinar',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progsuspdisc','func_progsuspdisc.php?funcao_js=parent.js_preenchepesquisa|ed119_i_codigo','Pesquisa Suspensão Disciplinar',true);
 }
 function js_preenchepesquisa(chave){
  db_iframe_progsuspdisc.hide();

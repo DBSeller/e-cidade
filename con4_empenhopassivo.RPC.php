@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,24 +26,24 @@
  */
 
 //con4_empenhopassivo.RPC.php
-require_once "libs/db_stdlib.php";
-require_once "std/db_stdClass.php";
-require_once "libs/db_utils.php";
-require_once "libs/db_app.utils.php";
-require_once "libs/db_conecta.php";
-require_once "libs/db_sessoes.php";
-require_once "libs/JSON.php";
-require_once "dbforms/db_funcoes.php";
-require_once "model/contabilidade/lancamento/LancamentoAuxiliarInscricao.model.php";
-require_once "interfaces/ILancamentoAuxiliar.interface.php";
-require_once "interfaces/IRegraLancamentoContabil.interface.php";
-require_once "model/empenho/AutorizacaoEmpenho.model.php";
-require_once "classes/empenho.php";
-require_once "classes/db_empnotaele_classe.php";
-require_once "classes/db_pagordemnota_classe.php";
-require_once "classes/db_pagordem_classe.php";
-require_once "classes/db_pagordemele_classe.php";
-require_once "model/contabilidade/planoconta/ContaPlano.model.php";
+require_once modification("libs/db_stdlib.php");
+require_once modification("std/db_stdClass.php");
+require_once modification("libs/db_utils.php");
+require_once modification("libs/db_app.utils.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/JSON.php");
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("model/contabilidade/lancamento/LancamentoAuxiliarInscricao.model.php");
+require_once modification("interfaces/ILancamentoAuxiliar.interface.php");
+require_once modification("interfaces/IRegraLancamentoContabil.interface.php");
+require_once modification("model/empenho/AutorizacaoEmpenho.model.php");
+require_once modification("classes/empenho.php");
+require_once modification("classes/db_empnotaele_classe.php");
+require_once modification("classes/db_pagordemnota_classe.php");
+require_once modification("classes/db_pagordem_classe.php");
+require_once modification("classes/db_pagordemele_classe.php");
+require_once modification("model/contabilidade/planoconta/ContaPlano.model.php");
 
 
 db_app::import("CgmFactory");
@@ -75,9 +75,7 @@ $aDadosRetorno      = array();
      */
 
     case 'gerarEmpenhoPassivo':
-
       try {
-
         $iInscricaoPassivo       = $oParam->iInscricaoPassivo                               ;
         $nValorDotacao           = $oParam->nValorDotacao                                   ;
         $iFavorecido             = $oParam->iFavorecido                                     ;
@@ -119,12 +117,12 @@ $aDadosRetorno      = array();
         $oAutorizacaoEmpenho->setDestino($sDestino);
         $oAutorizacaoEmpenho->setNumeroLicitacao($iLicitacao);
         $oAutorizacaoEmpenho->setResumo($sResumo);
+        $oAutorizacaoEmpenho->setComplemento($oParam->complemento);
 
         /**
          * Percorremos o array de itens da inscrição, adicionado ele ao objeto da autorização de empenho
          */
         foreach ($aItensInscricao as $oItemInscricao) {
-
           $oItem = new stdClass();
           $oItem->codigomaterial = $oItemInscricao->getMaterialCompras()->getMaterial();
           $oItem->quantidade     = $oItemInscricao->getQuantidade();
@@ -143,7 +141,7 @@ $aDadosRetorno      = array();
         /**
          * @todo definir quem deve fazer o vínculo entre a autorizacao de empenho e a inscricao
          */
-        $oDaoVinculoAutorizaInscricao = db_utils::getDao('empautorizainscricaopassivo');
+        $oDaoVinculoAutorizaInscricao = new cl_empautorizainscricaopassivo;
         $oDaoVinculoAutorizaInscricao->e16_empautoriza      = $oAutorizacaoEmpenho->getAutorizacao();
         $oDaoVinculoAutorizaInscricao->e16_inscricaopassivo = $oInscricaoPassivo->getSequencial();
         $oDaoVinculoAutorizaInscricao->incluir();
@@ -178,6 +176,7 @@ $aDadosRetorno      = array();
   		  $oEmpenho->setTipoEvento($iEvento);
   		  $oEmpenho->setCaracteristicaPeculiar($iCaracteristicaPeculiar);
   		  $oEmpenho->setAutorizacaoEmpenho($oAutorizacaoEmpenho);
+          $oEmpenho->setComplemento($oParam->complemento);
 
   		  /**
   		   * Pegamos os itens da autorização inclusos anteriormente pois precisamos do mesmo e55_sequen na empempitem

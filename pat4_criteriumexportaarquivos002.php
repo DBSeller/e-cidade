@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("libs/db_utils.php");
-include ("libs/JSON.php");
-include ("dbforms/db_layouttxt.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/JSON.php"));
+include(modification("dbforms/db_layouttxt.php"));
 ?>
 <html>
 	<head>
@@ -67,10 +67,11 @@ include ("dbforms/db_layouttxt.php");
 		//	print_r($_GET);exit();
 			$iCountItem = count($aParametros);
 			$iCodigoUsuario = $oGet->idusuario;
+			$iCodigoDepto   = $oGet->coddepto;
 			$sQueryUsuarioCriterium = "select t08_id_usuario,t08_sequencial,t08_seqsinc 
 																	from usuariocriterium 
 																	where t08_sequencial = $iCodigoUsuario";
-			$resQueryUsuarioCriterium = pg_query($sQueryUsuarioCriterium);
+			$resQueryUsuarioCriterium = db_query($sQueryUsuarioCriterium);
 			if(pg_num_rows($resQueryUsuarioCriterium)>0){
 				$rowQueryUsuarioCriterium = pg_fetch_object($resQueryUsuarioCriterium);
 				$iCodDBUsuario 	= $rowQueryUsuarioCriterium->t08_id_usuario;
@@ -79,7 +80,7 @@ include ("dbforms/db_layouttxt.php");
 			$iNewCodSequencial =  $iCodSequencial + 1;
 			$sQueryUsuarioCriterium = "update usuariocriterium set t08_seqsinc = $iNewCodSequencial 
 																	where t08_sequencial = $iCodigoUsuario";
-			if(pg_query($sQueryUsuarioCriterium)){
+			if(db_query($sQueryUsuarioCriterium)){
 									
 				$sArqName    = "BD";
 				$sArqName		.= str_pad($iCodDBUsuario,5,"0",STR_PAD_LEFT);
@@ -109,7 +110,7 @@ include ("dbforms/db_layouttxt.php");
 					$nomeArquivo = "pat4_criteriumexportaarquivos002_".$arquivo.".php";
 	
 					if (file_exists($nomeArquivo)) {					
-						include ($nomeArquivo);
+						include(modification($nomeArquivo));
 					}
 				}
 				

@@ -1,0 +1,1 @@
+update db_syscampo set tamanho = 11 where nomecam = 've01_ranavam';

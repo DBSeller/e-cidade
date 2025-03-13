@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -27,8 +27,8 @@
 
 define("URL_MENSAGEM_POSICAOESTOQUEPROCESSAMENTO", "patrimonial.material.PosicaoEstoqueProcessamento.");
 
-require_once("std/DBDate.php");
-require_once("model/patrimonio/material/PosicaoEstoque.model.php");
+require_once(modification("std/DBDate.php"));
+require_once(modification("model/patrimonio/material/PosicaoEstoque.model.php"));
 
 /**
  * Class PosicaoEstoqueProcessamento

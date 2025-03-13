@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -588,7 +588,7 @@ function js_getUltimaTriagemAvulsa() {
 
 function js_retornoGetUltimaTriagemAvulsa(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
     return false;
@@ -669,7 +669,7 @@ function js_getCgsCns() {
 
 function js_retornogetCgsCns(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.z01_i_cgsund == '') {
 
@@ -901,7 +901,7 @@ function js_getCbosProfissional() {
 
 function js_retornoGetCbosProfissional(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
     return false;
@@ -988,7 +988,7 @@ function js_emitirFaa() {
 
 function js_retornoEmissaofaa (oAjax) {
 
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.iStatus == 2) {
 
     message_ajax(oRetorno.sMessage.urlDecode());

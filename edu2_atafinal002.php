@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("fpdf151/pdfwebseller.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_turma_classe.php");
-require_once("classes/db_escola_classe.php");
-require_once("classes/db_matricula_classe.php");
-require_once("classes/db_regencia_classe.php");
-require_once("classes/db_regenciaperiodo_classe.php");
-require_once("classes/db_alunotransfturma_classe.php");
-require_once("classes/db_aprovconselho_classe.php");
-require_once("classes/db_edu_parametros_classe.php");
-require_once("classes/db_calendario_classe.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("fpdf151/pdfwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_turma_classe.php"));
+require_once(modification("classes/db_escola_classe.php"));
+require_once(modification("classes/db_matricula_classe.php"));
+require_once(modification("classes/db_regencia_classe.php"));
+require_once(modification("classes/db_regenciaperiodo_classe.php"));
+require_once(modification("classes/db_alunotransfturma_classe.php"));
+require_once(modification("classes/db_aprovconselho_classe.php"));
+require_once(modification("classes/db_edu_parametros_classe.php"));
+require_once(modification("classes/db_calendario_classe.php"));
 
 db_app::import("educacao.ArredondamentoNota");
 $escola             = db_getsession("DB_coddepto");
@@ -153,7 +153,7 @@ function Entrada($situacao, $matricula) {
   $sql    = " SELECT ed60_c_tipo ";
   $sql   .= "    FROM matricula ";
   $sql   .= "    WHERE ed60_i_codigo = $matricula ";
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $tipo   = pg_result($result, 0, 0);
   if ($tipo == "N") {
     $retorno = "M";
@@ -387,7 +387,7 @@ for ($x = 0; $x < $linhas; $x ++) {
     $sql5   .= "      AND ed95_i_regencia in ($reg_pagina) ";
     $sql5   .= "      AND ed59_c_condicao = 'OB' ";
     $sql5   .= "      ORDER BY ed59_i_ordenacao ";
-    $result5 = pg_query($sql5);
+    $result5 = db_query($sql5);
     $linhas5 = pg_num_rows($result5);
     $cont3   = 0;
     if ($linhas5 > 0) {
@@ -468,7 +468,7 @@ for ($x = 0; $x < $linhas; $x ++) {
     $sql6   .= "                                                                   AND ed59_i_serie = $ed223_i_serie) ";
     $sql6   .= "      AND ed59_c_condicao = 'OB' ";
     $sql6   .= "      AND ed74_c_resultadofinal != 'A' ";
-    $result6 = pg_query($sql6);
+    $result6 = db_query($sql6);
     $linhas6 = pg_num_rows($result6);
     if (trim($ed60_c_situacao) != "MATRICULADO") {
       $rf = "";

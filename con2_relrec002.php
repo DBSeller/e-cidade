@@ -26,10 +26,10 @@
  */
 
 //setlocale(LC_ALL,"pt_BR");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 // pesquisa a conta mae da receita
 $tipo_mesini = 1;
 $tipo_mesfim = 1;
@@ -42,7 +42,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -93,7 +93,7 @@ $sql1 = "select o70_codigo,
 	 group by o70_codigo,
 	        o15_descr";
 
-$result = pg_exec($sql1);
+$result = db_query($sql1);
 
 //db_criatabela($result);
 
@@ -166,6 +166,6 @@ if($origem == "O"){
 }
 $pdf->Output();
 
-pg_exec("commit");
+db_query("commit");
 
 ?>

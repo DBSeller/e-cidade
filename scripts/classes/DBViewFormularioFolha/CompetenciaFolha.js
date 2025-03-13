@@ -1,9 +1,34 @@
-require_once('scripts/classes/DBViewFormularioFolha/DBViewFormularioFolha.classe.js');
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
 require_once('scripts/widgets/dbtextField.widget.js');
+require_once('scripts/classes/DBViewFormularioFolha/DBViewFormularioFolha.classe.js');
 
 /**
- * Cria os elementos de mês e ano para exibição da competencia, 
- * é impossivel escolher se quer que realize a busca da competência atual.
+ * Cria os elementos de mês e ano para exibição da competencia, é possivel escolher se quer que realize a busca da competência atual.
+ *
  * @param lExibeDataAtual Valor logico, se true carrega a competencia atual caso contrário fica em branco.
  * @constructor
  */
@@ -39,6 +64,8 @@ DBViewFormularioFolha.CompetenciaFolha.prototype.criaFormularioCompetencia = fun
    */
   this.oAno = new DBTextField('ano', 'ano', this.iAno, 4);
   this.oMes = new DBTextField('mes', 'mes', this.iMes, 2);
+  this.oMes.getElement().placeholder='Mês';
+  this.oAno.getElement().placeholder='Ano';
   this.oAno.setMaxLength(4);
   this.oMes.setMaxLength(2);
   
@@ -83,7 +110,7 @@ DBViewFormularioFolha.CompetenciaFolha.prototype.buscaMesAnoFolha = function() {
     asynchronous: false,
     onComplete  : function( oRespostaAjax ) {
   
-      var oRetorno = eval("(" + oRespostaAjax.responseText + ")");
+      var oRetorno = JSON.parse(oRespostaAjax.responseText);
       
       if (oRetorno.iStatus == 2) {
         throw oRetorno.sMensagem;
@@ -119,11 +146,23 @@ DBViewFormularioFolha.CompetenciaFolha.prototype.getElementoLabel = function() {
  * @param oContainer Container onde o elemento deve ser adicionado
  */
 DBViewFormularioFolha.CompetenciaFolha.prototype.renderizaFormulario = function(oContainer) {
-  
-  oContainer.appendChild(this.getElementosFormulario());
-  this.oAno.show(this.oElementosHTML.oSpanAno);
-  this.oMes.show(this.oElementosHTML.oSpanMes);
-  
+
+   
+  if ( arguments.length == 1 ) {
+
+    oContainer.appendChild(this.getElementosFormulario());
+    this.oAno.show(this.oElementosHTML.oSpanAno);
+    this.oMes.show(this.oElementosHTML.oSpanMes);
+
+  } else {
+   
+    this.oMes = new DBTextField(arguments[1], 'mes', this.iMes, 2);
+    this.oMes.show();
+    
+    this.oAno = new DBTextField(arguments[0], 'ano', this.iAno, 4);
+    this.oAno.show();
+
+  };
   /**
    * Valida ano 
    */
@@ -207,6 +246,58 @@ DBViewFormularioFolha.CompetenciaFolha.prototype.setCallBack = function( fFuncao
   this.oMes.getElement().observe( "change", fFuncao );
   return;
 };
+
+/**
+ * Valida se a competencia é igual a informada
+ *
+ * @param {Competencia} oCompetencia
+ * @returns {Boolean}
+ */
+DBViewFormularioFolha.CompetenciaFolha.prototype.equalsTo = function (oCompetencia) {
+
+  this.buscaMesAnoFolha();
+  
+  var iAnoAtual = parseInt(this.iAno);
+  var iMesAtual = parseInt(this.iMes);
+
+  if (oCompetencia != 'undefined' || oCompetencia != undefined) {
+    if (iAnoAtual == oCompetencia.iAno && iMesAtual == oCompetencia.iMes) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Válida se a competência informada é maior que a competência atual.
+ * 
+ * @param {Integer} iAno
+ * @param {Integer} iMes
+ * @returns {Boolean}
+ */
+DBViewFormularioFolha.CompetenciaFolha.prototype.isCompetenciaValida = function (iAno, iMes) {
+  
+  this.buscaMesAnoFolha();
+  
+  var iAnoAtual = parseInt(this.iAno);
+  var iMesAtual = parseInt(this.iMes);
+  
+  if (iAnoAtual < iAno) {
+    return false;
+  }
+  
+  if (iMes < 1 || iMes > 12) {
+    return false;
+  }
+
+  if (iAnoAtual == iAno && iMesAtual < iMes) {
+    return false;
+  }
+  
+  return true;
+};
+
 
 /**
  * CallBack padrão para o Componente

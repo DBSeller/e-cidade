@@ -1,15 +1,15 @@
 <?php
 
-if (!defined('PATH')) {
-  define('PATH', dirname(__DIR__).'/');
+/**
+ * v3
+ */
+if (!function_exists('modification')) {
+  function modification($file) {
+    return Modification::getFile($file);
+  }
 }
 
-define('PATH_MODIFICATION', PATH . 'modification/');
-define('PATH_MODIFICATION_XML', PATH_MODIFICATION . 'xml/');
-define('PATH_MODIFICATION_CACHE', PATH_MODIFICATION . 'cache/');
-define('PATH_MODIFICATION_LOG', PATH_MODIFICATION . 'log/');
-
-require_once PATH . 'std/ModificationFile.php';
+    require_once (ECIDADE_PATH . 'std/ModificationFile.php');
 
 /**
  * Modificacoes
@@ -29,34 +29,55 @@ class Modification {
   private $files = array();
 
   /**
+   * Limpa arquivos de caches gerados
+   * @return bool
+   */
+  public function clear() {
+
+    $errors = 0;
+
+    foreach(glob(ECIDADE_MODIFICATION_CACHE_PATH . '*') as $cacheFile) {
+      if (!is_dir($cacheFile) && !unlink($cacheFile)) {
+        $errors++;
+      }
+    }
+
+    if ($errors > 0) {
+      throw new Exception("Nao foi possivel remover ". $errors . " arquivo(s) de cache");
+    }
+
+    return true;
+  }
+
+  /**
    * Carrega os arquivos xml
    * @throws Exception
    * @return Modification
    */
   public function load($glob = '{*.xml}') {
 
-    if (!is_dir(PATH_MODIFICATION)) {
-      throw new Exception("Diretorio 'modification' nao criado: " . PATH_MODIFICATION);
+    if (!is_dir(ECIDADE_MODIFICATION_PATH)) {
+      throw new Exception("Diretorio 'modification' nao criado: " . ECIDADE_MODIFICATION_PATH);
     }
 
     $clearCache = false;
     $lastParseTime = 0;
-    $xmlFiles = glob(PATH_MODIFICATION_XML . $glob, GLOB_BRACE);
-    $lastCacheTime = filemtime(PATH_MODIFICATION_CACHE);
-    $lastXmlTime = filemtime(PATH_MODIFICATION_XML);
+    $xmlFiles = glob(ECIDADE_MODIFICATION_XML_PATH . $glob, GLOB_BRACE);
+    $lastCacheTime = filemtime(ECIDADE_MODIFICATION_CACHE_PATH);
+    $lastXmlTime = filemtime(ECIDADE_MODIFICATION_XML_PATH);
 
-    if (file_exists(PATH_MODIFICATION_CACHE . '.last-parse')) {
-      $lastParseTime = filemtime(PATH_MODIFICATION_CACHE . '.last-parse');
+    if (file_exists(ECIDADE_MODIFICATION_CACHE_PATH . '.last-parse')) {
+      $lastParseTime = filemtime(ECIDADE_MODIFICATION_CACHE_PATH . '.last-parse');
     }
 
-    /**
-     * Pasta dos xml modificada, remove os cache
-     */
+    // Pasta dos xml modificada, remove os cache
     if ($lastXmlTime > $lastCacheTime) {
       $clearCache = true;
     }
 
     foreach ($xmlFiles as $xmlFile) {
+
+      // verifica se deve limpar diretorio de cache
       if (filemtime($xmlFile) > $lastParseTime) {
         $clearCache = true;
       }
@@ -64,11 +85,7 @@ class Modification {
     }
 
     if ($clearCache) {
-      foreach(glob(PATH_MODIFICATION_CACHE . '*') as $cacheFile) {
-        if (!is_dir($cacheFile) && !unlink($cacheFile)) {
-          throw new Exception("Nao foi possivel remover arquivo de cache: $cacheFile");
-        }
-      }
+      $this->clear();
     }
 
     return $this;
@@ -76,6 +93,7 @@ class Modification {
 
   /**
    * Abre os arquivos xml e modifica os arquivos nele declarados
+   * @throws Exception
    * @return Modification
    */
   public function parse() {
@@ -92,10 +110,51 @@ class Modification {
       }
 
       $nodeModification = $dom->getElementsByTagName('modification')->item(0);
-      $files = $nodeModification->getElementsByTagName('file');
+      $this->loadFiles($nodeModification->getElementsByTagName('file'), $xmlFile);
+    }
 
-      foreach ($files as $file) {
-        $this->parseFile($file, filemtime($xmlFile));
+    return $this;
+  }
+
+  /**
+   * @return Modification
+   */
+  public function save() {
+
+    foreach($this->files as $file) {
+
+      $parse = true;
+
+      // existe arquivo de cache verifica se deve fazer parse
+      if ($file->hasCache()) {
+
+        $parse = false;
+
+        foreach ($file->getModifications() as $xmlPath) {
+
+          $xmlFileTime = filemtime($xmlPath);
+          $timeFileCache = filemtime(ECIDADE_MODIFICATION_CACHE_PATH . $file->getKey());
+          $timeFile = filemtime($file->getPath());
+
+          if ($timeFile > $timeFileCache || $xmlFileTime > $timeFileCache) {
+            $parse = true;
+          }
+        }
+      }
+
+      if (!$parse) {
+        continue;
+      }
+
+      try {
+
+        $file->load();
+        $file->parse();
+        $file->save();
+        $file->unload();
+
+      } catch (Exception $error) {
+        static::log('Modification:save() - ' . $file->getPath() . ': '. $error->getMessage());
       }
     }
 
@@ -104,49 +163,44 @@ class Modification {
 
   /**
    * Faz parse de um arquivo, tag <file>
-   * @param DOMDocument $nodeFile
-   * @throws Exception
-   * @return void
+   * @param DOMNodeList $nodeFile
+   * @return boolean
    */
-  private function parseFile(DOMElement $nodeFile, $xmlFileTime) {
+  private function loadFiles(DOMNodeList $nodeFile, $xmlFile) {
 
-    $path = $nodeFile->getAttribute('path');
+    foreach ($nodeFile as $node) {
 
-    if (empty($path)) {
-      throw new Exception('Tag <file>: Path do arquivo nao informado.');
-    }
+      $path = $node->getAttribute('path');
 
-    $files = glob(PATH . $path, GLOB_BRACE);
+      if (empty($path)) {
+        throw new Exception('Tag <file>: Path do arquivo nao informado.');
+      }
 
-    foreach($files as $file) {
+      $files = glob(ECIDADE_PATH . $path, GLOB_BRACE);
 
-      $modificationFile = ModificationFile::getInstance($file);
+      foreach ($files as $file) {
 
-      if ($modificationFile->hasCache()) {
+        $modificationFile = ModificationFile::getInstance($file);
 
-        $timeFileCache = filemtime(PATH_MODIFICATION_CACHE . $modificationFile->getKey());
-
-        /**
-         * Arquivo de cache foi criado depois da ultima modificacao do seu arquivo
-         */
-        if ($timeFileCache > filemtime($file) && $xmlFileTime < $timeFileCache) {
-          continue;
+        if (!in_array($xmlFile, $modificationFile->getModifications())) {
+          $modificationFile->addModification($xmlFile);
         }
+
+        $operations = $node->getElementsByTagName('operation');
+
+        if ($operations->length == 0) {
+          throw new Exception("Nenhuma operacao para o arquivo, tag <operation>.");
+        }
+
+        foreach ($operations as $operation) {
+          $modificationFile->addOperation($this->parseOperation($operation));
+        }
+
+        $this->files[$modificationFile->getKey()] = $modificationFile;
       }
-
-      $operations = $nodeFile->getElementsByTagName('operation');
-
-      if ($operations->length == 0) {
-        throw new Exception("Nenhuma operacao para o arquivo, tag <operation>.");
-      }
-
-      foreach ($operations as $operation) {
-        $modificationFile->addOperation($this->parseOperation($operation));
-      }
-
-      $this->files[$modificationFile->getKey()] = $modificationFile;
-      $modificationFile = null;
     }
+
+    return true;
   }
 
   /**
@@ -174,28 +228,20 @@ class Modification {
 
     $search = new StdClass();
     $search->regex = false;
-    $search->trim = false;
     $search->offset = 0;
     $search->limit = 0;
     $search->content = null;
+    $search->flag = '';
 
     if (empty($nodeSearch)) {
       return $search;
     }
 
     $search->regex = $nodeSearch->getAttribute('regex') == 'true';
-    $search->trim = $nodeSearch->getAttribute('trim') == 'true';
     $search->offset = $nodeSearch->getAttribute('offset');
     $search->limit = $nodeSearch->getAttribute('limit');
-
-    /**
-     * Converte para latin1
-     */
-    $search->content = mb_convert_encoding(
-      $nodeSearch->textContent,
-      "ISO-8859-1",
-      mb_detect_encoding($nodeSearch->textContent, "UTF-8, ISO-8859-1, ISO-8859-15", true)
-    );
+    $search->flag = $nodeSearch->getAttribute('flag');
+    $search->content = $this->convertEncoding($nodeSearch->textContent);
 
     return $search;
   }
@@ -209,33 +255,20 @@ class Modification {
 
     $add = new StdClass();
     $add->position = $nodeAdd->getAttribute('position');
-    $add->trim = $nodeAdd->getAttribute('trim') == 'true';
-    $add->newLineAfter = $nodeAdd->getAttribute('new-line-after');
-    $add->newLineBefore = $nodeAdd->getAttribute('new-line-before');
-    $add->ident = $nodeAdd->getAttribute('ident');
-
-    /**
-     * Converte para latin1
-     */
-    $add->content = mb_convert_encoding(
-      $nodeAdd->textContent,
-      "ISO-8859-1",
-      mb_detect_encoding($nodeAdd->textContent, "UTF-8, ISO-8859-1, ISO-8859-15", true)
-    );
+    $add->content = $this->convertEncoding($nodeAdd->textContent);
 
     return $add;
   }
 
   /**
-   * @return Modification
+   * Converte para latin1
+   * @param string $text
+   * @return string
    */
-  public function save() {
-
-    foreach($this->files as $file) {
-      $file->parse()->save();
-    }
-
-    return $this;
+  private function convertEncoding($text) {
+    return mb_convert_encoding(
+      $text, "ISO-8859-1", mb_detect_encoding($text, "UTF-8, ISO-8859-1, ISO-8859-15", true)
+    );
   }
 
   /**
@@ -245,7 +278,12 @@ class Modification {
    */
   public static function getFile($file) {
 
-    $path = PATH_MODIFICATION_CACHE . ModificationFile::createKey($file);
+    // versao 3
+    if (defined('ECIDADE_EXTENSION_PATH')) {
+      return modification($file);
+    }
+
+    $path = ECIDADE_MODIFICATION_CACHE_PATH . ModificationFile::createKey($file);
 
     if (file_exists($path) && !is_dir($path)) {
 
@@ -265,20 +303,17 @@ class Modification {
    */
   public static function buildStructure() {
 
-    if (!is_dir(PATH_MODIFICATION) && !mkdir(PATH_MODIFICATION)) {
-      throw new Exception("Nao foi possivel criar diretorio: " . PATH_MODIFICATION);
-    }
+    $directories = array(
+      ECIDADE_MODIFICATION_PATH,
+      ECIDADE_MODIFICATION_LOG_PATH,
+      ECIDADE_MODIFICATION_XML_PATH,
+      ECIDADE_MODIFICATION_CACHE_PATH,
+    );
 
-    if (!is_dir(PATH_MODIFICATION_LOG) && !mkdir(PATH_MODIFICATION_LOG)) {
-      throw new Exception("Nao foi possivel criar diretorio: " . PATH_MODIFICATION_LOG);
-    }
-
-    if (!is_dir(PATH_MODIFICATION_XML) && !mkdir(PATH_MODIFICATION_XML)) {
-      throw new Exception("Nao foi possivel criar diretorio: " . PATH_MODIFICATION_XML);
-    }
-
-    if (!is_dir(PATH_MODIFICATION_CACHE) && !mkdir(PATH_MODIFICATION_CACHE)) {
-      throw new Exception("Nao foi possivel criar diretorio: " . PATH_MODIFICATION_CACHE);
+    foreach ($directories as $path) {
+      if (!is_dir($path) && !mkdir($path)) {
+        throw new Exception("Nao foi possivel criar diretorio: " . $path);
+      }
     }
 
     return true;
@@ -289,6 +324,11 @@ class Modification {
    */
   public static function find() {
 
+    // versao 3
+    if (defined('ECIDADE_EXTENSION_PATH')) {
+      return false;
+    }
+
     try {
 
       static::buildStructure();
@@ -296,10 +336,8 @@ class Modification {
       $oModificacao = new Modification();
       $oModificacao->load()->parse()->save();
 
-      /**
-       * Cria/modifica arquivo com time da ultima modificacao
-       */
-      touch(PATH_MODIFICATION_CACHE . '.last-parse');
+      // Cria/modifica arquivo com time da ultima instalacao
+      touch(ECIDADE_MODIFICATION_CACHE_PATH . '.last-parse');
 
     } catch(Exception $oErro) {
       static::log($oErro->getMessage());
@@ -311,7 +349,7 @@ class Modification {
    * @return bool
    */
   public static function log($message) {
-    return file_put_contents(PATH_MODIFICATION_LOG . 'error.log', $message . PHP_EOL, FILE_APPEND);
+    return file_put_contents(ECIDADE_MODIFICATION_LOG_PATH . 'error.log', $message . PHP_EOL, FILE_APPEND);
   }
 
 }

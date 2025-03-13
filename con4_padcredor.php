@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -58,13 +58,20 @@ $sql = "select
 	    z01_cepcon as cep,
 	    z01_telcon as fone,
 	    z01_telcon as fax,
-	    '1' as tipo	
+	    '1' as tipo, 
+	    case
+	      when length(z01_cgccpf) = 11 
+	        then 1
+          else 
+            2
+        end as tipo_pessoa
+	      
 	from cgm
 	     inner join empempenho on e60_numcgm = z01_numcgm
 	group by z01_numcgm,z01_nome,z01_cgccpf,z01_ender,z01_munic,z01_uf,z01_cepcon,z01_telcon     
        ";
 
-$res=pg_exec($sql);
+$res=db_query($sql);
 $rows = pg_numrows($res);
 for ($x=0;$x < $rows;$x++){
    
@@ -89,17 +96,14 @@ for ($x=0;$x < $rows;$x++){
    $fax     = formatar(str_replace("-","",$fax),15,'n');
 
    $tipo    = formatar(pg_result($res,$x,"tipo"),2,'n');
-//-- 
-  $line = $codigo.$nome.$cnpj.$cgc.$iss.$endereco.$cidade.$uf.$cep.$fone.$fax.$tipo; 
+   $tipoPessoa = formatar(pg_result($res,$x,"tipo_pessoa"),2,'n');
+
+  $line = $codigo.$nome.$cnpj.$cgc.$iss.$endereco.$cidade.$uf.$cep.$fone.$fax.$tipo.$tipoPessoa;
   fputs($this->arq,$line);
   fputs($this->arq,"\r\n");
   
   $contador = $contador+1; // incrementa contador global
-  
 }
-
-
-
    //  trailer
    $contador = espaco(10-(strlen($contador)),'0').$contador;
    $line = "FINALIZADOR".$contador;

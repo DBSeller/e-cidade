@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,36 +25,36 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/JSON.php");
-require_once ("libs/exceptions/BusinessException.php");
-require_once ("libs/exceptions/DBException.php");
-require_once ("libs/exceptions/ParameterException.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("model/patrimonio/Inventario.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
+require_once(modification("libs/exceptions/DBException.php"));
+require_once(modification("libs/exceptions/ParameterException.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/patrimonio/Inventario.model.php"));
 
-require_once("model/patrimonio/InventarioBem.model.php");
-require_once("model/patrimonio/TransferenciaBens.model.php");
-require_once("model/patrimonio/Bem.model.php");
-require_once("model/patrimonio/BemClassificacao.model.php");
-require_once("model/patrimonio/BemTipoAquisicao.php");
-require_once("model/patrimonio/BemTipoDepreciacao.php");
-require_once("model/patrimonio/PlacaBem.model.php");
-require_once ("model/patrimonio/BemCedente.model.php");
+require_once(modification("model/patrimonio/InventarioBem.model.php"));
+require_once(modification("model/patrimonio/TransferenciaBens.model.php"));
+require_once(modification("model/patrimonio/Bem.model.php"));
+require_once(modification("model/patrimonio/BemClassificacao.model.php"));
+require_once(modification("model/patrimonio/BemTipoAquisicao.php"));
+require_once(modification("model/patrimonio/BemTipoDepreciacao.php"));
+require_once(modification("model/patrimonio/PlacaBem.model.php"));
+require_once(modification("model/patrimonio/BemCedente.model.php"));
 
-require_once("model/configuracao/DBDepartamento.model.php");
-require_once("model/configuracao/DBDivisaoDepartamento.model.php");
+require_once(modification("model/configuracao/DBDepartamento.model.php"));
+require_once(modification("model/configuracao/DBDivisaoDepartamento.model.php"));
 
-require_once("model/CgmFactory.model.php");
+require_once(modification("model/CgmFactory.model.php"));
 
-require_once("classes/db_bensdepreciacao_classe.php");
-require_once ("std/db_stdClass.php");
-require_once("model/patrimonio/depreciacao/CalculoBem.model.php");
-require_once("std/DBNumber.php");
+require_once(modification("classes/db_bensdepreciacao_classe.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("model/patrimonio/depreciacao/CalculoBem.model.php"));
+require_once(modification("std/DBNumber.php"));
 db_app::import("patrimonio.*");
 db_app::import("patrimonio.depreciacao.*");
 
@@ -268,7 +268,7 @@ try {
       $aBensRetorno = array();
       $iTotalDeBens = $oDaoBens->numrows;
 
-      if ($iTotalDeBens > 1000) {
+      if ($iTotalDeBens > 2000) {
         throw new BusinessException(_M('patrimonial.patrimonio.pat4_inventario.refine_pesquisa'));
       }
 
@@ -278,6 +278,26 @@ try {
 
           $oDadoBem = db_utils::fieldsMemory($rsBuscaBens, $iRowBem);
           $oBem     = new Bem($oDadoBem->t52_bem);
+
+          if ( $oBem->getClassificacao()->getPlanoConta() == null ) {
+
+            $sMensagemErro  = "Bem não encontrado pelo código {$oDadoBem->t52_bem}\n\nPossíveis causas: \n";
+            $sMensagemErro .= " - Classificação não configurada, verifique as contas.\n";
+            $sMensagemErro .= " - Placa não encontrada.\n";
+            $sMensagemErro .= " - Bem não cadastrado.";
+            throw new BusinessException($sMensagemErro);
+          }
+
+          $valorAtual = $oBem->getValorAtual() - $oBem->getValorResidual();
+          $valorDepreciavelBem = $oBem->getValorAquisicao() - $oBem->getValorResidual();
+          $valorDepreciavel = db_formatar($oBem->getValorDepreciavel() - $oBem->getValorResidual(), "f");
+
+          if($oBem->getValorUltimaReavaliacao() != 0 || $oBem->getValorUltimaReavaliacao() != null) {
+              $valorDepreciavel = $oBem->getValorUltimaReavaliacao() - $oBem->getValorResidual();
+          }
+          
+          $valorAtualProcessado = $valorAtual;
+          $valorAtualNaoProcessado = $oBem->getValorUltimaReavaliacao();
 
           $oDBDepartamento                      = new DBDepartamento($oBem->getDepartamento());
           $oDBDivisao                           = new DBDivisaoDepartamento($oBem->getDivisao());
@@ -292,9 +312,9 @@ try {
           $oStdBem->situacao                    = $oBem->getSituacaoBem();
           $oStdBem->codigo_bem_inventario       = null;
           $oStdBem->codigo_inventario           = null;
-          $oStdBem->valor_depreciavel           = $oBem->getValorAtual() - $oBem->getValorResidual();
+          $oStdBem->valor_depreciavel           = $valorDepreciavel;
           $oStdBem->valor_residual              = $oBem->getValorResidual();
-          $oStdBem->valor_atual                 = $oBem->getValorAtual();
+          $oStdBem->valor_atual                 = $oBem->getQuantidadeMesesDepreciados() != 0 ? $valorAtualProcessado : $valorAtualNaoProcessado;
           $oStdBem->vida_util                   = $oBem->getVidaUtil();
           $oStdBem->departamento_inventario     = $oBem->getDepartamento();
           $oStdBem->divisao_inventario          = $oDBDivisao->getCodigo();

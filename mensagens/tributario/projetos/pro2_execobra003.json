@@ -1,4 +1,5 @@
 {
   "falha_gerar_pdf" : "Falha ao gerar PDF.",
-  "dados_insuficientes": "Dados insuficientes para gerar o Alvará."
+  "dados_insuficientes": "Dados insuficientes para gerar o Alvará.",
+  "alvara_cancelado"		   : "Alvará da obra [iCodigo] cancelado!"
 }

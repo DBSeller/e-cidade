@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010287' name='juridico.integracaoprocessoeletronicomovimentacao' description="Movimentações da inicial no processo Eletronico" prefix="v39" label="Movimentações da inicial no processo Eletronico" type="0">
+  <fields>
+    <field codigo="1009769" 
+           campo_api='' 
+           name="v39_integracaoprocessoeletronico" 
+           conteudo="int4" 
+           description="Código da Integração" 
+           inivalue="" 
+           label="Código da Integração" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Integração" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009770" 
+           campo_api='' 
+           name="v39_dataenvio" 
+           conteudo="date" 
+           description="Data de Envio" 
+           inivalue="" 
+           label="Data de Envio" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de Envio" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009771" 
+           campo_api='' 
+           name="v39_retorno" 
+           conteudo="text" 
+           description="Valor retornado pela API" 
+           inivalue="null" 
+           label="Retorno" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Retorno" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009782" 
+           campo_api='' 
+           name="v39_protocolo" 
+           conteudo="varchar(255)" 
+           description="Protocolo de Recebimento" 
+           inivalue="" 
+           label="Protocolo de Recebimento" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Protocolo de Recebimento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009768" 
+           campo_api='' 
+           name="v39_sequencial" 
+           conteudo="int4" 
+           description="ecidade_niteroi/" 
+           inivalue="" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+           
+      <sequence name='juridico.integracaoprocessoeletronicomovimentacao_v39_sequencial_seq' />
+     
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="v39_integracaoprocessoeletronico"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="integracaoprocessoeletronico" inner='t'>
+      <fieldfk name="v39_integracaoprocessoeletronico" reference="v38_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

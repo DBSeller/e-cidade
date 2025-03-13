@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $oGet  = db_utils::postMemory($_GET,0);
@@ -138,7 +138,7 @@ $sql .= "order by data, numcgm, tipo_alt desc                                   
 
 //die($sql);
 
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 
 if($linhas > 0){

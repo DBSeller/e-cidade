@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -203,30 +203,39 @@ class cl_db_certidaoweb {
        $this->erro_status = "0";
        return false;
      }
-     if($codcert == "" || $codcert == null ){
-       $result = db_query("select nextval('db_certidaoweb_codcert_seq')"); 
-       if($result==false){
-         $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: db_certidaoweb_codcert_seq do campo: codcert"; 
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "0";
-         return false; 
-       }
-       $this->codcert = pg_result($result,0,0); 
-     }else{
-       $result = db_query("select last_value from db_certidaoweb_codcert_seq");
-       if(($result != false) && (pg_result($result,0,0) < $codcert)){
-         $this->erro_sql = " Campo codcert maior que último número da sequencia.";
-         $this->erro_banco = "Sequencia menor que este número.";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "0";
-         return false;
-       }else{
-         $this->codcert = $codcert; 
-       }
+
+     if (empty($this->codcert)) {
+      if ($codcert == "" || $codcert == null ){
+        $result = db_query("select nextval('db_certidaoweb_codcert_seq')"); 
+        
+        if ($result==false){
+          $this->erro_banco  = str_replace("\n","",@pg_last_error());
+          $this->erro_sql    = "Verifique o cadastro da sequencia: db_certidaoweb_codcert_seq do campo: codcert"; 
+          $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+          $this->erro_status = "0";
+          
+          return false; 
+        }
+
+        $this->codcert = pg_result($result,0,0); 
+      } else {
+        $result = db_query("select last_value from db_certidaoweb_codcert_seq");
+
+        if (($result != false) && (pg_result($result,0,0) < $codcert)) {
+          $this->erro_sql     = " Campo codcert maior que último número da sequencia.";
+          $this->erro_banco   = "Sequencia menor que este número.";
+          $this->erro_msg     = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+          $this->erro_msg    .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+          $this->erro_status  = "0";
+
+          return false;
+        } else {
+          $this->codcert = $codcert; 
+        }
+      }
      }
+
      $sql = "insert into db_certidaoweb(
                                        codcert 
                                       ,tipocer 

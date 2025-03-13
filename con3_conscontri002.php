@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_contlot_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_contlot_classe.php"));
 $cliptubase = new cl_iptubase;
 $clcontlot = new cl_contlot;
 $clrotulo = new rotulocampo;
@@ -72,7 +72,7 @@ function js_consultar(obj){
     alert('Selecione uma contribuição.');
     return;
   }  
-  js_OpenJanelaIframe('top.corpo','db_iframe','con3_conscontri011.php?contri='+document.form1.d02_contri.value+'&cod_matricula=<?=$j01_matric?>','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','con3_conscontri011.php?contri='+document.form1.d02_contri.value+'&cod_matricula=<?=$j01_matric?>','Pesquisa',true);
 }  
 function js_trocacontri(obj){
     contri=document.form1.contribs.value;

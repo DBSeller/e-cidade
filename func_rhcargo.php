@@ -1,5 +1,6 @@
-<?
-/*
+<?php
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
@@ -25,19 +26,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhcargo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhcargo_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrhcargo = new cl_rhcargo;
 $clrhcargo->rotulo->label("rh04_codigo");
 $clrhcargo->rotulo->label("rh04_descr");
 ?>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="estilos.css" rel="stylesheet" type="text/css">
@@ -47,47 +48,54 @@ $clrhcargo->rotulo->label("rh04_descr");
 <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
   <tr> 
     <td height="63" align="center" valign="top">
+      <form name="form2" method="post" action="" >
+        <fieldset style="width: 35%">
+          <legend>Pesquisa de Função</legend>
+          <table width="35%" border="0" align="center" cellspacing="0">
+            <tr>
+              <td width="4%" align="left" nowrap title="<?=$Trh04_codigo?>">
+                <?=$Lrh04_codigo?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?
+             db_input("rh04_codigo",5,$Irh04_codigo,true,"text",4,"","chave_rh04_codigo");
+             ?>
+              </td>
+            </tr>
+            <tr>
+              <td width="4%" align="left" nowrap title="<?=$Trh04_descr?>">
+                <?=$Lrh04_descr?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?
+             db_input("rh04_descr",40,$Irh04_descr,true,"text",4,"","chave_rh04_descr");
+             ?>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
         <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Trh04_codigo?>">
-              <?=$Lrh04_codigo?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("rh04_codigo",5,$Irh04_codigo,true,"text",4,"","chave_rh04_codigo");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Trh04_descr?>">
-              <?=$Lrh04_descr?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("rh04_descr",40,$Irh04_descr,true,"text",4,"","chave_rh04_descr");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
+          <tr>
+            <td colspan="2" align="center">
+              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
               <input name="limpar" type="reset" id="limpar" value="Limpar" >
               <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_rhcargo.hide();">
-             </td>
+            </td>
           </tr>
-        </form>
         </table>
+      </form>
       </td>
   </tr>
   <tr> 
-    <td align="center" valign="top"> 
+    <td align="center" valign="top">
+      <fieldset>
+        <legend>Resultado da Pesquisa</legend>
       <?
       $where = " rh04_instit = ".db_getsession("DB_instit");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_rhcargo.php")==true){
-             include("funcoes/db_func_rhcargo.php");
+             include(modification("funcoes/db_func_rhcargo.php"));
            }else{
            $campos = "rhcargo.*";
            }
@@ -114,6 +122,7 @@ $clrhcargo->rotulo->label("rh04_descr");
         }
       }
       ?>
+     </fieldset>
      </td>
    </tr>
 </table>
@@ -127,3 +136,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

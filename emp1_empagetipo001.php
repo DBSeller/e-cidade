@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("classes/db_empagetipo_classe.php");
-include("classes/db_conplanoconta_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_conplanoconta_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_POST);
 
 $clempagetipo 		= new cl_empagetipo;
 $clconplanoconta 	= new cl_conplanoconta;
@@ -44,55 +44,68 @@ $db_botao = true;
 $iAnoUsu  = db_getsession('DB_anousu');
 
 if (isset($incluir)) {
-	
+
 	$lerro    = false;
 	$erro_msg = "";
-	
-  db_inicio_transacao();
-  
-  $sql   = " select c61_codcon,                                            ";
-  $sql  .= "        c60_codsis,                                            ";
-  $sql  .= "        c63_codcon                                             ";
-  $sql  .= "   from conplano                                               ";
-  $sql  .= "        inner join conplanoreduz on c61_codcon = c60_codcon    ";
-  $sql  .= "                                and c61_anousu = c60_anousu    "; 
-  $sql  .= "        left join conplanoconta on c61_codcon  = c63_codcon    ";
-  $sql  .= "                               and c60_anousu  = c63_anousu    ";
-  $sql  .= "   where c61_reduz  = {$e83_conta}                             ";
-  $sql  .= "     and c60_anousu = {$iAnoUsu}                               ";
 
-  //die($sql);
-  
-  $rsSql = $clconplanoconta->sql_record($sql);  
+  $sCampos = " e83_codtipo ";
+  $sWhere  = " e83_conta = {$e83_conta} ";
+  $sSql    = $clempagetipo->sql_query(null, $sCampos, null, $sWhere);
 
-  if ($clconplanoconta->numrows > 0) {
-    
-    $oConPlan = db_utils::fieldsMemory($rsSql, 0);
-    
-    if ($oConPlan->c60_codsis == 6) {
-      
-    	if ($oConPlan->c63_codcon == "") {
-    		
-	      $lerro    = true;
-	      $erro_msg = "Usuário:\\n\\nA conta selecionada não possui uma conta bancária cadastrada!\\n\\n";
-    	}
-    }
-    
+  $clempagetipo->sql_record($sSql);
+  if ($clempagetipo->numrows > 0) {
+
+    $lerro     = true;
+    $erro_msg  = "A Conta informada já está vinculada a uma Conta Pagadora. \n";
+    $erro_msg .= "Não é possível vincular uma Conta a mais de uma Conta Pagadora.";
   }
-  
+
   if (!$lerro) {
 
-  	$clempagetipo->e83_codigocompromisso = str_pad($e83_codigocompromisso, 4,"0",STR_PAD_LEFT);
-  	$clempagetipo->incluir($e83_codtipo);
-  	$erro_msg = $clempagetipo->erro_msg;
-  	if ($clempagetipo->erro_status == "0") {
-  		$lerro  = true;
-  	}
-  }
-    
-  db_fim_transacao($lerro);
-}
+    db_inicio_transacao();
 
+    $sql = " select c61_codcon,                                            ";
+    $sql .= "        c60_codsis,                                            ";
+    $sql .= "        c63_codcon                                             ";
+    $sql .= "   from conplano                                               ";
+    $sql .= "        inner join conplanoreduz on c61_codcon = c60_codcon    ";
+    $sql .= "                                and c61_anousu = c60_anousu    ";
+    $sql .= "        left join conplanoconta on c61_codcon  = c63_codcon    ";
+    $sql .= "                               and c60_anousu  = c63_anousu    ";
+    $sql .= "                               and c61_reduz   = c63_reduz    ";
+    $sql .= "   where c61_reduz  = {$e83_conta}                             ";
+    $sql .= "     and c60_anousu = {$iAnoUsu}                               ";
+
+    $rsSql = $clconplanoconta->sql_record($sql);
+
+    if ($clconplanoconta->numrows > 0) {
+
+      $oConPlan = db_utils::fieldsMemory($rsSql, 0);
+
+      if ($oConPlan->c60_codsis == 6) {
+
+        if ($oConPlan->c63_codcon == "") {
+
+          $lerro    = true;
+          $erro_msg = "Usuário:\\n\\nA conta selecionada não possui uma conta bancária cadastrada!\\n\\n";
+        }
+      }
+
+    }
+
+    if (!$lerro) {
+
+      $clempagetipo->e83_codigocompromisso = str_pad($e83_codigocompromisso, 4, "0", STR_PAD_LEFT);
+      $clempagetipo->incluir($e83_codtipo);
+      $erro_msg = $clempagetipo->erro_msg;
+      if ($clempagetipo->erro_status == "0") {
+        $lerro = true;
+      }
+    }
+
+    db_fim_transacao($lerro);
+  }
+}
 if (isset($e83_conta) && $e83_conta != '' && $db_opcao == 1) {
   $e83_sequencia = $clempagetipo->getMaxCheque($e83_conta);
 }
@@ -117,7 +130,7 @@ if (isset($e83_conta) && $e83_conta != '' && $db_opcao == 1) {
   <tr> 
     <td valign="top">
 			<?
-			  include("forms/db_frmempagetipo.php");
+			  include(modification("forms/db_frmempagetipo.php"));
 			?>
 	  </td>
   </tr>

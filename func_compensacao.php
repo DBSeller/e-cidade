@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_abatimento_classe.php");
-require_once("classes/db_abatimentoarreckey_classe.php");
-require_once("classes/db_abatimentorecibo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_abatimento_classe.php"));
+require_once(modification("classes/db_abatimentoarreckey_classe.php"));
+require_once(modification("classes/db_abatimentorecibo_classe.php"));
 
-$oGet         = db_utils::postMemory($_GET);
-$iAbatimento  = $oGet->iAbatimento;
+$oGet = db_utils::postMemory($_GET);
+$abatimento = $oGet->iAbatimento;
+$abatimentoOrigem  = $oGet->abatimentoOrigem;
 
 if (isset($oGet->sOrigem)) {
   $sOrigem = $oGet->sOrigem;
@@ -46,10 +47,31 @@ if (isset($oGet->sOrigem)) {
 }
 
 $clAbatimento         = new cl_abatimento();
+
 $clAbatimentoArreckey = new cl_abatimentoarreckey();
 $clAbatimentoRecibo   = new cl_abatimentorecibo();
 
-$rsDadosAbatimento = $clAbatimento->sql_record($clAbatimento->sql_query($iAbatimento)); 
+$usuarioDevolucao = null;
+if ($abatimentoOrigem != 'undefined') {
+  // É uma transferência
+  $rsDadosAbatimento = $clAbatimento->sql_record($clAbatimento->sql_query($abatimentoOrigem));
+  $rsUsuarioDevolucao = db_query("
+    SELECT 
+      abatimentoutilizacao.k157_hora as hora,
+      abatimentoutilizacao.k157_data as data,
+      db_usuarios.nome
+    FROM abatimentoutilizacao
+    INNER JOIN abatimentotransferencia
+      ON abatimentoutilizacao.k157_abatimento = abatimentotransferencia.k158_abatimentoorigem
+    INNER JOIN db_usuarios 
+      ON id_usuario = k157_usuario
+    WHERE abatimentotransferencia.k158_abatimentodestino = {$abatimento}
+  ");
+
+  $usuarioDevolucao = pg_fetch_assoc($rsUsuarioDevolucao);
+} else {
+  $rsDadosAbatimento = $clAbatimento->sql_record($clAbatimento->sql_query($abatimento)); 
+}
 
 if ( $clAbatimento->numrows == 0 ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum registro encontrado!');
@@ -57,7 +79,7 @@ if ( $clAbatimento->numrows == 0 ) {
 } else {
   $oAbatimento = db_utils::fieldsMemory($rsDadosAbatimento,0);
 }
- 
+
 ?>
 <html>
 <head>
@@ -76,11 +98,7 @@ fieldset legend {
 }
 fieldset {
   margin: 10px;
-}
-td {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
-}
+}    
 table.linhaZebrada {
   width: 98%;
 }
@@ -115,6 +133,23 @@ table.linhaZebrada tr td:nth-child(odd) {
                   <tr><td align="right">Percentual :         &nbsp;</td><td><?php echo $oAbatimento->k125_perc." %";                 ?></td></tr>
                 </table>
             </fieldset>
+
+            <?php
+              if (!empty($usuarioDevolucao)) {
+                $dataDevolucao = db_formatar($usuarioDevolucao['data'],'d');
+                echo "
+                  <fieldset>
+                    <legend>Dados da Devolução</legend>
+                    <table class='linhaZebrada'>
+                      <tr><td align='right'>Data Devolução : &nbsp;</td><td>{$dataDevolucao} </td></tr>
+                      <tr><td align='right'>Hora Devolução : &nbsp;</td><td>{$usuarioDevolucao['hora']}</td></tr>
+                      <tr><td align='right'>Usuário : &nbsp;</td><td>{$usuarioDevolucao['nome']}</td></tr>
+                    </table>
+                  </fieldset>
+                ";
+              }
+            ?>
+           
             </td>    
           </tr>
         </table>
@@ -164,11 +199,16 @@ table.linhaZebrada tr td:nth-child(odd) {
                     $sOrdemCampos            .= " arreckey.k00_numpar,  ";
                     $sOrdemCampos            .= " arreckey.k00_receit   ";                    
                     
-                    $sWhereOrigemAbatimento   = "abatimentoarreckey.k128_abatimento = {$iAbatimento}";
+                    if ($abatimentoOrigem != 'undefined') {
+                      // Transferência
+                      $sWhereOrigemAbatimento   = "abatimentoarreckey.k128_abatimento = {$abatimentoOrigem}";
+                    } else {
+                      $sWhereOrigemAbatimento   = "abatimentoarreckey.k128_abatimento = {$iAbatimento}";
+                    }
+                    
                     $sSqlOrigemAbatimento     = $clAbatimentoArreckey->sql_query_buscaAbatimento($sCamposOrigemAbatimento,$sOrdemCampos,$sWhereOrigemAbatimento);
                     
                   }
-                
                   
                   db_lovrot($sSqlOrigemAbatimento,15);
                 ?>
@@ -182,3 +222,9 @@ table.linhaZebrada tr td:nth-child(odd) {
 </center>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

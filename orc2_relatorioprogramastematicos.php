@@ -1,43 +1,46 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/exceptions/DBException.php");
-require_once("libs/exceptions/BusinessException.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/exceptions/DBException.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
 
 define('MODELO_RELATORIO_PPA', 1);
 define('MODELO_RELATORIO_LDO', 2);
+
+define('SEM_INDICE_POR_ANO', 'f');
+define('COM_INDICE_POR_ANO', 't');
 
 $oGet       = db_utils::postMemory($_GET);
 $iAnoSessao = db_getsession("DB_anousu");
@@ -47,6 +50,7 @@ $aTipoPrograma[0] = "Todos";
 $aTipoPrograma[3] = "Programas Temáticos";
 $aTipoPrograma[4] = "Programas de Gestão, Manutenção e Serviços";
 $iModeloRelatorio = $oGet->iModeloRelatorio;
+$imprimirIndices  = $oGet->imprimirIndices;
 
 /**
  *  Seta as propriedades do pdf
@@ -105,7 +109,7 @@ $iTamanhoFonte = 6;
 try {
 
   $aCodigoProgramas = explode(",", $oGet->sProgramas);
-  
+
   if (trim($oGet->sProgramas) == "") {
 
     $aWherePrograma  = array();
@@ -114,7 +118,7 @@ try {
      * Alterado lógica para filtrar pelo competencia do ppa
      */
     $aWherePrograma[] = "o08_ano between {$oPeriodoPPA->o01_anoinicio} and {$oPeriodoPPA->o01_anofinal}";
-    
+
     if ($oGet->iTipo != "0") {
       $aWherePrograma[] = "o54_tipoprograma = {$oGet->iTipo}";
     }
@@ -153,7 +157,7 @@ try {
     if (!$lImprime) {
     	continue;
     }
-    
+
     $aPeriodoPrograma    = array_keys($aValoresPrograma);
     $iAnoInicialPrograma = min($aPeriodoPrograma);
     $iAnoFinalPrograma   = max($aPeriodoPrograma);
@@ -207,56 +211,63 @@ try {
       }
       $oPdf->SetFont('arial', '', $iTamanhoFonte);
       $oPdf->Cell(100, $iAlturaLinha, substr($oStdIndicador->s_descricao, 0, 80), "TR", 0, "L");
-      $oPdf->Cell(30,  $iAlturaLinha, substr($oStdIndicador->s_unidade, 0, 25),   "TR", 0, "L");
+      $oPdf->Cell(30,  $iAlturaLinha, substr($oStdIndicador->s_unidade, 0, 23),   "TR", 0, "L");
       $oPdf->Cell(20,  $iAlturaLinha, $oStdIndicador->i_ano,                      "TR", 0, "C");
       $oPdf->Cell(40,  $iAlturaLinha, $oStdIndicador->n_valor,                    "T",  1, "R");
     }
 
     $aObjetivos = $oPrograma->getObjetivos();
 
-    /** 
-     * Objetivos do Programa 
+    /**
+     * Objetivos do Programa
      */
     imprimirCabecalhoObjetivos($oPdf, $iAlturaLinha, $iTamanhoFonte);
 
-    /** 
-     * Lista de Objetivos do Programa 
+    /**
+     * Lista de Objetivos do Programa
      */
     foreach ($aObjetivos as $oObjetivo) {
 
+      /**
+       * Exibe somente ano do primeiro programa
+       */
+      if ( $iModeloRelatorio == MODELO_RELATORIO_LDO ) {
+        $sPeriodoPrograma = "($iAnoInicialPrograma)";
+      }
+
       imprimirSegundoCabecalhoObjetivos($oPdf, $iAlturaLinha, $iTamanhoFonte, $oObjetivo->getCodigoSequencial());
 
-      /** 
-       * Dados do Objetivo 
+      /**
+       * Dados do Objetivo
        */
       $oPdf->SetFont('arial', '', $iTamanhoFonte);
       $oPdf->Cell(30,  $iAlturaLinha, $oObjetivo->getCodigoSequencial(),          "TBR", 0, "C");
       $oPdf->Cell(160, $iAlturaLinha, substr($oObjetivo->getDescricao(), 0, 125), "TB",  1, "L");
       $oPdf->MultiCell(190, $iAlturaLinha, $oObjetivo->getObjetivo(), "TB", "L");
 
-      /** 
-       * Cabeçalho do Órgão do objetivo 
+      /**
+       * Cabeçalho do Órgão do objetivo
        */
       imprimirCabecalhoOrgao($oPdf, $iAlturaLinha, $iTamanhoFonte);
 
-      /** 
-       * Dados do Órgão 
+      /**
+       * Dados do Órgão
        */
       $oOrgao = $oObjetivo->getOrgao();
       $oPdf->SetFont('arial', '', $iTamanhoFonte);
       $oPdf->Cell(30,  $iAlturaLinha, $oOrgao->getCodigoOrgao(), "TBR", 0, "C");
       $oPdf->Cell(160, $iAlturaLinha, $oOrgao->getDescricao(), "TB",  1, "L");
 
-      /** 
-       * Cabeçalho de Metas do Objetivo 
+      /**
+       * Cabeçalho de Metas do Objetivo
        */
       imprimirCabecalhoMetas($oPdf, $iAlturaLinha, $iTamanhoFonte, $sPeriodoPrograma);
 
       $aMetas       = $oObjetivo->getMetas();
       $aIniciativas = array();
 
-      /** 
-       * Percorre as metas do objetivo 
+      /**
+       * Percorre as metas do objetivo
        */
       foreach ($aMetas as $oMeta) {
 
@@ -264,41 +275,91 @@ try {
           imprimirCabecalhoMetas($oPdf, $iAlturaLinha, $iTamanhoFonte, $sPeriodoPrograma);
         }
 
+        $meta = $oMeta->getMeta();
+
+        if($imprimirIndices == COM_INDICE_POR_ANO) {
+
+          $indice = $oMeta->getIndiceNoAno($iAnoInicialPrograma);
+
+          /**
+           * Se houver índice para o ano do programa, valida os seguintes pontos:
+           * 1 - Se o menor e o maior ano do mesmo índice são iguais, imprimindo apenas uma vez o ano. Caso contrário,
+           *     fica entre períodos
+           * 2 - Se for o modelo LDO, não apresenta o ano e o índice é somente para aquele ano, ao invés da soma de todos
+           *     os anos lançados
+           */
+          if($indice) {
+
+            $meta  = "{$oMeta->getAnoMinimoIndice()} até {$oMeta->getAnoMaximoIndice()}";
+
+            if($oMeta->getAnoMinimoIndice() == $oMeta->getAnoMaximoIndice()) {
+              $meta = $oMeta->getAnoMinimoIndice();
+            }
+
+            $meta .= ": {$oMeta->getMeta()} - Índice: {$oMeta->getIndicesSomados()} {$indice->getUnidadeMedida()}";
+
+            if($iModeloRelatorio == MODELO_RELATORIO_LDO) {
+              $meta = "{$oMeta->getMeta()} - Índice: {$indice->getIndice()} {$indice->getUnidadeMedida()}";
+            }
+          }
+        }
+
         $oPdf->SetFont('arial', '', $iTamanhoFonte);
-        $oPdf->MultiCell(190, $iAlturaLinha, $oMeta->getMeta(), "TB", "L");
+        $oPdf->MultiCell(190, $iAlturaLinha, $meta, "TB", "L");
         $aIniciativas = array_merge($aIniciativas, $oMeta->getIniciativas());
       }
 
-      $sPeriodoIniciativa = $sPeriodoPrograma;
-
       /**
-       * Exibe somente ano do primeiro programa 
+       * Quando apresentar o ano, reordena as iniciativas pelo ano
        */
-      if ( $iModeloRelatorio == MODELO_RELATORIO_LDO ) {
-        $sPeriodoIniciativa = "($iAnoInicialPrograma)";
+      if($imprimirIndices == COM_INDICE_POR_ANO) {
+
+        usort($aIniciativas, function($objeto1, $objeto2) {
+          return strcmp($objeto1->getAno(), $objeto2->getAno());
+        });
       }
 
-      /** 
-       * Cabeçalho de Iniciativas do Objetivo 
+      /**
+       * Cabeçalho de Iniciativas do Objetivo
        */
-      imprimirCabecalhoIniciativas($oPdf, $iAlturaLinha, $iTamanhoFonte, $sPeriodoIniciativa);
+      imprimirCabecalhoIniciativas($oPdf, $iAlturaLinha, $iTamanhoFonte, $sPeriodoPrograma);
 
       foreach ($aIniciativas as $oIniciativa) {
 
+        $iniciativa = $oIniciativa->getIniciativa();
+
         /**
          * Modelo do relatorio LDO
-         * Imprime somente iniciativas do primeiro ano do programa
+         * Imprime somente se a iniciativa for para o ano impresso referente ao programa
          */
-        if ( $iModeloRelatorio == MODELO_RELATORIO_LDO && $oIniciativa->getAno() != $iAnoInicialPrograma ) {
+        if (    $iModeloRelatorio == MODELO_RELATORIO_LDO
+             && !DBNumber::overlaps($iAnoInicialPrograma, $oIniciativa->getAno(), $oIniciativa->getAnoFinal())) {
           continue;
         }
 
         if($oPdf->gety() > $oPdf->h-35) {
-          imprimirCabecalhoIniciativas($oPdf, $iAlturaLinha, $iTamanhoFonte, $sPeriodoIniciativa);
+          imprimirCabecalhoIniciativas($oPdf, $iAlturaLinha, $iTamanhoFonte, $sPeriodoPrograma);
+        }
+
+        /**
+         * Quando o modelo for PPA e selecionada impressão com ano, incrementa os dados do período cadastrado
+         */
+        if($iModeloRelatorio == MODELO_RELATORIO_PPA && $imprimirIndices == COM_INDICE_POR_ANO) {
+
+          if($oIniciativa->getAno() != null && $oIniciativa->getAnoFinal() != null) {
+
+            $iniciativa = "{$oIniciativa->getAno()} até {$oIniciativa->getAnoFinal()}";
+
+            if($oIniciativa->getAno() == $oIniciativa->getAnoFinal()) {
+              $iniciativa = $oIniciativa->getAno();
+            }
+
+            $iniciativa .= ": {$oIniciativa->getIniciativa()}";
+          }
         }
 
         $oPdf->SetFont('arial', '', $iTamanhoFonte);
-        $oPdf->MultiCell(190, 4, $oIniciativa->getIniciativa(), "TB", "L");
+        $oPdf->MultiCell(190, 4, $iniciativa, "TB", "L");
       }
     }
   }

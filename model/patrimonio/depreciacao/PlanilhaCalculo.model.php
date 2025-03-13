@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -30,7 +30,7 @@
   * @author DBseller
   * @package patrimonio
   * @subpackage depreciacao
-  * @version $Revision: 1.23 $
+  * @version $Revision: 1.30 $
   *
   */
 class PlanilhaCalculo {
@@ -133,7 +133,7 @@ class PlanilhaCalculo {
 
     if (!empty($iPlanilha)) {
 
-      $oDaoBensHistoricoCalculo = db_utils::getDao("benshistoricocalculo");
+      $oDaoBensHistoricoCalculo = new cl_benshistoricocalculo();
       $sSqlDadosPlanilha        = $oDaoBensHistoricoCalculo->sql_query_file($iPlanilha);
       $rsDadosPlanilha          = $oDaoBensHistoricoCalculo->sql_record($sSqlDadosPlanilha);
       if ($oDaoBensHistoricoCalculo->numrows) {
@@ -163,15 +163,43 @@ class PlanilhaCalculo {
 
     if (count($this->aCalculos) == 0 && !empty($this->iPlanilha)) {
 
-      $oDaoBensCalculo = db_utils::getDao("benshistoricocalculobem");
+      $oDaoBensCalculo = new cl_benshistoricocalculobem();
       $sWhereCalculos  = "t58_benshistoricocalculo = {$this->iPlanilha}";
-      $sSqlBensCalculo = $oDaoBensCalculo->sql_query_file(null, "t58_sequencial", "t58_sequencial", $sWhereCalculos);
+      $sSqlBensCalculo = $oDaoBensCalculo->sql_query(null, "benshistoricocalculobem.*, bens.*, bensdepreciacao.*", "t58_sequencial", $sWhereCalculos);
       $rsBensCaculo    = $oDaoBensCalculo->sql_record($sSqlBensCalculo);
+
       if ($oDaoBensCalculo->numrows > 0) {
 
         for ($iCalculo = 0; $iCalculo < $oDaoBensCalculo->numrows; $iCalculo++) {
 
-          $oCalculo = new CalculoBem(db_utils::fieldsMemory($rsBensCaculo, $iCalculo)->t58_sequencial);
+          $oDadosCalculo = db_utils::fieldsMemory($rsBensCaculo, $iCalculo);
+
+          $oCalculo = new CalculoBem();
+          $oCalculo->setHistoricoCalculo($oDadosCalculo->t58_benshistoricocalculo);
+          $oCalculo->setPercentualDepreciado($oDadosCalculo->t58_percentualdepreciado);
+          $oCalculo->setSequencial($oDadosCalculo->t58_sequencial);
+          $oCalculo->setTipoDepreciacao($oDadosCalculo->t58_benstipodepreciacao);
+          $oCalculo->setValorAnterior($oDadosCalculo->t58_valoranterior);
+          $oCalculo->setValorAtual($oDadosCalculo->t58_valoratual);
+          $oCalculo->setValorCalculado($oDadosCalculo->t58_valorcalculado);
+          $oCalculo->setValorResidual($oDadosCalculo->t58_valorresidual);
+          $oCalculo->setValorResidualAnterior($oDadosCalculo->t58_valorresidualanterior);
+
+          $oBem = new Bem();
+          $oBem->setCodigoBem($oDadosCalculo->t52_bem);
+          $oBem->setCodigoBemDepreciacao($oDadosCalculo->t44_sequencial);
+          $oBem->setTipoDepreciacao( BemTipoDepreciacaoRepository::getPorCodigo($oDadosCalculo->t44_benstipodepreciacao) );
+          $oBem->setTipoAquisicao( BemTipoAquisicaoRepository::getPorCodigo($oDadosCalculo->t44_benstipoaquisicao) );
+          $oBem->setClassificacao(BemClassificacaoRepository::getPorCodigo($oDadosCalculo->t52_codcla));
+          $oBem->setVidaUtil($oDadosCalculo->t44_vidautil);
+          $oBem->setValorAquisicao($oDadosCalculo->t52_valaqu);
+          $oBem->setValorResidual($oDadosCalculo->t44_valorresidual);
+          $oBem->setValorDepreciavel($oDadosCalculo->t44_valoratual);
+          $oBem->setVidaUtil($oDadosCalculo->t44_vidautil);
+          $oBem->setDescricao($oDadosCalculo->t52_descr);
+
+          $oCalculo->setBem($oBem);
+
           array_push($this->aCalculos, $oCalculo);
         }
       }
@@ -368,7 +396,7 @@ class PlanilhaCalculo {
 
         $oParms = new stdClass();
         $oParms->sDescricao = $oCalculoBem->getBem()->getDescricao();
-        throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.calculo_ja_adicionado', $oParms));
+        throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.calculo_ja_adicionado', $oParms));
         //throw new Exception("Já existe um calculo adicionado para o bem {$oCalculoBem->getBem()->getDescricao()}");
       }
     }
@@ -389,11 +417,11 @@ class PlanilhaCalculo {
   public function getBensPorTipoDeProcessamento() {
 
     if (empty($this->iTipoCalculo)) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.informe_calculo'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.informe_calculo'));
     }
 
     if (empty($this->iTipoProcessamento)) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.informe_processamento'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.informe_processamento'));
     }
     $iUltimoDiaCompetencia = cal_days_in_month(CAL_GREGORIAN, $this->getMes(), $this->getAno());
     $dtReferenciaMes       = "{$this->getAno()}-{$this->getMes()}-{$iUltimoDiaCompetencia}";
@@ -418,25 +446,41 @@ class PlanilhaCalculo {
      */
     if ($this->iTipoCalculo == 1) {
 
-      $sWhere .= " and t44_valoratual > 0 ";
+      $sWhere .= " and t44_valoratual > t44_valorresidual ";
       if ($this->iTipoProcessamento == 1) {
         $sWhere .= " and t44_benstipodepreciacao not in (4,5) ";
       } else {
         $sWhere .= " and t44_benstipodepreciacao in (5) ";
       }
     }
+
     $aListaBens          = array();
     $oDaoBensDepreciacao = db_utils::getDao("bensdepreciacao");
-    $sSqlBens            = $oDaoBensDepreciacao->sql_query_bem(null, "distinct t44_bens", "t44_bens", $sWhere);
+    $sSqlBens            = $oDaoBensDepreciacao->sql_query_bem(null, "distinct bens.*, bensdepreciacao.*", "1", $sWhere);
     $rsBens              = $oDaoBensDepreciacao->sql_record($sSqlBens);
+
     if ($oDaoBensDepreciacao->numrows > 0) {
 
       for ($iBem = 0; $iBem < $oDaoBensDepreciacao->numrows; $iBem++) {
 
-        $oBem = new Bem(db_utils::fieldsMemory($rsBens, $iBem)->t44_bens);
+        $oDadosBem = db_utils::fieldsMemory($rsBens, $iBem);
+
+        $oBem = new Bem();
+        $oBem->setCodigoBem($oDadosBem->t52_bem);
+        $oBem->setCodigoBemDepreciacao($oDadosBem->t44_sequencial);
+        $oBem->setTipoDepreciacao( BemTipoDepreciacaoRepository::getPorCodigo($oDadosBem->t44_benstipodepreciacao) );
+        $oBem->setTipoAquisicao( BemTipoAquisicaoRepository::getPorCodigo($oDadosBem->t44_benstipoaquisicao) );
+        $oBem->setVidaUtil($oDadosBem->t44_vidautil);
+        $oBem->setValorAquisicao($oDadosBem->t52_valaqu);
+        $oBem->setValorResidual($oDadosBem->t44_valorresidual);
+        $oBem->setValorDepreciavel($oDadosBem->t44_valoratual);
+        $oBem->setVidaUtil($oDadosBem->t44_vidautil);
+        $oBem->setDescricao($oDadosBem->t52_descr);
+
         array_push($aListaBens, $oBem);
       }
     }
+
     return $aListaBens;
   }
 
@@ -451,13 +495,13 @@ class PlanilhaCalculo {
 
     $iAnoSessao            = $this->getAno();
     $iInstituicao          = db_getsession("DB_instit");
-    $iMesParaProcessamento = 0;
+    $iMesParaProcessamento = (int)0;
     $oDaoHistoricoCalculo  = db_utils::getDao("benshistoricocalculo");
     /**
      * @todo Modificar o parametro para os parametros da instituicao do patrimonio
      */
     if (!$this->hasParametroDepreciacaoHabilitado()) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.depreciacao_nao_configurada_para_instituicao'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.depreciacao_nao_configurada_para_instituicao'));
     }
 
     $dtInicioDepreciacao = $this->getDataInicioDepreciacao();
@@ -482,11 +526,11 @@ class PlanilhaCalculo {
 
     if ($oDaoHistoricoCalculo->numrows > 0) {
 
-      $iMesParaProcessamento = db_utils::fieldsMemory($rsCalculosProcessados, 0)->mes;
+      $iMesParaProcessamento = (int)db_utils::fieldsMemory($rsCalculosProcessados, 0)->mes;
 
       if (empty($iMesParaProcessamento)) {
 
-        $iMesParaProcessamento += 1;
+          $iMesParaProcessamento += 1;
         if ($iAnoImplantacao == $iAnoSessao) {
           $iMesParaProcessamento = $iMesImplantacao;
         }
@@ -504,7 +548,7 @@ class PlanilhaCalculo {
           $rsMes    = $oDaoBens->sql_record($sSqlMes);
 
           if($oDaoBens->numrows == 0) {
-            throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.nao_existem_bens_para_depreciacao'));
+            throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.nao_existem_bens_para_depreciacao'));
           }
 
           $dtAquisicaoBem        = db_utils::fieldsMemory($rsMes, 0)->data;
@@ -516,7 +560,7 @@ class PlanilhaCalculo {
             $oParms = new stdClass();
             $oParms-> iAnoSessao = $iAnoSessao;
             $oParms->aDataAquisicao = $aDataAquisicao;
-            throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.sem_bens_para_depreciacao_no_ano', $oParms));
+            throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.sem_bens_para_depreciacao_no_ano', $oParms));
             //throw new Exception("Não existem bens para serem depreciados no ano {$iAnoSessao}.\n O primeiro bem adquirido foi cadastrado em {$aDataAquisicao[0]} ");
           }
 
@@ -551,7 +595,7 @@ class PlanilhaCalculo {
     $iProximoMesProcessar = $this->getMesDisponivelParaProcessamento($this->getTipoCalculo());
 
     if ($this->getMes() != $iProximoMesProcessar && !$this->isProcessamentoRetroativo()) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.mes_invalido'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.mes_invalido'));
     }
     /**
 		 * Quando for processamento automatico.
@@ -586,7 +630,7 @@ class PlanilhaCalculo {
        * Processamento manual
        */
       if (count($this->aCalculos) == 0) {
-        throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.planilha_sem_calculos_informados'));
+        throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.planilha_sem_calculos_informados'));
       }
       /**
        * Apenas percorremos os calculos adicionados e validamos o do calculo (não pode ser menor que zero.)
@@ -597,7 +641,7 @@ class PlanilhaCalculo {
 
           $oParms = new stdClass();
           $oParms->sDescricao = $oCalculo->getBem()->getDescricao();
-          throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.calculo_valor_inconsistente', $oParms));
+          throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.calculo_valor_inconsistente', $oParms));
           //throw new Exception("Calculo para o bem {$oCalculo->getBem()->getDescricao()} com valor inconsistente.");
         }
       }
@@ -614,18 +658,18 @@ class PlanilhaCalculo {
   public function salvar() {
 
     if (!db_utils::inTransaction()) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.nao_existe_transacao'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.nao_existe_transacao'));
     }
     if (count($this->getCalculos()) == 0) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.planilha_sem_calculos'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.planilha_sem_calculos'));
     }
 
     if (empty($this->iMes)) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.planilha_sem_mes_de_processamento'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.planilha_sem_mes_de_processamento'));
     }
 
     if (empty($this->iAno)) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.planilha_sem_ano_de_processamento'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.planilha_sem_ano_de_processamento'));
     }
     $oDaoBensHistoricoCalculo                        = db_utils::getDao("benshistoricocalculo");
     $oDaoBensHistoricoCalculo->t57_ano               = $this->getAno();
@@ -656,7 +700,7 @@ class PlanilhaCalculo {
     }
 
     if ($oDaoBensHistoricoCalculo->erro_status == 0) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.planilha_sem_ano_de_processamento',$oDaoBensHistoricoCalculo));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.planilha_sem_ano_de_processamento',$oDaoBensHistoricoCalculo));
     }
   }
 
@@ -671,14 +715,14 @@ class PlanilhaCalculo {
   public function cancelar() {
 
     if (empty($this->iPlanilha)) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.planilha_nao_salva'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.planilha_nao_salva'));
     }
 
     if (!$this->isProcessado()) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.planilha_nao_cancelada'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.planilha_nao_cancelada'));
     }
    if (!$this->isAtiva()) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.planilha_ja_cancelada'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.planilha_ja_cancelada'));
     }
     /**
      * verificamos se existe algum mes posterior processado
@@ -689,7 +733,7 @@ class PlanilhaCalculo {
       $iMesPlanilha = 0;
     }
     if ($iProximoMesProcessar > $iMesPlanilha) {
-      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.processamentos_anteriores_planilha_nao_cancelada'));
+      throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.processamentos_anteriores_planilha_nao_cancelada'));
     }
 
     /**
@@ -703,6 +747,7 @@ class PlanilhaCalculo {
      * Invertemos o valor de cada calculo na nova planilha.
      *
      */
+
     foreach ($aCalculos as $oCalculoAnterior) {
 
       $oNovoCalculo = new CalculoBem();
@@ -781,7 +826,7 @@ class PlanilhaCalculo {
 
           $oParms = new stdClass();
           $oParms->iAno = $iAno;
-          throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo_model.ano_possui_meses_nao_processados', $oParms));
+          throw new Exception(_M('patrimonial.patrimonio.PlanilhaCalculo.ano_possui_meses_nao_processados', $oParms));
         }
       }
     }

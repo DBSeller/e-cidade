@@ -1,43 +1,43 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_procarquiv_classe.php");
-require_once("classes/db_proctransfer_classe.php");
-require_once("classes/db_proctransand_classe.php");
-require_once("classes/db_procandam_classe.php");
-require_once("classes/db_arqproc_classe.php");
-require_once("classes/db_arqandam_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_procarquiv_classe.php"));
+require_once(modification("classes/db_proctransfer_classe.php"));
+require_once(modification("classes/db_proctransand_classe.php"));
+require_once(modification("classes/db_procandam_classe.php"));
+require_once(modification("classes/db_arqproc_classe.php"));
+require_once(modification("classes/db_arqandam_classe.php"));
 
 $clprotprocesso = new cl_protprocesso;
 $clproctransfer = new cl_proctransfer;
@@ -62,6 +62,44 @@ $clrotulo->label("p67_dtarq");
 
 db_postmemory($HTTP_POST_VARS);
 
+function notificar(processoProtocolo $processo){
+
+        $eauth = new \ECidade\Lib\Request\EAuth\EAuth();
+        $titular = \CgmFactory::getInstanceByCgm($processo->getCgm());
+
+        if (empty($titular->getNome())) {
+            throw new \Exception("Titular não encontrado!");
+        }
+
+        $atendimentoProcesso = $processo->getProcessoAtendimento();
+        if (empty($atendimentoProcesso)) {
+            throw new \Exception("Atendimento do processo não encontrado!");
+        }
+
+        $atendimentoCidadao = $atendimentoProcesso->getAtendimentoCidadao();
+        if(empty($atendimentoCidadao)){
+            throw new \Exception("Atendimento ao Cidadão não encontrado!");
+        }
+
+        $cidadao = $atendimentoCidadao->getCidadao();
+        if (empty($cidadao)) {
+            throw new \Exception("Cidadão não encontrado!");
+        }
+
+        $atendimentoProcessoEletronico = $atendimentoProcesso->getAtendimentoProcessoEletronico();
+        if (empty($atendimentoProcessoEletronico)) {
+            throw new \Exception("Informações do processo eletronico não encontrado!");
+        }
+
+        $message = "O processo {$processo->getNumeroProcesso()}/{$processo->getAnoProcesso()} ";
+        $message .= "do titular {$titular->getNome()}, foi arquivado.";
+
+        $eauth->sendMessage(
+            $cidadao->getCnpjCpf(),
+            $atendimentoProcessoEletronico->getClientAtendimentoId(),
+            $message
+        );
+}
 if (isset($incluir)){
   db_inicio_transacao();
   $sqlerro=false;
@@ -83,7 +121,7 @@ if (isset($incluir)){
 	$erro_msg=$clprocarquiv->erro_msg;
 	break;
       }
-      $clarqproc->incluir($clprocarquiv->p67_codarquiv,$p67_codproc); 
+      $clarqproc->incluir($clprocarquiv->p67_codarquiv,$p67_codproc);
       if ($clarqproc->erro_status==0){
 	$sqlerro=true;
 	$erro_msg=$clarqproc->erro_msg;
@@ -105,18 +143,18 @@ if (isset($incluir)){
 	break;
       }
       //$clproctransfer->erro(true,false);
-      
+
       $cod = $clproctransfer->p62_codtran;
-      
-      $rsi =  pg_exec("insert into proctransferproc values($cod,$p67_codproc)");
-      
+
+      $rsi =  db_query("insert into proctransferproc values($cod,$p67_codproc)");
+
       if ($clproctransfer->erro_status == "1" or !$rsi ){
 	 $erro = 0;
       }else{
 	 $clproctransfer->erro(true,false);
 	 $sqlerro = true;
 	 break;
-	  
+
       }
       //inclusão do andamento
       $clprocandam->p61_despacho = $clprocarquiv->p67_historico;
@@ -157,6 +195,17 @@ if (isset($incluir)){
 	 $sqlerro=true;
       }
     }
+
+      $processo = new processoProtocolo($p67_codproc);
+      if ($sqlerro !== true and $processo->isEletronico()) {
+          try {
+              notificar($processo);
+          }catch(\Exception $e){
+
+          }
+
+      }
+
     $proximo=next($vt);
   }
 
@@ -170,11 +219,11 @@ if (isset($incluir)){
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script>
-function js_marca(obj){ 
+function js_marca(obj){
    var OBJ = document.form1;
    for(i=0;i<OBJ.length;i++){
      if(OBJ.elements[i].type == 'checkbox'){
-       OBJ.elements[i].checked = !(OBJ.elements[i].checked == true);            
+       OBJ.elements[i].checked = !(OBJ.elements[i].checked == true);
      }
    }
    return false;
@@ -182,17 +231,17 @@ function js_marca(obj){
 function js_desabilita(){
   Document.form1.incluir.disabled=true;
 }
-</script>  
+</script>
 <style>
   .cabec {
   text-align: center;
   color: darkblue;
-  background-color:#aacccc;       
+  background-color:#aacccc;
   border-color: darkblue;
   }
   .corpo {
   color: black;
-  background-color:#ccddcc;       
+  background-color:#ccddcc;
   }
 </style>
 <link href="estilos.css" rel="stylesheet" type="text/css">
@@ -220,13 +269,13 @@ function js_desabilita(){
                     <td nowrap title="<?=@$Tp67_dtarq?>">
                        <?=@$Lp67_dtarq?>
                     </td>
-                    <td> 
+                    <td>
                       <?
                       if(empty($y30_data_dia)){
                         $p67_dtarq_dia = date("d",db_getsession("DB_datausu"));
                         $p67_dtarq_mes = date("m",db_getsession("DB_datausu"));
                         $p67_dtarq_ano = date("Y",db_getsession("DB_datausu"));
-                      } 
+                      }
                       db_inputdata('p67_dtarq',@$p67_dtarq_dia,@$p67_dtarq_mes,@$p67_dtarq_ano,true,'text',1,"")
                       ?>
                     </td>
@@ -239,9 +288,9 @@ function js_desabilita(){
                   <tr>
                     <td colspan=2 align='center' >
                     <?
-                  
+
                        if (!isset($data1) || !isset($data)) {
-                           
+
                           $data=@$data1_ano.'-'.@$data1_mes.'-'.@$data1_dia;
                           $data1=@$data2_ano.'-'.@$data2_mes.'-'.@$data2_dia;
                         }
@@ -253,19 +302,19 @@ function js_desabilita(){
                         } else if ($data!="--") {
                   	      $where = $where." and p58_dtproc >= '$data'  ";
                         } else if ($data1!="--"){
-                         	$where = $where."and p58_dtproc <= '$data1'   ";  
+                         	$where = $where."and p58_dtproc <= '$data1'   ";
                         }
                         $depto_atual = db_getsession("DB_coddepto");
                         $usu_atual   = db_getsession("DB_id_usuario");
-                        $sSqlProcessos = $clprotprocesso->sql_query_arq(null, 
+                        $sSqlProcessos = $clprotprocesso->sql_query_arq(null,
                                                                         "*",
                                                                         "p58_codproc",
-                                                                        "p68_codproc is null 
+                                                                        "p68_codproc is null
                                                                          and p61_coddepto={$depto_atual}  {$where}"
                                                                         );
                         $rsProcessos = $clprotprocesso->sql_record($sSqlProcessos);
                         $iNumRows    = $clprotprocesso->numrows;
-                        if ($iNumRows > 0) { 
+                        if ($iNumRows > 0) {
 
                           echo "
                   	      <table>
@@ -278,23 +327,23 @@ function js_desabilita(){
                   	        <td class='cabec' align='center'  title='$Tp58_hora'>".str_replace(":","",$Lp58_hora)."</td>
                   	        <td class='cabec' align='center'  title='$Tz01_nome'>".str_replace(":","",$Lz01_nome)."</td>
                   	      </tr>
-                          "; 	   
+                          ";
                         } else {
 
                           echo "<br><br><b>Sem Processos!!</b>";
                 	        echo"<script>js_desabilita();</script>";
                 	      }
                         for ( $i = 0; $i < $iNumRows; $i++) {
-                          
+
                           db_fieldsmemory($rsProcessos,$i);
                           $passou                     = true;
-                          $sSqlVerificaTransferencia  = "select p63_codproc,p63_codtran, p64_codtran"; 
+                          $sSqlVerificaTransferencia  = "select p63_codproc,p63_codtran, p64_codtran";
                 	        $sSqlVerificaTransferencia .= "  from proctransferproc ";
-                	        $sSqlVerificaTransferencia .= "       left join proctransand on p64_codtran = p63_codtran";  
-                          $sSqlVerificaTransferencia .= " where p63_codproc={$p58_codproc}"; 
+                	        $sSqlVerificaTransferencia .= "       left join proctransand on p64_codtran = p63_codtran";
+                          $sSqlVerificaTransferencia .= " where p63_codproc={$p58_codproc}";
                           $rsProcessosTransferencia   = db_query($sSqlVerificaTransferencia);
                           if (pg_num_rows($rsProcessos) != 0) {
-                	         
+
                             for ($yy = 0; $yy < pg_num_rows($rsProcessosTransferencia); $yy++) {
 
                               db_fieldsmemory($rsProcessosTransferencia, $yy);
@@ -304,7 +353,7 @@ function js_desabilita(){
                         	  }
                 	        }
                 	        if ($passou) {
-                	           
+
                 	          echo"
                 		        <tr>
                 		         <td  class='corpo' title='Inverte a marcação' align='center'>
@@ -322,10 +371,10 @@ function js_desabilita(){
                 		   </tr>";
                 	}
 	}
-	
+
         echo"
-	   </table>";	        
-       
+	   </table>";
+
 
   ?>
   </td>
@@ -344,8 +393,8 @@ if (isset($incluir)){
     if($sqlerro==true){
       echo "<script> document.form1.".$clprocarquiv->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clprocarquiv->erro_campo.".focus();</script>";
-    }else{ 
-      echo"<script>top.corpo.location.href='pro4_procarquiv011.php';</script>";
+    }else{
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='pro4_procarquiv011.php';</script>";
     }
 }
 ?>

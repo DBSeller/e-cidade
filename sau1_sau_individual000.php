@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $clcriaabas = new cl_criaabas;
 $db_opcao = 1;
@@ -61,14 +61,15 @@ switch ($idarq){
 <table valign="top" marginwidth="0" width="100%" border="0" cellspacing="0" cellpadding="0">
  <tr>
   <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
-   <?
-   $clcriaabas->identifica = array("a1"=>"ABA FAA","a2"=>"ABA Procedimento",);
-   $clcriaabas->sizecampo  = array("a1"=>"20","a2"=>"30");
-   $clcriaabas->src        = array("a1"=>"$arquivo","a2"=>"");
-   $clcriaabas->disabled   = array("a2"=>"true");
-   $clcriaabas->cordisabled = "#9b9b9b";
-   $clcriaabas->iframe_height = "600";
-   $clcriaabas->cria_abas();
+   <?php
+
+     $clcriaabas->identifica    = array("a1"=>"FAA","a2"=>"Procedimento",);
+     $clcriaabas->sizecampo     = array("a1"=>"20","a2"=>"30");
+     $clcriaabas->src           = array("a1"=>"$arquivo","a2"=>"");
+     $clcriaabas->disabled      = array("a2"=>"true");
+     $clcriaabas->cordisabled   = "#9b9b9b";
+     $clcriaabas->iframe_height = "600";
+     $clcriaabas->cria_abas();
    ?>
   </td>
  </tr>

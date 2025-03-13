@@ -26,7 +26,7 @@
  */
 
 //MODULO: atendimento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cltarefaanexos->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -152,10 +152,10 @@ function js_cancelar(){
 }
 function js_pesquisaat25_tarefa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_tarefaanexos','db_iframe_tarefa','func_tarefa.php?funcao_js=parent.js_mostratarefa1|at40_sequencial|at40_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefaanexos','db_iframe_tarefa','func_tarefa.php?funcao_js=parent.js_mostratarefa1|at40_sequencial|at40_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.at25_tarefa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_tarefaanexos','db_iframe_tarefa','func_tarefa.php?pesquisa_chave='+document.form1.at25_tarefa.value+'&funcao_js=parent.js_mostratarefa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefaanexos','db_iframe_tarefa','func_tarefa.php?pesquisa_chave='+document.form1.at25_tarefa.value+'&funcao_js=parent.js_mostratarefa','Pesquisa',false);
      }else{
        document.form1.at40_descr.value = ''; 
      }

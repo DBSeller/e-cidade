@@ -36,13 +36,13 @@ $sSqlEmpresa .=	"					where codigo = $iIdDaEmpresa ";
 
 $iCountItemSub = 2;
 db_atutermometro(0, $iCountItemSub, 'termometroitem', 1, "Processando Arquivo $arquivo");
-$rsEmpresa    = pg_query($sSqlEmpresa);
+$rsEmpresa    = db_query($sSqlEmpresa);
 $oEmpresa     = db_utils::fieldsMemory($rsEmpresa,0);
 /*
 $sSqlEmpresa  = "select '$iTipo'    as tipo_de_registro, ";
 $sSqlEmpresa .= "       '10101' as id_da_empresa, "; // codigo db_config
 $sSqlEmpresa .= "       'Nome da Empresa' as nome_da_empresa"; //nome instr db_config
-$rsEmpresa    = pg_query($sSqlEmpresa);
+$rsEmpresa    = db_query($sSqlEmpresa);
 $oEmpresa     = db_utils::fieldsMemory($rsEmpresa,0);
 */
 // var_dump($oEmpresa);

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 //echo "area =$area <br> sani =$codsani <br>opcao= $opcao<br>seq=$seq<br>";
 $sql = "select * from sanitario where y80_codsani=$codsani";
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 if($linhas>0){
   db_fieldsmemory($result,0);
@@ -45,7 +45,7 @@ if($linhas>0){
      $sqlinc= "select * from saniatividade where y83_codsani = $codsani and y83_seq <> $seq";
      $opcao='Alterar';     
   }
-  $resultinc = pg_query($sqlinc);
+  $resultinc = db_query($sqlinc);
   $linhasinc = pg_num_rows($resultinc);
   if($linhasinc>0){
     $areat="";
@@ -72,3 +72,9 @@ if($linhas>0){
   
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

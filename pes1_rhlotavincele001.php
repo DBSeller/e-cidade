@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhlota_classe.php");
-include("classes/db_rhlotavinc_classe.php");
-include("classes/db_rhlotavincativ_classe.php");
-include("classes/db_rhlotavincele_classe.php");
-include("classes/db_rhlotavincrec_classe.php");
-include("classes/db_rhelementoemp_classe.php");
-include("classes/db_orcprojativ_classe.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_orcelemento_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_rhlota_classe.php"));
+include(modification("classes/db_rhlotavinc_classe.php"));
+include(modification("classes/db_rhlotavincativ_classe.php"));
+include(modification("classes/db_rhlotavincele_classe.php"));
+include(modification("classes/db_rhlotavincrec_classe.php"));
+include(modification("classes/db_rhelementoemp_classe.php"));
+include(modification("classes/db_orcprojativ_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
 
@@ -271,7 +271,7 @@ if(isset($incluir)){
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmrhlotavincele.php");
+	include(modification("forms/db_frmrhlotavincele.php"));
 	?>
     </center>
 	</td>
@@ -291,12 +291,12 @@ if(isset($alterar) || isset($excluir) || isset($incluir)){
   echo "<script> location.href = 'pes1_rhlotavincele001.php?lotacao=$rh25_codigo&lotavinc=$rh25_codlotavinc';</script>";
 }
 if(isset($opcao)){
-  echo "<script> top.corpo.iframe_rhlotavinc.document.form1.opcaoiframe.value = '$opcao'; </script>";
+  echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.opcaoiframe.value = '$opcao'; </script>";
   if($opcao=="alterar" && trim($default)==""){
-    echo "<script> top.corpo.iframe_rhlotavinc.document.form1.defaultifra.value = '$rh28_codeledef'; </script>";
+    echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.defaultifra.value = '$rh28_codeledef'; </script>";
   }
 }else{
-  echo "<script> top.corpo.iframe_rhlotavinc.document.form1.opcaoiframe.value = ''; </script>";
+  echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.opcaoiframe.value = ''; </script>";
 }
 /*
 if($limpachavee1==true){

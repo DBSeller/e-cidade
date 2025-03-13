@@ -1,0 +1,1 @@
+delete from pessoal.rhhistoricocalculo  where rh143_valor = 0 and rh143_quantidade = 0;

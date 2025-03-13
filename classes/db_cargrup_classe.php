@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -48,7 +48,7 @@ class cl_cargrup {
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  j32_grupo = int4 = Código 
-                 j32_descr = varchar(40) = Descricao 
+                 j32_descr = varchar(40) = Descrição 
                  j32_tipo = char(1) = Tipo 
                  ";
    //funcao construtor da classe 
@@ -76,11 +76,11 @@ class cl_cargrup {
        $this->j32_grupo = ($this->j32_grupo == ""?@$GLOBALS["HTTP_POST_VARS"]["j32_grupo"]:$this->j32_grupo);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($j32_grupo){ 
       $this->atualizacampos();
      if($this->j32_descr == null ){ 
-       $this->erro_sql = " Campo Descricao nao Informado.";
+       $this->erro_sql = " Campo Descrição não informado.";
        $this->erro_campo = "j32_descr";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -89,7 +89,7 @@ class cl_cargrup {
        return false;
      }
      if($this->j32_tipo == null ){ 
-       $this->erro_sql = " Campo Tipo nao Informado.";
+       $this->erro_sql = " Campo Tipo não informado.";
        $this->erro_campo = "j32_tipo";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -122,7 +122,7 @@ class cl_cargrup {
        }
      }
      if(($this->j32_grupo == null) || ($this->j32_grupo == "") ){ 
-       $this->erro_sql = " Campo j32_grupo nao declarado.";
+       $this->erro_sql = " Campo j32_grupo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -143,12 +143,12 @@ class cl_cargrup {
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Grupo das Caracteristicas ($this->j32_grupo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Grupo das Caracteristicas ($this->j32_grupo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Grupo das Caracteristicas já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Grupo das Caracteristicas ($this->j32_grupo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Grupo das Caracteristicas ($this->j32_grupo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -157,7 +157,7 @@ class cl_cargrup {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->j32_grupo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -176,7 +176,7 @@ class cl_cargrup {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($j32_grupo=null) { 
+   public function alterar ($j32_grupo=null) { 
       $this->atualizacampos();
      $sql = " update cargrup set ";
      $virgula = "";
@@ -187,7 +187,7 @@ class cl_cargrup {
        $sql  .= $virgula." j32_grupo = $this->j32_grupo ";
        $virgula = ",";
        if(trim($this->j32_grupo) == null ){ 
-         $this->erro_sql = " Campo Código nao Informado.";
+         $this->erro_sql = " Campo Código não informado.";
          $this->erro_campo = "j32_grupo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -200,7 +200,7 @@ class cl_cargrup {
        $sql  .= $virgula." j32_descr = '$this->j32_descr' ";
        $virgula = ",";
        if(trim($this->j32_descr) == null ){ 
-         $this->erro_sql = " Campo Descricao nao Informado.";
+         $this->erro_sql = " Campo Descrição não informado.";
          $this->erro_campo = "j32_descr";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -213,7 +213,7 @@ class cl_cargrup {
        $sql  .= $virgula." j32_tipo = '$this->j32_tipo' ";
        $virgula = ",";
        if(trim($this->j32_tipo) == null ){ 
-         $this->erro_sql = " Campo Tipo nao Informado.";
+         $this->erro_sql = " Campo Tipo não informado.";
          $this->erro_campo = "j32_tipo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -242,28 +242,28 @@ class cl_cargrup {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Grupo das Caracteristicas nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Grupo das Caracteristicas não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->j32_grupo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Grupo das Caracteristicas nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Grupo das Caracteristicas não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->j32_grupo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->j32_grupo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -294,39 +294,39 @@ class cl_cargrup {
      $sql = " delete from cargrup
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($j32_grupo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($j32_grupo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " j32_grupo = $j32_grupo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Grupo das Caracteristicas nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Grupo das Caracteristicas não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$j32_grupo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Grupo das Caracteristicas nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Grupo das Caracteristicas não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$j32_grupo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$j32_grupo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -337,9 +337,9 @@ class cl_cargrup {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -348,8 +348,8 @@ class cl_cargrup {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:cargrup";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -373,11 +373,11 @@ class cl_cargrup {
      }
      $sql .= " from cargrup ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($j32_grupo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($j32_grupo)) {
          $sql2 .= " where cargrup.j32_grupo = $j32_grupo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
@@ -406,11 +406,11 @@ class cl_cargrup {
      }
      $sql .= " from cargrup ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($j32_grupo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($j32_grupo)){
          $sql2 .= " where cargrup.j32_grupo = $j32_grupo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
@@ -425,5 +425,6 @@ class cl_cargrup {
      }
      return $sql;
   }
+
 }
-?>
+

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -81,7 +81,7 @@ function js_procurar(texto) {
 	  $sql = "select codigo,descr from favoritos where upper(descr) like upper('$descricao%') and codmed = ".db_getsession("DB_id_usuario")." order by upper(descr)";
 	else
   	  $sql = "select codigo,descr from favoritos where codmed = ".db_getsession("DB_id_usuario")." order by upper(descr)";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	$numrows = pg_numrows($result);
 	for($i = 0;$i < $numrows;$i++) {
 	  db_fieldsmemory($result,$i);

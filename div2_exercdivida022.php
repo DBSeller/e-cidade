@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('');
@@ -70,7 +70,7 @@ $sql="select    v01_exerc,
 	  as x group by v01_exerc";
 
 die($sql);
-$result=pg_query($sql);
+$result=db_query($sql);
 
 if (pg_numrows($result)==0){
   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem registros cadastrados.');

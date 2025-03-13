@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('fpdf151/pdf.php');
-require_once('libs/db_utils.php');
+require_once(modification('fpdf151/pdf.php'));
+require_once(modification('libs/db_utils.php'));
 
 $oDaoLabRequiItem    = new cl_lab_requiitem();
 $sWhere              = '';
@@ -69,25 +69,25 @@ if( !$lInformouRequisicao ) {
   $sSep = " and ( ";
   if (isset($lAutorizado) && $lAutorizado == 1) {
 
-    $sWhere .= " $sSep la21_c_situacao='8 - Autorizado'";
+    $sWhere .= " $sSep la21_c_situacao='20 - Autorizado'";
     $sSep    = " or ";
   }
 
   if (isset($lColetado) && $lColetado == 1) {
 
-    $sWhere .= " $sSep la21_c_situacao = '6 - Coletado' ";
+    $sWhere .= " $sSep la21_c_situacao = '30 - Coletado' ";
     $sSep    = " or ";
   }
 
   if (isset($lConfirmado) && $lConfirmado == 1) {
 
-    $sWhere .= " $sSep la21_c_situacao = '7 - Conferido' ";
+    $sWhere .= " $sSep la21_c_situacao = '60 - Conferido' ";
     $sSep    = " or ";
   }
 
   if (isset($lEntregue) && $lEntregue == 1) {
 
-    $sWhere .= " $sSep la21_c_situacao='3 - Entregue' ";
+    $sWhere .= " $sSep la21_c_situacao='70 - Entregue' ";
     $sSep    =" or ";
   }
 

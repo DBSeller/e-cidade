@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,21 +25,34 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/db_utils.php");
+require_once modification("libs/db_app.utils.php");
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("classes/db_cfiptu_classe.php");
 
-$oPost      = db_utils::postMemory($_POST);
-$oGet       = db_utils::postMemory($_GET);
+$oPost = db_utils::postMemory($_POST);
+$oGet = db_utils::postMemory($_GET);
 
 $iMatricula = '';
 if (isset($matricula)) {
-	$iMatricula = $matricula;
+    $iMatricula = $matricula;
 }
+$clcfiptu = new cl_cfiptu;
+$sSqlCfiptu = $clcfiptu->sql_query_file(db_getsession('DB_anousu'), "j18_bicmarcasigilo", null, '');
+$rsSqlCfiptu = $clcfiptu->sql_record($sSqlCfiptu);
+if ($clcfiptu->numrows > 0) {
+    $oDadoCfiptu = db_utils::fieldsMemory($rsSqlCfiptu, 0);
+}
+if ($oDadoCfiptu->j18_bicmarcasigilo == 't') {
+  $checkSigilo = 'checked';
+} else {
+  $checkSigilo = '';
+}
+
 ?>
 <html>
 <head>
@@ -47,8 +60,8 @@ if (isset($matricula)) {
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <?php
-  db_app::load("scripts.js, strings.js, prototype.js");
-  db_app::load("estilos.css, grid.style.css");
+db_app::load("scripts.js, strings.js, prototype.js");
+db_app::load("estilos.css, grid.style.css");
 ?>
 <script type="text/javascript">
 
@@ -107,22 +120,29 @@ function js_emite() {
           </td>
           <td>
             <?
-              $aOpcao = array("1" => "Completo",
-                              "2" => "Resumido");
-              db_select("opcaoimpressao", $aOpcao, true, 2, " onchange='js_marcaropcao();'");
-            ?>
+$aOpcao = array("1" => "Completo",
+    "2" => "Resumido");
+db_select("opcaoimpressao", $aOpcao, true, 2, " onchange='js_marcaropcao();'");
+?>
           </td>
 	        <td>
 	          <input type="button" name="imprimir" id="imprimir" value="Imprimir" onclick="return js_emite();">
 	        </td>
         </tr>
-
+        <tr>
+          <td>
+            <strong>Imprimir Dados Sigilosos: </strong>
+          </td>
+          <td colspan="2">
+            <input type="checkbox" id='imprimeDadosComplementares' name='imprimeDadosComplementares' <?=$checkSigilo?> >
+          </td>
+        </tr>
         <tr>
           <td>
             <strong>Imprimir Detalhamento sem Informações:</strong>
           </td>
           <td colspan="2">
-            <input type="checkbox" id='imprimeNulo' name='imprimeNulo' class="checkbox" checked="checked" >
+            <input type="checkbox" id='imprimeNulo' name='imprimeNulo' class="checkbox" >
           </td>
         </tr>
 
@@ -138,6 +158,10 @@ function js_emite() {
 			        <legend>
 			          <strong>Opção de impressão</strong>
 			        </legend>
+              <input type="checkbox" name="marcardesmarcar" id="marcardesmarcar"
+			                     checked="checked" onclick="js_marcardesmarcar(this.name);">
+                    <strong><label>Marcar Todos/Desmarcar Todos</label></strong>
+
 			        <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0" class="checkbox">
 			          <tr>
 			            <td>
@@ -243,6 +267,7 @@ function js_emite() {
 			        </table>
 			      </fieldset>
           </td>
+
         </tr>
       </table>
     </td>
@@ -336,5 +361,56 @@ function js_marcarcalculo(sOpcao) {
     }
   }
 }
+
+function js_marcardesmarcar() {
+
+var marcar = $('marcardesmarcar').checked;
+
+  if (marcar == true ) {
+
+    $('dadosimovel').checked                = true;
+    $('caracteristicaslote').checked        = true;
+    $('caracteristicasface').checked        = true;
+    $('caracteristicasconstrucoes').checked = true;
+    $('testadaslote').checked               = true;
+    $('testadasinternas').checked           = true;
+    $('proprietarios').checked              = true;
+    $('outrosproprietarios').checked        = true;
+    $('promitentes').checked                = true;
+    $('outrospromitentes').checked          = true;
+    $('imobiliaria').checked                = true;
+    $('enderecoentrega').checked            = true;
+    $('edificacoes').checked                = true;
+    $('dadosregistroimoveis').checked       = true;
+    $('isencoes').checked                   = true;
+    $('averbacoes').checked                 = true;
+    $('calculos').checked                   = true;
+    $('calculosanteriores').checked         = true;
+    $('outrosdados').checked                = true;
+
+  } else {
+
+    $('dadosimovel').checked                = false;
+    $('caracteristicaslote').checked        = false;
+    $('caracteristicasface').checked        = false;
+    $('caracteristicasconstrucoes').checked = false;
+    $('testadaslote').checked               = false;
+    $('testadasinternas').checked           = false;
+    $('proprietarios').checked              = false;
+    $('outrosproprietarios').checked        = false;
+    $('promitentes').checked                = false;
+    $('outrospromitentes').checked          = false;
+    $('imobiliaria').checked                = false;
+    $('enderecoentrega').checked            = false;
+    $('edificacoes').checked                = false;
+    $('dadosregistroimoveis').checked       = false;
+    $('isencoes').checked                   = false;
+    $('averbacoes').checked                 = false;
+    $('calculos').checked                   = false;
+    $('calculosanteriores').checked         = false;
+    $('outrosdados').checked                = false;
+  }
+}
+
 </script>
 </html>

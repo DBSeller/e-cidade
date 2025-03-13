@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require("std/db_stdClass.php");
-include("classes/db_matpedidoitem_classe.php");
-include("classes/db_matpedido_classe.php");
-include("classes/db_db_almox_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require(modification("std/db_stdClass.php"));
+include(modification("classes/db_matpedidoitem_classe.php"));
+include(modification("classes/db_matpedido_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -117,7 +117,7 @@ if(isset($incluir)){
     <center>
     <fieldset style="width:50%"><legend><b>Itens da Solicitação</b></legend>
 	<?
-	include("forms/db_frmmatpedidoitem.php");
+	include(modification("forms/db_frmmatpedidoitem.php"));
 	?>
 	</fieldset>
     </center>

@@ -1,0 +1,379 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010796' name='caixa.operacoesrealizadastef' description="Guarda todas as operações realizadas por TEF." prefix="k198" label="Operações Realizadas TEF" type="0">
+  <fields>
+    <field codigo="1013220" 
+           campo_api='' 
+           name="k198_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela operacoesrealizadastef." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='caixa.operacoesrealizadastef_k198_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013221" 
+           campo_api='' 
+           name="k198_numnov" 
+           conteudo="int8" 
+           description="Número do recibo" 
+           inivalue="0" 
+           label="Recibo" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Recibo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013222" 
+           campo_api='' 
+           name="k198_nsu" 
+           conteudo="int8" 
+           description="Número do NSU retornado da Getnet" 
+           inivalue="0" 
+           label="NSU" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="NSU" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013228" 
+           campo_api='' 
+           name="k198_valor" 
+           conteudo="float8" 
+           description="Valor da operação" 
+           inivalue="0" 
+           label="Valor" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013223" 
+           campo_api='' 
+           name="k198_operacaotef" 
+           conteudo="int8" 
+           description="Operação que foi executada por TEF" 
+           inivalue="0" 
+           label="Operação" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Operação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013224" 
+           campo_api='' 
+           name="k198_bandeira" 
+           conteudo="text" 
+           description="Bandeira retornada pelo CTFClient" 
+           inivalue="" 
+           label="Bandeira" 
+           size="255" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Bandeira" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013225" 
+           campo_api='' 
+           name="k198_parcela" 
+           conteudo="int8" 
+           description="Número da parcela caso a operação por TEF tenha sido de parcelamento." 
+           inivalue="0" 
+           label="Parcela" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Parcela" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013226" 
+           campo_api='' 
+           name="k198_dataoperacao" 
+           conteudo="date" 
+           description="Data da operação" 
+           inivalue="null" 
+           label="Data Operação" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Operação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013227" 
+           campo_api='' 
+           name="k198_confirmado" 
+           conteudo="text" 
+           description="Salva se a operação foi confirmada ou não" 
+           inivalue="" 
+           label="Confirmado" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Confirmado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013229" 
+           campo_api='' 
+           name="k198_mensagemretorno" 
+           conteudo="text" 
+           description="Guarda a mensagem retornada pelo CTFClient." 
+           inivalue="" 
+           label="Mensagem Retorno" 
+           size="255" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem Retorno" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013230" 
+           campo_api='' 
+           name="k198_desfeito" 
+           conteudo="text" 
+           description="Salva se a operação foi desfeita ou não." 
+           inivalue="" 
+           label="Desfeito" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Desfeito" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013231" 
+           campo_api='' 
+           name="k198_codigoaprovacao" 
+           conteudo="text" 
+           description="Código da aprovação retornado pelo CTFClient" 
+           inivalue="0" 
+           label="Código Aprovação" 
+           size="50" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Código Aprovação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013232" 
+           campo_api='' 
+           name="k198_nsuautorizadora" 
+           conteudo="int8" 
+           description="NSU da Autorizadora retornado pelo CTFClient" 
+           inivalue="0" 
+           label="NSU Autorizadora" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="NSU Autorizadora" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013233" 
+           campo_api='' 
+           name="k198_concluidobaixabanco" 
+           conteudo="text" 
+           description="Campo que guarda se foi concluído a baixa de banco dos débitos do recibo." 
+           inivalue="" 
+           label="Concluido Baixa de Banco" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Concluido Baixa de Banco" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013234" 
+           campo_api='' 
+           name="k198_retorno" 
+           conteudo="text" 
+           description="Campo que guarda todas as informações retornadas pelo CTFClient" 
+           inivalue="" 
+           label="Retorno" 
+           size="1000" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Retorno" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013236" 
+           campo_api='' 
+           name="k198_cartao" 
+           conteudo="text" 
+           description="Campo que salva o número parcial do cartão utilizado na transação." 
+           inivalue="" 
+           label="Cartão" 
+           size="255" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Cartão" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013289" 
+           campo_api='' 
+           name="k198_grupo" 
+           conteudo="int4" 
+           description="Informa o grupo de transações que aquela transação pertence." 
+           inivalue="0" 
+           label="Grupo" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Grupo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013334" 
+           campo_api='' 
+           name="k198_terminal" 
+           conteudo="int4" 
+           description="Campo que guarda o código do terminal" 
+           inivalue="0" 
+           label="Terminal" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Terminal" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013335" 
+           campo_api='' 
+           name="k198_confirmadoautorizadora" 
+           conteudo="text" 
+           description="Campo que informa se a operação foi confirmada pela autorizadora." 
+           inivalue="" 
+           label="Confirmado na Autorizadora" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Confirmado na Autorizadora" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k198_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cfautent" inner='f'>
+      <fieldfk name="k198_terminal" reference="k11_id" /> 
+    </foreignkey>
+    <foreignkey reference="operacoestef" inner='t'>
+      <fieldfk name="k198_operacaotef" reference="k195_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

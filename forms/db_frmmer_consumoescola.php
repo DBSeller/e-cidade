@@ -89,7 +89,7 @@ function js_pesquisame38_i_cardapioescola(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapioescola',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapioescola',
                         'func_mer_cardapioescola.php?funcao_js=parent.js_mostramer_cardapioescola1|me32_i_codigo|me32_i_codigo',
                         'Pesquisa',true
                        );
@@ -98,7 +98,7 @@ function js_pesquisame38_i_cardapioescola(mostra) {
 
      if (document.form1.me38_i_cardapioescola.value != '') { 
 
-        js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapioescola',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapioescola',
                              'func_mer_cardapioescola.php?pesquisa_chave='+document.form1.me38_i_cardapioescola.value+
                              '&funcao_js=parent.js_mostramer_cardapioescola',
                              'Pesquisa',false
@@ -133,7 +133,7 @@ function js_pesquisame38_i_cardapiotipo(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapiotipo',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapiotipo',
                         'func_mer_cardapiotipo.php?funcao_js=parent.js_mostramer_cardapiotipo1|me21_i_codigo|me21_i_codigo',
                         'Pesquisa',true
                        );
@@ -142,7 +142,7 @@ function js_pesquisame38_i_cardapiotipo(mostra) {
 
      if (document.form1.me38_i_cardapiotipo.value != '') { 
 
-        js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapiotipo',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapiotipo',
                              'func_mer_cardapiotipo.php?pesquisa_chave='+document.form1.me38_i_cardapiotipo.value+
                              '&funcao_js=parent.js_mostramer_cardapiotipo',
                              'Pesquisa',false
@@ -175,7 +175,7 @@ function js_mostramer_cardapiotipo1(chave1,chave2) {
 
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_consumoescola',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_consumoescola',
                        'func_mer_consumoescola.php?funcao_js=parent.js_preenchepesquisa|me38_i_codigo','Pesquisa',true);
 
 }

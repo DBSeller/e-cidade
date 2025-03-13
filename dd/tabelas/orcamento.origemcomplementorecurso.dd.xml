@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010581' name='origemcomplementorecurso' description="origemcomplementorecurso" prefix="o206" label="origemcomplementorecurso" type="0">
+  <fields>
+    <field codigo="1011346"
+           campo_api=''
+           name="o206_sequencial"
+           conteudo="int4"
+           description="Sequencial"
+           inivalue="0"
+           label="Sequencial"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='origemcomplementorecurso_o206_sequencial_seq' />
+
+    </field>
+    <field codigo="1011347"
+           campo_api=''
+           name="o206_origem"
+           conteudo="int4"
+           description="origem"
+           inivalue="0"
+           label="Origem"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Origem"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1011348"
+           campo_api=''
+           name="o206_numero"
+           conteudo="int4"
+           description="Número"
+           inivalue="0"
+           label="Número"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Número"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1011608"
+           campo_api=''
+           name="o206_recurso"
+           conteudo="int4"
+           description="Recurso"
+           inivalue="0"
+           label="Recurso"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Recurso"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1011610"
+           campo_api=''
+           name="o206_complementorecurso"
+           conteudo="int4"
+           description="Complemento da Fonte de Recurso"
+           inivalue="0"
+           label="Complemento da Fonte de Recurso"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Complemento da Fonte de Recurso"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="o206_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="orctiporec" inner='t'>
+      <fieldfk name="o206_recurso" reference="o15_codigo" />
+    </foreignkey>
+  </foreignkeys>
+</table>

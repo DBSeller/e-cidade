@@ -1,0 +1,154 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='393' name='protocolo.tipoproc' description="Tipos dos processos incluidos no protocolo" prefix="p51" label="Tipos de Processo" type="0">
+  <fields>
+    <field codigo="2429" 
+           campo_api='' 
+           name="p51_codigo" 
+           conteudo="int4" 
+           description="Código do Tipo de Processo." 
+           inivalue="0" 
+           label="Tipo de processo" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de processo" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.tipoproc_p51_codigo_seq' />
+     
+    </field> 
+    <field codigo="2430" 
+           campo_api='' 
+           name="p51_descr" 
+           conteudo="varchar(60)" 
+           description="Descrição do Tipo de Processo." 
+           inivalue="" 
+           label="Descrição" 
+           size="60" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="3" 
+           tipoobj="text" 
+           labelrel="Descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="6143" 
+           campo_api='' 
+           name="p51_dtlimite" 
+           conteudo="date" 
+           description="Data limite" 
+           inivalue="null" 
+           label="Data Limite" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Limite" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="10681" 
+           campo_api='' 
+           name="p51_instit" 
+           conteudo="int4" 
+           description="Código da Instituição" 
+           inivalue="0" 
+           label="Cod. Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Cod. Instituição" 
+           reference="codigo" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="14732" 
+           campo_api='' 
+           name="p51_tipoprocgrupo" 
+           conteudo="int4" 
+           description="Tipo Processo Grupo" 
+           inivalue="0" 
+           label="Tipo Processo Grupo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo Processo Grupo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="14735" 
+           campo_api='' 
+           name="p51_identificado" 
+           conteudo="bool" 
+           description="Identificado" 
+           inivalue="f" 
+           label="Identificado" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Identificado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011758" 
+           campo_api='' 
+           name="p51_prottipodocumentoprocesso" 
+           conteudo="int4" 
+           description="Tipo de documento do processo." 
+           inivalue="0" 
+           label="Tipo de Documento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Documento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p51_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="p51_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="tipoprocgrupo" inner='t'>
+      <fieldfk name="p51_tipoprocgrupo" reference="p40_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="prottipodocumentoprocesso" inner='t'>
+      <fieldfk name="p51_prottipodocumentoprocesso" reference="p91_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,32 +1,32 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cltelefonerechumano->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -56,7 +56,7 @@ if(isset($opcao) && $opcao=="alterar"){
   </td>
   <td>
    <?db_input('ed30_i_codigo',15,@$Ied30_i_codigo,true,'hidden',3,"")?>
-   <?db_input('ed30_i_rechumano',15,@$Ied30_i_rechumano,true,'hidden',3,"")?> 
+   <?db_input('ed30_i_rechumano',15,@$Ied30_i_rechumano,true,'hidden',3,"")?>
   </td>
  </tr>
  <tr>
@@ -73,7 +73,7 @@ if(isset($opcao) && $opcao=="alterar"){
    <?db_ancora(@$Led30_i_tipotelefone,"js_pesquisaed30_i_tipotelefone(true);",$db_opcao);?>
   </td>
   <td>
-   <?db_input('ed30_i_tipotelefone',15,$Ied30_i_tipotelefone,true,'text',$db_opcao," onchange='js_pesquisaed30_i_tipotelefone(false);'")?>
+   <?db_input('ed30_i_tipotelefone', 15, $Ied30_i_tipotelefone, true, 'text', $db_opcao," onchange='js_pesquisaed30_i_tipotelefone(false);'")?>
    <?db_input('ed13_c_descr',20,@$Ied13_c_descr,true,'text',3,'')?>
   </td>
  </tr>
@@ -84,7 +84,7 @@ if(isset($opcao) && $opcao=="alterar"){
   <td>
    <?db_input('ed30_i_ramal',2,$Ied30_i_ramal,true,'text',$db_opcao,"")?>
    <?=@$Led30_i_numero?>
-   <?db_input('ed30_i_numero',10,$Ied30_i_numero,true,'text',$db_opcao,"")?>
+   <?db_input('ed30_i_numero',10,$Ied30_i_numero,true,'text',$db_opcao,"", '', '', '', 9)?>
   </td>
  </tr>
  <tr>

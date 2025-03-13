@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: orcamento
@@ -182,22 +182,6 @@ class cl_ppaestimativareceita {
                                ,'$this->o06_concarpeculiar'
                       )";
      $result = db_query($sql);
-     if($result==false){
-       $this->erro_banco = str_replace("\n","",@pg_last_error());
-       if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Receitas da estimativa ($this->o06_sequencial) nao Incluído. Inclusao Abortada.";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_banco = "Receitas da estimativa já Cadastrado";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       }else{
-         $this->erro_sql   = "Receitas da estimativa ($this->o06_sequencial) nao Incluído. Inclusao Abortada.";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       }
-       $this->erro_status = "0";
-       $this->numrows_incluir= 0;
-       return false;
-     }
      $this->erro_banco = "";
      $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->o06_sequencial;
@@ -308,26 +292,6 @@ class cl_ppaestimativareceita {
        $sql .= " o06_sequencial = $this->o06_sequencial";
      }
      $resaco = $this->sql_record($this->sql_query_file($this->o06_sequencial));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,13612,'$this->o06_sequencial','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o06_sequencial"]) || $this->o06_sequencial != "")
-           $resac = db_query("insert into db_acount values($acount,2384,13612,'".AddSlashes(pg_result($resaco,$conresaco,'o06_sequencial'))."','$this->o06_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o06_ppaestimativa"]) || $this->o06_ppaestimativa != "")
-           $resac = db_query("insert into db_acount values($acount,2384,13613,'".AddSlashes(pg_result($resaco,$conresaco,'o06_ppaestimativa'))."','$this->o06_ppaestimativa',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o06_codrec"]) || $this->o06_codrec != "")
-           $resac = db_query("insert into db_acount values($acount,2384,13614,'".AddSlashes(pg_result($resaco,$conresaco,'o06_codrec'))."','$this->o06_codrec',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o06_anousu"]) || $this->o06_anousu != "")
-           $resac = db_query("insert into db_acount values($acount,2384,2741,'".AddSlashes(pg_result($resaco,$conresaco,'o06_anousu'))."','$this->o06_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o06_ppaversao"]) || $this->o06_ppaversao != "")
-           $resac = db_query("insert into db_acount values($acount,2384,14461,'".AddSlashes(pg_result($resaco,$conresaco,'o06_ppaversao'))."','$this->o06_ppaversao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o06_concarpeculiar"]) || $this->o06_concarpeculiar != "")
-           $resac = db_query("insert into db_acount values($acount,2384,14499,'".AddSlashes(pg_result($resaco,$conresaco,'o06_concarpeculiar'))."','$this->o06_concarpeculiar',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
-     }
      $result = db_query($sql);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
@@ -366,20 +330,6 @@ class cl_ppaestimativareceita {
        $resaco = $this->sql_record($this->sql_query_file($o06_sequencial));
      }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,13612,'$o06_sequencial','E')");
-         $resac = db_query("insert into db_acount values($acount,2384,13612,'','".AddSlashes(pg_result($resaco,$iresaco,'o06_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2384,13613,'','".AddSlashes(pg_result($resaco,$iresaco,'o06_ppaestimativa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2384,13614,'','".AddSlashes(pg_result($resaco,$iresaco,'o06_codrec'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2384,2741,'','".AddSlashes(pg_result($resaco,$iresaco,'o06_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2384,14461,'','".AddSlashes(pg_result($resaco,$iresaco,'o06_ppaversao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2384,14499,'','".AddSlashes(pg_result($resaco,$iresaco,'o06_concarpeculiar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
      }
      $sql = " delete from ppaestimativareceita
                     where ";

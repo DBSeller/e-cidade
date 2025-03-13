@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("model/caixa/arquivos/TipoTransmissao.model.php");
+require_once(modification("model/caixa/arquivos/TipoTransmissao.model.php"));
 
 abstract class PagamentoFornecedorTXTBase {
 
@@ -34,6 +34,7 @@ abstract class PagamentoFornecedorTXTBase {
   protected $sCaminhoArquivo;
   protected $oDadosArquivo;
   protected $aDadosErro = array();
+  protected $iTipo;
 
   /**
    * @var bool
@@ -81,27 +82,29 @@ abstract class PagamentoFornecedorTXTBase {
    */
   protected function setDadosErroLinha($aCodigoRetorno) {
 
-  	/**
-  	 * Montamos a lista de códigos a serem utilizados na consulta no banco de dados
-  	 */
-  	$sListaCodigosErro = '';
+    /**
+     * Montamos a lista de códigos a serem utilizados na consulta no banco de dados
+     */
+    $sListaCodigosErro = '';
     foreach ($aCodigoRetorno as $sCodigo) {
-    	$sListaCodigosErro .= "'".$sCodigo."', ";
+      $sListaCodigosErro .= "'".$sCodigo."', ";
     }
     $sListaCodigosErro = substr($sListaCodigosErro, 0, strlen($sListaCodigosErro) - 2);
 
     /**
      * efetuamos a consulta no banco de dados
      */
-    $oDaoErroBanco = db_utils::getDao("errobanco");
-    $sCamposBuscaRetornoBanco = " e92_sequencia as sequencia, e92_processa as processa, e92_coderro ";
+    $oDaoErroBanco = new cl_errobanco();
+    $sCamposBuscaRetornoBanco = " e92_sequencia as sequencia, e92_processa as processa, e92_coderro, e92_empagetipotransmissao as tipo ";
     $sWhereBuscaRetornoBanco  = "     e92_coderro in ({$sListaCodigosErro})     ";
     $sWhereBuscaRetornoBanco .= " and e78_codban  = '{$this->getCodigoBanco()}' ";
 
     if ($this->arquivoOBN()) {
-      $sWhereBuscaRetornoBanco .= " and e92_empagetipotransmissao  = ". TipoTransmissao::OBN;
+      $sWhereBuscaRetornoBanco .= " and e92_empagetipotransmissao = ". TipoTransmissao::OBN;
+    } else if ($this->iTipo !== null) {
+      $sWhereBuscaRetornoBanco .= " and e92_empagetipotransmissao = {$this->iTipo}";
     } else {
-      $sWhereBuscaRetornoBanco .= " and e92_empagetipotransmissao  = ". TipoTransmissao::CNAB240;
+      $sWhereBuscaRetornoBanco .= " and e92_empagetipotransmissao = ". TipoTransmissao::CNAB240;
     }
 
     $sSqlRetornoBanco = $oDaoErroBanco->sql_query_banco(null, $sCamposBuscaRetornoBanco, null, $sWhereBuscaRetornoBanco);
@@ -113,13 +116,14 @@ abstract class PagamentoFornecedorTXTBase {
        * Percoremos os resultados da consulta e fazemos a composição
        * do array de objetos que será utilizado no retorno da função
        */
-    	for ($i = 0; $i < $oDaoErroBanco->numrows; $i++) {
+      for ($i = 0; $i < $oDaoErroBanco->numrows; $i++) {
 
-      	$oOcorrencia = db_utils::fieldsMemory($rsRetornoBanco, $i);
-      	$oOcorrencia->processa = $oOcorrencia->processa == 'f'?false:true;
+        $oOcorrencia = db_utils::fieldsMemory($rsRetornoBanco, $i);
+        $oOcorrencia->processa = $oOcorrencia->processa == 'f'?false:true;
         $this->aDadosErro[$oOcorrencia->e92_coderro] = $oOcorrencia;
       }
     } else {
+
       $sException  = " Problema na configuração de erros do banco :                    ";
       $sException .= " [{$this->getCodigoBanco()}]";
       throw new Exception($sException);
@@ -142,10 +146,11 @@ abstract class PagamentoFornecedorTXTBase {
     }
 
     foreach ($aCodigos as $sCodigo) {
+
       if  (!key_exists($sCodigo, $this->aDadosErro)) {
         $this->setDadosErroLinha(array($sCodigo));
       }
-    	$aCodigosRetorno[$sCodigo] = $this->aDadosErro[$sCodigo];
+      $aCodigosRetorno[$sCodigo] = $this->aDadosErro[$sCodigo];
     }
     return $aCodigosRetorno;
   }
@@ -158,10 +163,25 @@ abstract class PagamentoFornecedorTXTBase {
   }
 
   /**
+   * @param integer $iTipo
+   */
+  public function setTipo($iTipo) {
+    $this->iTipo = $iTipo;
+  }
+
+  /**
+   * @return integer
+   */
+  public function getTipo() {
+    return $this->iTipo;
+  }
+
+  /**
    * Retorna se o processamento é de um arquivo do tipo OBN
    * @return bool
    */
   public function arquivoOBN() {
     return $this->lArquivoOBN;
   }
+
 }

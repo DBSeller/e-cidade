@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 //MODULO: atendimento
-include ("classes/db_tipoatend_classe.php");
-include ("classes/db_db_usuarios_classe.php");
-include ("classes/db_clientes_classe.php");
+include(modification("classes/db_tipoatend_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
 $cldb_usuarios = new cl_db_usuarios;
 $clclientes = new cl_clientes;
 $cltecnico = new cl_tecnico;
@@ -80,7 +80,7 @@ if($clatendimento->numrows>0) {
 
 $sql4   = "select distinct at10_codcli, at10_nome, at10_usuario from db_usuclientes
            where at10_codcli = $clientes order by at10_nome";
-$result_usucliente = pg_exec($sql4);
+$result_usucliente = db_query($sql4);
 $numlinha = pg_numrows($result_usucliente);
 for ($z = 0; $z < $numlinha; $z ++) {
 	if(isset($at10_usuario)||$at10_usuario!="") {
@@ -155,7 +155,7 @@ db_textarea('at05_feito', 10, 50, $Iat05_feito, true, 'text', $db_opcao, "")
 echo $at08_modulo;
 $sqlmod = "select id_item, nome_modulo from db_modulos order by nome_modulo";
 echo "<option value=''>Selecione o modulo</option>";
-$result_modulo = pg_exec($sqlmod);
+$result_modulo = db_query($sqlmod);
 $numlinha = pg_numrows($result_modulo);
 echo ($sqlmod);
 for ($a = 0; $a < $numlinha; $a ++) {
@@ -228,7 +228,7 @@ db_inputdata('at05_data', @ $at05_data_dia, @ $at05_data_mes, @ $at05_data_ano, 
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_atend','func_atendimentoinc.php?opcao=<?=$opcao?>&funcao_js=parent.js_preenchepesquisa|at02_codatend','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atend','func_atendimentoinc.php?opcao=<?=$opcao?>&funcao_js=parent.js_preenchepesquisa|at02_codatend','Pesquisa',true);
   document.form1.opcao.value=<?=$opcao?>;	
 }
 function js_preenchepesquisa(chave){

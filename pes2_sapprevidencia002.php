@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -46,7 +46,7 @@ $sql1 = "select r06_codigo,
 	   and r06_mesusu = $mes 
 	   and r06_codigo = '$rubrica'";
 //echo $sql1;exit;
-$result1 = pg_query($sql1);
+$result1 = db_query($sql1);
 db_fieldsmemory($result1,0);
 if (pg_numrows($result1) == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Rubrica não cadastrada no período de '.$mes.' / '.$ano);
@@ -119,7 +119,7 @@ if($previdencia != 0 ){
          and r33_mesusu = $mes
          and r33_codtab = $previdencia+2 limit 1
       ";
-  $res1 = pg_query($sql1);
+  $res1 = db_query($sql1);
   db_fieldsmemory($res1,0);
   $perc_patro = $r33_ppatro;
 }else{
@@ -327,7 +327,7 @@ order by recurso,z01_nome
 //echo $sql ; exit;
 
 $head5 = "PERÍODO : ".$mes." / ".$ano;
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem descontos de mensalidadedo sindicato no período de '.$mes.' / '.$ano);

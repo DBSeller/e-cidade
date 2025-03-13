@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tipovistorias_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tipovistorias_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cltipovistorias = new cl_tipovistorias;
@@ -42,7 +42,7 @@ $db_opcao = 33;
 
 if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir"){
   $excluir = 'excluir';
-  $rsVerificaTipo = pg_query("select * from vistorias where y70_tipovist = $y77_codtipo limit 1");
+  $rsVerificaTipo = db_query("select * from vistorias where y70_tipovist = $y77_codtipo limit 1");
   if ( pg_numrows($rsVerificaTipo) > 0 ) {
     db_msgbox("Existe vistorias lancada para este tipo, exclusão abortada ");
 	  db_redireciona("fis1_tipovistorias003.php");
@@ -81,7 +81,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmtipovistorias.php");
+	include(modification("forms/db_frmtipovistorias.php"));
 	?>
     </center>
 	</td>

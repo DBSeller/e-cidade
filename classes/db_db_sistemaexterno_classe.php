@@ -1,62 +1,62 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: configuracoes
 //CLASSE DA ENTIDADE db_sistemaexterno
-class cl_db_sistemaexterno { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $db124_sequencial = 0; 
-   var $db124_descricao = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_db_sistemaexterno {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $db124_sequencial = 0;
+   var $db124_descricao = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 db124_sequencial = int4 = Código 
-                 db124_descricao = varchar(50) = Sistema Externo 
+                 db124_sequencial = int4 = Código
+                 db124_descricao = varchar(50) = Sistema Externo
                  ";
-   //funcao construtor da classe 
-   function cl_db_sistemaexterno() { 
+   //funcao construtor da classe
+   function cl_db_sistemaexterno() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("db_sistemaexterno"); 
+     $this->rotulo = new rotulo("db_sistemaexterno");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -74,9 +74,9 @@ class cl_db_sistemaexterno {
      }
    }
    // funcao para inclusao
-   function incluir ($db124_sequencial){ 
+   function incluir ($db124_sequencial){
       $this->atualizacampos();
-     if($this->db124_descricao == null ){ 
+     if($this->db124_descricao == null ){
        $this->erro_sql = " Campo Sistema Externo nao Informado.";
        $this->erro_campo = "db124_descricao";
        $this->erro_banco = "";
@@ -85,8 +85,8 @@ class cl_db_sistemaexterno {
        $this->erro_status = "0";
        return false;
      }
-       $this->db124_sequencial = $db124_sequencial; 
-     if(($this->db124_sequencial == null) || ($this->db124_sequencial == "") ){ 
+       $this->db124_sequencial = $db124_sequencial;
+     if(($this->db124_sequencial == null) || ($this->db124_sequencial == "") ){
        $this->erro_sql = " Campo db124_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -95,15 +95,15 @@ class cl_db_sistemaexterno {
        return false;
      }
      $sql = "insert into db_sistemaexterno(
-                                       db124_sequencial 
-                                      ,db124_descricao 
+                                       db124_sequencial
+                                      ,db124_descricao
                        )
                 values (
-                                $this->db124_sequencial 
-                               ,'$this->db124_descricao' 
+                                $this->db124_sequencial
+                               ,'$this->db124_descricao'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "db_sistemaexterno ($this->db124_sequencial) nao Incluído. Inclusao Abortada.";
@@ -136,16 +136,16 @@ class cl_db_sistemaexterno {
        $resac = db_query("insert into db_acount values($acount,3291,18597,'','".AddSlashes(pg_result($resaco,0,'db124_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($db124_sequencial=null) { 
+   function alterar ($db124_sequencial=null) {
       $this->atualizacampos();
      $sql = " update db_sistemaexterno set ";
      $virgula = "";
-     if(trim($this->db124_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db124_sequencial"])){ 
+     if(trim($this->db124_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db124_sequencial"])){
        $sql  .= $virgula." db124_sequencial = $this->db124_sequencial ";
        $virgula = ",";
-       if(trim($this->db124_sequencial) == null ){ 
+       if(trim($this->db124_sequencial) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "db124_sequencial";
          $this->erro_banco = "";
@@ -155,10 +155,10 @@ class cl_db_sistemaexterno {
          return false;
        }
      }
-     if(trim($this->db124_descricao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db124_descricao"])){ 
+     if(trim($this->db124_descricao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db124_descricao"])){
        $sql  .= $virgula." db124_descricao = '$this->db124_descricao' ";
        $virgula = ",";
-       if(trim($this->db124_descricao) == null ){ 
+       if(trim($this->db124_descricao) == null ){
          $this->erro_sql = " Campo Sistema Externo nao Informado.";
          $this->erro_campo = "db124_descricao";
          $this->erro_banco = "";
@@ -186,7 +186,7 @@ class cl_db_sistemaexterno {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "db_sistemaexterno nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->db124_sequencial;
@@ -214,14 +214,14 @@ class cl_db_sistemaexterno {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($db124_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($db124_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($db124_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -248,7 +248,7 @@ class cl_db_sistemaexterno {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "db_sistemaexterno nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$db124_sequencial;
@@ -276,11 +276,11 @@ class cl_db_sistemaexterno {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -302,8 +302,8 @@ class cl_db_sistemaexterno {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $db124_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $db124_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -319,8 +319,8 @@ class cl_db_sistemaexterno {
      $sql2 = "";
      if($dbwhere==""){
        if($db124_sequencial!=null ){
-         $sql2 .= " where db_sistemaexterno.db124_sequencial = $db124_sequencial "; 
-       } 
+         $sql2 .= " where db_sistemaexterno.db124_sequencial = $db124_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -336,8 +336,8 @@ class cl_db_sistemaexterno {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $db124_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $db124_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -353,8 +353,8 @@ class cl_db_sistemaexterno {
      $sql2 = "";
      if($dbwhere==""){
        if($db124_sequencial!=null ){
-         $sql2 .= " where db_sistemaexterno.db124_sequencial = $db124_sequencial "; 
-       } 
+         $sql2 .= " where db_sistemaexterno.db124_sequencial = $db124_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -370,17 +370,17 @@ class cl_db_sistemaexterno {
      }
      return $sql;
   }
-  
+
       /**
        * função que retrnara o codigo do sistema externo do municipio
-       * 
+       *
        * @param $iCodigoSistema integer : codigo do sistema, na tabela db_sistemaexterno (sinpas = 1)
        * @param $iNumCgm        integer : numero do cgm para buscar o codigo do municipio
-       * 
+       *
        */
       function getCodigoSistemaExternoMunic($iCodigoSistema, $iNumCgm){
-      
-        $sSqlSistema  = "select db125_codigosistema::integer from cgm                                                           \n"; 
+
+        $sSqlSistema  = "select db125_codigosistema::integer from cgm                                                  \n";
         $sSqlSistema .= "  left join cgmendereco               on z01_numcgm          = z07_numcgm                     \n";
         $sSqlSistema .= "  left join endereco                  on z07_endereco        = db76_sequencial                \n";
         $sSqlSistema .= "  left join cadenderlocal             on db75_sequencial     = db76_cadenderlocal             \n";
@@ -394,13 +394,11 @@ class cl_db_sistemaexterno {
         $sSqlSistema .= "    and db125_codigosistema is not null                                                       \n";
         $sSqlSistema .= "  limit 1                                                                                     \n";
         $rsSistema      = db_query($sSqlSistema);
-        
+
         $oCodigoSistema = db_utils::fieldsMemory($rsSistema, 0);
         $iCodigoSistema = $oCodigoSistema->db125_codigosistema;
+
         return $iCodigoSistema;
-      
-      }  
-  
-  
+      }
+
 }
-?>

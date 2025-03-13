@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhcadcalend_classe.php");
-include("classes/db_calendf_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_rhcadcalend_classe.php"));
+include(modification("classes/db_calendf_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clrhcadcalend = new cl_rhcadcalend;
@@ -44,21 +44,36 @@ if(isset($alterar) || isset($incluir) || isset($excluir)){
   $db_botao = true;
   $sqlerro = false;
   if(isset($alterar)){
-    $clrhcadcalend->alterar($rh53_calend);
-    if($clrhcadcalend->erro_status == "0"){
+    if (empty($r62_data) || $r62_data == '--') {
+      $sqlerro = true;
+      $erro_msg = "Erro ao alterar, verifique os dados informados."; 
+    } else {
+      $clrhcadcalend->alterar($rh53_calend);
       $sqlerro = true;
       $erro_msg = $clrhcadcalend->erro_msg;
+     }
+
+    if($clrhcadcalend->erro_status == "0"){
+      
     }
   }
-  if($sqlerro == false){
+  if ($sqlerro == false){
     $r62_data = $r62_data_ano."-".$r62_data_mes."-".$r62_data_dia;
-    if(isset($incluir)){
-      $clcalendf->incluir($rh53_calend,$r62_data);
-    }else if(isset($excluir)){
+    if (isset($incluir)) {
+      if (empty($r62_data) || $r62_data == '--') {
+        $erro_msg = "Erro ao incluir, verifique os dados informados."; 
+      } else {
+        $clcalendf->incluir($rh53_calend,$r62_data);
+        $erro_msg = $clcalendf->erro_msg;
+      }
+
+    } else if(isset($excluir)){
       $clcalendf->excluir($rh53_calend,$r62_data);
+       $erro_msg = $clcalendf->erro_msg;
     }
-    $erro_msg = $clcalendf->erro_msg;
-    if($clcalendf->erro_status == "0"){
+
+    
+    if ($clcalendf->erro_status == "0"){
       $sqlerro = true;
     }
   }
@@ -101,7 +116,7 @@ if(isset($alterar) || isset($incluir) || isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
       <?
-      include("forms/db_frmrhcadcalend.php");
+      include(modification("forms/db_frmrhcadcalend.php"));
       ?>
     </center>
     </td>

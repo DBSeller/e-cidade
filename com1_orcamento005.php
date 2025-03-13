@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_pcorcam_classe.php");
-include("classes/db_pcparam_classe.php");
-include("classes/db_pcorcamitemsol_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_pcorcamitemsol_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clpcorcam = new cl_pcorcam;
@@ -82,7 +82,7 @@ $db_chama = "alterar";
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcamento.php");
+	include(modification("forms/db_frmorcamento.php"));
 	?>
     </center>
     </td>
@@ -107,7 +107,7 @@ if(isset($retorno)){
   <script>     
       function js_db_libera(){
          parent.document.formaba.fornec.disabled=false;
-         top.corpo.iframe_fornec.location.href='com1_fornec001.php?pc21_codorc=$retorno&solic=true&pc10_numero=$pc10_numero';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_fornec.location.href='com1_fornec001.php?pc21_codorc=$retorno&solic=true&pc10_numero=$pc10_numero';
        }\n
     js_db_libera();
   </script>\n
@@ -120,7 +120,7 @@ if(isset($retorno)){
   <script>
       function js_db_bloqueia(){
          parent.document.formaba.fornec.disabled=true;
-         top.corpo.iframe_fornec.location.href='com1_fornec001.php?solic=true&pc21_codorc=".@$pc20_codorc."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_fornec.location.href='com1_fornec001.php?solic=true&pc21_codorc=".@$pc20_codorc."';
       }\n
     js_db_bloqueia();
   </script>\n
@@ -134,20 +134,20 @@ if($db_open==true){
   if($clpcorcamitemsol->numrows>0){
     db_fieldsmemory($result_itemsol,0);
     echo "<script>
-            top.corpo.iframe_orcam.location.href = 'com1_orcamento005.php?retorno=$chavepesquisa&pc10_numero=$pc11_numero';
+            (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_orcamento005.php?retorno=$chavepesquisa&pc10_numero=$pc11_numero';
           </script>
          ";
   }else{
     $result_pcorcamitem = $clpcorcam->sql_record($clpcorcam->sql_query_solproc(null,"pc20_codorc","","pc20_codorc=$chavepesquisa and pc22_codorc is null"));
     if($clpcorcam->numrows!=0){
     echo "<script>
-            top.corpo.iframe_orcam.location.href = 'com1_selsolic001.php?op=alterar&sol=true';
+            (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_selsolic001.php?op=alterar&sol=true';
 	  </script>
 	  ";
     }else{
     echo "<script>
             alert('Usuário:\\n\\nOrçamento inexistente ou solicitação incluída em processo de compras.\\n\\nAdministrador.');
-	    top.corpo.iframe_orcam.location.href = 'com1_orcamento005.php';
+	    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_orcamento005.php';
 	  </script>
 	  ";
     }

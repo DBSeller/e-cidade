@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -112,13 +112,34 @@ if($pos_calculo != false){
   if($primeiro != 0){
     $union_calculo .= ' union all ';
   }
-  $union_calculo .= " select r48_regist as regist , r48_mesusu as mesusu , round(sum(r48_$campo),2) as valor
-                      from gerfcom 
-                      where r48_anousu = $ano 
-                        and r48_instit = ".db_getsession('DB_instit')."
-                        $dbwhererubs
-                      group by r48_regist, r48_mesusu
-                      ";
+  // Verifica a folha suplementar
+  if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+    if(!empty($dbwhererubs)){
+        $dbwhererubs = " and rh143_rubrica in ('".str_replace(",","','",$rubrs)."')";
+    }
+
+    $union_calculo .= "
+        select 
+            rh143_regist as regist, 
+            rh141_mesusu as mesusu, 
+            round(sum(rh143_$campo),2) as valor
+        from 
+            rhhistoricocalculo
+            inner join rhfolhapagamento on rhfolhapagamento.rh141_sequencial = rhhistoricocalculo.rh143_folhapagamento
+        where 
+            rh141_anousu = $ano 
+            and rh141_instit = ".db_getsession('DB_instit')."
+            $dbwhererubs
+        group by rh143_regist, rh141_mesusu";
+  } else {
+    $union_calculo .= " select r48_regist as regist , r48_mesusu as mesusu , round(sum(r48_$campo),2) as valor
+                        from gerfcom 
+                        where r48_anousu = $ano 
+                          and r48_instit = ".db_getsession('DB_instit')."
+                          $dbwhererubs
+                        group by r48_regist, r48_mesusu
+                        ";
+  }
   $primeiro = 1;
 }
 

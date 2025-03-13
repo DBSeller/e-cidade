@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/materialestoque.model.php");
-require_once("dbforms/verticalTab.widget.php");
-require_once "libs/db_app.utils.php";
+use ECidade\Patrimonial\Material\Helpers\Material as MaterialHelper;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/materialestoque.model.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
+require_once modification("libs/db_app.utils.php");
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -44,11 +46,11 @@ db_app::import("contabilidade.lancamento.*");
 db_app::import("Dotacao");
 db_app::import("contabilidade.planoconta.*");
 db_app::import("contabilidade.contacorrente.*");
-$oDaoMatMater   = db_utils::getDao('matmater');
-$oDaoMatEstoque = db_utils::getDao('matestoque');
-$oDaoMatParam   = db_utils::getDao('matparam');
-$oDaoDepartOrg  = db_utils::getDao('db_departorg');
-$oDaoAlmoxDepto = db_utils::getDao('db_almoxdepto');
+$oDaoMatMater   = new cl_matmater();
+$oDaoMatEstoque = new cl_matestoque();
+$oDaoMatParam   = new cl_matparam();
+$oDaoDepartOrg  = new cl_db_departorg();
+$oDaoAlmoxDepto = new cl_db_almoxdepto();
 $oDaoMatMater->rotulo->label();
 
 $oGet              = db_utils::postMemory($_GET);
@@ -57,12 +59,48 @@ $rsBuscaMatMater   = $oDaoMatMater->sql_record($sSqlBuscaMatMater);
 $oDadoMaterial     = db_utils::fieldsMemory($rsBuscaMatMater, 0);
 $oMaterialEstoque  = new materialEstoque($oGet->iCodigoMaterial);
 $nPrecoMedio       = $oMaterialEstoque->getPrecoMedioMaterial();
+$iInstituicao      = db_getsession('DB_instit');
+$iAnousu           = db_getsession('DB_anousu');
 
-$sCamposMatEstoque        = "coalesce(sum(m70_quant), 0) as quantidade_total";
-$sSqlMatEstoqueValores    = $oDaoMatEstoque->sql_query_almox(null, $sCamposMatEstoque, null, "m70_codmatmater = {$oGet->iCodigoMaterial} ", "", true);
+$sSqlMatEstoqueValores = "
+  with consulta_material as (
+    SELECT m91_codigo,
+           descrdepto,
+           (select m85_precomedio
+            from matmaterprecomedio
+            where m85_precomedio > 0
+              and to_timestamp(m85_data || ' ' || m85_hora, 'YYYY-MM-DD HH24:MI:SS') < current_timestamp
+              and m85_matmater = m70_codmatmater
+              and m85_coddepto = m70_coddepto
+            order by to_timestamp(m85_data || ' ' || m85_hora, 'YYYY-MM-DD HH24:MI:SS') desc
+            limit 1)                                                                    as m85_precomedio,
+           (Coalesce(Sum(CASE WHEN matestoquetipo.m81_tipo = 1 THEN matestoqueinimei.m82_quant end), 0) -
+            Coalesce(Sum(CASE WHEN matestoquetipo.m81_tipo = 2 THEN m82_quant end), 0)) as m70_quant
+    FROM matestoqueini
+             INNER JOIN matestoquetipo ON m80_codtipo = m81_codtipo
+             INNER JOIN matestoqueinimei ON m82_matestoqueini = m80_codigo
+             left JOIN matestoqueinimeipm ON m82_codigo = m89_matestoqueinimei
+             INNER JOIN matestoqueitem ON m82_matestoqueitem = m71_codlanc
+             INNER JOIN matestoque ON m71_codmatestoque = m70_codigo
+             INNER JOIN db_depart ON coddepto = m70_coddepto
+             INNER JOIN db_departorg
+                        on db_departorg.db01_coddepto = db_depart.coddepto and db_departorg.db01_anousu = {$iAnousu}
+             INNER JOIN orcunidade ON orcunidade.o41_orgao = db_departorg.db01_orgao and
+                                      orcunidade.o41_unidade = db_departorg.db01_unidade and
+                                      orcunidade.o41_anousu = db_departorg.db01_anousu and orcunidade.o41_instit = {$iInstituicao}
+             INNER JOIN orcorgao
+                        on orcorgao.o40_orgao = orcunidade.o41_orgao and orcorgao.o40_anousu = orcunidade.o41_anousu
+             INNER JOIN material.db_almox ON db_almox.m91_depto = db_depart.coddepto
+    WHERE m70_codmatmater = {$oGet->iCodigoMaterial}
+    GROUP BY m91_codigo, descrdepto, m70_codigo
+), totais as (
+    select m70_quant, (m70_quant * m85_precomedio) as m70_valor from consulta_material
+) select sum(m70_quant) as quantidade_total, sum(m70_valor) as valor_total from totais;
+";
+
 $rsBuscaValorMatEstoque   = $oDaoMatEstoque->sql_record($sSqlMatEstoqueValores);
-$oValorMatEstoque         = db_utils::fieldsMemory($rsBuscaValorMatEstoque, 0);
-$iQuantidadeTransferencia = $oMaterialEstoque->getSaldoTransferencia(true);
+$oValorMatEstoque = db_utils::fieldsMemory($rsBuscaValorMatEstoque, 0);
+$iQuantidadeTransferencia = MaterialHelper::arredondarQuantidade($oMaterialEstoque->getSaldoTransferencia(false));
 ?>
 <html>
 <head>
@@ -96,47 +134,31 @@ $iQuantidadeTransferencia = $oMaterialEstoque->getSaldoTransferencia(true);
       <td width="150"><b>Quantidade total em estoque:</b></td>
       <td class='tdValores' align="right" width="120" >
         <?php
-          $iQuantidadeTotal = $oValorMatEstoque->quantidade_total + $iQuantidadeTransferencia;
+        $iQuantidadeTotal = $oValorMatEstoque->quantidade_total;
+        $iQuantidadeTotal = MaterialHelper::arredondarQuantidade($iQuantidadeTotal);
           echo "{$iQuantidadeTotal}";
         ?>
       </td>
-      <td width="130"><b>Valor total em estoque:<b/></td>
-      <td class='tdValores' align="right" width="120">
-        <?php
-          // O Valor do estoque tem que ser a quantidadeTotal * precoMedio
-          echo db_formatar(($iQuantidadeTotal * $nPrecoMedio), "f");
-        ?>
-      </td>
+        <td width="130"><b>Valor total em estoque:<b/></td>
+        <td class='tdValores' align="right" width="120">
+            <?php
+            echo db_formatar($oValorMatEstoque->valor_total, "f");
+            ?>
+        </td>
     </tr>
-    <tr>
-      <td width="170"><b>Quantidade total reservada:</b></td>
-      <td class='tdValores' align="right" width="120" >
-        <?php
-          echo "{$iQuantidadeTransferencia}";
-        ?>
-      </td>
-      <td width="165"><!--<b>Valor total em transferência:</b>--></td>
-      <!--<td class='tdValores' align="right" width="120" >
-        <?php
-          /*$iValorTransferencia = $nPrecoMedio * $oValorMatEstoque->quantidadetransferencia;
-          echo "{$iValorTransferencia}";*/
-        ?>
-      </td>-->
-    </tr>
-    <tr>
-      <td width="100"><b>Preço Médio:</b></td>
-      <td class='tdValores' align="right" width="120" >
-        <?php
-          echo "{$nPrecoMedio}";
-        ?>
-      </td>
-    </tr>
+      <tr>
+          <td width="170"><b>Quantidade total reservada:</b></td>
+          <td class='tdValores' align="right" width="120">
+              <?php
+              echo "{$iQuantidadeTransferencia}";
+              ?>
+          </td>
   </table>
 </fieldset>
 <fieldset>
-  <legend><b>Movimentações</b></legend>
-  <?php
-    $oVerticalTab = new verticalTab('detalhesMaterial', 350);
+    <legend><b>Movimentações</b></legend>
+    <?php
+    $oVerticalTab = new verticalTab('detalhesMaterial', 400);
     $sQueryString = "codmater={$oGet->iCodigoMaterial}&lNovaConsulta=true";
 
     $oVerticalTab->add('detalhesMaterial', 'Estoque', "mat1_matconsultaiframe001.php?{$sQueryString}");

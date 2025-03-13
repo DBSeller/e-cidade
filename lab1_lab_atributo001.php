@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lab_atributo_classe.php");
-include("classes/db_lab_exameatributoligacao_classe.php");
-include("classes/db_lab_parametros_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lab_atributo_classe.php"));
+include(modification("classes/db_lab_exameatributoligacao_classe.php"));
+include(modification("classes/db_lab_parametros_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cllab_atributo = new cl_lab_atributo;
 $cllab_exameatributoligacao = new cl_lab_exameatributoligacao;
@@ -51,30 +51,32 @@ if($cllab_parametros->numrows>0){
 
 $db_opcao = 1;
 $db_botao = true;
-if(isset($incluir)){
-  db_inicio_transacao();
-     
-      $cllab_atributo->incluir($la25_i_codigo);
+
+if (isset($incluir)) {
+
+  db_inicio_transacao();     
       
-      if ($cllab_atributo->erro_status != "0") {
-         if($la26_i_exameatributopai!=""){
-         	  $cllab_exameatributoligacao->la26_i_exameatributofilho=$cllab_atributo->la25_i_codigo;
-         	  $cllab_exameatributoligacao->la26_i_exameatributopai=$la26_i_exameatributopai;
-         	  $cllab_exameatributoligacao->incluir(null);
-              if ($cllab_exameatributoligacao->erro_status == "0"){
-                        
-                  $cllab_atributo->erro_status=0;
-                  $cllab_atributo->erro_sql   = $cllab_exameatributoligacao->erro_sql;
-                  $cllab_atributo->erro_campo = $cllab_exameatributoligacao->erro_campo;
-                  $cllab_atributo->erro_banco = $cllab_exameatributoligacao->erro_banco;
-                  $cllab_atributo->erro_msg   = $cllab_exameatributoligacao->erro_msg;
-                  
-              }
-         }
+  $cllab_atributo->incluir($la25_i_codigo);  
+  
+  if ($cllab_atributo->erro_status != "0") {    
+      if ($la26_i_exameatributopai!="") {
+          $cllab_exameatributoligacao->la26_i_exameatributofilho=$cllab_atributo->la25_i_codigo;
+          $cllab_exameatributoligacao->la26_i_exameatributopai=$la26_i_exameatributopai;
+          $cllab_exameatributoligacao->incluir(null);
+          if ($cllab_exameatributoligacao->erro_status == "0") {
+              $cllab_atributo->erro_status=0;
+              $cllab_atributo->erro_sql   = $cllab_exameatributoligacao->erro_sql;
+              $cllab_atributo->erro_campo = $cllab_exameatributoligacao->erro_campo;
+              $cllab_atributo->erro_banco = $cllab_exameatributoligacao->erro_banco;
+              $cllab_atributo->erro_msg   = $cllab_exameatributoligacao->erro_msg;
+          }
       }
-      
-  db_fim_transacao();
+  }
+
+  db_fim_transacao();  
+
 }
+
 ?>
 <html>
 <head>
@@ -101,7 +103,7 @@ if(isset($incluir)){
     <center>
     <?
     if($cllab_parametros->numrows>0){
-        include("forms/db_frmlab_atributo.php");
+        include(modification("forms/db_frmlab_atributo.php"));
     } else {
         db_msgbox("Estrutural não foi informado nos parâmetros.");
     }

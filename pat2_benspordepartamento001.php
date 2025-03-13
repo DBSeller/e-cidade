@@ -1,42 +1,63 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_db_depart_classe.php");
-require_once("classes/db_cfpatri_classe.php");
-require_once("classes/db_bens_classe.php");
-require_once("classes/db_clabens_classe.php");
-require_once("classes/db_departdiv_classe.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_cfpatri_classe.php"));
+require_once(modification("classes/db_bens_classe.php"));
+require_once(modification("classes/db_clabens_classe.php"));
+require_once(modification("classes/db_departdiv_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
+
+$instituicao = db_getsession("DB_instit");
+$anoUsuario = db_getsession("DB_anousu");
+
+$oOrgao = new cl_orcorgao();
+
+$postgresResourceOrgao = $oOrgao->sql_record(
+  $oOrgao->sql_query_orgao(
+    null,
+    null,
+    "distinct o40_orgao,o40_descr",
+    "o40_descr",
+    "o40_instit={$instituicao} and  o40_anousu={$anoUsuario}"
+  )
+);
+
+$arrayOrgao = array(0 => 'Selecione um Órgão');
+while ($row = pg_fetch_assoc($postgresResourceOrgao)) {
+  $arrayOrgao[$row['o40_orgao']] = $row['o40_descr'];
+}
+
 ?>
 <html>
 <head>
@@ -47,8 +68,9 @@ require_once("libs/db_app.utils.php");
   db_app::load("estilos.css");
   db_app::load("scripts.js, prototype.js, widgets/DBToogle.widget.js");
 ?>
+
 <style>
-#fieldset_departamento, #fieldset_divisao, #fieldset_bens, #fieldset_contas, #fieldset_situabens, #fieldset_cedentes {
+#fieldset_departamento, #fieldset_divisao, #fieldset_bens, #fieldset_contas, #fieldset_situabens, #fieldset_cedentes, #fieldset_clabens, #fieldset_orgao {
   width: 430px;
   text-align: center;
 }
@@ -59,31 +81,60 @@ require_once("libs/db_app.utils.php");
       <fieldset>
         <legend>Bens Por Departamento</legend>
         <table>
+          <tr id="tr_fieldset_orgao">
+            <td colspan="1" >
+              <?php
+                /*
+                 * Seleção de órgãos
+                 */
+                $oAuxOrcorgao                                 = new cl_arquivo_auxiliar();
+                $oAuxOrcorgao->cabecalho                      = "<strong>Órgão</strong>";
+                $oAuxOrcorgao->codigo                         = "o40_orgao"; //chave de retorno da func
+                $oAuxOrcorgao->descr                          = "o40_descr";   //chave de retorno
+                $oAuxOrcorgao->nomeobjeto                     = 'orgao';
+                $oAuxOrcorgao->funcao_js                      = 'js_mostra_orcorgao';
+                $oAuxOrcorgao->funcao_js_hide                 = 'js_mostra_orcorgao1';
+                $oAuxOrcorgao->sql_exec                       = "";
+                $oAuxOrcorgao->func_arquivo                   = "func_orcorgao.php";  //func a executar
+                $oAuxOrcorgao->nomeiframe                     = "db_iframe_db_orgao";
+                $oAuxOrcorgao->localjan                       = "";
+                $oAuxOrcorgao->db_opcao                       = 2;
+                $oAuxOrcorgao->tipo                           = 2;
+                $oAuxOrcorgao->top                            = 0;
+                $oAuxOrcorgao->linhas                         = 5;
+                $oAuxOrcorgao->vwidth                         = 400;
+                $oAuxOrcorgao->nome_botao                     = 'db_lanca_orgao';
+                $oAuxOrcorgao->fieldset                       = false;
+                $oAuxOrcorgao->funcao_gera_formulario();
+              ?>
+            </td>
+          </tr>
           <tr id="tr_fieldset_departamento">
             <td colspan="1" >
               <?php
                 /*
                  * Seleção de departamentos
                  */
-                $oAuxDpto                              = new cl_arquivo_auxiliar();
-                $oAuxDpto->cabecalho                   = "<strong>Departamento</strong>";
-                $oAuxDpto->codigo                      = "coddepto"; //chave de retorno da func
-                $oAuxDpto->descr                       = "descrdepto";   //chave de retorno
-                $oAuxDpto->nomeobjeto                  = 'departamento';
-                $oAuxDpto->funcao_js                   = 'js_mostra_departamento';
-                $oAuxDpto->funcao_js_hide              = 'js_mostra_departamento1';
-                $oAuxDpto->sql_exec                    = "";
-                $oAuxDpto->func_arquivo                = "func_db_depart.php";  //func a executar
-                $oAuxDpto->nomeiframe                  = "db_iframe_db_depart";
-                $oAuxDpto->localjan                    = "";
-                $oAuxDpto->executa_script_apos_incluir = "js_liberaDivisaoDpto(); js_buscaDepartamentoSelecionado();";
-                $oAuxDpto->db_opcao                    = 2;
-                $oAuxDpto->tipo                        = 2;
-                $oAuxDpto->top                         = 0;
-                $oAuxDpto->linhas                      = 5;
-                $oAuxDpto->vwidth                      = 400;
-                $oAuxDpto->nome_botao                  = 'db_lanca';
-                $oAuxDpto->fieldset                    = false;
+                $oAuxDpto                                 = new cl_arquivo_auxiliar();
+                $oAuxDpto->cabecalho                      = "<strong>Departamento</strong>";
+                $oAuxDpto->codigo                         = "coddepto"; //chave de retorno da func
+                $oAuxDpto->descr                          = "descrdepto";   //chave de retorno
+                $oAuxDpto->nomeobjeto                     = 'departamento';
+                $oAuxDpto->funcao_js                      = 'js_mostra_departamento';
+                $oAuxDpto->funcao_js_hide                 = 'js_mostra_departamento1';
+                $oAuxDpto->passar_query_string_para_func  = "&ids_orgao='+ getOrgaos() +'";
+                $oAuxDpto->sql_exec                       = "";
+                $oAuxDpto->func_arquivo                   = "func_db_depart.php";  //func a executar
+                $oAuxDpto->nomeiframe                     = "db_iframe_db_depart";
+                $oAuxDpto->localjan                       = "";
+                $oAuxDpto->executa_script_apos_incluir    = "js_liberaDivisaoDpto(); js_buscaDepartamentoSelecionado();";
+                $oAuxDpto->db_opcao                       = 2;
+                $oAuxDpto->tipo                           = 2;
+                $oAuxDpto->top                            = 0;
+                $oAuxDpto->linhas                         = 5;
+                $oAuxDpto->vwidth                         = 400;
+                $oAuxDpto->nome_botao                     = 'db_lanca';
+                $oAuxDpto->fieldset                       = false;
                 $oAuxDpto->funcao_gera_formulario();
               ?>
             </td>
@@ -93,11 +144,10 @@ require_once("libs/db_app.utils.php");
               <?php
                 db_input('lista_departamento', 10, true, 3, 'hidden', 3);
                 db_input('lista_divisaodepartamento', 10, true, 3, 'hidden', 3);
-                
-                
-                $aTipos = array(0 => 'Sem as divisões selecionadas', 1 => 'Com as divisões selecionadas'); 
-                db_select('usardivisao', $aTipos, true, 1);    
-                      
+
+                $aTipos = array(0 => 'Sem as divisões selecionadas', 1 => 'Com as divisões selecionadas');
+                db_select('usardivisao', $aTipos, true, 1);
+
                 $oDptoDivisao                                =  new cl_arquivo_auxiliar();
                 $oDptoDivisao->cabecalho                     = "<strong>Divisão de Departamento</strong>";
                 $oDptoDivisao->codigo                        = "t30_codigo"; //chave de retorno da func
@@ -118,8 +168,8 @@ require_once("libs/db_app.utils.php");
                 $oDptoDivisao->linhas                        = 5;
                 $oDptoDivisao->vwidth                        = 400;
                 $oDptoDivisao->nome_botao                    = 'db_lancadivisao';
-                $oDptoDivisao->fieldset                      = false; 
-                $oDptoDivisao->funcao_gera_formulario(); 
+                $oDptoDivisao->fieldset                      = false;
+                $oDptoDivisao->funcao_gera_formulario();
               ?>
             </td>
           </tr>
@@ -155,9 +205,9 @@ require_once("libs/db_app.utils.php");
           </tr>
           <tr>
             <td colspan="1">
-            <?php 
+            <?php
               /*
-               *  Estrutural dos Bens 
+               *  Estrutural dos Bens
                */
               $oAuxEstrutural                 = new cl_arquivo_auxiliar();
               $oAuxEstrutural->cabecalho      = "<strong>Estruturais</strong>";
@@ -210,35 +260,75 @@ require_once("libs/db_app.utils.php");
               ?>
             </td>
           </tr>
-        </table>
-        <table class="form-container">
           <tr>
-            <td>
-              <?php 
-                db_ancora("<b>Classificação:</b>", "js_abreLookupClassificacao(true);", 1);
-              ?>
-            </td>
-            <td>
-              <?php 
-                db_input("t64_class", 8, false, true, "text", 1, "onchange='js_abreLookupClassificacao(false);'");
-                db_input("t64_descr", 38, false, true, "text", 3);
+            <td colspan="2">
+              <?php
+                /*
+                 * Classificação
+                 */
+                $oAuxClassificacao                 = new cl_arquivo_auxiliar();
+                $oAuxClassificacao->cabecalho      = "<strong>Classificação</strong>";
+                $oAuxClassificacao->codigo         = "t64_class"; //chave de retorno da func
+                $oAuxClassificacao->descr          = "t64_descr";  //chave de retorno
+                $oAuxClassificacao->nomeobjeto     = 'clabens';
+                $oAuxClassificacao->funcao_js      = 'js_mostra_clabens';
+                $oAuxClassificacao->funcao_js_hide = 'js_mostra_clabens1';
+                $oAuxClassificacao->sql_exec       = "";
+                $oAuxClassificacao->func_arquivo   = "func_clabens.php";  //func a executar
+                $oAuxClassificacao->nomeiframe     = "db_iframe_clabens";
+                $oAuxClassificacao->localjan       = "";
+                $oAuxClassificacao->onclick        = "";
+                $oAuxClassificacao->db_opcao       = 2;
+                $oAuxClassificacao->Labelancora    = "Classificação";
+                $oAuxClassificacao->tipo           = 2;
+                $oAuxClassificacao->top            = 0;
+                $oAuxClassificacao->linhas         = 5;
+                $oAuxClassificacao->vwidth         = 400;
+                $oAuxClassificacao->nome_botao     = 'db_lanca_clabens';
+                $oAuxClassificacao->fieldset       = false;
+                $oAuxClassificacao->funcao_gera_formulario();
               ?>
             </td>
           </tr>
+        </table>
+        <table class="form-container">
           <tr>
+              <td>Datas:</td>
+              <td id="">
+                  <?php
+                      $aDatas = [
+                          0 => '',
+                          1 => 'Data da Aquisiçao',
+                          2 => 'Data da Inclusão no Sistema'
+                      ];
+                      db_select("dataAquisicaoOuInclusao", $aDatas, true, 1, "onchange='js_mudaData()'");
+                  ?>
+              </td>
+          </tr>
+          <tr id="dtAqui">
             <td>Data da Aquisição:</td>
             <td>
-              <?php 
+              <?php
                 db_inputdata("dtAquisicaoInicial", "", "", "", true, "text", 1);
                 echo " a ";
                 db_inputdata("dtAquisicaoFinal", "", "", "", true, "text", 1);
               ?>
             </td>
           </tr>
+          <tr id="dtInc">
+            <td>Data da Inclusão no Sistema:</td>
+            <td>
+              <?php
+                db_inputdata("dtInclusaoInicial", "", "", "", true, "text", 1);
+                echo " a ";
+                db_inputdata("dtInclusaoFinal", "", "", "", true, "text", 1);
+              ?>
+            </td>
+          </tr>
           <tr>
             <td nowrap="nowrap">Período da Baixa:</td>
             <td>
-              <?php 
+              <?php
                 db_inputdata("dtBaixaInicial", "", "", "", true, "text", 1);
                 echo " a ";
                 db_inputdata("dtBaixaFinal", "", "", "", true, "text", 1);
@@ -248,7 +338,7 @@ require_once("libs/db_app.utils.php");
           <tr>
             <td>Convênio:</td>
             <td>
-              <?php 
+              <?php
                 $aConvenios = array (1 => "Ambos",
                                      2 => "Apenas vinculado a convênios",
                                      3 => "Apenas não vinculado a convênios");
@@ -285,7 +375,7 @@ require_once("libs/db_app.utils.php");
           <tr>
             <td>Descrição do Bem:</td>
             <td>
-              <?php 
+              <?php
                 db_input("sDescricaoBem", 34, false, true, "text", 1);
               ?>
             </td>
@@ -293,7 +383,7 @@ require_once("libs/db_app.utils.php");
           <tr>
             <td>Características Adicionais do Bem:</td>
             <td>
-              <?php 
+              <?php
                 $aCaracteristicaAdicional = array("f" => "Não", "t" => "Sim");
                 db_select("lCaracteristicaAdicional", $aCaracteristicaAdicional, true, 1);
               ?>
@@ -302,17 +392,28 @@ require_once("libs/db_app.utils.php");
           <tr>
             <td>Imprimir Valor da Aquisição:</td>
             <td>
-              <?php 
+              <?php
                 $aValorAquisicao = array("f" => "Não", "t" => "Sim");
                 db_select("lImprimeValorAquisicao", $aValorAquisicao, true, 1);
+              ?>
+            </td>
+          </tr>
+          <tr id="filtroColuna" style="display: none">
+            <td>
+              <b>Colunas Estado e Baixado:</b>
+            </td>
+            <td>
+              <?php
+                $filtroColunas = array("1" => "Não", "2" => "Sim");
+                db_select("filtroColunas", $filtroColunas, true, 1);
               ?>
             </td>
           </tr>
           <tr>
             <td>Listar:</td>
             <td>
-              <?php 
-			          $aListarBens = array("1" => "Todos", "2" => "Não Baixados", "3" => "Baixados"); 
+              <?php
+			          $aListarBens = array("1" => "Todos", "2" => "Não Baixados", "3" => "Baixados");
 			          db_select("iListarBens", $aListarBens, true, 1);
               ?>
             </td>
@@ -320,8 +421,8 @@ require_once("libs/db_app.utils.php");
           <tr>
             <td>Ordem:</td>
             <td>
-              <?php 
-			          $aOrdemBens = array("1" => "Placa", "2" => "Código", "3" => "Descricao"); 
+              <?php
+			          $aOrdemBens = array("1" => "Placa", "2" => "Código", "3" => "Descricao");
 			          db_select("iOrdem", $aOrdemBens, true, 1);
               ?>
             </td>
@@ -329,7 +430,7 @@ require_once("libs/db_app.utils.php");
           <tr>
             <td>Quebra de Página:</td>
             <td>
-              <?php 
+              <?php
 			          $aQuebraPagina = array("1" => "Não", "2" => "Departamento / Divisão");
 			          db_select("iQuebraPagina", $aQuebraPagina, true, 1);
               ?>
@@ -343,30 +444,47 @@ require_once("libs/db_app.utils.php");
 </html>
 <?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
 <script>
+  function getOrgaos() {
+    var iQuantidadeOrgaos = $('orgao').length;
+    var sOrgaos = '';
+    var sVirgula = '';
 
+    for (var i = 0; i < iQuantidadeOrgaos; i++) {
+      sOrgaos += sVirgula + $('orgao')[i].value;
+      sVirgula  = ",";
+    }
+
+    return sOrgaos;
+  }
 
   $("btnProcessar").observe("click", function() {
 
-    var iClassificacao           = $F("t64_class");
     var sDepartamentos           = $F("lista_departamento");
     var lUsarDivisao             = $F("usardivisao");
     var sDivisoes                = $F("lista_divisaodepartamento");
+    var sClabens                 = "";
     var sBens                    = "";
     var sEstruturais             = "";
     var sSituacaoBens            = "";
     var sCedentes                = "";
+    var sOrgaos                  = "";
     var sVirgula                 = "";
     var dtAquisicaoInicial       = $F("dtAquisicaoInicial");
     var dtAquisicaoFinal         = $F("dtAquisicaoFinal");
+    var dtInclusaoInicial        = $F("dtInclusaoInicial");
+    var dtInclusaoFinal          = $F("dtInclusaoFinal");
     var dtBaixaInicial           = $F("dtBaixaInicial");
     var dtBaixaFinal             = $F("dtBaixaFinal");
     var iConvenio                = $F("vinculoconvenio");
     var sDescricaoBem            = $F("sDescricaoBem");
     var lCaracteristicaAdicional = $F("lCaracteristicaAdicional");
     var lImprimeValorAquisicao   = $F("lImprimeValorAquisicao");
+    var filtroColunas            = $F("filtroColunas");
     var iListarBens              = $F("iListarBens");
     var iOrdem                   = $F("iOrdem");
     var iQuebraPagina            = $F("iQuebraPagina");
+    var tipoData                 = $F('dataAquisicaoOuInclusao');
+
 
 
     if (sDepartamentos == "") {
@@ -374,7 +492,17 @@ require_once("libs/db_app.utils.php");
         return false;
       }
     }
-    
+
+    /*
+     * FOR ÓRGÃOS
+     */
+    for (var i = 0; i < $('orgao').length; i++) {
+      sOrgaos += sVirgula + $('orgao')[i].value;
+      sVirgula = ",";
+    }
+
+    sVirgula = "";
+
     /*
      * FOR BENS
      */
@@ -406,6 +534,16 @@ require_once("libs/db_app.utils.php");
     sVirgula = "";
 
     /*
+     * FOR SITUAÇÃO BENS
+     */
+    for (var i = 0; i < $('clabens').length; i++) {
+      sClabens += sVirgula + $('clabens')[i].value;
+      sVirgula = ",";
+    }
+
+    sVirgula = "";
+
+    /*
      * FOR CEDENTES
      */
     for (var i = 0; i < $('cedentes').length; i++) {
@@ -416,15 +554,22 @@ require_once("libs/db_app.utils.php");
     sVirgula = "";
 
     var sQueryString  = "pat2_benspordepartamento002.php?";
-    sQueryString     += "iClassificacao="+iClassificacao;
     sQueryString     += "&sDepartamentos="+sDepartamentos;
     sQueryString     += "&sDivisoes="+sDivisoes;
     sQueryString     += "&lUsarDivisao="+lUsarDivisao;
     sQueryString     += "&sBens="+sBens;
     sQueryString     += "&sContasEstruturais="+sEstruturais;
     sQueryString     += "&sSituacaoBens="+sSituacaoBens;
-    sQueryString     += "&dtAquisicaoInicial="+dtAquisicaoInicial;
-    sQueryString     += "&dtAquisicaoFinal="+dtAquisicaoFinal;
+    if(dtAquisicaoInicial && dtAquisicaoFinal){
+        sQueryString     += "&dtInicial="+dtAquisicaoInicial;
+        sQueryString     += "&dtFinal="+dtAquisicaoFinal;
+    }
+    else if(dtInclusaoInicial && dtInclusaoFinal){
+        sQueryString     += "&dtInicial="+dtInclusaoInicial;
+        sQueryString     += "&dtFinal="+dtInclusaoFinal;
+    } else {
+        alert('A data deve ser preenchida!');
+    }
     sQueryString     += "&dtBaixaInicial="+dtBaixaInicial;
     sQueryString     += "&dtBaixaFinal="+dtBaixaFinal;
     sQueryString     += "&iConvenio="+iConvenio;
@@ -432,12 +577,16 @@ require_once("libs/db_app.utils.php");
     sQueryString     += "&sDescricaoBem="+sDescricaoBem;
     sQueryString     += "&lCaracteristicaAdicional="+lCaracteristicaAdicional;
     sQueryString     += "&lImprimeValorAquisicao="+lImprimeValorAquisicao;
+    sQueryString     += "&filtroColunas="+filtroColunas;
     sQueryString     += "&iListarBens="+iListarBens;
+    sQueryString     += "&sClabens=" + sClabens;
     sQueryString     += "&iOrdem="+iOrdem;
     sQueryString     += "&iQuebraPagina="+iQuebraPagina;
-    
+    sQueryString     += "&sOrgaos="+sOrgaos;
+    sQueryString     += "&tipoData="+tipoData;
+
     var jan = window.open(sQueryString,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
-    jan.moveTo(0,0);   
+    jan.moveTo(0,0);
   });
 
   /**
@@ -451,43 +600,14 @@ require_once("libs/db_app.utils.php");
     js_buscaDivisaoDepartamentoSelecionado();
   });
 
-  /**
-   * Abre função de pesquisa das classificações
-   */
-  function js_abreLookupClassificacao(lMostra) {
-
-    if (lMostra == true) {
-
-      var sUrlOpen = "func_clabens.php?funcao_js=parent.js_mostraclabens1|t64_class|t64_descr&analitica=true";
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_clabens', sUrlOpen, 'Pesquisa Classificação', true);  
-    } else {
-
-      testa = new String(document.form1.t64_class.value);     
-       if(testa != '' && testa != 0){
-         i = 0;       
-         for(i = 0;i < document.form1.t64_class.value.length;i++){
-           testa = testa.replace('.','');       
-         }
-         js_OpenJanelaIframe('top.corpo','db_iframe_clabens','func_clabens.php?pesquisa_chave='+testa+'&funcao_js=parent.js_mostraclabens&analitica=true','Pesquisa',false);
-       }else{
-         document.form1.t64_descr.value = '';
-       }
+  $('lImprimeValorAquisicao').observe('change', function() {
+    if ( lImprimeValorAquisicao.value === 't' ) {
+      document.getElementById('filtroColuna').style.display = '';
     }
-  }
-
-  function js_mostraclabens(chave,erro){
-    document.form1.t64_descr.value = chave;
-    if(erro==true){
-      document.form1.t64_class.value = '';
-      document.form1.t64_class.focus();
+    if ( lImprimeValorAquisicao.value === 'f' ) {
+      document.getElementById('filtroColuna').style.display = 'none';
     }
-  }
-  
-  function js_mostraclabens1(chave1,chave2){
-    document.form1.t64_class.value = chave1;
-    document.form1.t64_descr.value = chave2;
-    db_iframe_clabens.hide();
-  }
+  });
 
   /**
    * Preenche um campo do tipo INPUT com os departamentos selecionados.
@@ -496,9 +616,9 @@ require_once("libs/db_app.utils.php");
 
     iDptos       = document.getElementById("departamento").length;
     sValoresDpto = "";
-      
+
     for (var i = 0; i < iDptos; i++) {
-      
+
       if (sValoresDpto == "") {
         sValoresDpto += document.getElementById("departamento")[i].value;
       } else {
@@ -519,7 +639,7 @@ require_once("libs/db_app.utils.php");
       sDivisoesSelecionadas += sVirgula+oObjDivisao[iRow].value;
     }
     $("lista_divisaodepartamento").value = sDivisoesSelecionadas;
-  } 
+  }
 
   /**
    * Libera a TR da tabela permitindo ao usuário informar as divisões do departamento
@@ -536,18 +656,18 @@ require_once("libs/db_app.utils.php");
     }
 
     for (var i = 0; i < document.getElementById("departamento").length; i++) {
-      
+
       var oRegistro = document.getElementById("departamento");
       oRegistro[i].observe('dblclick', function () {
-      
-        if (document.form1.departamento.length == 1) { 
+
+        if (document.form1.departamento.length == 1) {
 
           $('tr_fieldset_divisao').style.display = "none";
           $('fieldset_divisao').style.display    = "none";
           $('lista_departamento').value          = '';
           $('lista_divdepartamento').value       = '';
         }
-      });   
+      });
     }
   }
 
@@ -555,15 +675,32 @@ require_once("libs/db_app.utils.php");
    * Mostra os cedentes de um convênio
    */
   function js_showCedentes() {
-     
+
     if ($F('vinculoconvenio') == 2) {
       $('tr_fieldset_cedentes').style.display = '';
       $("fieldset_cedentes").style.display    = '';
     } else {
-      
+
       $('tr_fieldset_cedentes').style.display = "none";
       $("fieldset_cedentes").style.display    = 'none';
     }
+  }
+
+  $('dtInc').style.display = 'none';
+  $('dtAqui').style.display = 'none'
+
+  function js_mudaData(){
+      if($F('dataAquisicaoOuInclusao') == 1){
+          $('dtInclusaoInicial').value = '';
+          $('dtInclusaoFinal').value = '';
+          $('dtInc').style.display = 'none';
+          $('dtAqui').style.display = '';
+      } else {
+          $('dtAquisicaoInicial').value = '';
+          $('dtAquisicaoFinal').value = '';
+          $('dtAqui').style.display = 'none'
+          $('dtInc').style.display = '';
+      }
   }
   /**
    * Funções executadas ao abrir o arquivo
@@ -574,8 +711,12 @@ require_once("libs/db_app.utils.php");
   var oToogleEstrutural   = new DBToogle("fieldset_contas", false);
   var oToogleSituacaoBens = new DBToogle("fieldset_situabens", false);
   var oToogleCedentes     = new DBToogle("fieldset_cedentes", false);
+  var oToogleClabens      = new DBToogle("fieldset_clabens", false);
+  var oToogleOrcorgao     = new DBToogle("fieldset_orgao", false);
+
   $("fieldset_divisao").style.display = 'none';
   $("fieldset_cedentes").style.display = 'none';
+
 </script>
 
 <script>
@@ -600,19 +741,27 @@ $("t70_situac").addClassName("field-size2");
 $("t70_descr").addClassName("field-size7");
 $("situabens").style.width = "100%";
 
+$("fieldset_clabens").addClassName("separator");
+$("t64_class").addClassName("field-size2");
+$("t64_descr").addClassName("field-size7");
+$("clabens").style.width = "100%";
+
+$("fieldset_orgao").addClassName("separator");
+$("o40_orgao").addClassName("field-size2");
+$("o40_descr").addClassName("field-size7");
+$("orgao").style.width = "100%";
+
 $("fieldset_cedentes").addClassName("separator");
 $("t04_sequencial").addClassName("field-size2");
 $("z01_nome").addClassName("field-size7");
 $("cedentes").style.width = "100%";
 
-$("t64_class").addClassName("field-size2");
-$("t64_descr").addClassName("field-size7");
 $("dtAquisicaoInicial").addClassName("field-size2");
 $("dtAquisicaoFinal").addClassName("field-size2");
+$("dtInclusaoInicial").addClassName("field-size2");
+$("dtInclusaoFinal").addClassName("field-size2");
 $("dtBaixaInicial").addClassName("field-size2");
 $("dtBaixaFinal").addClassName("field-size2");
 $("sDescricaoBem").addClassName("field-size9");
-$("t64_class").addClassName("field-size2");
-$("t64_class").addClassName("field-size2");
 
 </script>

@@ -27,7 +27,7 @@
 
 
 
-include("classes/db_db_syscadproceditem_classe.php");
+include(modification("classes/db_db_syscadproceditem_classe.php"));
 
 //MODULO: atendimento
 $clclientesmodulosproc->rotulo->label();
@@ -118,13 +118,13 @@ for($i=0;$i<pg_numrows($result);$i++){
     </td>
     <td> 
     <?
-    db_textarea('at75_obs_'.$codproced,1,100,$Iat75_obs,true,'text',$db_opcao,"")
+    db_textarea('at75_obs_'.$codproced,1,50,$Iat75_obs,true,'text',$db_opcao,"")
     ?>
     </td>
     <td> 
     <input name="usuarios" value="Usuarios" type="button" onclick="js_procedimentos_usuarios(<?=$codproced?>,'<?=$descrproced?>',<?=$at75_sequen?>)">
     <input name="usuarios_sel" value="" type="hidden">
-    <input name="at76_sequen_<?=$codproced?>" value="<?=$at76_sequen?>" type="hidden">
+    <input name="at76_sequen_<?=$codproced?>" value="<?=$at75_sequen?>" type="hidden">
     </td>
   </tr>
 <?
@@ -138,7 +138,7 @@ function js_procedimentos_usuarios(procedimento,nomeproced,sequen){
   if(sequen==0){
     alert('Devera ser incluido primeiramente uma data para esta procedimento.');
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_clientesmodulos','db_iframe_clientes_usu','func_db_usuclientestre.php?codproced='+procedimento+'&cliente=<?=@$cliente?>&nomeproced='+nomeproced+'&at76_sequen='+sequen,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_clientesmodulos','db_iframe_clientes_usu','func_db_usuclientestre.php?codproced='+procedimento+'&cliente=<?=@$cliente?>&nomeproced='+nomeproced+'&at76_sequen='+sequen,'Pesquisa',true);
   }
 }
 </script>

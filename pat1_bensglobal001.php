@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,31 +25,31 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("dbforms/db_classesgenericas.php");
-require_once ("classes/db_bens_classe.php");
-require_once ("classes/db_bensimoveis_classe.php");
-require_once ("classes/db_bensmater_classe.php");
-require_once ("classes/db_situabens_classe.php");
-require_once ("classes/db_clabens_classe.php");
-require_once ("classes/db_histbem_classe.php");
-require_once ("classes/db_bensplaca_classe.php");
-require_once ("classes/db_benscadlote_classe.php");
-require_once ("classes/db_benslote_classe.php");
-require_once ("classes/db_departdiv_classe.php");
-require_once ("classes/db_histbemdiv_classe.php");
-require_once ("classes/db_bensdiv_classe.php");
-require_once ("classes/db_cfpatriplaca_classe.php");
-require_once ("classes/db_cfpatri_classe.php");
-require_once ("classes/db_bensmarca_classe.php");
-require_once ("classes/db_bensmedida_classe.php");
-require_once ("classes/db_bensmodelo_classe.php");
-require_once ("classes/db_benscedente_classe.php") ;
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_bens_classe.php"));
+require_once(modification("classes/db_bensimoveis_classe.php"));
+require_once(modification("classes/db_bensmater_classe.php"));
+require_once(modification("classes/db_situabens_classe.php"));
+require_once(modification("classes/db_clabens_classe.php"));
+require_once(modification("classes/db_histbem_classe.php"));
+require_once(modification("classes/db_bensplaca_classe.php"));
+require_once(modification("classes/db_benscadlote_classe.php"));
+require_once(modification("classes/db_benslote_classe.php"));
+require_once(modification("classes/db_departdiv_classe.php"));
+require_once(modification("classes/db_histbemdiv_classe.php"));
+require_once(modification("classes/db_bensdiv_classe.php"));
+require_once(modification("classes/db_cfpatriplaca_classe.php"));
+require_once(modification("classes/db_cfpatri_classe.php"));
+require_once(modification("classes/db_bensmarca_classe.php"));
+require_once(modification("classes/db_bensmedida_classe.php"));
+require_once(modification("classes/db_bensmodelo_classe.php"));
+require_once(modification("classes/db_benscedente_classe.php")) ;
 
 $oDaoCfPatri        = db_utils::getDao('cfpatriinstituicao');
 $sSqlPatri          = $oDaoCfPatri->sql_query_file(null, 
@@ -346,7 +346,7 @@ if (isset($incluir)) {
           $clbens->t52_bensmarca  = $t65_sequencial;      
           $clbens->t52_bensmedida = $t67_sequencial;
           $clbens->t52_bensmodelo = $t66_sequencial;
-          
+         
           $clbens->incluir($t52_bem);
 
           $t52_instit = $clbens->t52_instit;
@@ -599,7 +599,7 @@ if (isset($incluir)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
       <?
-        include ("forms/db_frm_bensglobal.php");
+        include(modification("forms/db_frm_bensglobal.php"));
       ?>
     </center>
   </td>

@@ -68,7 +68,7 @@ db_input('tr04_descr',35,$Itr04_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipo_tempo','func_tipo_tempo.php?funcao_js=parent.js_preenchepesquisa|tr04_id','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipo_tempo','func_tipo_tempo.php?funcao_js=parent.js_preenchepesquisa|tr04_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipo_tempo.hide();

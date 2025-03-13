@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010553' name='issqn.issgsanexos' description="Tabela de relação entre issgruposervico e issgruposervicocadanexos" prefix="q162" label="" type="0">
+  <fields>
+    <field codigo="1011207" 
+           campo_api='' 
+           name="q162_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela issgruposervicoanexos" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='issqn.issgsanexos_q162_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011208" 
+           campo_api='' 
+           name="q162_issgruposervico" 
+           conteudo="int4" 
+           description="Chave unica issgruposervico" 
+           inivalue="0" 
+           label="Chave unica issgruposervico" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Chave unica issgruposervico" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011209" 
+           campo_api='' 
+           name="q162_issgscadanexos" 
+           conteudo="int4" 
+           description="Campos sequencial da tabela issgruposervicocadanexos" 
+           inivalue="0" 
+           label="Sequencial da issgruposervicocadanexos" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial da issgruposervicocadanexos" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011210" 
+           campo_api='' 
+           name="q162_data_fim" 
+           conteudo="date" 
+           description="Data limite do anexo" 
+           inivalue="null" 
+           label="Data limite" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="3" 
+           tipoobj="text" 
+           labelrel="Data limite" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q162_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="issgruposervico" inner='t'>
+      <fieldfk name="q162_issgruposervico" reference="q126_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="issgscadanexos" inner='t'>
+      <fieldfk name="q162_issgscadanexos" reference="q157_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

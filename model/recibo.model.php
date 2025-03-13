@@ -1,7 +1,15 @@
 <?php
+use ECidade\Tributario\Arrecadacao\Model\TaxaEspecifica as TaxaEspecificaModel;
+use ECidade\Tributario\Arrecadacao\Repository\TaxaEspecifica as TaxaEspecificaRepository;
+use ECidade\Tributario\Arrecadacao\Service\TaxaEspecifica as TaxaEspecificaService;
+use ECidade\Tributario\Caixa\Model\Arretipo;
+use ECidade\Tributario\Caixa\Enum\ArretipoEnum;
+use ECidade\Tributario\Caixa\Repository\RecibopagaRepository;
+use ECidade\Tributario\Library\DataBase;
+
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,530 +37,770 @@
  * Classe responsável pela manutenção de recibos do sistema
  * @package Caixa
  */
-class Recibo {
+class Recibo
+{
+    const TIPOEMISSAO_RECIBO_AVULSO = 1;
+    const TIPOEMISSAO_RECIBO_CGF = 2;
 
-  /**
-   * Código da arrecadacao
-   *
-   * @var integer
-   */
-  private $iNumpre = null;
+    /**
+     * Autenticação do recibo de retenção oriunda de outra instituição
+     * @var int
+     */
+    const AUTENTICACAO_RETENCAO_OUTRA_INSTITUICAO = 7;
 
-  /**
-   * Array com o código das matriculas que devem ser vinculadas ao recibo (iptubase.j02_matric)
-   *
-   * @var array
-   */
-  private $aMatricula = array();
+    /**
+     * Estorno do recibo de retenção oriunda de outra instituição
+     * @var int
+     */
+    const ESTORNO_RETENCAO_OUTRA_INSTITUICAO = 8;
 
-  /**
-   * Array com os código das Inscrições municipais que devem ser vinculadas ao recibo (issbase.q02_inscr)
-   *
-   * @var array
-   */
-  private $aInscricao  = array();
+    /**
+     * Código da arrecadacao
+     *
+     * @var integer
+     */
+    private $iNumpre = null;
 
-  /**
-   * Array com os códigos dos cgms que devem ser vinculados ao recibo (cgm.z01_numcgm)
-   *
-   * @var array
-   */
-  private $aVinculoCgm = array();
+    /**
+     * Array com o código das matriculas que devem ser vinculadas ao recibo (iptubase.j02_matric)
+     *
+     * @var array
+     */
+    private $aMatricula = array();
 
-  /**
-   * Tipo de Recibo a ser Gerado
-   *
-   * @var integer
-   */
-  private $iTipoRecibo = null;
+    /**
+     * Array com os código das Inscrições municipais que devem ser vinculadas ao recibo (issbase.q02_inscr)
+     *
+     * @var array
+     */
+    private $aInscricao = array();
 
-  /**
-   * Receitas do recibo.
-   *
-   * @var array;
-   */
-  private $aReceitas = array();
+    /**
+     * Array com os códigos dos cgms que devem ser vinculados ao recibo (cgm.z01_numcgm)
+     *
+     * @var array
+     */
+    private $aVinculoCgm = array();
 
-  /**
-   * Tipo de recibo que sera emitido. 1 - recibo protocolo
-   *
-   * @var integer
-   */
-  private $iTipoEmissao = null;
+    /**
+     * Tipo de Recibo a ser Gerado
+     *
+     * @var integer
+     */
+    private $iTipoRecibo = null;
 
-  /**
-   * Código do Cgm do Recibo
-   *
-   * @var integer
-   */
-  private $iNumCgm = null;
+    /**
+     * Receitas do recibo.
+     *
+     * @var array;
+     */
+    private $aReceitas = array();
 
-  /**
-   * Data de emissao do Recibo
-   *
-   * @var string
-   */
-  private $dtRecibo = null;
+    /**
+     * Receitas de custas do recibo.
+     *
+     * @var array;
+     */
+    private $aReceitaCusta = array();
 
-  /**
-   * exercicio
-   *
-   * @var integer
-   */
-  private $iAnoUsu = null;
+    /**
+     * Receitas de custas de parcelamentos contidos no recibo.
+     *
+     * @var array;
+     */
+    private $aReceitaCustaParcelamento = array();
 
-  /**
-   * Código da conta pagadora do recibo
-   *
-   * @var integer
-   */
-  private $iConta = null;
+    /**
+     * Tipo de recibo que sera emitido. 1 - recibo protocolo
+     *
+     * @var integer
+     */
+    private $iTipoEmissao = null;
 
-  /**
-   * Código do Grupo da autenticação
-   *
-   * @var integer
-   */
-  private $iCodigoGrupoAutenticacao = 0;
+    /**
+     * Código do Cgm do Recibo
+     *
+     * @var integer
+     */
+    private $iNumCgm = null;
 
-  /**
-   * Numpres de Debitos em aberto
-   * que serao utilizados na confeção do recibo;
-   * @var array;
-   */
-  private $aNumpres  = array();
+    /**
+     * Data de emissao do Recibo
+     *
+     * @var string
+     */
+    private $dtRecibo = null;
 
-  /**
-   * Recursos que o recibo possui.
-   *
-   * @var array de objetos do tipo stdclass
-   */
-  private $aRecursos = array();
+    /**
+     * exercicio
+     *
+     * @var integer
+     */
+    private $iAnoUsu = null;
 
-  /**
-   * Numero de banco gerado pelo sistema.
-   *
-   * @var string
-   */
-  private $sNumBco = "";
+    /**
+     * Código da conta pagadora do recibo
+     *
+     * @var integer
+     */
+    private $iConta = null;
 
-  /**
-   * Código do histórico
-   *
-   * Definido 502 = RECIBO PROTOCOLO como padrão
-   * @var integer
-   */
-  private $iCodigoHistorico = 502;
+    /**
+     * Código do Grupo da autenticação
+     *
+     * @var integer
+     */
+    private $iCodigoGrupoAutenticacao = 0;
 
-  /**
-   * Historico do recibo usado na consulta geral financeira e na reemissão do recibo
-   *
-   * @var string
-   */
-  private $sHistorico = "";
+    /**
+     * Numpres de Debitos em aberto
+     * que serao utilizados na confeção do recibo;
+     * @var array;
+     */
+    private $aNumpres = array();
 
-  /**
-   * Data de vencimento do recibo que será passado para a função fc_recibo
-   *
-   * @var string
-   */
-  private $dtVencRecibo  = null;
+    /**
+     * Recursos que o recibo possui.
+     *
+     * @var array de objetos do tipo stdclass
+     */
+    private $aRecursos = array();
 
-  /**
-   * Desconto utilizado
-   *
-   * @var array
-   */
-  private $aDescReciboWeb = array();
+    /**
+     * Numero de banco gerado pelo sistema.
+     *
+     * @var string
+     */
+    private $sNumBco = "";
 
-  /**
-   * Caracteristica peculiar
-   *
-   * @var integer_type
-   */
-  private $iCaracteristicaPeculiar;
+    /**
+     * Código do histórico
+     *
+     * Definido 502 = RECIBO PROTOCOLO como padrão
+     * @var integer
+     */
+    private $iCodigoHistorico = 502;
 
-  /**
-   * Cria um novo recibo
-   *
-   * @param integer $iTipoEmissao tipo da emissao do recibo = 1 recibo avulso, 2 - recibo d CGF
-   * @param integer $iNumCgm   Código do Cgm para que está sendo emitido o Recibo
-   * @param integer
-   *
-   */
-  function __construct($iTipoEmissao = null, $iNumCgm = null, $iTipo = 1, $iNumnov = null) {
+    /**
+     * Historico do recibo usado na consulta geral financeira e na reemissão do recibo
+     *
+     * @var string
+     */
+    private $sHistorico = "";
 
-  	if ($iNumnov != null) {
+    /**
+     * Data de vencimento do recibo que será passado para a função fc_recibo
+     *
+     * @var string
+     */
+    private $dtVencRecibo = null;
 
-  	  $oDaoArrebanco = new cl_arrebanco();
-      $oDaoReciboPaga= new cl_recibopaga();
-  	  $sSqlArrebanco = $oDaoArrebanco->sql_queryRecibo($iNumnov);
-  	  $rsArrebanco   = $oDaoArrebanco->sql_record($sSqlArrebanco);
+    /**
+     * Desconto utilizado
+     *
+     * @var array
+     */
+    private $aDescReciboWeb = array();
 
-      if ($oDaoArrebanco->numrows > 0) {
+    /**
+     * Caracteristica peculiar     *
+     * @var integer
+     */
+    private $iCaracteristicaPeculiar;
 
-        $oRecibo    = db_utils::fieldsMemory($rsArrebanco, 0);
-        $this->setNumBco              ($oRecibo->k00_numbco);
-        $this->setHistorico           ($oRecibo->k00_histtxt);
-        $this->setDataRecibo          ($oRecibo->k00_dtoper);
-        $this->setNumnov              ($oRecibo->k00_numnov);
-        $this->setDataVencimentoRecibo($oRecibo->k00_dtpaga);
-        $this->setExercicioRecibo     (date("Y", strtotime($oRecibo->k00_dtoper)));
-        $this->setConta               ($oRecibo->k00_conta);
-        $this->setTipoEmissao         ($oRecibo->tipo_emissao);
-        $sSqlDebitosRecibo            = $oDaoReciboPaga->sql_query_file(null," distinct k00_numpre, k00_numpar ",
-                                                                        null," k00_numnov = {$iNumnov} ");
-        $rsDebitosRecibo              = $oDaoReciboPaga->sql_record($sSqlDebitosRecibo);
+    /**
+     * Válida se a emissão esta sendo feita por Carnê Banco
+     *
+     * @var bool
+     */
+    private $emiteCarneBanco;
 
-      }
-  	} else {
+    /**
+     * Convenio associado ao recibo
+     *
+     * @var convenio
+     */
+    private $convenio;
 
-	    $this->dtRecibo         = date("Y-m-d", db_getsession("DB_datausu"));
-	    $this->dtVencRecibo     = date("Y-m-d", db_getsession("DB_datausu"));
-	    $this->iAnoUsu          = date("Y", db_getsession("DB_datausu"));
-	    $this->iTipoEmissao     = $iTipoEmissao;
-	    $this->iNumCgm          = $iNumCgm;
-	    $this->iTipoDBreciboWeb = $iTipo;
+    /**
+     * CGM que sera exibido no PDF do recibo
+     * @var CgmBase
+     */
+    private $cgmExibicao;
 
-	    /*
-	     * Definimos o tipo de recibo conforme a instituição
-	     */
-	    $sSqlTiporecibo  = "select k03_reciboprot         ";
-	    $sSqlTiporecibo .= "  from numpref                ";
-	    $sSqlTiporecibo .= " where k03_anousu =  ".db_getsession("DB_anousu");
-	    $sSqlTiporecibo .= "   and k03_instit =  ".db_getsession("DB_instit");
-	    $rsTipoRecibo    = db_query($sSqlTiporecibo);
-	    if (pg_num_rows($rsTipoRecibo) == 0) {
-	      throw  new Exception("Erro [1] - Não há Configuração do tributário para o ano e instituição Correntes");
-	    }
-	    $this->iTipoRecibo = db_utils::fieldsMemory($rsTipoRecibo, 0)->k03_reciboprot;
+    /**
+     * $arretipo
+     *
+     * @var Arretipo
+     */
+    private $arretipo;
 
-  	}
+    /**
+     * @var integer
+     */
+    private $codigoInstituicao;
 
-  }
+    /**
+     * @var integer
+     */
+    private $cadTipoMod;
 
-  /**
-   * Define o numero de banco gerado pelo sistema
-   *
-   * @param string $sNumBco
-   */
-  function setNumBco($sNumBco) {
-    $this->sNumBco = $sNumBco;
-  }
+    /**
+     * @var integer
+     */
+    private $minNumpar;
 
-  /**
-   * Define valor aDescReciboWeb
-   *
-   * @param integer $iNumpre
-   * @param integer $iNumpar
-   */
+    /**
+     * @var integer
+     */
+    private $maxNumpar;
 
-  function setDescontoReciboWeb($iNumpre,$iNumpar,$nValorDesconto) {
+    /**
+     * @var integer
+     */
+    private $quantidadeParcelas = 1;
 
-  	$oDesconto = new stdClass();
-  	$oDesconto->iNumpre        = $iNumpre;
-  	$oDesconto->iNumpar        = $iNumpar;
-  	$oDesconto->nValorDesconto = $nValorDesconto;
+    /**
+     * @var integer
+     */
+    private $parcelaAtual = 1;
 
-  	$this->aDescReciboWeb[]    = $oDesconto;
+    /**
+     * O objeto que foi usado para buscar os débitos do recibo.
+     * Essencialmente, é ou o Cgm, ou a Inscrição, ou a Matrícula usada
+     * na hora de pesquisar alguém na consulta geral financeira.
+     *
+     * @var CgmBase|\ECidade\Tributario\Issqn\Model\Issbase|\ECidade\Tributario\Cadastro\Model\Iptubase
+     */
+    private $identificacao;
 
-  }
+    /**
+     * Processos do foro das iniciais envolvidas no boleto
+     *
+     * @var int[]
+     */
+    private $processosForo;
 
-  /**
-   * Retorna valor de desconto
-   *
-   * @param integer $iNumpre
-   * @param integer $iNumpar
-   * @return integer
-   */
-  function getDescontoReciboWeb($iNumpre,$iNumpar) {
+    private $executaLancamentoContabil = true;
 
-  	$nDesconto = 0;
+    private $lPartilhaPagaMigracao;
+    /**
+     * @var bool
+     */
+    private $geracaoTaxaExpediente = true;
 
-    foreach ( $this->aDescReciboWeb as $oDesconto ) {
+    /**
+     * Cria um novo recibo
+     *
+     * @param integer $iTipoEmissao tipo da emissao do recibo = 1 recibo avulso, 2 - recibo d CGF
+     * @param integer $iNumCgm Código do Cgm para que está sendo emitido o Recibo
+     * @param int $iTipo
+     * @param null $iNumnov
+     * @throws Exception
+     */
+    function __construct($iTipoEmissao = null, $iNumCgm = null, $iTipo = 1, $iNumnov = null)
+    {
+        if ($iNumnov != null) {
+            $oDaoArrebanco = new cl_arrebanco();
+            $oDaoReciboPaga = new cl_recibopaga();
+            $sSqlArrebanco = $oDaoArrebanco->sql_queryRecibo($iNumnov);
+            $rsArrebanco = $oDaoArrebanco->sql_record($sSqlArrebanco);
 
-    	if ( $oDesconto->iNumpre == $iNumpre && $oDesconto->iNumpar == $iNumpar ) {
-    		 $nDesconto = $oDesconto->nValorDesconto;
-    	}
-
+            if ($oDaoArrebanco->numrows > 0) {
+                $oRecibo = db_utils::fieldsMemory($rsArrebanco, 0);
+                $this->setNumBco($oRecibo->k00_numbco);
+                $this->setHistorico($oRecibo->k00_histtxt);
+                $this->setDataRecibo($oRecibo->k00_dtoper);
+                $this->setNumnov($oRecibo->k00_numnov);
+                $this->setCgm($oRecibo->k00_numcgm);
+                $this->setDataVencimentoRecibo($oRecibo->k00_dtpaga);
+                $this->setExercicioRecibo(date("Y", strtotime($oRecibo->k00_dtoper)));
+                $this->setConta($oRecibo->k00_conta);
+                $this->setTipoEmissao($oRecibo->tipo_emissao);
+                $sSqlDebitosRecibo = $oDaoReciboPaga->sql_query_file(null, " distinct k00_numpre, k00_numpar ",
+                    null, " k00_numnov = {$iNumnov} ");
+                $rsDebitosRecibo = $oDaoReciboPaga->sql_record($sSqlDebitosRecibo);
+            }
+        } else {
+            $this->dtRecibo = date("Y-m-d", db_getsession("DB_datausu"));
+            $this->dtVencRecibo = date("Y-m-d", db_getsession("DB_datausu"));
+            $this->iAnoUsu = date("Y", db_getsession("DB_datausu"));
+            $this->iTipoEmissao = $iTipoEmissao;
+            $this->iNumCgm = $iNumCgm;
+            $this->iTipoDBreciboWeb = $iTipo;
+            $this->emiteCarneBanco = false;
+            /*
+             * Definimos o tipo de recibo conforme a instituição
+             */
+            $sSqlTiporecibo = "select k03_reciboprot         ";
+            $sSqlTiporecibo .= "  from numpref                ";
+            $sSqlTiporecibo .= " where k03_anousu =  " . db_getsession("DB_anousu");
+            $sSqlTiporecibo .= "   and k03_instit =  " . db_getsession("DB_instit");
+            $rsTipoRecibo = db_query($sSqlTiporecibo);
+            if (pg_num_rows($rsTipoRecibo) == 0) {
+                throw  new Exception("Erro [1] - Não há Configuração do tributário para o ano e instituição Correntes");
+            }
+            $this->iTipoRecibo = db_utils::fieldsMemory($rsTipoRecibo, 0)->k03_reciboprot;
+        }
     }
 
-    return $nDesconto;
-  }
-
-  /**
-   * Define o código dos cgms envolvidos no recibo
-   *
-   * @param integer $iCgm
-   */
-  function setVinculoCgm($iCgm) {
-
-  	$this->aVinculoCgm[] = $iCgm;
-  }
-
-  /**
-   * Retorna os cgms que devem ter vinculo com o numpre
-   *
-   * @return array
-   */
-  function getVinculoCgm() {
-
-  	return $this->aVinculoCgm;
-  }
-
-  /**
-   * Define o código da matricula
-   *
-   * @param integer $iMatricula
-   */
-  function setMatricula($iMatricula) {
-
-    $this->aMatricula[] = $iMatricula;
-  }
-
-  /**
-   * Retorna o codigo da matricula definida para o recibo.
-   *
-   * @return array
-   */
-  function getMatricula() {
-    return $this->aMatricula;
-  }
-
-  /**
-   * Define o código da Inscricao
-   *
-   * @param integer $iInscricao
-   */
-  function setInscricao($iInscricao) {
-
-    $this->aInscricao[] = $iInscricao;
-
-  }
-
-  /**
-   * Retorna o codigo da Inscricao definida para o recibo.
-   *
-   * @return array
-   */
-  function getInscricao() {
-    return $this->aInscricao;
-  }
-
-  /**
-   * Define a conta pagadora
-   *
-   * @param integer $iConta
-   */
-  function setConta($iConta) {
-    $this->iConta = $iConta;
-  }
-
-  /**
-   * Retorna a conta definida pelo usuario
-   *
-   * @return integer
-   */
-  function getConta() {
-
-    return $this->iConta;
-  }
-
-  /**
-   * Define o Grupo de Autenticação (corgrupo.k104_sequencial);
-   *
-   * @param integer $iCorGrupo Código do Grupo (corgrupo.k104_sequencial)
-   */
-  function setGrupoAutenticacao($iCorGrupo) {
-    $this->iCodigoGrupoAutenticacao = $iCorGrupo;
-  }
-
-  /**
-   * Retorna o grupo de autenticação definido.
-   *
-   * @return integer
-   */
-  function getGrupoArrecadacao() {
-    return $this->iCodigoGrupoAutenticacao;
-  }
-
-  /**
-   * Define o Historico do Recibo;
-   *
-   * @param string $sHistorico Historico do pagamento
-   */
-  function setHistorico($sHistorico) {
-    $this->sHistorico = addslashes($sHistorico);
-  }
-
-  /**
-   * Retorna o Historico do recibo;
-   *
-   * @return string
-   */
-  function getHistorico() {
-    return $this->sHistorico;
-  }
-  /**
-   * @return string
-   */
-  public function getDataRecibo() {
-
-    return $this->dtRecibo;
-  }
-
-  /**
-   * Define a data do recibo
-   * @param string $dtRecibo
-   */
-  public function setDataRecibo($dtRecibo) {
-
-    $this->dtRecibo = $dtRecibo;
-  }
-
-
-  /**
-   * Define o Tipo de emissao;
-   *
-   * @param string $iTipoEmissao tipo de emissao
-   */
-  function setTipoEmissao($iTipoEmissao) {
-    $this->iTipoEmissao = $iTipoEmissao;
-  }
-
-  /**
-   * Retorna o tipo de emissao;
-   *
-   * @return string
-   */
-  function getTipoEmissao() {
-    return $this->iTipoEmissao;
-  }
-
-  /**
-   * Define o código do histórico
-   * @param $iCodigoHistorico
-   */
-  public function setCodigoHistorico($iCodigoHistorico){
-    $this->iCodigoHistorico = $iCodigoHistorico;
-  }
-
-  /**
-   * Retorna o código do histórico
-   * @return integer
-   */
-  public function getCodigoHistorico(){
-    return $this->iCodigoHistorico;
-  }
-
-
-  /**
-   * adiciona um numpre/numpar ao recibo;
-   *
-   * @param integer $iNumpre Código de arrecação
-   * @param integer $iNumpar parcela
-   */
-  function addNumpre($iNumpre, $iNumpar) {
-
-    if ( trim($iNumpre) == '' ) {
-      throw new Exception(" Erro [1] Numpre não pode ser vazio");
+    public function setCgm($cgm)
+    {
+        $this->iNumCgm = $cgm;
     }
 
-    if ( trim($iNumpar) == '' ) {
-      throw new Exception(" Erro [2] Numpar não pode ser vazio");
+    public function getCgm()
+    {
+        return $this->iNumCgm;
+    }
+    /**
+     * Define o numero de banco gerado pelo sistema
+     *
+     * @param string $sNumBco
+     */
+    function setNumBco($sNumBco)
+    {
+        $this->sNumBco = $sNumBco;
     }
 
-    $sSqlArrecad  = "select distinct k00_numpre,";
-    if ($iNumpar <> 0) {
-    	$sSqlArrecad .= " k00_numpar, ";
-    } else{
-      $sSqlArrecad .= " 0 as k00_numpar, ";
-    }
-    $sSqlArrecad .= "       k00_tipo ";
-    $sSqlArrecad .= "  from arrecad ";
-    $sSqlArrecad .= " where k00_numpre = {$iNumpre} ";
-    if ($iNumpar <> 0 ) {
-      $sSqlArrecad .= "   and k00_numpar = {$iNumpar} ";
-    }
-    $rsArrecad    = db_query($sSqlArrecad);
-    if (pg_num_rows($rsArrecad) == 0) {
-      throw new Exception(" Erro [3] Débito não encontrado!");
-    }
-    $oNumpre          = db_utils::fieldsMemory($rsArrecad, 0);
-    if (!in_array($oNumpre,$this->aNumpres)) {
-      $this->aNumpres[] = $oNumpre;
-    }
-    unset($oNumpre);
-
-  }
-  /**
-   * Adiciona uma receita ao recibo.
-   *
-   * @param integer $iCodRec
-   * @param float $nValorReceita
-   * @param integer $iCodSubReceita
-   * @return void
-   */
-  function adicionarReceita($iCodRec, $nValorReceita, $iCodSubReceita = 0, $iCaracteristicaPeculiar = null) {
-
-    $oReceita = new stdClass();
-    $oReceita->iCodRec                 = $iCodRec;
-    $oReceita->nValorReceita           = $nValorReceita;
-    $oReceita->iCodSubReceita          = $iCodSubReceita;
-    $oReceita->iCaracteristicaPeculiar = $iCaracteristicaPeculiar;
-    $this->aReceitas[]                 = $oReceita;
-    return true;
-
-  }
-
-  /**
-   * Adiciona um recurso ao recibo.
-   *
-   * @param integer $iRecurso
-   */
-  function adicionarRecurso($iRecurso) {
-
-    if (!in_array($iRecurso,$this->aRecursos)) {
-      $this->aRecursos[] = $iRecurso;
-    }
-  }
-
-  /**
-   * Emite novo recibo
-   * @throws Exception
-   * @return boolean
-   */
-  function emiteRecibo() {
-
-    if (!db_utils::inTransaction()) {
-      throw new Exception("Erro [0] - Não existe Transação Ativa.");
+    /**
+     * @return bool
+     */
+    public function executaLancamentoContabil()
+    {
+        return $this->executaLancamentoContabil;
     }
 
+    /**
+     * @param bool $executaLancamentoContabil
+     */
+    public function setExecutaLancamentoContabil($executaLancamentoContabil)
+    {
+        $this->executaLancamentoContabil = $executaLancamentoContabil;
+    }
 
-    if ($this->iTipoEmissao == 1) {
+    /**
+     * Define valor aDescReciboWeb
+     *
+     * @param integer $iNumpre
+     * @param integer $iNumpar
+     */
 
-      if (count($this->aReceitas) == 0) {
-        throw new Exception("Erro [1] - Recibo sem Receitas Configuradas!");
-      }
+    function setDescontoReciboWeb($iNumpre, $iNumpar, $nValorDesconto)
+    {
+        $oDesconto = new stdClass();
+        $oDesconto->iNumpre = $iNumpre;
+        $oDesconto->iNumpar = $iNumpar;
+        $oDesconto->nValorDesconto = $nValorDesconto;
 
-      $rsNumpre      = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
-      $this->iNumpre = db_utils::fieldsMemory($rsNumpre, 0)->k03_numpre;
-      $iDigitoNumpre = db_sqlformatar($this->iNumpre,8,'0')."001001";
-      $iDigitoNumpre = db_CalculaDV($iDigitoNumpre);
-      foreach ($this->aReceitas as $oReceita) {
+        $this->aDescReciboWeb[] = $oDesconto;
+    }
 
-        if ($oReceita->nValorReceita == 0) {
-          throw new Exception("Erro [2] - Receita {$oReceita->iCodRec} com valor incorreto({$oReceita->nValorReceita})!");
+    /**
+     * Retorna valor de desconto
+     *
+     * @param integer $iNumpre
+     * @param integer $iNumpar
+     * @return integer
+     */
+    function getDescontoReciboWeb($iNumpre, $iNumpar)
+    {
+        $nDesconto = 0;
+
+        foreach ($this->aDescReciboWeb as $oDesconto) {
+            if ($oDesconto->iNumpre == $iNumpre && $oDesconto->iNumpar == $iNumpar) {
+                $nDesconto = $oDesconto->nValorDesconto;
+            }
         }
 
-        $dtVencimento = $this->dtRecibo;
-        if (isset($this->dtVencRecibo) && $this->dtVencRecibo != null) {
+        return $nDesconto;
+    }
 
-        	$dtVencimento = $this->dtVencRecibo;
+    /**
+     * Retorna todos os descontos adicionados ao recibo
+     * @return array
+     */
+    public function getTodosDescontosReciboWeb()
+    {
+        return $this->aDescReciboWeb;
+    }
 
+    /**
+     * Define o código dos cgms envolvidos no recibo
+     *
+     * @param integer $iCgm
+     */
+    function setVinculoCgm($iCgm)
+    {
+        $this->aVinculoCgm[] = $iCgm;
+    }
+
+    /**
+     * Retorna os cgms que devem ter vinculo com o numpre
+     *
+     * @return array
+     */
+    function getVinculoCgm()
+    {
+        return $this->aVinculoCgm;
+    }
+
+    /**
+     * Define o código da matricula
+     *
+     * @param integer $iMatricula
+     */
+    function setMatricula($iMatricula)
+    {
+        $this->aMatricula[] = $iMatricula;
+    }
+
+    /**
+     * Retorna o codigo da matricula definida para o recibo.
+     *
+     * @return array
+     */
+    function getMatricula()
+    {
+        return $this->aMatricula;
+    }
+
+    /**
+     * Define o código da Inscricao
+     *
+     * @param integer $iInscricao
+     */
+    function setInscricao($iInscricao)
+    {
+        $this->aInscricao[] = $iInscricao;
+    }
+
+    /**
+     * Retorna o codigo da Inscricao definida para o recibo.
+     *
+     * @return array
+     */
+    function getInscricao()
+    {
+        return $this->aInscricao;
+    }
+
+    /**
+     * Define a conta pagadora
+     *
+     * @param integer $iConta
+     */
+    function setConta($iConta)
+    {
+        $this->iConta = $iConta;
+    }
+
+    /**
+     * Retorna a conta definida pelo usuario
+     *
+     * @return integer
+     */
+    function getConta()
+    {
+        return $this->iConta;
+    }
+
+    /**
+     * Define o Grupo de Autenticação (corgrupo.k104_sequencial);
+     *
+     * @param integer $iCorGrupo Código do Grupo (corgrupo.k104_sequencial)
+     */
+    function setGrupoAutenticacao($iCorGrupo)
+    {
+        $this->iCodigoGrupoAutenticacao = $iCorGrupo;
+    }
+
+    /**
+     * Retorna o grupo de autenticação definido.
+     *
+     * @return integer
+     */
+    function getGrupoArrecadacao()
+    {
+        return $this->iCodigoGrupoAutenticacao;
+    }
+
+    /**
+     * Define o Historico do Recibo;
+     *
+     * @param string $sHistorico Historico do pagamento
+     */
+    function setHistorico($sHistorico)
+    {
+        $this->sHistorico = addslashes($sHistorico);
+    }
+
+    /**
+     * Retorna o Historico do recibo;
+     *
+     * @return string
+     */
+    function getHistorico($limiteLinhas = null)
+    {
+        if ($limiteLinhas === null) {
+            return $this->sHistorico;
         }
 
-        $sSqlRec = "insert into recibo (k00_numcgm,
+        $linhas = explode("\n", $this->sHistorico);
+
+        return implode("\n", array_slice($linhas, 0, $limiteLinhas));
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataRecibo()
+    {
+        return $this->dtRecibo;
+    }
+
+    /**
+     * Define a data do recibo
+     * @param string $dtRecibo
+     */
+    public function setDataRecibo($dtRecibo)
+    {
+        $this->dtRecibo = $dtRecibo;
+    }
+
+    /**
+     * Define o Tipo de emissao;
+     *
+     * @param string $iTipoEmissao tipo de emissao
+     */
+    function setTipoEmissao($iTipoEmissao)
+    {
+        $this->iTipoEmissao = $iTipoEmissao;
+    }
+
+    /**
+     * Retorna o tipo de emissao;
+     *
+     * @return string
+     */
+    function getTipoEmissao()
+    {
+        return $this->iTipoEmissao;
+    }
+
+    /**
+     * Define o código do histórico
+     * @param $iCodigoHistorico
+     */
+    public function setCodigoHistorico($iCodigoHistorico)
+    {
+        $this->iCodigoHistorico = $iCodigoHistorico;
+    }
+
+    /**
+     * Retorna o código do histórico
+     * @return integer
+     */
+    public function getCodigoHistorico()
+    {
+        return $this->iCodigoHistorico;
+    }
+
+    /**
+     * Define o código do tipo
+     * @param $iCodigoTipo
+     */
+    public function setCodigoTipo($iCodigoTipo)
+    {
+        $this->iTipoRecibo = $iCodigoTipo;
+    }
+
+    /**
+     * Retorna o código do tipo
+     * @return integer
+     */
+    public function getCodigoTipo()
+    {
+        return $this->iTipoRecibo;
+    }
+
+    /**
+     * Define se estamos emitindo um Carnê Banco
+     */
+    public function setEmiteCarneBanco($emiteCarneBanco)
+    {
+        $this->emiteCarneBanco = $emiteCarneBanco;
+    }
+
+    /**
+     * adiciona um numpre/numpar ao recibo;
+     *
+     * @param integer $iNumpre Código de arrecação
+     * @param integer $iNumpar parcela
+     * @throws Exception
+     */
+    function addNumpre($iNumpre, $iNumpar)
+    {
+        if (trim($iNumpre) == '') {
+            throw new Exception(" Erro [1] Numpre não pode ser vazio");
+        }
+
+        if (trim($iNumpar) == '') {
+            throw new Exception(" Erro [2] Numpar não pode ser vazio");
+        }
+
+        $sSqlArrecad = "select distinct k00_numpre,";
+        if ($iNumpar <> 0) {
+            $sSqlArrecad .= " k00_numpar, ";
+        } else {
+            $sSqlArrecad .= " 0 as k00_numpar, ";
+        }
+        $sSqlArrecad .= "       k00_tipo, k00_valor ";
+        $sSqlArrecad .= "  from arrecad ";
+        $sSqlArrecad .= " where k00_numpre = {$iNumpre} ";
+        if ($iNumpar <> 0) {
+            $sSqlArrecad .= "   and k00_numpar = {$iNumpar} ";
+        }
+        $rsArrecad = db_query($sSqlArrecad);
+        if (pg_num_rows($rsArrecad) == 0) {
+
+            throw new Exception(" Erro [3] Débito :{$iNumpre}  Parcela: {$iNumpar}  não encontrado!");
+        }
+        $oNumpre = db_utils::fieldsMemory($rsArrecad, 0);
+        if (!in_array($oNumpre, $this->aNumpres)) {
+            $this->aNumpres[] = $oNumpre;
+        }
+        unset($oNumpre);
+    }
+
+    /**
+     * Adiciona uma receita ao recibo.
+     *
+     * @param integer $iCodRec
+     * @param float $nValorReceita
+     * @param integer $iCodSubReceita
+     * @param null $iCaracteristicaPeculiar
+     * @param null $iHistorico
+     * @param null $sDataPaga
+     * @return bool
+     */
+    function adicionarReceita($iCodRec, $nValorReceita, $iCodSubReceita = 0, $iCaracteristicaPeculiar = null, $iHistorico = null, $sDataPaga = null, $bIsento = false)
+    {
+        $oReceita = new stdClass();
+        $oReceita->iCodRec = $iCodRec;
+        $oReceita->nValorReceita = $nValorReceita;
+        $oReceita->iCodSubReceita = $iCodSubReceita;
+        $oReceita->iCaracteristicaPeculiar = $iCaracteristicaPeculiar;
+        $oReceita->iHistorico = $this->getCodigoHistorico();
+        $oReceita->sDataPaga = $sDataPaga;
+        if (!empty($iHistorico)) {
+            $oReceita->iHistorico = $iHistorico;
+        }
+        $oReceita->bIsento = $bIsento;
+        $this->aReceitas[] = $oReceita;
+        return true;
+    }
+
+    /**
+     * Adiciona um recurso ao recibo.
+     *
+     * @param integer $iRecurso
+     */
+    function adicionarRecurso($iRecurso)
+    {
+        if (!in_array($iRecurso, $this->aRecursos)) {
+            $this->aRecursos[] = $iRecurso;
+        }
+    }
+
+    /**
+     * Emite novo recibo
+     * @throws Exception
+     * @return boolean
+     */
+    function emiteRecibo($lCobrancaRegistrada = false, $lAlterarDataVencimento = true, $iCodigoConvenio = null)
+    {
+        if (!db_utils::inTransaction()) {
+            throw new Exception("Erro [0] - Não existe Transação Ativa.");
+        }
+
+        if (!empty($this->dtVencRecibo) && $lCobrancaRegistrada) {
+            if (!empty($iCodigoConvenio)) {
+                $oDaoConvenio = new \cl_cadconvenio();
+                $sSqConvenio  = $oDaoConvenio->sql_query_convenio_cobranca($iCodigoConvenio, "ar12_sequencial");
+                $rsConvenio   = \db_query($sSqConvenio);
+
+                if (empty($rsConvenio) || !pg_num_rows($rsConvenio)) {
+                    throw new Exception("Erro ao buscar dados do convenio.");
+                }
+
+                $oDadosConvenio = db_utils::fieldsMemory($rsConvenio, 0);
+
+                if (
+                    $oDadosConvenio->ar12_sequencial == convenio::TIPO_CONVENIO_COBRANCA_REGISTRADA &&
+                    date('Ymd', strtotime($this->dtVencRecibo)) == date('Ymd', strtotime($this->dtRecibo))
+                ) {
+                    $this->dtVencRecibo = date('Y-m-d', strtotime("+1 day",strtotime($this->dtVencRecibo)));
+                }
+            }
+
+            $sSqlVencimento = "select fc_proximo_dia_util('{$this->dtVencRecibo}'::date) as vencimento";
+            $rsVencimento = db_query($sSqlVencimento);
+
+            if (!$rsVencimento) {
+                throw new DBException("Erro ao buscar dia útil para o vencimento do recibo.");
+            }
+
+            $oVencimento = db_utils::fieldsMemory($rsVencimento, 0);
+
+            if (!empty($this->aNumpres[0]->k00_tipo)) {
+                $iTipoDebito = $this->aNumpres[0]->k00_tipo;
+                $sSqlExercicioCarne = "select k00_exercicioscarne from arretipo where k00_tipo = {$iTipoDebito}";
+
+                $oArreTipo = db_utils::fieldsmemory(db_query($sSqlExercicioCarne), 0);
+            }
+
+            // Verifica se o ano do vencimento é maior que o ano atual somado ao período de tolerância de emissão de carnês do tipo de débito.
+            // Caso seja, pega o ultimo dia útil do ano
+            $iExercicioCarne = (!empty($oArreTipo->k00_exercicioscarne) && $this->emiteCarneBanco ? $oArreTipo->k00_exercicioscarne : 0);
+            $iAnoAtual = (int)date('Y', db_getsession('DB_datausu')) + $iExercicioCarne;
+            $iAnoRecibo = (int)date('Y', strtotime($oVencimento->vencimento));
+
+            if ($iAnoRecibo > $iAnoAtual && $lAlterarDataVencimento) {
+                $sSqlVencimento = "select fc_ultimo_dia_util('{$iAnoAtual}-12-31'::date) as vencimento";
+                $rsVencimento = db_query($sSqlVencimento);
+
+                if (!$rsVencimento) {
+                    throw new DBException("Erro ao buscar ultimo dia útil para o vencimento do recibo.");
+                }
+
+                $oVencimento = db_utils::fieldsMemory($rsVencimento, 0);
+            }
+
+            $this->dtVencRecibo = $oVencimento->vencimento;
+        }
+
+        if ($this->iTipoEmissao == 1) {
+            if (count($this->aReceitas) == 0) {
+                throw new Exception("Erro [1] - Recibo sem Receitas Configuradas!");
+            }
+
+            $rsNumpre = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
+            $this->iNumpre = db_utils::fieldsMemory($rsNumpre, 0)->k03_numpre;
+            $iDigitoNumpre = db_sqlformatar($this->iNumpre, 8, '0') . "001001";
+            $iDigitoNumpre = db_CalculaDV($iDigitoNumpre);
+
+            foreach ($this->aReceitas as $oReceita) {
+                if ($oReceita->nValorReceita == 0 && !$oReceita->bIsento) {
+                    throw new Exception("Erro [2] - Receita {$oReceita->iCodRec} com valor incorreto({$oReceita->nValorReceita})!");
+                }
+
+                $dtVencimento = $this->dtRecibo;
+                if (isset($this->dtVencRecibo) && $this->dtVencRecibo != null) {
+                    $dtVencimento = $this->dtVencRecibo;
+                }
+
+                $sSqlRec = "insert into recibo (k00_numcgm,
 		  		                      			  k00_dtoper,
 							                          k00_receit,
 							                          k00_hist  ,
@@ -568,7 +816,7 @@ class Recibo {
 					                      values ({$this->iNumCgm},
 							                          '{$this->dtRecibo}',
 							                          {$oReceita->iCodRec},
-							                          {$this->getCodigoHistorico()},
+							                          {$oReceita->iHistorico},
 							                          {$oReceita->nValorReceita},
 							                          '{$dtVencimento}',
 							                          {$this->iNumpre},
@@ -580,66 +828,71 @@ class Recibo {
 							                          {$oReceita->iCodSubReceita})";
 
 
-        $rsInclusaoReceita = db_query($sSqlRec);
-        if (!$rsInclusaoReceita) {
-           throw new Exception("Erro [3] - Não foi possível incluir Receita.");
-        }
-        if (isset($oReceita->iCaracteristicaPeculiar) && $oReceita->iCaracteristicaPeculiar != "") {
+                $rsInclusaoReceita = db_query($sSqlRec);
+                if (!$rsInclusaoReceita) {
+                    throw new Exception("Erro [3] - Não foi possível incluir Receita.");
+                }
+                if (isset($oReceita->iCaracteristicaPeculiar) && $oReceita->iCaracteristicaPeculiar != "") {
+                    $oDaoReciboConCarPeculiar = db_utils::getDao("reciboconcarpeculiar");
+                    $oDaoReciboConCarPeculiar->k130_numpre = $this->iNumpre;
+                    $oDaoReciboConCarPeculiar->k130_numpar = 1;
+                    $oDaoReciboConCarPeculiar->k130_receit = $oReceita->iCodRec;
+                    $oDaoReciboConCarPeculiar->k130_concarpeculiar = "{$oReceita->iCaracteristicaPeculiar}";
+                    $oDaoReciboConCarPeculiar->incluir(null);
+                    if ($oDaoReciboConCarPeculiar->erro_status == 0) {
+                        throw new Exception("Erro [3] - Não foi possível incluir concarpeculiar.\n{$oDaoReciboConCarPeculiar->erro_msg}");
+                    }
+                }
+            }
 
-          $oDaoReciboConCarPeculiar = db_utils::getDao("reciboconcarpeculiar");
-  		    $oDaoReciboConCarPeculiar->k130_numpre         = $this->iNumpre;
-  		    $oDaoReciboConCarPeculiar->k130_numpar         = 1;
-  		    $oDaoReciboConCarPeculiar->k130_receit         = $oReceita->iCodRec;
-  		    $oDaoReciboConCarPeculiar->k130_concarpeculiar = "{$oReceita->iCaracteristicaPeculiar}";
-  		    $oDaoReciboConCarPeculiar->incluir(null);
-  		    if ($oDaoReciboConCarPeculiar->erro_status == 0) {
-  		    	throw new Exception("Erro [3] - Não foi possível incluir concarpeculiar.\n{$oDaoReciboConCarPeculiar->erro_msg}");
-  		    }
-        }
-      }
+            $cl_reciboavulsoboleto = new \cl_reciboavulsoboleto();
 
-      if ( count($this->aVinculoCgm) > 0) {
+            $cl_reciboavulsoboleto->k201_numpre = $this->iNumpre;
+            $cl_reciboavulsoboleto->k201_data = date("Y-m-d H:i:s");
+            $cl_reciboavulsoboleto->k201_usuario = db_getsession("DB_id_usuario");
+            $cl_reciboavulsoboleto->k201_ip = db_getsession("DB_ip");
 
-      	$oDaoArreNumcgm = db_utils::getDao("arrenumcgm");
-      	for ($iIndCgm = 0; $iIndCgm < count($this->aVinculoCgm); $iIndCgm++) {
+            $cl_reciboavulsoboleto->incluir();
 
-      		$oDaoArreNumcgm->incluir($this->aVinculoCgm[$iIndCgm], $this->iNumpre);
-      		if ($oDaoArreNumcgm->erro_status == 0) {
-      			throw new Exception("Erro [3.1] - Não foi possuivel realizar vinculo do recibo com o cgm.\n{$oDaoArreNumcgm->erro_msg}");
-      		}
-      	}
+            if ($cl_reciboavulsoboleto->erro_status == "0") {
+                throw new \Exception($cl_reciboavulsoboleto->erro_msg);
+            }
 
-      }
+            if (count($this->aVinculoCgm) > 0) {
+                $oDaoArreNumcgm = db_utils::getDao("arrenumcgm");
 
-      if (count($this->aMatricula) > 0) {
+                for ($iIndCgm = 0; $iIndCgm < count($this->aVinculoCgm); $iIndCgm++) {
+                    $oDaoArreNumcgm->incluir($this->aVinculoCgm[$iIndCgm], $this->iNumpre);
+                    if ($oDaoArreNumcgm->erro_status == 0) {
+                        throw new Exception("Erro [3.1] - Não foi possuivel realizar vinculo do recibo com o cgm.\n{$oDaoArreNumcgm->erro_msg}");
+                    }
+                }
+            }
 
-      	$oDaoArreMatric = db_utils::getDao("arrematric");
-      	for ($iIndMatricula = 0; $iIndMatricula < count($this->aMatricula); $iIndMatricula++) {
+            if (count($this->aMatricula) > 0) {
+                $oDaoArreMatric = db_utils::getDao("arrematric");
+                for ($iIndMatricula = 0; $iIndMatricula < count($this->aMatricula); $iIndMatricula++) {
+                    $oDaoArreMatric->k00_perc = round(100 / count($this->aMatricula), 2);
+                    $oDaoArreMatric->incluir($this->iNumpre, $this->aMatricula[$iIndMatricula]);
+                    if ($oDaoArreMatric->erro_status == 0) {
+                        throw new Exception("Erro [3.2] - Não foi possível realizar vinculo do recibo com a matricula.\n{$oDaoArreMatric->erro_msg}");
+                    }
+                }
+            }
 
-      		$oDaoArreMatric->k00_perc   = round(100/count($this->aMatricula),2);
-      		$oDaoArreMatric->incluir($this->iNumpre, $this->aMatricula[$iIndMatricula]);
-      		if ($oDaoArreMatric->erro_status == 0) {
-      			throw new Exception("Erro [3.2] - Não foi possuivel realizar vinculo do recibo com a matricula.\n{$oDaoArreMatric->erro_msg}");
-      		}
-      	}
+            if (count($this->aInscricao) > 0) {
+                $oDaoArreInscr = db_utils::getDao("arrematric");
 
-      }
+                for ($iIndInscricao = 0; $iIndInscricao < count($this->aInscricao); $iIndInscricao++) {
+                    $oDaoArreInscr->k00_perc = round(100 / count($this->aInscricao), 2);
+                    $oDaoArreInscr->incluir($this->iNumpre, $this->aInscricao[$iIndInscricao]);
+                    if ($oDaoArreInscr->erro_status == 0) {
+                        throw new Exception("Erro [3.3] - Não foi possuivel realizar vinculo do recibo com a inscrição.\n{$oDaoArreInscr->erro_msg}");
+                    }
+                }
+            }
 
-      if (count($this->aInscricao) > 0 ) {
-
-      	$oDaoArreInscr = db_utils::getDao("arrematric");
-      	for ($iIndInscricao = 0; $iIndInscricao < count($this->aInscrula); $iIndInscricao++) {
-
-      		$oDaoArreInscr->k00_perc   = round(100/count($this->aInscricao),2);
-      		$oDaoArreInscr->incluir($this->iNumpre, $this->aInscricao[$iIndInscricao]);
-      		if ($oDaoArreInscr->erro_status == 0) {
-      			throw new Exception("Erro [3.3] - Não foi possuivel realizar vinculo do recibo com a inscrição.\n{$oDaoArreInscr->erro_msg}");
-      		}
-      	}
-
-      }
-
-      $sSqlhistorico = "insert into arrehist (k00_numpre,
+            $sSqlhistorico = "insert into arrehist (k00_numpre,
                                               k00_numpar,
                          	                    k00_hist,
 			                                        k00_dtoper,
@@ -652,58 +905,53 @@ class Recibo {
 			                                        0,
 			                                        {$this->getCodigoHistorico()},
 			                                        '{$this->dtRecibo}',
-			      		                              '".date("H:i")."',
-			      		                              ".db_getsession("DB_id_usuario").",
-			                                        '".$this->getHistorico()."',
+			      		                              '" . date("H:i") . "',
+			      		                              " . db_getsession("DB_id_usuario") . ",
+			                                        '" . $this->getHistorico() . "',
 			                                        null,
 			                                        nextval('arrehist_k00_idhist_seq'))";
 
-	  $rsHistorico = db_query($sSqlhistorico);
-	  if (!$rsHistorico) {
-	    throw new Exception("Erro [4] - Não foi possivel informar histórico do Recibo" );
-	  }
+            $rsHistorico = db_query($sSqlhistorico);
+            if (!$rsHistorico) {
+                throw new Exception("Erro [4] - Não foi possivel informar histórico do Recibo");
+            }
 
-	  /**
-	   * Incluimos os recursos no recibo
-	   */
-	  for ($i = 0; $i < count($this->aRecursos); $i++) {
-
-	     $sInsertRecursos = "insert into reciborecurso (k00_sequen,
+            /**
+             * Incluimos os recursos no recibo
+             */
+            for ($i = 0; $i < count($this->aRecursos); $i++) {
+                $sInsertRecursos = "insert into reciborecurso (k00_sequen,
 						   	                                      k00_numpre,
 							                                        k00_recurso)
 		  		                                    values (nextval('reciborecurso_k00_sequen_seq'),
 				                                              {$this->iNumpre},
 				                                              {$this->aRecursos[$i]})";
-        $rsRecurso = db_query($sInsertRecursos);
-        if (!$rsRecurso) {
-          throw new Exception("Erro [4] - Não foi possivel informar recursos do Recibo" );
-        }
-	  }
+                $rsRecurso = db_query($sInsertRecursos);
+                if (!$rsRecurso) {
+                    throw new Exception("Erro [4] - Não foi possivel informar recursos do Recibo");
+                }
+            }
+        } else if ($this->iTipoEmissao == 2) {
+            if (count($this->aNumpres) == 0) {
+                throw new Exception("Erro [5] - Não há debitos Adicionados no recibo");
+            }
 
-    } else if ($this->iTipoEmissao == 2) {
+            /**
+             * Pesquisamos a informação do banco para o tipo do debito.
+             */
+            if (empty($this->iNumpre)) {
+                $rsNumpre = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
+                $this->iNumpre = db_utils::fieldsMemory($rsNumpre, 0)->k03_numpre;
+            }
 
+            $iDigitoNumpre = db_sqlformatar($this->iNumpre, 8, '0') . "001001";
+            $iDigitoNumpre = db_CalculaDV($iDigitoNumpre);
 
-      if (count($this->aNumpres) == 0) {
-        throw new Exception("Erro [5] - Não há debitos Adicionados no recibo");
-      }
-
-      /**
-       * Pesquisamos a informação do banco para o tipo do debito.
-       */
-      if (empty($this->iNumpre)) {
-        $rsNumpre      = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
-        $this->iNumpre = db_utils::fieldsMemory($rsNumpre, 0)->k03_numpre;
-      }
-
-      $iDigitoNumpre = db_sqlformatar($this->iNumpre,8,'0')."001001";
-      $iDigitoNumpre = db_CalculaDV($iDigitoNumpre);
-
-      /*
-       * Adicionamos o historico
-       */
-      if ($this->getHistorico() != "") {
-
-        $sSqlhistorico = "insert into arrehist (k00_numpre,
+            /*
+             * Adicionamos o historico
+             */
+            if ($this->getHistorico() != "") {
+                $sSqlhistorico = "insert into arrehist (k00_numpre,
                                                 k00_numpar,
   			                                        k00_hist,
   			                                        k00_dtoper,
@@ -716,378 +964,906 @@ class Recibo {
   			                                        0,
   			                                        {$this->getCodigoHistorico()},
   			                                        '{$this->dtRecibo}',
-  			      		                              '".date("H:i")."',
-  			      		                              ".db_getsession("DB_id_usuario").",
-  			                                        '".$this->getHistorico()."',
+  			      		                              '" . date("H:i") . "',
+  			      		                              " . db_getsession("DB_id_usuario") . ",
+  			                                        '" . $this->getHistorico() . "',
   			                                        null,
   			                                        nextval('arrehist_k00_idhist_seq'))";
 
-  	    $rsHistorico = db_query($sSqlhistorico);
-  	    if (!$rsHistorico) {
-  	      throw new Exception("Erro [4] - Não foi possivel informar histórico do Recibo" );
-  	    }
-      }
+                $rsHistorico = db_query($sSqlhistorico);
+                if (!$rsHistorico) {
+                    throw new Exception("Erro [4] - Não foi possivel informar histórico do Recibo");
+                }
+            }
 
- 	    /**
-       * Percorremos os debitos adicionados, e cr
-       */
+            $aDebitosPorTipo = array();
+            $aDadosBanco = array();
 
-      foreach ( $this->aNumpres as $oDebito ) {
+            foreach($this->aNumpres as $oDebito) {
+                $aDebitosPorTipo[$oDebito->k00_tipo] = $oDebito->k00_tipo;
+            };
 
-      	$nDescontoReciboWeb = $this->getDescontoReciboWeb($oDebito->k00_numpre,$oDebito->k00_numpar);
 
-        $sSqlBanco  = "select k00_codbco,k00_codage,k00_descr,k00_hist1, ";
-        $sSqlBanco .= "       k00_hist2,k00_hist3,k00_hist4,k00_hist5,k00_hist6, ";
-        $sSqlBanco .= "       k00_hist7,k00_hist8,k03_tipo,k00_tipoagrup, ";
-        $sSqlBanco .= "       '' as fc_numbco ";
-        $sSqlBanco .= "  from arretipo where k00_tipo ={$oDebito->k00_tipo}";
-        $rsBanco    = db_query($sSqlBanco);
+            foreach ( $aDebitosPorTipo as $sTipo => $oDebito) {
+                $sSqlBanco = "select k00_codbco,k00_codage,k00_descr,k00_hist1, ";
+                $sSqlBanco .= "       k00_hist2,k00_hist3,k00_hist4,k00_hist5,k00_hist6, ";
+                $sSqlBanco .= "       k00_hist7,k00_hist8,k03_tipo,k00_tipoagrup, ";
+                $sSqlBanco .= "       '' as fc_numbco, k00_taxaespecifica ";
+                $sSqlBanco .= "  from arretipo where k00_tipo ={$sTipo}";
+                $rsBanco = db_query($sSqlBanco);
 
-        if (pg_num_rows($rsBanco) == 0) {
-          throw new Exception("O código do banco não esta cadastrado no arquivo arretipo para este tipo.");
+                if (pg_num_rows($rsBanco) == 0) {
+                    throw new Exception("O código do banco não esta cadastrado no arquivo arretipo para este tipo.");
+                }
+
+                $aDadosBanco[$sTipo] = db_utils::fieldsMemory($rsBanco, 0);
+            }
+            /**
+             * Percorremos os debitos adicionados, e cr
+             */
+
+            foreach ($this->aNumpres as $oDebito) {
+                $oBanco =$aDadosBanco[$oDebito->k00_tipo];
+                $nDescontoReciboWeb = $this->getDescontoReciboWeb($oDebito->k00_numpre, $oDebito->k00_numpar);
+
+                $sSqlReciboWeb = "insert into db_reciboweb ";
+                $sSqlReciboWeb .= "            (k99_numpre,";
+                $sSqlReciboWeb .= "             k99_numpar,";
+                $sSqlReciboWeb .= "             k99_numpre_n,";
+                $sSqlReciboWeb .= "             k99_codbco,";
+                $sSqlReciboWeb .= "             k99_codage,";
+                $sSqlReciboWeb .= "             k99_numbco,";
+                $sSqlReciboWeb .= "             k99_desconto,";
+                $sSqlReciboWeb .= "             k99_tipo,";
+                $sSqlReciboWeb .= "             k99_origem ";
+                $sSqlReciboWeb .= "            ) ";
+                $sSqlReciboWeb .= "            values ";
+                $sSqlReciboWeb .= "            ({$oDebito->k00_numpre},   ";
+                $sSqlReciboWeb .= "             {$oDebito->k00_numpar},   ";
+                $sSqlReciboWeb .= "             {$this->iNumpre},         ";
+                $sSqlReciboWeb .= "             {$oBanco->k00_codbco},    ";
+                $sSqlReciboWeb .= "             '{$oBanco->k00_codage}',  ";
+
+                if ($this->sNumBco != "") {
+                    $sSqlReciboWeb .= "             '{$this->sNumBco}', ";
+                } else {
+                    $sSqlReciboWeb .= "             '{$oBanco->fc_numbco}', ";
+                }
+
+                $sSqlReciboWeb .= "             {$nDescontoReciboWeb},{$this->iTipoDBreciboWeb},1)";
+                $rsReciboWeb = db_query($sSqlReciboWeb);
+
+                if (!$rsReciboWeb) {
+                    throw  new Exception("Erro [6] - Nao foi possivel emitir recibo!\n" . pg_last_error());
+                }
+            }
+
+            /**
+             * rodamos a funcao fc_recibo no numprenovo que criamos
+             */
+            $sFcRecibo = "select * from fc_recibo({$this->iNumpre}, '{$this->dtVencRecibo}'::date,'{$this->dtVencRecibo}'::date, {$this->iAnoUsu})";
+            $rsFcRecibo = db_query($sFcRecibo);
+
+            if (!$rsFcRecibo) {
+                throw new Exception("Erro [7] Não foi possivel Emitir recibo.\n" . pg_last_error());
+            } else {
+                $oFcRecibo = db_utils::fieldsMemory($rsFcRecibo, 0);
+                if (isset($oFcRecibo->rlerro) && $oFcRecibo->rlerro == 't') {
+                    throw new Exception($oFcRecibo->rvmensagem);
+                }
+            }
+
+            $dadosDebitoAtual = current($aDadosBanco);
+
+            $this->gerarTaxaExpediente($this->iNumpre, $dadosDebitoAtual->k00_taxaespecifica);
+
+            /**
+             * insere na tabela de Cabecalho da recibopaga
+             */
+
+            $oDaoReciboPagaBoleto = db_utils::getDao("recibopagaboleto");
+            $oDaoReciboPagaBoleto->k138_numnov = $this->getNumpreRecibo();
+            $oDaoReciboPagaBoleto->k138_data = date("Y-m-d");
+            $oDaoReciboPagaBoleto->k138_hora = date("H:i:s");
+            $oDaoReciboPagaBoleto->k138_usuario = db_getsession("DB_id_usuario");
+            $oDaoReciboPagaBoleto->incluir("");
+
+            if ((int)$oDaoReciboPagaBoleto->erro_status == 0) {
+                throw new Exception("Gravar dados recibopagaboleto: \n" . $oDaoReciboPagaBoleto->erro_msg);
+            }
+
+        }
+        return true;
+    }
+
+    /**
+     * Adiciona uma receita de custas ao recibo.
+     *
+     * @param integer $iReceita
+     * @param float $nValorReceita
+     * @param integer $iHistorico
+     * @param Taxa $taxa
+     * @return bool
+     */
+    public function adicionarReceitaCusta($iReceita, $nValorReceita, $iHistorico, $taxa = null)
+    {
+        if (!empty($this->aReceitaCusta[$iReceita])) {
+            $oReceita = $this->aReceitaCusta[$iReceita];
+            $nValorReceita = $oReceita->nValorReceita + $nValorReceita;
         }
 
-        $oBanco         = db_utils::fieldsMemory($rsBanco, 0);
+        $oReceita = new stdClass();
+        $oReceita->iReceita = $iReceita;
+        $oReceita->nValorReceita = $nValorReceita;
+        $oReceita->iHistorico = $iHistorico;
+        $oReceita->taxa = $taxa;
 
-        $sSqlReciboWeb  = "insert into db_reciboweb ";
-        $sSqlReciboWeb .= "            (k99_numpre,";
-        $sSqlReciboWeb .= "             k99_numpar,";
-        $sSqlReciboWeb .= "             k99_numpre_n,";
-        $sSqlReciboWeb .= "             k99_codbco,";
-        $sSqlReciboWeb .= "             k99_codage,";
-        $sSqlReciboWeb .= "             k99_numbco,";
-        $sSqlReciboWeb .= "             k99_desconto,";
-        $sSqlReciboWeb .= "             k99_tipo,";
-        $sSqlReciboWeb .= "             k99_origem ";
-        $sSqlReciboWeb .= "            ) ";
-        $sSqlReciboWeb .= "            values ";
-        $sSqlReciboWeb .= "            ({$oDebito->k00_numpre},   ";
-        $sSqlReciboWeb .= "             {$oDebito->k00_numpar},   ";
-        $sSqlReciboWeb .= "             {$this->iNumpre},         ";
-        $sSqlReciboWeb .= "             {$oBanco->k00_codbco},    ";
-        $sSqlReciboWeb .= "             '{$oBanco->k00_codage}',  ";
+        $this->aReceitaCusta[$iReceita] = $oReceita;
 
-        if ( $this->sNumBco != "" ) {
-	        $sSqlReciboWeb .= "             '{$this->sNumBco}', ";
-        } else {
-        	$sSqlReciboWeb .= "             '{$oBanco->fc_numbco}', ";
+        return true;
+    }
+
+    /**
+     * Adiciona uma receita de custas de parcelamento ao recibo.
+     *
+     * @param integer $iNumpre
+     * @param integer $iNumpar
+     * @param Taxa $taxa
+     * @param float $nValorReceita
+     * @param integer $iHistorico
+     * @return bool
+     */
+    public function adicionarReceitaCustaParcelamento($iNumpre, $iNumpar, $taxa, $nValorReceita, $iHistorico)
+    {
+        if (!empty($this->aReceitaCustaParcelamento[$iNumpre][$iNumpar][$taxa->getReceita()])) {
+            $oReceita = $this->aReceitaCustaParcelamento[$iNumpre][$iNumpar][$taxa->getReceita()];
+            $nValorReceita = $oReceita->nValorReceita + $nValorReceita;
         }
 
-        $sSqlReciboWeb .= "             {$nDescontoReciboWeb},{$this->iTipoDBreciboWeb},1)";
-        $rsReciboWeb    = db_query($sSqlReciboWeb);
+        $oReceita = new stdClass();
+        $oReceita->iNumpre = $iNumpre;
+        $oReceita->iNumpar = $iNumpar;
+        $oReceita->iReceita = $taxa->getReceita();
+        $oReceita->taxa = $taxa;
+        $oReceita->nValorReceita = $nValorReceita;
+        $oReceita->iHistorico = $iHistorico;
 
-        if (!$rsReciboWeb) {
-          throw  new Exception("Erro [6] - Nao foi possivel emitir recibo!\n".pg_last_error());
+        $this->aReceitaCustaParcelamento[$iNumpre][$iNumpar][$taxa->getReceita()] = $oReceita;
+
+        return true;
+    }
+
+    /**
+     * Processa inserção de receita de custas ao recibo.
+     * @return void
+     * @throws Exception
+     */
+    public function processaReceitaCusta()
+    {
+        $this->processaReceitaCustaInicial();
+        $this->processaReceitaCustaParcelamento();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function processaReceitaCustaInicial()
+    {
+        if (count($this->aReceitaCusta) > 0) {
+            $rsCgm = db_query("select k00_numcgm, k00_numpre, k00_numpar from recibopaga where k00_numnov = {$this->iNumpre} order by k00_numpre asc, k00_numpar asc limit 1");
+
+            if (!$rsCgm) {
+                throw new Exception("Erro ao obter o cgm do recibo.");
+            }
+
+            $iCgmRecibo = pg_fetch_result($rsCgm, 0, 'k00_numcgm');
+            $iNumpreRecibo = pg_fetch_result($rsCgm, 0, 'k00_numpre');
+            $iNumparRecibo = pg_fetch_result($rsCgm, 0, 'k00_numpar');
+
+            foreach ($this->aReceitaCusta as $oReceita) {
+                $sSqlReciboPaga = "insert into recibopaga (k00_numcgm,
+                                                           k00_dtoper,
+                                                           k00_receit,
+                                                           k00_hist,
+                                                           k00_valor,
+                                                           k00_dtvenc,
+                                                           k00_numpre,
+                                                           k00_numpar,
+                                                           k00_numtot,
+                                                           k00_numdig,
+                                                           k00_conta,
+                                                           k00_dtpaga,
+                                                           k00_numnov) values ({$iCgmRecibo},
+                                                                               '{$this->dtVencRecibo}',
+                                                                                {$oReceita->iReceita},
+                                                                                {$oReceita->iHistorico},
+                                                                                {$oReceita->nValorReceita},
+                                                                                '{$this->dtVencRecibo}',
+                                                                                {$iNumpreRecibo},
+                                                                                {$iNumparRecibo},
+                                                                                1,
+                                                                                0,
+                                                                                0,
+                                                                                '{$this->dtVencRecibo}',
+                                                                                {$this->iNumpre})";
+
+                $rsInsertReciboPaga = db_query($sSqlReciboPaga);
+
+                if (!$rsInsertReciboPaga) {
+                    throw new Exception("Não foi possível vincular receitas ao recibo.");
+                }
+            }
         }
-      }
-
-      /**
-       * rodamos a funcao fc_recibo no numprenovo que criamos
-       */
-      $sFcRecibo  = "select * from fc_recibo({$this->iNumpre}, '{$this->dtVencRecibo}'::date,'{$this->dtVencRecibo}'::date, {$this->iAnoUsu})";
-      $rsFcRecibo = db_query($sFcRecibo);
-      if ( !$rsFcRecibo ) {
-        throw new Exception("Erro [7] Não foi possivel Emitir recibo.\n".pg_last_error());
-      } else {
-
-      	$oFcRecibo = db_utils::fieldsMemory($rsFcRecibo,0);
-      	if ( isset($oFcRecibo->rlerro) && $oFcRecibo->rlerro == 't' ) {
-      		throw new Exception($oFcRecibo->rvmensagem);
-      	}
-      }
-
-      /**
-       * insere na tabela de Cabecalho da recibopaga
-       */
-
-      $oDaoReciboPagaBoleto = db_utils::getDao("recibopagaboleto");
-      $oDaoReciboPagaBoleto->k138_numnov  = $this->getNumpreRecibo();
-      $oDaoReciboPagaBoleto->k138_data    = date("Y-m-d",db_getsession("DB_datausu"));
-      $oDaoReciboPagaBoleto->k138_hora    = date("H:i:s",db_getsession("DB_datausu"));
-      $oDaoReciboPagaBoleto->k138_usuario = db_getsession("DB_id_usuario");
-      $oDaoReciboPagaBoleto->incluir("");
-
-      if ( (int)$oDaoReciboPagaBoleto->erro_status == 0 ) {
-      	throw new Exception("Gravar dados recibopagaboleto: \n" . $oDaoReciboPagaBoleto->erro_msg );
-      }
-
-    }
-    return true;
-  }
-
-  /**
-   * Autentica o recibo
-   *
-   * @param string $dtAutenticacao data da autenticacao. no formado YYYY-MM-DD
-   * @return std_class
-   */
-  function autenticarRecibo($dtAutenticacao, $sCaracteristicaPeculiar=null) {
-
-    if (!db_utils::inTransaction()) {
-      throw new Exception("Erro [0] - Não existe Transação Ativa.");
-    }
-    if ($this->iNumpre == null) {
-      throw new Exception("Erro [1] -  Código da Arrecadação não informado.");
-    }
-    if ($this->getConta() == null) {
-      throw new Exception("Erro [2] -  Conta pagadora não informada.");
     }
 
+    /**
+     * Processa inserção de receita de custas de parcelamento ao recibo.
+     * @return void
+     * @throws Exception
+     */
+    private function processaReceitaCustaParcelamento()
+    {
+        if (count($this->aReceitaCustaParcelamento) > 0) {
+            $rsCgm = db_query("select k00_numcgm from recibopaga where k00_numnov = {$this->iNumpre} order by k00_numpre asc, k00_numpar asc limit 1");
 
-    $oAutenticacaoArrecadacao = new AutenticacaoArrecadacao($this->iNumpre,
-                                                            "0",
-                                                            $this->getConta(),
-                                                            $this->getGrupoArrecadacao(),
-                                                            $dtAutenticacao,
-                                                            $sCaracteristicaPeculiar
-                                                           );
-    if (count($this->aRecursos)  == 1) {
+            if (!$rsCgm) {
+                throw new Exception("Erro ao obter o cgm do recibo.");
+            }
 
-      $oAutenticacaoArrecadacao->setCodigoRecurso($this->aRecursos[0]);
+            $iCgmRecibo = pg_fetch_result($rsCgm, 0, 'k00_numcgm');
+
+            foreach ($this->aReceitaCustaParcelamento as $iNumpre => $aNumpre) {
+                $rsNumtot = db_query("select k00_numtot from recibopaga where k00_numnov = {$this->iNumpre} and k00_numpre = {$iNumpre} limit 1");
+
+                if (!$rsNumtot) {
+                    throw new Exception("Erro ao obter o numero total de parcelas do numpre {$iNumpre}.");
+                }
+
+                $iNumtot = pg_fetch_result($rsNumtot, 0, 'k00_numtot');
+
+                foreach ($aNumpre as $iNumpar => $aNumpar) {
+                    foreach ($aNumpar as $iReceit => $oReceita) {
+                        $sSqlReciboPaga = "insert into recibopaga (k00_numcgm,
+                                                                   k00_dtoper,
+                                                                   k00_receit,
+                                                                   k00_hist,
+                                                                   k00_valor,
+                                                                   k00_dtvenc,
+                                                                   k00_numpre,
+                                                                   k00_numpar,
+                                                                   k00_numtot,
+                                                                   k00_numdig,
+                                                                   k00_conta,
+                                                                   k00_dtpaga,
+                                                                   k00_numnov) values ({$iCgmRecibo},
+                                                                                       '{$this->dtVencRecibo}',
+                                                                                        {$oReceita->iReceita},
+                                                                                        {$oReceita->iHistorico},
+                                                                                        {$oReceita->nValorReceita},
+                                                                                        '{$this->dtVencRecibo}',
+                                                                                        {$iNumpre},
+                                                                                        {$iNumpar},
+                                                                                        {$iNumtot},
+                                                                                        0,
+                                                                                        0,
+                                                                                        '{$this->dtVencRecibo}',
+                                                                                        {$this->iNumpre})";
+
+                        $rsInsertReciboPaga = db_query($sSqlReciboPaga);
+
+                        if (!$rsInsertReciboPaga) {
+                            throw new Exception("Não foi possível vincular receitas ao recibo.");
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    $oAutenticacaoArrecadacao->autenticar();
-    return true;
-  }
+    /**
+     * @param      $dtAutenticacao
+     * @param null $sCaracteristicaPeculiar
+     * @param null $iSequencialEmpenho
+     *
+     * @return bool
+     * @throws \BusinessException
+     * @throws \Exception
+     */
+    function autenticarRecibo($dtAutenticacao, $sCaracteristicaPeculiar = null, $iSequencialEmpenho = null, $retencao = null, $tipo = 3)
+    {
+        if (!db_utils::inTransaction()) {
+            throw new Exception("Erro [0] - Não existe Transação Ativa.");
+        }
+        if ($this->iNumpre == null) {
+            throw new Exception("Erro [1] -  Código da Arrecadação não informado.");
+        }
+        if ($this->getConta() == null) {
+            throw new Exception("Erro [2] -  Conta pagadora não informada.");
+        }
 
-  function estornarRecibo($iNumpre, $sCaracteristicaPeculiar=null) {
+        $oAutenticacaoArrecadacao = new AutenticacaoArrecadacao($this->iNumpre,
+            "0",
+            $this->getConta(),
+            $this->getGrupoArrecadacao(),
+            $dtAutenticacao,
+            $sCaracteristicaPeculiar,
+            $iSequencialEmpenho
+        );
+        if (count($this->aRecursos) == 1) {
+            $oAutenticacaoArrecadacao->setCodigoRecurso($this->aRecursos[0]);
+        }
 
-  if (!db_utils::inTransaction()) {
-      throw new Exception("Erro [0] - Não existe Transação Ativa.");
-    }
-    if ($iNumpre == null) {
-      throw new Exception("Erro [1] -  Código da Arrecadação não informado.");
-    }
-    if ($this->getConta() == null) {
-      throw new Exception("Erro [2] -  Conta pagadora não informada.");
-    }
-
-    $oAutenticacaoArrecadacao = new AutenticacaoArrecadacao($iNumpre, "0", $this->getConta(), $this->getGrupoArrecadacao(), null, $sCaracteristicaPeculiar);
-    if (count($this->aRecursos)  == 1) {
-      $oAutenticacaoArrecadacao->setCodigoRecurso($this->aRecursos[0]);
-    }
-    $oAutenticacaoArrecadacao->estornar();
-    return true;
-  }
-
-  /**
-   * Método que executa os lancamentos contabeis de uma receita extra-orcamentaria
-   * @param integer $iId
-   * @param date $dtLancamento
-   * @param integer $iAutent
-   * @param booelan $lEstorno
-   */
-  private function executarLancamentoContabil($iId, $dtLancamento, $iAutent, $lEstorno=false, $sCaracteristicaPeculiar=null) {
-
-    $iCodigoDocumento = 160;
-    $oDaoCorrente = db_utils::getDao('corrente');
-    $sql = $oDaoCorrente->sql_query_arrecadacao_extra($iId, $dtLancamento, $iAutent);
-    $sCampoValorEstorno = 'arrecada';
-    if ($lEstorno) {
-
-      $sql = $oDaoCorrente->sql_query_estorno_arrecadacao_extra($iId, $dtLancamento, $iAutent);
-      $iCodigoDocumento = 162;
-      $sCampoValorEstorno = 'estorna';
+        $oAutenticacaoArrecadacao->setRetencao($retencao);
+        $oAutenticacaoArrecadacao->setExecutaLancamentoContabil($this->executaLancamentoContabil());
+        $oAutenticacaoArrecadacao->autenticar($tipo);
+        return true;
     }
 
-    $rsBuscaAutenticacao = db_query($sql);
-    $iTotalLinhas        = pg_num_rows($rsBuscaAutenticacao);
-    for ($iRowAutenticacao = 0; $iRowAutenticacao < $iTotalLinhas; $iRowAutenticacao++) {
+    /**
+     * Realiza o estorno de um recibo
+     * @param $iNumpre
+     * @param null $sCaracteristicaPeculiar
+     * @param null $iSequencialEmpenho
+     * @param null $retencao
+     * @return bool
+     * @throws BusinessException
+     * @throws ParameterException
+     * @throws Exception
+     */
+    function estornarRecibo($iNumpre, $sCaracteristicaPeculiar = null, $iSequencialEmpenho = null, $retencao = null, $tipo = 6)
+    {
+        if (!db_utils::inTransaction()) {
+            throw new Exception("Erro [0] - Não existe Transação Ativa.");
+        }
+        if ($iNumpre == null) {
+            throw new Exception("Erro [1] -  Código da Arrecadação não informado.");
+        }
+        if ($this->getConta() == null) {
+            throw new Exception("Erro [2] -  Conta pagadora não informada.");
+        }
 
-      $oDadoAutenticacao = db_utils::fieldsMemory($rsBuscaAutenticacao, $iRowAutenticacao);
-
-      $sObservacaoHistorico = "Arrecadação de Receita Extra-Orçamentária";
-      if ($oDadoAutenticacao->k12_histcor != "") {
-        $sObservacaoHistorico = $oDadoAutenticacao->k12_histcor;
-      }
-
-      $oLancamentoAuxiliar = new LancamentoAuxiliarArrecadacaoReceitaExtraOrcamentaria();
-      $oLancamentoAuxiliar->setObservacaoHistorico($sObservacaoHistorico. "{$sCampoValorEstorno}:{$iRowAutenticacao}");
-      $oLancamentoAuxiliar->setValorTotal($oDadoAutenticacao->$sCampoValorEstorno);
-      $oLancamentoAuxiliar->setHistorico(9500);
-      $oLancamentoAuxiliar->setContaCredito($oDadoAutenticacao->k02_reduz);
-      $oLancamentoAuxiliar->setContaDebito($oDadoAutenticacao->k12_conta);
-
-      $oLancamentoAuxiliar->setAutenticacao($iId);
-      $oLancamentoAuxiliar->setDataAutenticacao($dtLancamento);
-      $oLancamentoAuxiliar->setAutenticadora($iAutent);
-
-      $oLancamentoAuxiliar->setEstorno($lEstorno);
-      if (count($this->aRecursos)  == 1) {
-        $oLancamentoAuxiliar->setCodigoRecurso($this->aRecursos[0]);
-      }
-      if (!empty($sCaracteristicaPeculiar)) {
-        $oLancamentoAuxiliar->setCaracteristicaPeculiar($sCaracteristicaPeculiar);
-      }
-
-      $oEventoContabil = new EventoContabil($iCodigoDocumento, db_getsession("DB_anousu"));
-      $oEventoContabil->executaLancamento($oLancamentoAuxiliar, $dtLancamento);
-    }
-  }
-
-
-  /**
-   * Retorna Numpre do recibo
-   * @return number
-   */
-  function getNumpreRecibo() {
-  	return $this->iNumpre;
-  }
-
-  /**
-   * Define numpre novo do recibo
-   * @param integer $iNumpre
-   */
-  function setNumnov($iNumpre){
-  	$this->iNumpre = $iNumpre;
-  }
-
-  /**
-   * Define a data de vencimento do recibo
-   * @param integer $dtDataVenc
-   */
-  function setDataVencimentoRecibo($dtDataVenc){
-  	$this->dtVencRecibo = $dtDataVenc;
-  }
-
-  /**
-   * Retorna a data de vencimento do recibo
-   * @return string
-   */
-  function getDataVencimentoRecibo(){
-    return $this->dtVencRecibo;
-  }
-
-  function getDataVencimento() {
-    return $this->dtVencRecibo;
-
-  }
-  /**
-   * Retorna o array de débitos(numpre) do recibo gerado/a ser gerado
-   * @return array;
-   */
-  function getDebitosRecibo(){
-  	return $this->aNumpres;
-  }
-
-  /**
-   * Define o exercicio que o recibo vai ser gerado
-   * @param integer $iAnoUsu
-   */
-  function setExercicioRecibo($iAnoUsu){
-  	$this->iAnoUsu = $iAnoUsu;
-  }
-
-  /**
-   * Buscamos o total do recibo conforme o tipo do mesmo
-   * Caso o tipo seja 1, buscamos as informações na tabela 'recibo'
-   * Caso o tipo seja 2, buscamos as informações na tabela 'recibopaga'
-   * @return number
-   */
-  function getTotalRecibo() {
-
-    switch ($this->iTipoEmissao) {
-
-      /**
-       * Se o recibo for do tipo 1 buscamos o valor do mesmo na tabela 'recibo'
-       */
-      case 1:
-
-      	$sNomeTabela  = "recibo";
-      	$sWhereRecibo = "k00_numpre = {$this->getNumpreRecibo()}";
-      break;
-
-      /**
-       * Seo recibo for do tipo 2 buscamos o valor do mesmo na tabela 'recibopaga'
-       */
-      case 2:
-
-      	$sNomeTabela  = "recibopaga";
-      	$sWhereRecibo = "k00_numnov = {$this->getNumpreRecibo()}";
-      break;
+        $oAutenticacaoArrecadacao = new AutenticacaoArrecadacao($iNumpre, "0", $this->getConta(), $this->getGrupoArrecadacao(), null, $sCaracteristicaPeculiar, $iSequencialEmpenho);
+        if (count($this->aRecursos) == 1) {
+            $oAutenticacaoArrecadacao->setCodigoRecurso($this->aRecursos[0]);
+        }
+        $oAutenticacaoArrecadacao->setRetencao($retencao);
+        $oAutenticacaoArrecadacao->setExecutaLancamentoContabil($this->executaLancamentoContabil());
+        $oAutenticacaoArrecadacao->estornar($tipo);
+        return true;
     }
 
-    $oDaoRecibo      = db_utils::getDao($sNomeTabela);
-    $sSqlBuscaRecibo = $oDaoRecibo->sql_query_file(null, "coalesce(sum(k00_valor), 0) as soma_k00_valor", null, $sWhereRecibo);
-    $rsBuscaRecibo   = $oDaoRecibo->sql_record($sSqlBuscaRecibo);
+    /**
+     * Método que executa os lancamentos contabeis de uma receita extra-orcamentaria
+     * @param integer $iId
+     * @param date $dtLancamento
+     * @param integer $iAutent
+     * @param bool $lEstorno
+     * @param null $sCaracteristicaPeculiar
+     * @throws BusinessException
+     */
+    private function executarLancamentoContabil($iId, $dtLancamento, $iAutent, $lEstorno = false, $sCaracteristicaPeculiar = null)
+    {
+        $iCodigoDocumento = 160;
+        $oDaoCorrente = db_utils::getDao('corrente');
+        $sql = $oDaoCorrente->sql_query_arrecadacao_extra($iId, $dtLancamento, $iAutent);
+        $sCampoValorEstorno = 'arrecada';
+        if ($lEstorno) {
+            $sql = $oDaoCorrente->sql_query_estorno_arrecadacao_extra($iId, $dtLancamento, $iAutent);
+            $iCodigoDocumento = 162;
+            $sCampoValorEstorno = 'estorna';
+        }
 
-    return db_utils::fieldsMemory($rsBuscaRecibo, 0)->soma_k00_valor;
-  }
+        $rsBuscaAutenticacao = db_query($sql);
+        $iTotalLinhas = pg_num_rows($rsBuscaAutenticacao);
+        for ($iRowAutenticacao = 0; $iRowAutenticacao < $iTotalLinhas; $iRowAutenticacao++) {
+            $oDadoAutenticacao = db_utils::fieldsMemory($rsBuscaAutenticacao, $iRowAutenticacao);
 
-  /**
-   * Cancela o Recibo
-   * @return bool
-   */
-  public function cancelar($sMotivoCancelamento) {
+            $sObservacaoHistorico = "Arrecadação de Receita Extra-Orçamentária";
+            if ($oDadoAutenticacao->k12_histcor != "") {
+                $sObservacaoHistorico = $oDadoAutenticacao->k12_histcor;
+            }
 
-  	/**
-  	 * Valida a conexão
-  	 */
-  	if (!db_utils::inTransaction()) {
-  		throw new Exception("Não existe Transação Ativa Para efetuar o Cancelamento.".pg_last_error());
-  	}
-  	/**
-  	 * Valida se é recibo avulso
-  	 */
-  	if ($this->getTipoEmissao() == 1) {
-  	  throw new Exception("Não é possivel efetuar o cancelamento de um Recibo Avulso. ");
-  	}
-  	$oDaoCancReciboPaga = db_utils::getDao("cancrecibopaga");
+            $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
 
-  	$oDaoCancReciboPaga->k134_numnov  = $this->getNumpreRecibo();
-  	$oDaoCancReciboPaga->k134_motivo  = $sMotivoCancelamento;
-  	$oDaoCancReciboPaga->k134_data    = date("Y-m-d", db_getsession("DB_datausu") );
-  	$oDaoCancReciboPaga->k134_usuario = db_getsession("DB_id_usuario");
-  	$oDaoCancReciboPaga->incluir(null);
+            $oLancamentoAuxiliar = new LancamentoAuxiliarArrecadacaoReceitaExtraOrcamentaria();
+            $oLancamentoAuxiliar->setObservacaoHistorico($sObservacaoHistorico . "{$sCampoValorEstorno}:{$iRowAutenticacao}");
+            $oLancamentoAuxiliar->setValorTotal($oDadoAutenticacao->$sCampoValorEstorno);
+            $oLancamentoAuxiliar->setHistorico(9500);
+            $oLancamentoAuxiliar->setContaCredito($oDadoAutenticacao->k02_reduz);
+            $oLancamentoAuxiliar->setContaDebito($oDadoAutenticacao->k12_conta);
+            $oLancamentoAuxiliar->setAutenticacao($iId);
+            $oLancamentoAuxiliar->setDataAutenticacao($dtLancamento);
+            $oLancamentoAuxiliar->setAutenticadora($iAutent);
+            $oLancamentoAuxiliar->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
 
-  	if ($oDaoCancReciboPaga->erro_status == "0") {
-  		throw new Exception("Erro ao Cancelar Recibo:".$oDaoCancReciboPaga->erro_msg);
-  	}
-    return true;
-  }
+            $oLancamentoAuxiliar->setEstorno($lEstorno);
+            if (count($this->aRecursos) == 1) {
+                $oLancamentoAuxiliar->setCodigoRecurso($this->aRecursos[0]);
+            }
+            if (!empty($sCaracteristicaPeculiar)) {
+                $oLancamentoAuxiliar->setCaracteristicaPeculiar($sCaracteristicaPeculiar);
+            }
 
-
-  /**
-   * Verifica se o Recibo é valido.
-   * @return boolean
-   */
-  public function isValido() {
-
-     $oHoje       = new DBDate( date("y-m-d", db_getsession("DB_datausu")) );
-     $oDataRecibo = new DBDate( $this->getDataVencimentoRecibo() );
-
-     if ( $oHoje->getTimeStamp() <= $oDataRecibo->getTimeStamp() ) {
-       return true;
-     }
-     return false;
-  }
-
-  /**
-   * Retorna instancias de Recibo apartir de um numpre de debito.
-   *
-   * @param integer $iNumpre
-   * @throws DBException - Quando Houver erro de query
-   * @return Recibo[]
-   */
-  public static function getRecibosByNumpreDebito( $iNumpre ) {
-
-    $oDaoRecibopaga = new cl_recibopaga();
-    $sSqlRecibos    = $oDaoRecibopaga->sql_query_file(null, 'k00_numnov', null, "k00_numpre = {$iNumpre}");
-    $rsRecibos      = db_query($sSqlRecibos);
-
-    if ( !$rsRecibos ) {
-      throw new DBException("Erro ao consultar recibos do numpre {$iNumpre}. Erro:\n" . pg_last_error() );
+            $oEventoContabil = new EventoContabil($iCodigoDocumento, db_getsession("DB_anousu"));
+            $oEventoContabil->executaLancamento($oLancamentoAuxiliar, $dtLancamento);
+        }
     }
 
-    $aRecibos       = db_utils::getCollectionByRecord($rsRecibos);
-    $aRecibosNumpre = array();
-
-    foreach ($aRecibos as $oRecibo) {
-      $aRecibosNumpre[] = new Recibo(null, null, null, $oRecibo->k00_numnov);
+    /**
+     * Retorna Numpre do recibo
+     * @return number
+     */
+    function getNumpreRecibo()
+    {
+        return $this->iNumpre;
     }
 
-    return $aRecibosNumpre;
+    /**
+     * Define numpre novo do recibo
+     * @param integer $iNumpre
+     */
+    function setNumnov($iNumpre)
+    {
+        $this->iNumpre = $iNumpre;
+    }
 
-  }
+    /**
+     * Define a data de vencimento do recibo
+     * @param integer $dtDataVenc
+     */
+    function setDataVencimentoRecibo($dtDataVenc)
+    {
+        $this->dtVencRecibo = $dtDataVenc;
+    }
 
+    /**
+     * Retorna a data de vencimento do recibo
+     * @return string
+     */
+    function getDataVencimentoRecibo()
+    {
+        return $this->dtVencRecibo;
+    }
+
+    function getDataVencimento()
+    {
+        return $this->dtVencRecibo;
+    }
+
+    /**
+     * Retorna o array de débitos(numpre) do recibo gerado/a ser gerado
+     * @return array;
+     */
+    function getDebitosRecibo()
+    {
+        return $this->aNumpres;
+    }
+
+    /**
+     * Define o exercicio que o recibo vai ser gerado
+     * @param integer $iAnoUsu
+     */
+    function setExercicioRecibo($iAnoUsu)
+    {
+        $this->iAnoUsu = $iAnoUsu;
+    }
+
+    /**
+     * Buscamos o total do recibo conforme o tipo do mesmo
+     * Caso o tipo seja 1, buscamos as informações na tabela 'recibo'
+     * Caso o tipo seja 2, buscamos as informações na tabela 'recibopaga'
+     * @return number
+     */
+    function getTotalRecibo()
+    {
+        switch ($this->iTipoEmissao) {
+            /**
+             * Se o recibo for do tipo 1 buscamos o valor do mesmo na tabela 'recibo'
+             */
+            case 1:
+                $sNomeTabela = "recibo";
+                $sWhereRecibo = "k00_numpre = {$this->getNumpreRecibo()}";
+                break;
+
+            /**
+             * Seo recibo for do tipo 2 buscamos o valor do mesmo na tabela 'recibopaga'
+             */
+            case 2:
+                $sNomeTabela = "recibopaga";
+                $sWhereRecibo = "k00_numnov = {$this->getNumpreRecibo()}";
+                break;
+        }
+
+        $oDaoRecibo = db_utils::getDao($sNomeTabela);
+        $sSqlBuscaRecibo = $oDaoRecibo->sql_query_file(null, "coalesce(sum(k00_valor), 0) as soma_k00_valor", null, $sWhereRecibo);
+        $rsBuscaRecibo = $oDaoRecibo->sql_record($sSqlBuscaRecibo);
+
+        return db_utils::fieldsMemory($rsBuscaRecibo, 0)->soma_k00_valor;
+    }
+
+    /**
+     * Cancela o Recibo
+     * @param $sMotivoCancelamento
+     * @return bool
+     * @throws Exception
+     */
+    public function cancelar($sMotivoCancelamento)
+    {
+        /**
+         * Valida a conexão
+         */
+        if (!db_utils::inTransaction()) {
+            throw new Exception("Não existe Transação Ativa Para efetuar o Cancelamento." . pg_last_error());
+        }
+        /**
+         * Valida se é recibo avulso
+         */
+        if ($this->getTipoEmissao() == 1) {
+            throw new Exception("Não é possivel efetuar o cancelamento de um Recibo Avulso. ");
+        }
+        $oDaoCancReciboPaga = db_utils::getDao("cancrecibopaga");
+
+        $oDaoCancReciboPaga->k134_numnov = $this->getNumpreRecibo();
+        $oDaoCancReciboPaga->k134_motivo = $sMotivoCancelamento;
+        $oDaoCancReciboPaga->k134_data = date("Y-m-d", db_getsession("DB_datausu"));
+        $oDaoCancReciboPaga->k134_usuario = db_getsession("DB_id_usuario");
+        $oDaoCancReciboPaga->incluir(null);
+
+        if ($oDaoCancReciboPaga->erro_status == "0") {
+            throw new Exception("Erro ao Cancelar Recibo:" . $oDaoCancReciboPaga->erro_msg);
+        }
+        return true;
+    }
+
+    /**
+     * Verifica se o Recibo é valido.
+     * @return boolean
+     * @throws ParameterException
+     */
+    public function isValido()
+    {
+        $oHoje = new DBDate(date("y-m-d", db_getsession("DB_datausu")));
+        $oDataRecibo = new DBDate($this->getDataVencimentoRecibo());
+
+        if ($oHoje->getTimeStamp() <= $oDataRecibo->getTimeStamp()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Retorna instancias de Recibo apartir de um numpre de debito.
+     *
+     * @param integer $iNumpre
+     * @throws DBException - Quando Houver erro de query
+     * @throws Exception
+     * @return Recibo[]
+     */
+    public static function getRecibosByNumpreDebito($iNumpre)
+    {
+        $oDaoRecibopaga = new cl_recibopaga();
+        $sSqlRecibos = $oDaoRecibopaga->sql_query_file(null, 'k00_numnov', null, "k00_numpre = {$iNumpre}");
+        $rsRecibos = db_query($sSqlRecibos);
+
+        if (!$rsRecibos) {
+            throw new DBException("Erro ao consultar recibos do numpre {$iNumpre}. Erro:\n" . pg_last_error());
+        }
+
+        $aRecibos = db_utils::getCollectionByRecord($rsRecibos);
+        $aRecibosNumpre = array();
+
+        foreach ($aRecibos as $oRecibo) {
+            $aRecibosNumpre[] = new Recibo(null, null, null, $oRecibo->k00_numnov);
+        }
+
+        return $aRecibosNumpre;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReceitasCustas()
+    {
+        return $this->aReceitaCusta;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReceitaCustaParcelamento()
+    {
+        return $this->aReceitaCustaParcelamento;
+    }
+
+    /**
+     * @return  convenio
+     */
+    public function getConvenio()
+    {
+        return $this->convenio;
+    }
+
+    /**
+     * @param   convenio  $convenio  Convenio associado ao recibo
+     */
+    public function setConvenio(convenio $convenio)
+    {
+        $this->convenio = $convenio;
+    }
+
+    public function getTipoDebito()
+    {
+        return $this->aNumpres[0]->k00_tipo;
+    }
+
+    /**
+     *
+     * @param CgmBase $cgm
+     * @return void
+     */
+    public function setCgmExibicao(CgmBase $cgm)
+    {
+        $this->cgmExibicao = $cgm;
+    }
+
+    /**
+     *
+     * @return CgmBase
+     */
+    public function getCgmExibicao()
+    {
+        return $this->cgmExibicao;
+    }
+
+    /**
+     * @param Arretipo $arretipo
+     * @return void
+     */
+    public function setArretipo(Arretipo $arretipo)
+    {
+        $this->arretipo = $arretipo;
+    }
+
+    /**
+     * @return Arretipo
+     */
+    public function getArretipo()
+    {
+        return $this->arretipo;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getCodigoInstituicao()
+    {
+        return $this->codigoInstituicao;
+    }
+
+    /**
+     * @param integer $codigoInstituicao
+     * @return void
+     */
+    public function setCodigoInstituicao($codigoInstituicao)
+    {
+        $this->codigoInstituicao = $codigoInstituicao;
+    }
+
+    /**
+     * @param integer $cadTipoMod
+     * @return void
+     */
+    public function setCadTipoMod($cadTipoMod)
+    {
+        $this->cadTipoMod = $cadTipoMod;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getCadTipoMod()
+    {
+        return $this->cadTipoMod;
+    }
+
+    /**
+     * @param integer $minNumpar
+     * @return void
+     */
+    public function setMinNumpar($minNumpar)
+    {
+        $this->minNumpar = $minNumpar;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMinNumpar()
+    {
+        return $this->minNumpar;
+    }
+
+    /**
+     * @param integer $maxNumpar
+     * @return void
+     */
+    public function setMaxNumpar($maxNumpar)
+    {
+        $this->maxNumpar = $maxNumpar;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMaxNumpar()
+    {
+        return $this->maxNumpar;
+    }
+
+    /**
+     * @return float
+     */
+    public function getValorOrigem()
+    {
+        $valorOrigem = 0;
+        foreach($this->getDebitosRecibo() as $debito) {
+            $valorOrigem += $debito->k00_valor;
+        }
+        return $valorOrigem;
+    }
+
+    /**
+     * Filtra as linhas do histórico relacionadas ao tipo informado
+     *
+     * @param ArretipoEnum $arretipo
+     * @return string
+     * @throws Exception
+     */
+    public function filterHistorico($arretipo)
+    {
+        switch ($arretipo) {
+            case ArretipoEnum::INICIAL_FORO:
+                $prefixo = 'inicial';
+                break;
+            default:
+                throw new Exception('Filtro ainda não implementado!');
+        }
+
+        $res = array();
+
+        foreach (explode("\n", $this->getHistorico()) as $linha) {
+            if ($this->stringStartsWith(mb_strtolower(trim($linha)), $prefixo)) {
+                $res[] = trim($linha);
+            }
+        }
+
+        return implode("\n", $res);
+    }
+
+    private function stringStartsWith($string, $start)
+    {
+        return substr($string, 0, strlen($start)) === $start;
+    }
+
+    /**
+     * @return CgmBase|\ECidade\Tributario\Issqn\Model\Issbase|\ECidade\Tributario\Cadastro\Model\Iptubase
+     */
+    public function getIdentificacao()
+    {
+        return $this->identificacao;
+    }
+
+    /**
+     * @param CgmBase|\ECidade\Tributario\Issqn\Model\Issbase|\ECidade\Tributario\Cadastro\Model\Iptubase $identificacao
+     */
+    public function setIdentificacao($identificacao)
+    {
+        $this->identificacao = $identificacao;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getQuantidadeParcelas()
+    {
+        return $this->quantidadeParcelas;
+    }
+
+    /**
+     * @param integer $quantidadeParcelas
+     * @return void
+     */
+    public function setQuantidadeParcelas($quantidadeParcelas)
+    {
+        $this->quantidadeParcelas = $quantidadeParcelas;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getParcelaAtual()
+    {
+        return $this->parcelaAtual;
+    }
+
+    /**
+     * @param integer $parcelaAtual
+     * @return void
+     */
+    public function setParcelaAtual($parcelaAtual)
+    {
+        $this->parcelaAtual = $parcelaAtual;
+    }
+
+    /**
+     * @return  int[]
+     */
+    public function getProcessosForo()
+    {
+        return $this->processosForo;
+    }
+
+    /**
+     * @param   int[]  $processosForo  Processos do foro das iniciais envolvidas no boleto
+     */
+    public function setProcessosForo($processosForo)
+    {
+        $this->processosForo = $processosForo;
+    }
+
+    /**
+     * @param bool
+     */
+    public function setPartilhaPagaMigracao($lPartilhaPagaMigracao)
+    {
+        $this->lPartilhaPagaMigracao = $lPartilhaPagaMigracao;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPartilhaPagaMigracao()
+    {
+        return $this->lPartilhaPagaMigracao;
+    }
+
+    /**
+     * @param $numnov
+     * @param $codigoTaxaEspecifica
+     * @return bool
+     * @throws Exception
+     */
+    protected function gerarTaxaExpediente($numnov, $codigoTaxaEspecifica)
+    {
+        if (empty($codigoTaxaEspecifica) || $this->geracaoTaxaExpediente === false) {
+            return false;
+        }
+
+        $taxaService = new TaxaEspecificaService(TaxaEspecificaRepository::getInstance());
+        $taxaModel = $taxaService->getByCodigoSubReceita($codigoTaxaEspecifica);
+        $taxaModel->setValorCalculadoInflator($taxaService->calculaInflator($taxaModel));
+
+        if (empty($taxaModel->getValorCalculadoInflator())) {
+            return false;
+        }
+
+        $repository = new RecibopagaRepository(DataBase::getInstance(), new cl_recibopaga());
+        $reciboPaga = $repository->findAllByNumnov($numnov)->get(0);
+
+        $reciboPaga->setHist(TaxaEspecificaModel::CODIGO_HISTORICO);
+        $reciboPaga->setReceit($taxaModel->getCodigoReceita());
+        $reciboPaga->setValor($taxaModel->getValorCalculadoInflator());
+
+        $repository->save($reciboPaga);
+
+        return true;
+    }
+
+    /**
+     * @param bool $geracaoTaxaExpediente
+     */
+    public function setGeracaoTaxaExpediente($geracaoTaxaExpediente)
+    {
+        $this->geracaoTaxaExpediente = $geracaoTaxaExpediente;
+    }
 }

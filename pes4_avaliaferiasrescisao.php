@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -169,7 +169,7 @@ if( db_selectmax("afasta", "select * from afasta ".bb_condicaosubpes("r45_").$co
 function gera_13_salario($datafim,$sigla="r19" )
 {
   
-  global $d08_carnes, $rubricas, $pontofx, $matriz1, $matriz2, $subpes,$pessoal,$cfpess;
+  global $d08_carnes, $db21_codcli, $rubricas, $pontofx, $matriz1, $matriz2, $subpes,$pessoal,$cfpess;
   
   global $m_rubr, $m_tipo, $m_media , $m_valor , $m_quant, $qten , $vlrn, $matric,$subpes_original, $ns13;
   
@@ -224,7 +224,7 @@ function gera_13_salario($datafim,$sigla="r19" )
    * Avos de 13 salario do exercicio da rescisao
    */   
   global $iAvos13Salario;
-  $iAvos13Salario = $ultimo_mes;
+  $iAvos13Salario = $nm13;
   
   if ($nm13 != 0) {
     $imax   = 0;
@@ -270,7 +270,7 @@ function gera_13_salario($datafim,$sigla="r19" )
       if (db_selectmax("gerfsal", "select * from gerfsal ".bb_condicaosubpes("r14_").$condicaoaux )) {
         for ($Igerfsal=0; $Igerfsal<count($gerfsal); $Igerfsal++) {
           if (db_substr($gerfsal[$Igerfsal]["r14_rubric"],1,1) != "R" && (db_val($gerfsal[$Igerfsal]["r14_rubric"]) > 0 && db_val($gerfsal[$Igerfsal]["r14_rubric"]) < 2000 )) {
-            if (trim($d08_carnes ) == "carazinho"
+            if ( $db21_codcli == "18"
             && $pessoal[0]["r01_regime"] != 2
             && ( db_at($gerfsal[$Igerfsal]["r14_rubric"],"0004-0005") > 0 )
             && $cont < $inicio_he_carazi ) {
@@ -286,14 +286,14 @@ function gera_13_salario($datafim,$sigla="r19" )
                 $pensao_alim_13 += $gerfsal[$Igerfsal]["r14_valor"];
               }
             }
-            if (trim($d08_carnes ) != "riogrande") {
-              if ($gerfsal[$Igerfsal]["r14_rubric"] == $cfpess[0]["r11_ferias"]) {
-                $funcionario_em_ferias = "s";
-                $dias_de_ferias = $gerfsal[$Igerfsal]["r14_quant"];
-              } else if ($gerfsal[$Igerfsal]["r14_rubric"] == $cfpess[0]["r11_ferabo"] ) {
-                $dias_de_abono = $gerfsal[$Igerfsal]["r14_quant"];
-              }
+            
+            if ($gerfsal[$Igerfsal]["r14_rubric"] == $cfpess[0]["r11_ferias"]) {
+              $funcionario_em_ferias = "s";
+              $dias_de_ferias = $gerfsal[$Igerfsal]["r14_quant"];
+            } else if ($gerfsal[$Igerfsal]["r14_rubric"] == $cfpess[0]["r11_ferabo"] ) {
+              $dias_de_abono = $gerfsal[$Igerfsal]["r14_quant"];
             }
+
             $condicaoaux = " where rh27_instit = ". db_getsession("DB_instit") ." and rh27_rubric = ".db_sqlformat($gerfsal[$Igerfsal]["r14_rubric"] );
             if (db_selectmax("rubricas", "select * from rhrubricas ".$condicaoaux )
             && $rubricas[0]["rh27_calc2"] != 0 ) {
@@ -331,7 +331,7 @@ function gera_13_salario($datafim,$sigla="r19" )
       if (db_selectmax("gerfcom", "select * from gerfcom ".bb_condicaosubpes("r48_").$condicaoaux )) {
         for ($Igerfcom=0; $Igerfcom<count($gerfcom); $Igerfcom++) {
           if (db_substr($gerfcom[$Igerfcom]["r48_rubric"],1,1) != "R" && (db_val($gerfcom[$Igerfcom]["r48_rubric"]) > 0 && db_val($gerfcom[$Igerfcom]["r48_rubric"]) < 2000 )) {
-            if (trim($d08_carnes ) == "carazinho"  && $pessoal[0]["r01_regime"] != 2
+            if ( $db21_codcli == "18"  && $pessoal[0]["r01_regime"] != 2
             && ( db_at($gerfcom[$Igerfcom]["r48_rubric"],"0004-0005") > 0 )
             && $cont < $inicio_he_carazi ) {
               continue;
@@ -341,14 +341,14 @@ function gera_13_salario($datafim,$sigla="r19" )
                 $sal13 += $gerfcom[$Igerfcom]["r48_valor"];
               }
             }
-            if (trim($d08_carnes ) != "riogrande") {
-              if ($gerfcom[$Igerfcom]["r48_rubric"] == $cfpess[0]["r11_ferias"]) {
-                $funcionario_em_ferias = "c";
-                $dias_de_ferias = $gerfcom[$Igerfcom]["r48_quant"];
-              } else if ($gerfcom[$Igerfcom]["r48_rubric"] == $cfpess[0]["r11_ferabo"] ) {
-                $dias_de_abono = $gerfcom[$Igerfcom]["r48_quant"];
-              }
+            
+            if ($gerfcom[$Igerfcom]["r48_rubric"] == $cfpess[0]["r11_ferias"]) {
+              $funcionario_em_ferias = "c";
+              $dias_de_ferias = $gerfcom[$Igerfcom]["r48_quant"];
+            } else if ($gerfcom[$Igerfcom]["r48_rubric"] == $cfpess[0]["r11_ferabo"] ) {
+              $dias_de_abono = $gerfcom[$Igerfcom]["r48_quant"];
             }
+
             $condicaoaux = " where rh27_instit = ". db_getsession("DB_instit") ." and rh27_rubric = ".db_sqlformat($gerfcom[$Igerfcom]["r48_rubric"] );
             if (db_selectmax("rubricas", "select * from rhrubricas ".$condicaoaux )
             && $rubricas[0]["rh27_calc2"] != 0 ) {
@@ -498,7 +498,7 @@ function gera_13_salario($datafim,$sigla="r19" )
           $m_cont[$iind]  += 1;
           $m_valor[$iind] = $mes_valor[$i];
           $m_quant[$iind] = $mes_quant[$i];
-        } else if ((( trim($d08_carnes) != "eldorado"  && trim($d08_carnes) != "riogrande" ) || db_at(db_str($rubricas[0]["rh27_calc2"],1),"3-4-7")==0
+        } else if (( db_at(db_str($rubricas[0]["rh27_calc2"],1),"3-4-7")==0
         || ($mes_quant[$i] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))) ) {
           
           if (($mes_quant[$i] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"]) /2))) {
@@ -705,7 +705,7 @@ function gera_13_salario($datafim,$sigla="r19" )
             $calcula_fracao_nm13 = true;
           } else if ($vtipo == "6") {
             $dividir_por = ($nm13);
-            if (trim($d08_carnes ) == "carazinho"
+            if ( $db21_codcli == "18"
             && $pessoal[0]["r01_regime"] != 2
             && ( db_at($rubricas[0]["rh27_rubric"],"0004-0005") > 0  ) ) {
               if ($dividir_por > 6) {
@@ -772,7 +772,7 @@ function gera_13_salario($datafim,$sigla="r19" )
 
 function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
 
-  global $d08_carnes, $rubricas, $pontofx, $matriz1, $matriz2, $subpes;
+  global $d08_carnes, $db21_codcli, $rubricas, $pontofx, $matriz1, $matriz2, $subpes;
   global $m_rubr, $m_tipo, $m_media , $m_valor , $m_quant, $qten , $vlrn, $r01_taviso,$subpes_original;
   global $datainicio, $datafim, $max, $gerfsal, $gerffer, $gerfcom, $pontofx, $rescisao, $pessoal,$qmeses, $db_debug;
   
@@ -847,18 +847,12 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
         $condicaoaux = " where rh27_instit = ". db_getsession("DB_instit") ." and rh27_rubric = ".db_sqlformat($gerfsal[$Igerfsal]["r14_rubric"]);
         if (db_selectmax( "rubricas", "select * from rhrubricas ".$condicaoaux ) && $rubricas[0]["rh27_calc1"] != 0 ) {
           //echo "<BR> achou rubrica rubricas --> ".$rubricas[0]["rh27_rubric"];
-          if( trim($d08_carnes) == "carazinho" && $pessoal[0]["r01_regime"] != 2 && ( db_at($gerfsal[$Igerfsal]["r14_rubric"],"0004-0005") > 0 ) ) {
+          if( $db21_codcli == "18" && $pessoal[0]["r01_regime"] != 2 && ( db_at($gerfsal[$Igerfsal]["r14_rubric"],"0004-0005") > 0 ) ) {
             continue;
           }
 
-          if ( (trim($d08_carnes) == "riogrande" && db_at($gerfsal[$Igerfsal]["r14_rubric"] , "-0100-0092-0313-0415-0408-0409-0417-0418-0428")==0 && db_at($gerfsal[$Igerfsal]["r14_rubric"] , "-0099-0016-0017-0168-0169-0174-0175-0304-0222-0221-0298-0299")==0 ) ){
-            $tiporubrica = "1";
-            //echo "<BR> tiporubrica 1.1  -->  $tiporubrica";
-          } else {
-            $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
-            //echo "<BR> tiporubrica 1.2  -->  $tiporubrica";
-          }
-
+          $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
+          
           $ind = db_ascan($m_rubr,$gerfsal[$Igerfsal]["r14_rubric"]);
           //echo "<BR> indice  -->  $ind";
 
@@ -879,10 +873,7 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
             $m_valor[$ind] = $gerfsal[$Igerfsal]["r14_valor"];
             $m_quant[$ind] = $gerfsal[$Igerfsal]["r14_quant"];
 
-          } else if( ( ( trim($d08_carnes) != "eldorado"  
-            && trim($d08_carnes) != "riogrande" ) 
-            || db_at($tiporubrica,"3-4-7" )==0
-            || ($gerfsal[0]["r14_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))) ) {
+          } else {
 
               if ( ($gerfsal[$Igerfsal]["r14_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))){
                 $m_media[$ind] += 1;
@@ -935,17 +926,11 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
         $condicaoaux = " where rh27_instit = ". db_getsession("DB_instit") ." and rh27_rubric = ".db_sqlformat( $gerfcom[$Igerfcom]["r48_rubric"] );
         if (db_selectmax( "rubricas", "select * from rhrubricas ".$condicaoaux ) && $rubricas[0]["rh27_calc1"] != 0 ) {
 
-          if ( trim($d08_carnes) == "carazinho"  && $pessoal[0]["r01_regime"] != 2 && ( db_at($gerfcom[$Igerfcom]["r48_rubric"],"0004-0005") > 0 ) ) {
+          if ( $db21_codcli == "18"  && $pessoal[0]["r01_regime"] != 2 && ( db_at($gerfcom[$Igerfcom]["r48_rubric"],"0004-0005") > 0 ) ) {
             continue;
           }
 
-          if ( (trim($d08_carnes) == "riogrande" 
-            && db_at($gerfcom[$Igerfcom]["r48_rubric"] , "-0100-0092-0313-0415-0408-0409-0417-0418-0428") == 0
-            && db_at($gerfcom[$Igerfcom]["r48_rubric"] , "-0099-0016-0017-0168-0169-0174-0175-0304-0222-0221-0298-0299")==0 ) ) {
-              continue;
-            } else {
-              $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
-            }
+          $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
 
           $ind = db_ascan($m_rubr,$gerfcom[$Igerfcom]["r48_rubric"]);
           if ( db_empty($ind)) {
@@ -965,9 +950,7 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
               $m_media[$ind] += 1;
             }
 
-          } else if ( ( ( trim($d08_carnes) != "eldorado" && trim($d08_carnes) != "riogrande" ) 
-            || db_at($tiporubrica,"3-4-7") == 0 
-            || ($gerfcom[$Igerfcom]["r48_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))) ) {
+          } else {
 
               if ( ($gerfcom[$Igerfcom]["r48_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))) {
                 $m_media[$ind] += 1;
@@ -1018,7 +1001,7 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
           $condicaoaux = " where rh27_instit = ". db_getsession("DB_instit") ." and rh27_rubric = ".db_sqlformat( $gerffer[$Igerffer]["r31_rubric"] );
           if (db_selectmax( "rubricas", "select * from rhrubricas ".$condicaoaux ) && $rubricas[0]["rh27_calc1"] != 0 ){
 
-            if( trim($d08_carnes) == "carazinho" && $pessoal[0]["r01_regime"] != 2 && ( db_at($gerffer[$Igerffer]["r31_rubric"],"0004-0005") > 0 ) ) {
+            if( $db21_codcli == "18" && $pessoal[0]["r01_regime"] != 2 && ( db_at($gerffer[$Igerffer]["r31_rubric"],"0004-0005") > 0 ) ) {
               continue;
             }
             $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
@@ -1040,9 +1023,7 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
                 $m_media[$ind] += 1;
               }
 
-            } else if ( (( trim($d08_carnes) != "eldorado" && trim($d08_carnes) != "riogrande" ) 
-              || db_at(db_str($rubricas[0]["rh27_calc1"],1),"3-4-7") == 0 
-              || ($gerffer[$Igerffer]["r31_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))) ){
+            } else {
 
                 if ( ($gerffer[$Igerffer]["r31_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"]) /2))) {
                   $m_media[$ind] += 1;
@@ -1090,14 +1071,8 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
 
         if (db_selectmax( "rubricas", "select * from rhrubricas ".$condicaoaux ) && $rubricas[0]["rh27_calc1"] != 0  ) {
 
-          if ( (trim($d08_carnes) == "riogrande" 
-            && db_at($pontofx[$Ipontofx]["r90_rubric"] , "-0100-0092-0313-0415-0408-0409-0417-0418-0428") ==0
-            && db_at($pontofx[$Ipontofx]["r90_rubric"] , "-0099-0016-0017-0168-0169-0174-0175-0304-0222-0221-0298-0299")==0 ) ) {
-              $tiporubrica = "1";
-            } else {
-              $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
-            }
-
+          $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
+      
           $ind = db_ascan($m_rubr,$pontofx[$Ipontofx]["r90_rubric"]);
 
           if ( db_empty($ind)) {
@@ -1138,16 +1113,8 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
         $condicaoaux = " where rh27_instit = ". db_getsession("DB_instit") ." and rh27_rubric = ".db_sqlformat( $pontofx[$Ipontofx]["r90_rubric"] );
         if (db_selectmax( "rubricas", "select * from rhrubricas ".$condicaoaux ) && $rubricas[0]["rh27_calc1"] != 0 ) {
 
-          if( (trim($d08_carnes) == "riogrande" 
-            && db_at($pontofx[$Ipontofx]["r90_rubric"] , "-0100-0092-0313-0415-0408-0409-0417-0418-0428") ==0
-            && db_at($pontofx[$Ipontofx]["r90_rubric"] , "-0099-0016-0017-0168-0169-0174-0175-0304-0222-0221-0298-0299")==0) ) {
-
-              $tiporubrica = "1";
-
-            } else {
-              $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
-            }
-
+          $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
+          
           $ind = db_ascan($m_rubr,$pontofx[$Ipontofx]["r90_rubric"]);
 
           if ( db_empty($ind)) {
@@ -1237,8 +1204,8 @@ function ferias_para_rescisao ($datainicio, $datafim, $tpp, $sigla="r19") {
     $iAvosFeriasPeriodo = $meses_avaliados;
   }
 
-	if( trim( $d08_carnes ) == "carazinho" && $pessoal[0]["r01_regime"] != 2){
-	   horasextrascarazinho_164();
+	if( $db21_codcli == "18" && $pessoal[0]["r01_regime"] != 2){
+	   horasextras_codcli18_164();
 	}
 	
 //echo "<BR> qten  --> ".print_r($qten);
@@ -1366,7 +1333,7 @@ function acrescentapontofx () {
 function acrescentapontofx_ferias_rescisao (){
 	
 
-  global $d08_carnes, $rubricas, $pontofx, $matriz1, $matriz2,$pessoal;
+  global $d08_carnes, $db21_codcli, $rubricas, $pontofx, $matriz1, $matriz2,$pessoal;
   
   global $m_rubr, $m_tipo, $m_media , $m_valor , $m_quant, $qten , $vlrn, $max;
   
@@ -1378,12 +1345,9 @@ function acrescentapontofx_ferias_rescisao (){
 	   if( db_selectmax( "rubricas", "select * from rhrubricas ".$condicaoaux ) 
 		     && $rubricas[0]["rh27_calc1"] != 0 ){
 
-	      if( (trim($d08_carnes) == "riogrande" && $pontofx[$Ipontofx]["r90_rubric"] != "0100" ) ){
-		 $tiporubrica = "1";
-	      }else{
-		 $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
-	      }
-	      $ind = db_ascan($m_rubr,$pontofx[$Ipontofx]["r90_rubric"]);
+	      $tiporubrica = db_str($rubricas[0]["rh27_calc1"],1) ;
+	      
+        $ind = db_ascan($m_rubr,$pontofx[$Ipontofx]["r90_rubric"]);
 	      if( db_empty($ind)){
 		 $max += 1;
 		 $ind = $max;
@@ -1422,87 +1386,86 @@ function acrescentapontofx_ferias_rescisao (){
  */
 function grava_terco($sParamTabela = 'pontofr') {
   
-  global $d08_carnes, $matriz2, $matriz1, $nsaldo, $pessoal, $matric, $lotacaoatual,$subpes;
+  global $d08_carnes, $db21_codcli, $matriz2, $matriz1, $nsaldo, $pessoal, $matric, $lotacaoatual,$subpes;
   global $pontofr;
   
-  if( trim($d08_carnes) != "riogrande") {
-    //echo "<BR><BR>$nsaldo === passou";
-    if( $nsaldo > 0 ){
-      if ($sParamTabela == 'pontofr') {
+  //echo "<BR><BR>$nsaldo === passou";
+  if( $nsaldo > 0 ){
+    if ($sParamTabela == 'pontofr') {
 
-        $matriz2[1] = $matric;
-        $matriz2[2] = "R931";
-        $matriz2[3] = 0;
-        $matriz2[4] = 1;
-        $matriz2[5] = $lotacaoatual;
-        $matriz2[6] = " ";
-        $matriz2[7] = db_val( db_substr( $subpes,1,4 ) );
-        $matriz2[8] = db_val( db_substr( $subpes, -2 ) );
-        $matriz2[9] = db_getsession("DB_instit");
-  
-        $condicaoaux  = " and r19_regist = ".db_sqlformat( $matric );
-        $condicaoaux .= " and r19_rubric = 'R931'";
-        
-        if(!db_selectmax( "pontofr", "select * from pontofr ".bb_condicaosubpes("r19_").$condicaoaux )) {
-          db_insert( "pontofr", $matriz1, $matriz2 );
-        } else {
-          db_update( "pontofr", $matriz1, $matriz2, bb_condicaosubpes("r19_").$condicaoaux );
-        }
-      } else {
+      $matriz2[1] = $matric;
+      $matriz2[2] = "R931";
+      $matriz2[3] = 0;
+      $matriz2[4] = 1;
+      $matriz2[5] = $lotacaoatual;
+      $matriz2[6] = " ";
+      $matriz2[7] = db_val( db_substr( $subpes,1,4 ) );
+      $matriz2[8] = db_val( db_substr( $subpes, -2 ) );
+      $matriz2[9] = db_getsession("DB_instit");
+
+      $condicaoaux  = " and r19_regist = ".db_sqlformat( $matric );
+      $condicaoaux .= " and r19_rubric = 'R931'";
       
-        if ($sParamTabela == 'pontoprovfe') {
-          /*
-           * $aCamposPontoProvFe
-           * 
-           * São os Campos que serão salvos na tabela
-           */
-          $aCamposPontoProvFe[1]  = "r91_anousu";
-          $aCamposPontoProvFe[2]  = "r91_mesusu";
-          $aCamposPontoProvFe[3]  = "r91_regist";
-          $aCamposPontoProvFe[4]  = "r91_rubric";
-          $aCamposPontoProvFe[5]  = "r91_valor";
-          $aCamposPontoProvFe[6]  = "r91_quant";
-          $aCamposPontoProvFe[7]  = "r91_lotac";
-          $aCamposPontoProvFe[8]  = "r91_media";
-          $aCamposPontoProvFe[9]  = "r91_calc";
-          $aCamposPontoProvFe[10] = "r91_tpp";
-          $aCamposPontoProvFe[11] = "r91_instit";
-          
-          /*
-           * $aDadosPontoProvFe
-           * 
-           * São os valores dos campos. Devem ser ordenados conforme tabela no banco de dados
-           */
-          $aDadosPontoProvFe[1]  = db_val( db_substr( $subpes,1,4 ) );
-          $aDadosPontoProvFe[2]  = db_val( db_substr( $subpes, -2 ) );
-          $aDadosPontoProvFe[3]  = $matric;
-          $aDadosPontoProvFe[4]  = "R931";
-          $aDadosPontoProvFe[5]  = 0;
-          $aDadosPontoProvFe[6]  = 1;
-          $aDadosPontoProvFe[7]  = $lotacaoatual;
-          $aDadosPontoProvFe[8]  = 'null';
-          $aDadosPontoProvFe[9]  = 'null';
-          $aDadosPontoProvFe[10] = "P";
-          $aDadosPontoProvFe[11] = db_getsession('DB_instit');
-          
-          // Condições Auxiliares para o select/insert/update na tabela 'pontoprovfe'
-          $sCondicaoAuxiliar  = " and r91_regist = ".db_sqlformat( $matric );
-          $sCondicaoAuxiliar .= " and r91_rubric = 'R931'";
-               
-          if (!db_selectmax("pontoprovfe", "select * from pontoprovfe ".bb_condicaosubpes("r91_").$sCondicaoAuxiliar)) {
-            db_insert( "pontoprovfe", $aCamposPontoProvFe, $aDadosPontoProvFe);
-          } else {
-            db_update( "pontoprovfe", $aCamposPontoProvFe, $aDadosPontoProvFe, bb_condicaosubpes("r91_").$sCondicaoAuxiliar );
-          }
+      if(!db_selectmax( "pontofr", "select * from pontofr ".bb_condicaosubpes("r19_").$condicaoaux )) {
+        db_insert( "pontofr", $matriz1, $matriz2 );
+      } else {
+        db_update( "pontofr", $matriz1, $matriz2, bb_condicaosubpes("r19_").$condicaoaux );
+      }
+    } else {
+    
+      if ($sParamTabela == 'pontoprovfe') {
+        /*
+         * $aCamposPontoProvFe
+         * 
+         * São os Campos que serão salvos na tabela
+         */
+        $aCamposPontoProvFe[1]  = "r91_anousu";
+        $aCamposPontoProvFe[2]  = "r91_mesusu";
+        $aCamposPontoProvFe[3]  = "r91_regist";
+        $aCamposPontoProvFe[4]  = "r91_rubric";
+        $aCamposPontoProvFe[5]  = "r91_valor";
+        $aCamposPontoProvFe[6]  = "r91_quant";
+        $aCamposPontoProvFe[7]  = "r91_lotac";
+        $aCamposPontoProvFe[8]  = "r91_media";
+        $aCamposPontoProvFe[9]  = "r91_calc";
+        $aCamposPontoProvFe[10] = "r91_tpp";
+        $aCamposPontoProvFe[11] = "r91_instit";
+        
+        /*
+         * $aDadosPontoProvFe
+         * 
+         * São os valores dos campos. Devem ser ordenados conforme tabela no banco de dados
+         */
+        $aDadosPontoProvFe[1]  = db_val( db_substr( $subpes,1,4 ) );
+        $aDadosPontoProvFe[2]  = db_val( db_substr( $subpes, -2 ) );
+        $aDadosPontoProvFe[3]  = $matric;
+        $aDadosPontoProvFe[4]  = "R931";
+        $aDadosPontoProvFe[5]  = 0;
+        $aDadosPontoProvFe[6]  = 1;
+        $aDadosPontoProvFe[7]  = $lotacaoatual;
+        $aDadosPontoProvFe[8]  = 'null';
+        $aDadosPontoProvFe[9]  = 'null';
+        $aDadosPontoProvFe[10] = "P";
+        $aDadosPontoProvFe[11] = db_getsession('DB_instit');
+        
+        // Condições Auxiliares para o select/insert/update na tabela 'pontoprovfe'
+        $sCondicaoAuxiliar  = " and r91_regist = ".db_sqlformat( $matric );
+        $sCondicaoAuxiliar .= " and r91_rubric = 'R931'";
+             
+        if (!db_selectmax("pontoprovfe", "select * from pontoprovfe ".bb_condicaosubpes("r91_").$sCondicaoAuxiliar)) {
+          db_insert( "pontoprovfe", $aCamposPontoProvFe, $aDadosPontoProvFe);
+        } else {
+          db_update( "pontoprovfe", $aCamposPontoProvFe, $aDadosPontoProvFe, bb_condicaosubpes("r91_").$sCondicaoAuxiliar );
         }
       }
     }
   }
+
 }
 
-function horasextrascarazinho_164 (){
+function horasextras_codcli18_164 (){
   
-  global $subpes, $subpes_original, $rubricas, $gerfsal , $d08_carnes, $pessoal;
+  global $subpes, $subpes_original, $rubricas, $gerfsal , $d08_carnes, $db21_codcli, $pessoal;
   
   global $m_rubr, $m_tipo, $m_media , $m_valor , $m_quant, $qten , $vlrn,$max;
 
@@ -1545,15 +1508,14 @@ function horasextrascarazinho_164 (){
 		      $qten[$ind] = 0;
 		      $vlrn[$ind] = 0;
 		   }
-		   if( ( ( trim($d08_carnes) != "eldorado"  && trim($d08_carnes) != "riogrande" ) || db_at($tiporubrica,"3-4-7")==0 
-			    || ($gerfsal[$Igerfsal]["r14_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))) ){
-		       if( ($gerfsal[$Igerfsal]["r14_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))){
-			  $m_media[$ind] += 1;
-		       }
-		       $m_valor[$ind] += $gerfsal[$Igerfsal]["r14_valor"];
-		       $m_quant[$ind] += $gerfsal[$Igerfsal]["r14_quant"];
-		       $iencontrei = true;
-		   }
+
+	       if( ($gerfsal[$Igerfsal]["r14_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))){
+		       $m_media[$ind] += 1;
+	       }
+	       $m_valor[$ind] += $gerfsal[$Igerfsal]["r14_valor"];
+	       $m_quant[$ind] += $gerfsal[$Igerfsal]["r14_quant"];
+	       $iencontrei = true;
+		   
 	       }
 	    }
 	}
@@ -1577,15 +1539,14 @@ function horasextrascarazinho_164 (){
 		      $qten[$ind] = 0;
 		      $vlrn[$ind] = 0  ;
 		   }
-		   if( ( ( trim($d08_carnes) != "eldorado"  && trim($d08_carnes) != "riogrande" ) || db_at($tiporubrica,"3-4-7")==0 
-				|| ($gerfcom[$Igerfcom]["r48_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))) ){
-		      if( ($gerfcom[$Igerfcom]["r48_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))){
-			     $m_media[$ind] += 1;
-		      }
-		      $m_valor[$ind] += $gerfcom[$Igerfcom]["r48_valor"];
-		      $m_quant[$ind] += $gerfcom[$Igerfcom]["r48_quant"];
+		   
+        if( ($gerfcom[$Igerfcom]["r48_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))){
+		     $m_media[$ind] += 1;
+	      }
+	      $m_valor[$ind] += $gerfcom[$Igerfcom]["r48_valor"];
+	      $m_quant[$ind] += $gerfcom[$Igerfcom]["r48_quant"];
 		  }
-	       }
+
 	    }
 	 }
 	 if( !$iencontrei){
@@ -1608,8 +1569,8 @@ function horasextrascarazinho_164 (){
 			  $qten[$ind] = 0;
 			  $vlrn[$ind] = 0;
 		       }
-		       if( (( trim($d08_carnes) != "eldorado"  && trim($d08_carnes) != "riogrande" ) || db_at(db_str($rubricas[0]["rh27_calc1"],1),"3-4-7")==0
-				|| ($gerffer[$Igerffer]["r31_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"])/2))) ){
+		       
+
 			  if( ($gerffer[$Igerffer]["r31_quant"] >= (($rubricas[0]["rh27_quant"]>999?$pessoal[0]["r01_hrsmen"]:$rubricas[0]["rh27_quant"]) /2))){
 			     $m_media[$ind] += 1;
 			  }
@@ -1620,7 +1581,7 @@ function horasextrascarazinho_164 (){
 			     $vlrn[$ind] = $gerffer[$Igerffer]["r31_valor"];
 			  }
 			  $iencontrei = true;
-		       }
+		       
 		    }
 		 }
 	      }
@@ -1644,7 +1605,7 @@ function horasextrascarazinho_164 (){
 
 function avalia_ponto_ferias_rescisao($qmeses,$tpp,$sigla){
 	
-  global $d08_carnes, $rubricas, $pontofx, $matriz1, $matriz2,$matric,$lotacaoatual,$pessoal;
+  global $d08_carnes, $db21_codcli, $rubricas, $pontofx, $matriz1, $matriz2,$matric,$lotacaoatual,$pessoal;
   global $m_rubr, $m_tipo, $m_media , $m_valor , $m_quant, $qten , $vlrn, $max,$subpes,$nsaldo, $db_debug;
   
   $nr_meses_ferias = 1;
@@ -1669,36 +1630,11 @@ function avalia_ponto_ferias_rescisao($qmeses,$tpp,$sigla){
 	 $condicaoaux = " where rh27_instit = ". db_getsession("DB_instit") ." and rh27_rubric = ".db_sqlformat( $m_rubr[$ind]  );
 	 if ( db_selectmax( "rubricas", "select * from rhrubricas ".$condicaoaux )) {
 	 	
-		if ( trim($d08_carnes) == "riogrande" 
-		   && ( $m_rubr[$ind] != "0100" 
-		   && $m_rubr[$ind] != "0313" 
-		   && $m_rubr[$ind] != "0092" 
-		   && $m_rubr[$ind] != "0415" 
-		   && $m_rubr[$ind] != "0408" 
-		   && $m_rubr[$ind] != "0409" 
-		   && $m_rubr[$ind] != "0417" 
-		   && $m_rubr[$ind] != "0418" 
-		   && $m_rubr[$ind] != "0428" 
-		   && $m_rubr[$ind] != "0099" 
-		   && $m_rubr[$ind] != "0016" 
-		   && $m_rubr[$ind] != "0017" 
-		   && $m_rubr[$ind] != "0168" 
-		   && $m_rubr[$ind] != "0169" 
-		   && $m_rubr[$ind] != "0174" 
-		   && $m_rubr[$ind] != "0175" 
-		   && $m_rubr[$ind] != "0304" 
-		   && $m_rubr[$ind] != "0222" 
-		   && $m_rubr[$ind] != "0211" 
-		   && $m_rubr[$ind] != "0298"
-		   && $m_rubr[$ind] != "0299" ) ) {
-		    $vtipo == "1";
-	    } else { 
 		  $vtipo = db_str($rubricas[0]["rh27_calc1"],1);
-	    }
 	    
 	    $nr_meses_ferias = $qmeses;
 	    
-	    if ( trim($d08_carnes) == "carazinho"  && $pessoal[0]["r01_regime"] != 2 && ( db_at($m_rubr[$ind],"0004-0005") > 0)) {
+	    if ( $db21_codcli == "18"  && $pessoal[0]["r01_regime"] != 2 && ( db_at($m_rubr[$ind],"0004-0005") > 0)) {
 		  $nr_meses_ferias = 6;
 	    }
 	    

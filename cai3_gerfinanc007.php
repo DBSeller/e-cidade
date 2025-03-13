@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("classes/db_notificacao_classe.php");
-require_once("libs/db_sessoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("classes/db_notificacao_classe.php"));
+require_once(modification("libs/db_sessoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -40,7 +40,7 @@ db_postmemory($HTTP_SERVER_VARS);
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <script>
 function js_recebenotif(notifi){
-    js_OpenJanelaIframe('top.corpo','db_iframe_notificacao','cai3_gerfinanc019.php?notifi='+notifi,'Recebimento de Notificação',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_notificacao','cai3_gerfinanc019.php?notifi='+notifi,'Recebimento de Notificação',true);
 }
 
 </script>

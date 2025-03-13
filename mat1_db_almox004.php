@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_almox_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
 $cldb_almox = new cl_db_almox;
 $cldb_almox_depto = new cl_db_almoxdepto;
 
@@ -97,7 +97,7 @@ if (isset($m91_depto)) {
   <tr> 
     <td align="center" bgcolor="#CCCCCC"> 
 	  <?
-	    include("forms/db_frmdb_almox.php");
+	    include(modification("forms/db_frmdb_almox.php"));
 	  ?>
     </td>
   </tr>

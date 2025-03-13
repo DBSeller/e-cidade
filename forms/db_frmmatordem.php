@@ -46,7 +46,7 @@ if(isset($m51_codordem) && $m51_codordem!=''){
 		    inner join db_depart on coddepto = m51_depto 
              where m51_codordem = $m51_codordem ";
      
-     $result = pg_exec($sql); 
+     $result = db_query($sql); 
      if (pg_numrows($result)==0){
      
      }

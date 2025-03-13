@@ -26,8 +26,8 @@
  */
 
 //MODULO: atendimento
-include("classes/db_tarefacadsituacao_classe.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("classes/db_tarefacadsituacao_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cltarefacadsituacao      = new cl_tarefacadsituacao;
 $cltarefa                 = new cl_tarefa;
 $cldb_usuarios            = new cl_db_usuarios;
@@ -141,7 +141,7 @@ db_input('at43_tarefa',10,$Iat43_tarefa,true,'text',3,"");
 if($db_opcao==1){
 	$at43_usuario= $usu;
 	$sqlid = "select * from db_usuarios where id_usuario=$usu";
-	$resultid = pg_query($sqlid);
+	$resultid = db_query($sqlid);
 	db_fieldsmemory($resultid,0);
 }
 db_input('at43_usuario',10,$Iat43_usuario,true,'text',3,"")
@@ -406,7 +406,7 @@ $sqlsutusu = "
           ";
 
 //die($sqlsutusu);
-$resultsutusu = pg_query($sqlsutusu);
+$resultsutusu = db_query($sqlsutusu);
 
 if(($db_opcao!=2 )&&($db_opcao!=3 )){
 	
@@ -416,8 +416,7 @@ if(($db_opcao!=2 )&&($db_opcao!=3 )){
 				  	inner join tarefacadsituacao on at47_situacao = at46_codigo 
 				    where at47_tarefa = $at43_tarefa
 	";
-	 //die($sqlsit);
-	$ressit = pg_query($sqlsit);
+	$ressit = db_query($sqlsit);
 	$linhassit = pg_num_rows($ressit);
 	if($linhassit>0){
 	  db_fieldsmemory($ressit,0);
@@ -605,7 +604,7 @@ function js_datafim2(){
 }
 function js_voltar() {
   parent.mo_camada('tarefa')
-  top.corpo.iframe_tarefa.document.form1.bt_voltar.click();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefa.document.form1.bt_voltar.click();
 }
 function js_imprimir(){
 	window.open('ate2_relatoriotarefas001.php?at40_sequencial='+document.form1.at43_tarefa.value+'&opcao_rel=A&tipo_rel=i&tipodatafinal=P&at40_diaini=--&ordem=1','','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
@@ -670,7 +669,8 @@ function js_abre_agendamento(tarefa){
 	                                                                                                                  when at43_tipomov = 4 then 'PHP-Programa' 
 	                                                                                                                  when at43_tipomov = 5 then 'Atualizar Manual' 
 	                                                                                                                  when at43_tipomov = 6 then 'Manual Atualizado' 
-                                                                                                                    when at43_tipomov = 7 then 'Cliente Atualizado' end as at43_tipomov, 
+                                                                                                                    when at43_tipomov = 7 then 'Cliente Atualizado' end as at43_tipomov,
+                                                                                                                    at46_descr,      
 	                                                                                                                  at43_tarefa,
 	                                                                                                                  at43_diaini,
 	                                                                                                                  at43_diafim,
@@ -679,9 +679,7 @@ function js_abre_agendamento(tarefa){
 	                                                                                                                  at43_usuario,
 	 case when at43_problema = 'f' then 'NÃO' else 'SIM' end as at43_problema,case at43_avisar when 0 then 'Ninguém' when 1 then 'Envolvidos no projeto' when 2 then 'Envolvidos na tarefa' when 3 then 'Todos' end as at43_avisar,at43_progresso,nome",
 	 "at43_diaini desc ,at43_horafim desc ,at43_sequencial desc","at43_tarefa=$at43_tarefa");
-	 
-	 $cliframe_alterar_excluir->campos  ="nome,at43_descr,at43_obs,at43_tipomov,at43_diaini,at43_diafim,at43_horainidia,at43_horafim,at43_problema,at43_avisar,at43_progresso";
-	 
+	 $cliframe_alterar_excluir->campos  ="nome,at43_descr,at43_obs,at43_tipomov,at46_descr,at43_diaini,at43_diafim,at43_horainidia,at43_horafim,at43_problema,at43_avisar,at43_progresso";
 	 $result_versao = $cldb_versaotarefa->sql_record($cldb_versaotarefa->sql_query(null,"db30_codversao,db30_codrelease",null," db29_tarefa = $at43_tarefa "));
      if($cldb_versaotarefa->numrows>0){
        db_fieldsmemory($result_versao, 0);

@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010528' name='orcamento.orcparamreltemplate' description="Template relatório" prefix="o163" label="Template relatório" type="0">
+  <fields>
+    <field codigo="1011067" 
+           campo_api='' 
+           name="o163_sequecial" 
+           conteudo="int4" 
+           description="Codigo sequencial" 
+           inivalue="0" 
+           label="Codigo sequencial" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Codigo sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='orcamento.orcparamreltemplate_o163_sequecial_seq' />
+     
+    </field> 
+    <field codigo="1011068" 
+           campo_api='' 
+           name="o163_orcparamrel" 
+           conteudo="int4" 
+           description="Código Relatório" 
+           inivalue="0" 
+           label="Código Relatório" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Relatório" 
+           reference="o42_codparrel" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011069" 
+           campo_api='' 
+           name="o163_template" 
+           conteudo="oid" 
+           description="Template relatório" 
+           inivalue="" 
+           label="Template relatório" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Template relatório" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="o163_sequecial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="orcparamrel" inner='t'>
+      <fieldfk name="o163_orcparamrel" reference="o42_codparrel" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

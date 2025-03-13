@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_pcmater_classe.php");
-include("classes/db_pcmaterele_classe.php");
-include("classes/db_pcgrupo_classe.php");
-include("classes/db_pcsubgrupo_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_pcmater_classe.php"));
+include(modification("classes/db_pcmaterele_classe.php"));
+include(modification("classes/db_pcgrupo_classe.php"));
+include(modification("classes/db_pcsubgrupo_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clpcmater = new cl_pcmater;
@@ -47,11 +47,23 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
   db_inicio_transacao();
   $sqlerro=false;
   $db_opcao = 2;
-  $clpcmater->alterar($pc01_codmater);
-  if($clpcmater->erro_status==0){
-    $sqlerro = true;
-  }else{
-    $codmater =  $clpcmater->pc01_codmater;
+  $clpcmater->pc01_descrmater = trim(preg_replace('/\s+/', ' ',@$pc01_descrmater));
+  if ($pc01_ativo == 't') {
+    $daoSolicitaRegistroPreco = new cl_solicitaregistropreco();
+    $sqlSolicita = $daoSolicitaRegistroPreco->sql_query_registro_compilacao(null, '1', null, "pc16_codmater = {$pc01_codmater} and pc52_sequencial = 6 and pc67_solicita is null and current_date between pc54_datainicio and pc54_datatermino");
+    $rs = db_query($sqlSolicita);
+    if (pg_numrows($rs) > 0) {
+      db_msgbox("Não é possível inativar o item, pois o mesmo encontra-se em uma ou mais ata(s) vigente(s) de registro de preço!");
+      $sqlerro = true;
+    }
+  }
+  if (!$sqlerro) {
+    $clpcmater->alterar($pc01_codmater);
+    if($clpcmater->erro_status==0){
+      $sqlerro = true;
+    }else{
+      $codmater =  $clpcmater->pc01_codmater;
+    } 
   }
 
   //rotina que exclui todos os registros do pcmaterele
@@ -128,7 +140,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
   <tr> 
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
       <?
-        include("forms/db_frmpcmater.php");
+        include(modification("forms/db_frmpcmater.php"));
       ?>
     </td>
   </tr>

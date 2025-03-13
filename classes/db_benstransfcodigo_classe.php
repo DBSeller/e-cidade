@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -74,7 +74,7 @@ class cl_benstransfcodigo {
        $this->t95_codtran = ($this->t95_codtran == ""?@$GLOBALS["HTTP_POST_VARS"]["t95_codtran"]:$this->t95_codtran);
        $this->t95_codbem = ($this->t95_codbem == ""?@$GLOBALS["HTTP_POST_VARS"]["t95_codbem"]:$this->t95_codbem);
        $this->t95_situac = ($this->t95_situac == ""?@$GLOBALS["HTTP_POST_VARS"]["t95_situac"]:$this->t95_situac);
-       $this->t95_histor = ($this->t95_histor == ""?@$GLOBALS["HTTP_POST_VARS"]["t95_histor"]:$this->t95_histor);
+       $this->t95_histor = pg_escape_string(($this->t95_histor == ""?@$GLOBALS["HTTP_POST_VARS"]["t95_histor"]:$this->t95_histor));
      }else{
        $this->t95_codtran = ($this->t95_codtran == ""?@$GLOBALS["HTTP_POST_VARS"]["t95_codtran"]:$this->t95_codtran);
        $this->t95_codbem = ($this->t95_codbem == ""?@$GLOBALS["HTTP_POST_VARS"]["t95_codbem"]:$this->t95_codbem);
@@ -503,7 +503,7 @@ class cl_benstransfcodigo {
     
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

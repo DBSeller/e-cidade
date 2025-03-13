@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-//require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+//require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
 
 db_postmemory($_POST);
 
@@ -49,7 +49,7 @@ if(isset($gerar)){
       $arquivoprocessa = "/tmp/retbanriname.txt";
       $arquivogeracao = "/tmp/retbanri.txt";
 
-      pg_query('begin;');
+      db_query('begin;');
          
       // Faz um upload do arquivo para o local especificado
       move_uploaded_file($nometmp,$arquivoprocessa) or $erro_msg = "ERRO: Problemas com upload, contate o suporte.";
@@ -104,7 +104,7 @@ if(isset($gerar)){
                                  left join rhpesrescisao on rh02_seqpes = rh05_seqpes
                             where rh01_regist = $matricula
                            ";
-        $res_pessoal = pg_query($sql_pessoal);
+        $res_pessoal = db_query($sql_pessoal);
         $num_pessoal = pg_numrows($res_pessoal);
         if($num_pessoal > 0){
           db_fieldsmemory($res_pessoal,0);
@@ -118,7 +118,7 @@ if(isset($gerar)){
                               and r10_mesusu = $mesusu 
                               and r10_regist = $matricula 
                               and r10_rubric = lpad($rubrica,4,'0')";
-          $res_busca_rub = pg_query($sql_busca_rub);
+          $res_busca_rub = db_query($sql_busca_rub);
           if(pg_numrows($res_busca_rub) > 0 ){
 //echo "<br> entrou 5";
              db_fieldsmemory($res_busca_rub,0);
@@ -162,7 +162,7 @@ if(isset($gerar)){
                                                       '',
                                                       $rh02_instit
                                                       )";
-            $res_insere_ponto = pg_query($sql_insere_ponto) or $erro_msg = "ERRO no SQL : $sql_insere_ponto. Contate Suporte!";
+            $res_insere_ponto = db_query($sql_insere_ponto) or $erro_msg = "ERRO no SQL : $sql_insere_ponto. Contate Suporte!";
           }
 
         }else{
@@ -208,7 +208,7 @@ if(isset($gerar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
         <?
-        include("forms/db_frmcanimportarelogio.php");
+        include(modification("forms/db_frmcanimportarelogio.php"));
         ?>
     </center>
         </td>
@@ -229,7 +229,7 @@ if(isset($gerar) || isset($confirma)){
   }else{
     $linhacorrente;
     db_msgbox($linhacorrente." registros incluídos.");
-    pg_query('commit;');
+    db_query('commit;');
   };
 }
 ?>

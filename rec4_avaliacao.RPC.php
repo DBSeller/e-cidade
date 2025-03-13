@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 ///dbportal_prj/rec4_avaliacao.RPC.php
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/JSON.php");  
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));  
 
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oJson                  = new services_json();
 $oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -51,7 +51,7 @@ try {
 
     case "tipoAvaliacao":
        
-      require_once("classes/db_rhtipoavaliacao_classe.php");
+      require_once(modification("classes/db_rhtipoavaliacao_classe.php"));
       $oRhTipoAvaliacao  = new cl_rhtipoavaliacao;
       $sCampos  = "h69_sequencial,    ";
       $sCampos .= "h69_descricao,     ";
@@ -90,8 +90,8 @@ try {
        */
       try {
 
-        require_once('classes/db_rhtipoavaliacao_classe.php');
-        require_once("model/recursosHumanos/Promocao.model.php");
+        require_once(modification('classes/db_rhtipoavaliacao_classe.php'));
+        require_once(modification("model/recursosHumanos/Promocao.model.php"));
 
         $oRhtipoavaliacao  = new cl_rhtipoavaliacao();
         $dDataAvaliacao    = implode("-", array_reverse(explode("/",$oParam->dDataAvaliacao)));
@@ -154,9 +154,9 @@ try {
       ////////////////////////////  LISTA DE AVALIAÇÂO /////////////////
     case "listaAvaliacao" :
        
-      require_once("classes/db_rhavaliacao_classe.php");
-      require_once("classes/db_rhavaliacaotipoavaliacao_classe.php");
-      require_once("model/recursosHumanos/Promocao.model.php");
+      require_once(modification("classes/db_rhavaliacao_classe.php"));
+      require_once(modification("classes/db_rhavaliacaotipoavaliacao_classe.php"));
+      require_once(modification("model/recursosHumanos/Promocao.model.php"));
       
       $oPromocao         = new Promocao($oParam->iPromocao);
       $aAvaliacoes       = $oPromocao->getAvaliacoes();
@@ -181,9 +181,9 @@ try {
     
     case "cancelarAvaliacao":
 
-    	require_once("classes/db_rhavaliacao_classe.php");
-      require_once("classes/db_rhavaliacaotipoavaliacao_classe.php");
-      require_once("model/recursosHumanos/Promocao.model.php");
+    	require_once(modification("classes/db_rhavaliacao_classe.php"));
+      require_once(modification("classes/db_rhavaliacaotipoavaliacao_classe.php"));
+      require_once(modification("model/recursosHumanos/Promocao.model.php"));
       
     	$aListaCancelar = $oParam->aDados;
     	$iPromocao      = $oParam->iPromocao;
@@ -217,7 +217,7 @@ try {
     
     case "getTotalTiposAvaliacoes":
     
-    	require_once("classes/db_rhtipoavaliacao_classe.php");
+    	require_once(modification("classes/db_rhtipoavaliacao_classe.php"));
     	$oRhTipoAvaliacao  = new cl_rhtipoavaliacao;
     
     	$sCampos  = "h69_sequencial,     ";

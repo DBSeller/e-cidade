@@ -1,0 +1,135 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010266' name='contabilidade.conlancaminfocomplementarvalor' description="Vínculo de informações complementares dos lançamentos" prefix="c126" label="Vínculo de informações complementares dos lançamen" type="0">
+  <fields>
+    <field codigo="1009655" 
+           campo_api='' 
+           name="c126_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='contabilidade.conlancaminfocomplementarvalor_c126_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009656" 
+           campo_api='' 
+           name="c126_codlan" 
+           conteudo="int4" 
+           description="Código do lançamento" 
+           inivalue="0" 
+           label="Código do lançamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do lançamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009657" 
+           campo_api='' 
+           name="c126_reduz" 
+           conteudo="int4" 
+           description="Reduzido da conta" 
+           inivalue="0" 
+           label="Reduzido da conta" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Reduzido da conta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009658" 
+           campo_api='' 
+           name="c126_infocomplementar" 
+           conteudo="int4" 
+           description="Código da Informação complementar" 
+           inivalue="0" 
+           label="Código da Informação complementar" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Informação complementar" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009659" 
+           campo_api='' 
+           name="c126_valor" 
+           conteudo="varchar(20)" 
+           description="Valor da informação complementar" 
+           inivalue="" 
+           label="Valor da informação complementar" 
+           size="20" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Valor da informação complementar" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009660" 
+           campo_api='' 
+           name="c126_tiposistema" 
+           conteudo="int4" 
+           description="Tipo do sistema do sistema que o registro faz referencia (SICONFI etc)" 
+           inivalue="0" 
+           label="" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo do sistema" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c126_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="conlancam" inner='t'>
+      <fieldfk name="c126_codlan" reference="c70_codlan" /> 
+    </foreignkey>
+    <foreignkey reference="conplanoinfocomplementar" inner='t'>
+      <fieldfk name="c126_infocomplementar" reference="c121_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="conplanosistema" inner='t'>
+      <fieldfk name="c126_tiposistema" reference="c122_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

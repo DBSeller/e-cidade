@@ -63,7 +63,7 @@ $clsau_motivoatendimento->rotulo->label();
   </center>
   <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_motivoatendimento','func_sau_motivoatendimento.php?funcao_js=parent.js_preenchepesquisa|s144_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_motivoatendimento','func_sau_motivoatendimento.php?funcao_js=parent.js_preenchepesquisa|s144_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_motivoatendimento.hide();

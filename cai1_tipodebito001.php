@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 $db_opcao=1;
 if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select max(k00_tipo) + 1 from arretipo");
+  $result = db_query("select max(k00_tipo) + 1 from arretipo");
   $k00_tipo = pg_result($result,0,0);
   $k00_tipo = $k00_tipo==""?"1":$k00_tipo;
   $k00_codbco = trim($k00_codbco)==""?"null":$k00_codbco;  
   
-  pg_exec("insert into arretipo(k00_tipo,
+  db_query("insert into arretipo(k00_tipo,
                                 k00_descr,
 								k00_emrec,
 								k00_agnum,
@@ -94,7 +94,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 	<? 
-	  include("forms/db_frmtipodebito.php");
+	  include(modification("forms/db_frmtipodebito.php"));
     ?>
 	</td>
   </tr>

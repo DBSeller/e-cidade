@@ -135,7 +135,7 @@
                     <?
 					$aux_autor = "";
 					if(isset($Alterar_PopularSelect)) {
-					  $result = pg_exec("select v55_autor from autproc where v55_proces = $retorno order by  v55_seq");
+					  $result = db_query("select v55_autor from autproc where v55_proces = $retorno order by  v55_seq");
 					  for($i = 0;$i < pg_numrows($result);$i++) {
 					    echo "<option>".pg_result($result,$i,0)."</option>\n";
 					    $aux_autor .= "#".pg_result($result,$i,0);

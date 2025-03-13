@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("interfaces/ILancamentoAuxiliar.interface.php");
-require_once ("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
 
 /**
  * Salva os lançamentos auxiliares do Bem 
  * @author rafael.lopes <rafael.lopes@dbseller.com.br>
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.11 $
  */
 class LancamentoAuxiliarBem extends LancamentoAuxiliarBase implements ILancamentoAuxiliar {
 

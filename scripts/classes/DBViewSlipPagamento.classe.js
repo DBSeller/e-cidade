@@ -1,3 +1,5 @@
+require_once('scripts/AjaxRequest.js');
+
 /**
  * Componente para o pagamento de um slip
  * @param sNomeInstancia     - Nome da Instancia que esta sendo utilizada
@@ -14,12 +16,16 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   me.oDivDestino                  = oDivDestino;
   me.iCodigoSlip                  = null;
   me.lUsaPCASP                    = false;
+  me.lRecursoUniao                = false;
+  me.lEfetuarPagamento            = false;
   me.iTipoInclusao                = 0;
   me.lImportacao                  = false;
   me.iInscricaoPassivo            = null;
   me.lFinalidadeDePagamentoFundeb = false;
   me.iTamanhoCampo                = 12;
   me.lAlteracao                   = false;
+  me.lPossuiSlipAutomatico = false;
+  me.importacaoCG = false;
 
   if (lReadOnly == null || lReadOnly == 'undefined') {
     me.lReadOnly = false;
@@ -54,9 +60,9 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
 
   switch (iTipoTransferencia) {
 
-    /*
-     * Transferencia Financeira
-     */
+      /*
+       * Transferencia Financeira
+       */
     case 1: // Pagamento
     case 2: // Estorno Pagamento
 
@@ -70,7 +76,7 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
       me.sTipoTransferencia    = "Concessão de Transferência Financeira";
       me.lContaDebito          = true;
 
-    break;
+      break;
 
     case 3: // Recebimento
     case 4: // Estorno Recebimento
@@ -84,11 +90,11 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
 
       me.sParamContaDebito     = "getContasSaltes";
       me.sTipoTransferencia    = "Recebimento Transferência Financeira";
-    break;
+      break;
 
-    /*
-     * Transferencia Bancaria
-     */
+      /*
+       * Transferencia Bancaria
+       */
     case 5: // Inclusao
     case 6: // Estorno
 
@@ -100,11 +106,11 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
 
       me.sParamContaDebito     = "getContasSaltes";
       me.sTipoTransferencia    = "Transferência Bancária";
-    break;
+      break;
 
-    /*
-     * Caucao Recebimento
-     */
+      /*
+       * Caucao Recebimento
+       */
     case 7: // inclusao
     case 8: // estorno
 
@@ -117,12 +123,12 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
       me.sPesquisaContaDebito  = "Saltes";
 
       me.sParamContaDebito     = "getContasSaltes";
-      me.sTipoTransferencia    = "Recebimento de Caução";
-    break;
+      me.sTipoTransferencia    = "Outras Movimentações Extras - Recebimento";
+      break;
 
-    /*
-     * Caucao Devolucao
-     */
+      /*
+       * Caucao Devolucao
+       */
     case 9: // inclusao
     case 10: // estorno
 
@@ -134,12 +140,12 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
       me.sPesquisaContaDebito  = "EventoContabil";
 
       me.sParamContaDebito     = "getContaEventoContabil";
-      me.sTipoTransferencia    = "Devolução de Caução";
-    break;
+      me.sTipoTransferencia    = "Outras Movimentações Extras - Pagamento";
+      break;
 
-    /*
-     * Dep. Diversas Origens
-     */
+      /*
+       * Dep. Diversas Origens
+       */
     case 11: // Recebimento
     case 12: // Estorno Recebimento
 
@@ -152,7 +158,7 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
 
       me.sParamContaCredito    = "getContaEventoContabil";
       me.sParamContaDebito     = "getContasSaltes";
-    break;
+      break;
 
     case 13: // Pagamento
     case 14: // Estorno Pagamento
@@ -171,10 +177,32 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
       me.sParamContaCredito    = "getContasSaltes";
       me.sParamContaDebito     = "getContaEventoContabil";
 
-    break;
+      break;
+
+      /*
+       * Transferencia Bancaria - Cobertura Financeira
+       */
+      case 17: // Inclusao
+      case 18: // Estorno
+
+        me.iTipoInclusao         = 17;
+        me.sParamContaCredito    = "getContasSaltes";
+
+        me.sPesquisaContaCredito = "Saltes";
+        me.sPesquisaContaDebito  = "Saltes";
+
+        me.sParamContaDebito     = "getContasSaltes";
+        me.sTipoTransferencia    = "Transferência Bancária - Cobertura Financeira";
+        break;
+
+
+
   }
 
+  /* [Extensão] - Filtro da Despesa - parte 1 */
+
   me.oTxtCodigoSlip                          = new DBTextField('oTxtCodigoSlip', me.sNomeInstancia+'.oTxtCodigoSlip', '', me.iTamanhoCampo);
+  me.oTxtCodigoSlipAux                       = new DBTextField('oTxtCodigoSlipAux', me.sNomeInstancia+'.oTxtCodigoSlipAux');
   me.oTxtInstituicaoOrigemCodigo             = new DBTextField('oTxtInstituicaoOrigemCodigo', me.sNomeInstancia+'.oTxtInstituicaoOrigemCodigo', '', me.iTamanhoCampo);
   me.oTxtInstituicaoOrigemCodigo.setReadOnly(true);
   me.oTxtDescricaoInstituicaoOrigem          = new DBTextField('oTxtDescricaoInstituicaoOrigem', me.sNomeInstancia+'.oTxtDescricaoInstituicaoOrigem', '', 56);
@@ -197,6 +225,19 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   me.oTxtContaCreditoCodigo                  = new DBTextField("oTxtContaCreditoCodigo",    me.sNomeInstancia + ".oTxtContaCreditoCodigo",    "", me.iTamanhoCampo);
   me.oTxtContaCreditoCodigo.addEvent("onChange", ";" + me.sNomeInstancia + ".pesquisaConta" + me.sPesquisaContaCredito + "(false, true);");
   me.oTxtContaCreditoDescricao               = new DBTextField("oTxtContaCreditoDescricao", me.sNomeInstancia + ".oTxtContaCreditoDescricao", "", 56);
+
+  /**
+   * Recurso da Conta Crédito
+   * @type {DBTextField}
+   */
+  me.oTxtCodigoRecursoCredito = new DBTextField("oTxtCodigoRecursoCredito",    me.sNomeInstancia + ".oTxtCodigoRecursoCredito",    "", me.iTamanhoCampo);
+  me.oTxtCodigoRecursoCredito.addEvent("onChange", ";" + me.sNomeInstancia + ".pesquisaRecursoCredito(false)");
+  me.oTxtDescricaoRecursoCredito  = new DBTextField("oTxtDescricaoRecursoCredito", me.sNomeInstancia + ".oTxtDescricaoRecursoCredito", "", 56);
+
+  me.oTxtCodigoRecursoDebito = new DBTextField("oTxtCodigoRecursoDebito",    me.sNomeInstancia + ".oTxtCodigoRecursoDebito",    "", me.iTamanhoCampo);
+  me.oTxtCodigoRecursoDebito.addEvent("onChange", ";" + me.sNomeInstancia + ".pesquisaRecursoDebito(false)");
+  me.oTxtDescricaoRecursoDebito  = new DBTextField("oTxtDescricaoRecursoDebito", me.sNomeInstancia + ".oTxtDescricaoRecursoDebito", "", 56);
+
 
   me.oTxtContaDebitoCodigo                   = new DBTextField("oTxtContaDebitoCodigo",     me.sNomeInstancia + ".oTxtContaDebitoCodigo",     "", me.iTamanhoCampo);
   me.oTxtContaDebitoCodigo.addEvent("onChange", ";" + me.sNomeInstancia + ".pesquisaConta" + me.sPesquisaContaDebito + "(false, false);");
@@ -279,6 +320,21 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   me.oButtonSalvar.name              = "btnSalvar";
   me.oButtonSalvar.style.marginTop   = "10px";
 
+  /*
+   * Objeto Efetuar pagamento
+   */
+
+  me.oButtonEfetuarPagamento                   = document.createElement('input');
+  me.oButtonEfetuarPagamento.type              = "button";
+  me.oButtonEfetuarPagamento.value             = "Efetuar Pagamento";
+  me.oButtonEfetuarPagamento.id                = "btnPagamento";
+  me.oButtonEfetuarPagamento.name              = "btnPagamento";
+  me.oButtonEfetuarPagamento.style.marginTop   = "10px";
+
+  if ( ! me.lEfetuarPagamento ) {
+    me.oButtonEfetuarPagamento.style.display = "none";
+  }
+
   me.oButtonEstornar                 = document.createElement('input');
   me.oButtonEstornar.type            = "button";
   me.oButtonEstornar.value           = "Estornar";
@@ -302,8 +358,6 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   me.oButtonNovaBaixa.id                = "btnNovaBaixa";
   me.oButtonNovaBaixa.name              = "btnNovaBaixa";
   me.oButtonNovaBaixa.style.marginTop   = "10px";
-
-
 
   me.setPagamentoEmpenhoPassivo = function (iInscricao) {
 
@@ -432,6 +486,28 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
 
 
     /**
+     * Linha de Recurso a Debito
+     * @type {HTMLTableRowElement}
+     */
+    if ( me.lRecursoUniao ) {
+
+      var oRowContaDebito = oTabela.insertRow(iLinhaTabela);
+      iLinhaTabela++;
+      var oCellRecursoCreditoDebito = oRowContaDebito.insertCell(0);
+      oCellRecursoCreditoDebito.innerHTML = "<b><a href='#' onclick='" + me.sNomeInstancia + ".pesquisaRecursoDebito(true)'>Recurso Débito:</a></b>";
+      oCellRecursoCreditoDebito.id = "labelRecursoDebito";
+
+      var oCellRecursoContaDebito = oRowContaDebito.insertCell(1);
+      oCellRecursoContaDebito.id = "td_codigoRecursoDebito_" + me.sNomeInstancia;
+      me.oTxtCodigoRecursoDebito.show(oCellRecursoContaDebito);
+
+      var oCellDescricaoRecursoContaDebito = oRowContaDebito.insertCell(2);
+      oCellDescricaoRecursoContaDebito.id = "td_descricaoRecursoDebito_" + me.sNomeInstancia;
+      me.oTxtDescricaoRecursoDebito.setReadOnly(true);
+      me.oTxtDescricaoRecursoDebito.show(oCellDescricaoRecursoContaDebito);
+    }
+
+    /**
      * Label Caracteristica Peculiar
      */
     var oRowCaracteristica                   = oTabela.insertRow(iLinhaTabela); iLinhaTabela++;
@@ -475,6 +551,28 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     oCellContaCreditoDescricao.id  = "td_contaCredito_"+me.sNomeInstancia;
     me.oTxtContaCreditoDescricao.setReadOnly(true);
     me.oTxtContaCreditoDescricao.show(oCellContaCreditoDescricao);
+
+
+    /**
+     * Linha de Recurso a Credito
+     * @type {HTMLTableRowElement}
+     */
+    if ( me.lRecursoUniao ) {
+      var oRowRecursoCredito = oTabela.insertRow(iLinhaTabela);
+      iLinhaTabela++;
+      var oCellRecursoCreditoCredito = oRowRecursoCredito.insertCell(0);
+      oCellRecursoCreditoCredito.innerHTML = "<b><a href='#' onclick='" + me.sNomeInstancia + ".pesquisaRecursoCredito(true)'>Recurso Crédito:</a></b>";
+      oCellRecursoCreditoCredito.id = "labelRecursoCredito";
+
+      var oCellRecursoContaCredito = oRowRecursoCredito.insertCell(1);
+      oCellRecursoContaCredito.id = "td_codigoRecursoCredito_" + me.sNomeInstancia;
+      me.oTxtCodigoRecursoCredito.show(oCellRecursoContaCredito);
+
+      var oCellDescricaoRecursoContaCredito = oRowRecursoCredito.insertCell(2);
+      oCellDescricaoRecursoContaCredito.id = "td_descricaoRecursoCredito_" + me.sNomeInstancia;
+      me.oTxtDescricaoRecursoCredito.setReadOnly(true);
+      me.oTxtDescricaoRecursoCredito.show(oCellDescricaoRecursoContaCredito);
+    }
 
     /**
      * Caracteristica peculiar conta credito
@@ -549,12 +647,12 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
      */
     var oRowProcesso                 = oTabela.insertRow(iLinhaTabela); iLinhaTabela++;
     var oCellProcessoLabel           = oRowProcesso.insertCell(0);
-        oCellProcessoLabel.innerHTML = "<strong>Processo Administrativo:</strong>";
+    oCellProcessoLabel.innerHTML = "<strong>Processo Administrativo:</strong>";
 
     var oCellProcessoInput           = oRowProcesso.insertCell(1);
-        oCellProcessoInput.colSpan   = "2";
+    oCellProcessoInput.colSpan   = "2";
 
-      me.oTxtProcessoInput.show(oCellProcessoInput);
+    me.oTxtProcessoInput.show(oCellProcessoInput);
 
 
     /**
@@ -609,6 +707,7 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     oFieldset.appendChild(oFieldsetMotivoEstorno);
     me.oDivDestino.appendChild(oFieldset);
     me.oDivDestino.appendChild(me.oButtonSalvar);
+    me.oDivDestino.appendChild(me.oButtonEfetuarPagamento);
     me.oDivDestino.appendChild(me.oButtonEstornar);
     me.oDivDestino.appendChild(me.oButtonImportar);
 
@@ -629,8 +728,16 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
       $("tr_InstituicaoDestino_"+me.sNomeInstancia).style.display = 'none';
     }
 
-    if (me.iTipoTransferencia == 5 || me.iTipoTransferencia == 6) {
-      oRowFavorecido.style.display = 'none';
+
+    switch(me.iTipoTransferencia){
+
+        case 5:
+        case 6:
+        case 17:
+        case 18:
+            oRowFavorecido.style.display = 'none';
+        break;
+
     }
 
     if (me.iInscricaoPassivo != null) {
@@ -649,26 +756,26 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
        * Buscamos os valores da inscrição
        */
       new Ajax.Request(me.sUrlRpc,
-                      {method: 'post',
-                       parameters: 'json='+Object.toJSON(oParam),
-                       onComplete: function (oAjax) {
+          {method: 'post',
+            parameters: 'json='+Object.toJSON(oParam),
+            onComplete: function (oAjax) {
 
-                         js_removeObj("msgBox");
-                         var oRetorno = eval("("+oAjax.responseText+")");
+              js_removeObj("msgBox");
+              var oRetorno = JSON.parse(oAjax.responseText);
 
-                         $("td_favorecido_"+me.sNomeInstancia).innerHTML = "<b>Favorecido:</b>";
+              $("td_favorecido_"+me.sNomeInstancia).innerHTML = "<b>Favorecido:</b>";
 
-                         me.oTxtFavorecidoInputCodigo.setValue(oRetorno.iCgmFavorecido);
-                         me.oTxtFavorecidoInputDescricao.setValue(oRetorno.sNomeFavorecido.urlDecode());
+              me.oTxtFavorecidoInputCodigo.setValue(oRetorno.iCgmFavorecido);
+              me.oTxtFavorecidoInputDescricao.setValue(oRetorno.sNomeFavorecido.urlDecode());
 
-                         me.oTxtContaDebitoCodigo.setValue(oRetorno.iContaDebito);
-                         me.oTxtContaDebitoDescricao.setValue(oRetorno.sDescrContaDebito.urlDecode());
+              me.oTxtContaDebitoCodigo.setValue(oRetorno.iContaDebito);
+              me.oTxtContaDebitoDescricao.setValue(oRetorno.sDescrContaDebito.urlDecode());
 
-                         me.oTxtValorInput.setValue(js_formatar(oRetorno.nValorTotalInscricao, 'f'));
+              me.oTxtValorInput.setValue(js_formatar(oRetorno.nValorTotalInscricao, 'f'));
 
-                         me.oTxtValorInput.setReadOnly(true);
-                       }
-                      });
+              me.oTxtValorInput.setReadOnly(true);
+            }
+          });
     }
   };
 
@@ -707,7 +814,22 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   /**
    * Salva os dados de uma transferencia bancaria
    */
+  me.oButtonEfetuarPagamento.observe('click', function() {
+
+    if (!confirm("Confirma a emissão e pagamento do slip?")) {
+      return false;
+    }
+
+    me.salvarSlip(true);
+  });
+
   me.oButtonSalvar.observe('click', function() {
+
+    me.salvarSlip(false);
+  });
+
+  me.salvarSlip = function (lEfetuarPagamento) {
+
 
     if (!me.validarInstituicao()) {
       return false;
@@ -717,7 +839,10 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
       return false;
     }
 
-    if (me.iTipoTransferencia != 5 && me.iTipoTransferencia != 6) {
+    if (me.iTipoTransferencia != 5 &&
+        me.iTipoTransferencia != 6 &&
+        me.iTipoTransferencia != 17 &&
+        me.iTipoTransferencia != 18 ) {
 
       if (me.oTxtFavorecidoInputCodigo.getValue() == "") {
 
@@ -773,11 +898,28 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
       return false;
     }
 
+    if ( me.lRecursoUniao ) {
+
+      if (me.oTxtCodigoRecursoDebito.getValue() === '') {
+        return alert('Campo Recurso Débito é de preenchimento obrigatório.');
+      }
+
+      if (me.oTxtCodigoRecursoCredito.getValue() === '') {
+        return alert('Campo Recurso Crédito é de preenchimento obrigatório.');
+      }
+    }
 
     js_divCarregando("Aguarde, salvando dados da transferência...", "msgBox");
     var oParam                            = new Object();
+
     oParam.exec                           = "salvarSlip";
+    if (lEfetuarPagamento){
+      oParam.exec = "efetuarPagamentoSlip";
+    }
+    
+    oParam.lEfetuarPagamento              = lEfetuarPagamento;
     oParam.k17_codigo                     = me.oTxtCodigoSlip.getValue();
+    oParam.codigoSlipAux                  = me.oTxtCodigoSlipAux.getValue();
     oParam.iCodigoTipoOperacao            = me.iTipoTransferencia;
     oParam.k17_debito                     = me.oTxtContaDebitoCodigo.getValue();
     oParam.k17_credito                    = me.oTxtContaCreditoCodigo.getValue();
@@ -789,6 +931,8 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     oParam.k17_texto                      = encodeURIComponent(tagString(me.getObservacao()));
     oParam.sCodigoFinalidadeFundeb        = me.oTxtCodigoFinalidadeFundeb.getValue();
     oParam.k145_numeroprocesso            = encodeURIComponent(tagString(me.oTxtProcessoInput.getValue())) ;
+    oParam.codigo_recurso_debito  = me.oTxtCodigoRecursoDebito.getValue();
+    oParam.codigo_recurso_credito = me.oTxtCodigoRecursoCredito.getValue();
 
     if(me.iInscricaoPassivo != null) {
 
@@ -807,12 +951,12 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     }
 
     new Ajax.Request(me.sUrlRpc,
-                    {method: 'post',
-                     async: false,
-                     parameters: 'json='+Object.toJSON(oParam),
-                     onComplete: me.completaSalvar
-                    });
-  });
+        {method: 'post',
+          async: false,
+          parameters: 'json='+Object.toJSON(oParam),
+          onComplete: me.completaSalvar
+        });
+  }
 
   /**
    * Funcao responsavel por tratar os dados do objeto depois de salvar
@@ -820,11 +964,17 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   me.completaSalvar = function (oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 1) {
 
       if (confirm(oRetorno.message.urlDecode()+" Deseja emitir o documento?")) {
-        window.open('cai1_slip003.php?&numslip='+oRetorno.iCodigoSlip, '', 'location=0');
+
+        var iSlip = oRetorno.iCodigoSlip;
+        if (oRetorno.slipAutomatico != "") {
+
+            iSlip += ", " + oRetorno.slipAutomatico;
+        }
+        window.open('cai1_slip003.php?&numslip=' + iSlip, '', 'location=0');
       }
       me.clearAllFields();
     } else {
@@ -832,42 +982,86 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     }
   };
 
+
+/**
+ *
+ * @returns verifica se tem SLIP automatico que será estornado....
+ * só para avisar o usuario que será estornado
+ */
+  me.possuiSlipAutomatico = function() {
+
+      var oParam = new Object();
+          oParam.exec = "buscaSlipAutomatico";
+          oParam.k17_codigo = me.oTxtCodigoSlip.getValue();
+
+      new Ajax.Request(me.sUrlRpc,
+        {method: 'post',
+          parameters: 'json='+Object.toJSON(oParam),
+          async: false,
+          onComplete: me.avisaPossuiSlipAuto
+
+        });
+
+  };
+
+  me.avisaPossuiSlipAuto = function (oAjax) {
+
+    var oRetorno = JSON.parse(oAjax.responseText);
+    if (oRetorno.slipAutomatico != "" ) {
+
+      var msg = "Existem Slip de Pagamento vinculados: " + oRetorno.slipAutomatico ;
+          msg += " que serão Estornados. Deseja Prosseguir?";
+      if (!confirm(msg)) {
+        return false;   //aborta o estorno
+      }
+    }
+    me.estornar();  // segue com o estorno
+
+  };
+
+
+  me.estornar = function(){
+
+    if (me.getMotivoAnulacao() == "") {
+
+        alert("É necessário informar o motivo do estorno.");
+        return false;
+      }
+
+      var sMsgEstorno = "Deseja estonar a transferência "+me.oTxtCodigoSlip.getValue()+"?";
+      if (!confirm(sMsgEstorno)) {
+        return false;
+      }
+
+      js_divCarregando("Aguarde, estornando transferência...", "msgBox");
+
+      var oParam                 = new Object();
+
+      oParam.exec                = "anularSlip";
+      oParam.sMotivo             = encodeURIComponent(tagString(me.getMotivoAnulacao()));
+      oParam.k17_codigo          = me.oTxtCodigoSlip.getValue();
+      oParam.iCodigoTipoOperacao = me.iTipoTransferencia;
+
+      new Ajax.Request(me.sUrlRpc,
+          {method: 'post',
+            parameters: 'json='+Object.toJSON(oParam),
+            async: false,
+            onComplete: me.completaEstorno
+          });
+  }
+
   /**
    * Executa o estorno do pagamento
    */
   me.oButtonEstornar.observe('click', function() {
 
-    if (me.getMotivoAnulacao() == "") {
-
-      alert("É necessário informar o motivo do estorno.");
-      return false;
-    }
-
-    var sMsgEstorno = "Deseja estonar a transferência "+me.oTxtCodigoSlip.getValue()+"?";
-    if (!confirm(sMsgEstorno)) {
-      return false;
-    }
-
-    js_divCarregando("Aguarde, estornando transferência...", "msgBox");
-
-    var oParam                 = new Object();
-    oParam.exec                = "anularSlip";
-    oParam.sMotivo             = encodeURIComponent(tagString(me.getMotivoAnulacao()));
-    oParam.k17_codigo          = me.oTxtCodigoSlip.getValue();
-    oParam.iCodigoTipoOperacao = me.iTipoTransferencia;
-
-    new Ajax.Request(me.sUrlRpc,
-                    {method: 'post',
-                     parameters: 'json='+Object.toJSON(oParam),
-                     async: false,
-                     onComplete: me.completaEstorno
-                    });
+      me.possuiSlipAutomatico();
   });
 
   me.completaEstorno = function (oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     alert(oRetorno.message.urlDecode());
     if (oRetorno.status == 1) {
       me.start();
@@ -879,7 +1073,7 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
    */
   me.oButtonImportar.observe('click', function (){
 
-	  me.lImportacao = true;
+    me.lImportacao = true;
     me.pesquisaCodigoSlip(true);
   });
 
@@ -903,13 +1097,15 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     var sObjetoTxtConta = "me.oTxtConta" + sFunctionCompleta + "Codigo";
     var oTxtConta       = eval(sObjetoTxtConta);
 
-    var sUrlSaltes = "func_saltesreduz.php?pesquisa_chave="+oTxtConta.getValue()+"&funcao_js=parent."+me.sNomeInstancia+".preenche"+sFunctionCompleta;
+    var sUrlSaltes = "func_saltesreduz.php?ver_datalimite=1&pesquisa_chave="+oTxtConta.getValue()+"&funcao_js=parent."+me.sNomeInstancia+".preenche"+sFunctionCompleta;
     if (lMostra) {
-      sUrlSaltes = "func_saltesreduz.php?funcao_js=parent."+me.sNomeInstancia+".completa"+sFunctionCompleta+"|k13_reduz|k13_descr";
+      sUrlSaltes = "func_saltesreduz.php?ver_datalimite=1&funcao_js=parent."+me.sNomeInstancia+".completa"+sFunctionCompleta+"|k13_reduz|k13_descr";
     }
 
     js_OpenJanelaIframe("", 'db_iframe_'+sIframe, sUrlSaltes, "Pesquisa Contas", lMostra);
   };
+
+  /* [Extensão] - Filtro da Despesa - parte 2 */
 
   me.pesquisaContaEventoContabil = function(lMostra, lCredito) {
 
@@ -984,6 +1180,56 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     }
 
     me.verificaRecursoContaCredito();
+  };
+
+
+  me.pesquisaRecursoCredito = function (mostrar) {
+
+    var lookup = 'func_orctiporec.php?funcao_js=parent.'+me.sNomeInstancia+'.preencherRecursoCredito|0|1';
+    if (!mostrar) {
+      lookup = 'func_orctiporec.php?funcao_js=parent.'+me.sNomeInstancia+'.completaRecursoCredito&pesquisa_chave='+me.oTxtCodigoRecursoCredito.getValue();
+    }
+
+    js_OpenJanelaIframe("", 'db_iframe_orctiporec', lookup, "Pesquisa recurso para conta crédito", mostrar);
+  };
+
+  me.preencherRecursoCredito = function (codigo, descricao) {
+    me.oTxtCodigoRecursoCredito.setValue(codigo);
+    me.oTxtDescricaoRecursoCredito.setValue(descricao);
+    db_iframe_orctiporec.hide();
+  };
+
+  me.completaRecursoCredito = function (descricao, erro) {
+
+    me.oTxtDescricaoRecursoCredito.setValue(descricao);
+    if (erro) {
+      me.oTxtCodigoRecursoCredito.setValue('');
+    }
+  };
+
+
+  me.pesquisaRecursoDebito = function (mostrar) {
+
+    var lookup = 'func_orctiporec.php?funcao_js=parent.'+me.sNomeInstancia+'.preencherRecursoDebito|0|1';
+    if (!mostrar) {
+      lookup = 'func_orctiporec.php?funcao_js=parent.'+me.sNomeInstancia+'.completaRecursoDebito&pesquisa_chave='+me.oTxtCodigoRecursoDebito.getValue();
+    }
+
+    js_OpenJanelaIframe("", 'db_iframe_orctiporec', lookup, "Pesquisa recurso para conta débito", mostrar);
+  };
+
+  me.preencherRecursoDebito = function (codigo, descricao) {
+    me.oTxtCodigoRecursoDebito.setValue(codigo);
+    me.oTxtDescricaoRecursoDebito.setValue(descricao);
+    db_iframe_orctiporec.hide();
+  };
+
+  me.completaRecursoDebito = function (descricao, erro) {
+
+    me.oTxtDescricaoRecursoDebito.setValue(descricao);
+    if (erro) {
+      me.oTxtCodigoRecursoDebito.setValue('');
+    }
   };
 
   /**
@@ -1108,7 +1354,7 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   me.pesquisaCaracteristicaPeculiarCredito = function(lMostra) {
 
     var sUrlCaracteristicaCredito = "func_concarpeculiar.php?pesquisa_chave="+me.oTxtCaracteristicaCreditoInputCodigo.getValue()+"" +
-    		                            "&funcao_js=parent."+me.sNomeInstancia+".preencheCaracteristicaCredito";
+        "&funcao_js=parent."+me.sNomeInstancia+".preencheCaracteristicaCredito";
     if (lMostra) {
       sUrlCaracteristicaCredito = "func_concarpeculiar.php?funcao_js=parent."+me.sNomeInstancia+".completaCaracteristicaCredito|c58_sequencial|c58_descr";
     }
@@ -1142,7 +1388,7 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   me.pesquisaInstituicaoDestino = function (lMostra) {
 
     var sUrlDestino = "func_db_config.php?lDiminuirCampos=true&pesquisa_chave="+me.oTxtInstituicaoDestinoCodigo.getValue()+"" +
-    		              "&funcao_js=parent."+me.sNomeInstancia+".preencheInstituicaoDestino";
+        "&funcao_js=parent."+me.sNomeInstancia+".preencheInstituicaoDestino";
     if (lMostra) {
       sUrlDestino = "func_db_config.php?lDiminuirCampos=true&funcao_js=parent."+me.sNomeInstancia+".completaInstituicaoDestino|codigo|nomeinst";
     }
@@ -1198,7 +1444,14 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
    */
   me.pesquisaCodigoSlip = function (lMostra) {
 
-    var sUrlSlip = "func_sliptipovinculo.php?iTipoOperacao="+me.iTipoInclusao+"&funcao_js=parent."+me.sNomeInstancia+".preencheSlip|k17_codigo";
+    let sUrlSlip = "func_sliptipovinculo.php?iTipoOperacao="+me.iTipoInclusao;
+
+    if(me.importacaoCG){
+      sUrlSlip += "&importacaoCG=true";
+      
+    }
+    sUrlSlip += "&funcao_js=parent."+me.sNomeInstancia+".preencheSlip|k17_codigo";
+
     js_OpenJanelaIframe("", 'db_iframe_slip', sUrlSlip, "Pesquisa Slip", lMostra);
   };
 
@@ -1218,30 +1471,49 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
    */
   me.getDadosInstituicaoOrigem = function (){
 
-   js_divCarregando("Aguarde, carregando dados instituição...", "msgBox");
-   var oParam = new Object();
-   oParam.exec = "getDadosInstituicaoOrigem";
-   new Ajax.Request ( me.sUrlRpc,
-                    {
-                    method: 'post',
-                    parameters: 'json='+Object.toJSON(oParam),
-                    async: false,
-                    onComplete: function(oAjax){
+    js_divCarregando("Aguarde, carregando informações...", "msgBox");
+    var oParam = new Object();
+    oParam.exec = "getDadosInstituicaoOrigem";
+    new Ajax.Request ( me.sUrlRpc,
+        {
+          method: 'post',
+          parameters: 'json='+Object.toJSON(oParam),
+          async: false,
+          onComplete: function(oAjax){
 
-                      js_removeObj("msgBox");
-                      var oRetorno = eval("("+oAjax.responseText+")");
+            js_removeObj("msgBox");
+            var oRetorno = JSON.parse(oAjax.responseText);
 
-                      me.oTxtDescricaoInstituicaoOrigem.setValue(oRetorno.sInstituicaoOrigem.urlDecode());
-                      me.oTxtInstituicaoOrigemCodigo.setValue(oRetorno.iCodigoInstituicaoOrigem);
+            me.oTxtDescricaoInstituicaoOrigem.setValue(oRetorno.sInstituicaoOrigem.urlDecode());
+            me.oTxtInstituicaoOrigemCodigo.setValue(oRetorno.iCodigoInstituicaoOrigem);
 
-                      if (me.iTipoTransferencia == 1) {
-                        me.oTxtFavorecidoInputCodigo.setValue(oRetorno.iCodigoCgm);
-                        me.oTxtFavorecidoInputDescricao.setValue(oRetorno.sCNPJ.urlDecode()+" - "+oRetorno.sNomeCgm.urlDecode());
-                        me.oTxtFavorecidoInputCodigo.setReadOnly(true);
-                      }
-                    }
-                    });
+            if (me.iTipoTransferencia == 1) {
+              me.oTxtFavorecidoInputCodigo.setValue(oRetorno.iCodigoCgm);
+              me.oTxtFavorecidoInputDescricao.setValue(oRetorno.sCNPJ.urlDecode()+" - "+oRetorno.sNomeCgm.urlDecode());
+              me.oTxtFavorecidoInputCodigo.setReadOnly(true);
+            }
+
+            //console.log(" efetuar pagamento - "+me.lEfetuarPagamento );
+
+            if (me.campoContaPagadoraPadrao != "") {
+
+              me.buscarContaPagadoraPadrao(me.campoContaPagadoraPadrao);
+            }
+
+
+            if (me.lEfetuarPagamento === true) {
+              me.buscarContaSugeridaLimiteSaque();
+            }
+          }
+        });
   };
+
+  me.setCampoContaPadrao = function(campo) {
+
+      me.campoContaPagadoraPadrao = campo;
+  }
+
+
 
   /**
    * Busca os dados da transferencia financeira
@@ -1253,11 +1525,16 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     oParam.exec                = "getDadosTransferencia";
     oParam.k17_codigo          = me.oTxtCodigoSlip.getValue();
     oParam.iCodigoTipoOperacao = me.iTipoTransferencia;
+    
+    if(me.importacaoCG){
+      oParam.importacaoCG = true;
+    }
+
     new Ajax.Request ( me.sUrlRpc,
-                      {method: 'post',
-                       parameters: 'json='+Object.toJSON(oParam),
-                       onComplete: me.preencheDadosTransferencia
-                      });
+        {method: 'post',
+          parameters: 'json='+Object.toJSON(oParam),
+          onComplete: me.preencheDadosTransferencia
+        });
   };
 
   /**
@@ -1265,8 +1542,10 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
    */
   me.preencheDadosTransferencia = function (oAjax) {
 
+    me.clearAllReadOnly();
+
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     me.oTxtContaCreditoCodigo.setValue(oRetorno.iContaCredito);
     me.oTxtContaDebitoCodigo.setValue(oRetorno.iContaDebito);
@@ -1277,10 +1556,10 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     oFunctionDebito(false, false, true);
 
     window.setTimeout(
-      function() {
-        var oFunctionCredito = eval(sFunctionPesquisa + me.sPesquisaContaCredito);
-        oFunctionCredito(false, true, true);
-      }, 1000
+        function() {
+          var oFunctionCredito = eval(sFunctionPesquisa + me.sPesquisaContaCredito);
+          oFunctionCredito(false, true, true);
+        }, 1000
     );
 
 
@@ -1290,6 +1569,7 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
       me.oTxtCodigoSlip.setValue('');
     }
 
+    me.oTxtCodigoSlipAux.setValue(oRetorno.iCodigoSlip);
     me.oTxtInstituicaoOrigemCodigo.setValue(oRetorno.iInstituicaoOrigem);
     me.oTxtDescricaoInstituicaoOrigem.setValue(oRetorno.sDescricaoInstituicaoOrigem.urlDecode());
 
@@ -1303,13 +1583,67 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     me.oTxtCaracteristicaCreditoInputCodigo.setValue(oRetorno.sCaracteristicaCredito);
     me.oTxtHistoricoInputCodigo.setValue(oRetorno.iHistorico);
     me.oTxtValorInput.setValue(oRetorno.nValor);
+
+    if (me.lRecursoUniao) {
+      me.oTxtCodigoRecursoDebito.setValue(oRetorno.codigo_recurso_debito);
+      me.oTxtDescricaoRecursoDebito.setValue(oRetorno.descricao_recurso_debito);
+      me.oTxtCodigoRecursoCredito.setValue(oRetorno.codigo_recurso_credito);
+      me.oTxtDescricaoRecursoCredito.setValue(oRetorno.descricao_recurso_credito);
+    }
+
     me.setObservacao(oRetorno.sObservacao.urlDecode());
     me.pesquisaInstituicaoDestino(false);
     me.pesquisaHistorico(false);
     me.pesquisaCaracteristicaPeculiarDebito(false);
     me.pesquisaCaracteristicaPeculiarCredito(false);
+
+    if (me.iOpcao == 1 && oRetorno.hasOwnProperty("vinculo")) {
+    
+      me.setAllFieldsReadOnly();
+      me.oTxtContaCreditoCodigo.setReadOnly(false);
+      me.setObservacaoReadOnly(false);
+      let labelCredito = "<b><a href='#' onclick='"+me.sNomeInstancia+".pesquisaConta"
+      labelCredito += me.sPesquisaContaCredito+"(true,true);'>Conta Crédito:</a></b>";
+      $("labelContaCredito").innerHTML = labelCredito;
+      $("td_favorecido_"+me.sNomeInstancia).innerHTML = "<b>Favorecido:</b>";
+    }
+    
   };
 
+
+  me.clearAllReadOnly = function(){
+    me.oTxtInstituicaoOrigemCodigo.setReadOnly(false);
+    me.oTxtInstituicaoDestinoCodigo.setReadOnly(false);
+    me.oTxtFavorecidoInputCodigo.setReadOnly(false);
+    me.oTxtCodigoRecursoDebito.setReadOnly(false);
+    me.oTxtCodigoRecursoCredito.setReadOnly(false);
+    me.oTxtCaracteristicaDebitoInputCodigo.setReadOnly(false);
+    me.oTxtCaracteristicaCreditoInputCodigo.setReadOnly(false);
+    me.oTxtHistoricoInputCodigo.setReadOnly(false);
+    me.oTxtValorInput.setReadOnly(false);
+    me.oTxtContaDebitoCodigo.setReadOnly(false);
+    me.setObservacaoReadOnly(false);
+
+    let labelFavorecido = "<b><a href='#' onclick='"+me.sNomeInstancia;
+    labelFavorecido += ".pesquisaFavorecido(true);'>Favorecido:</a></b>";
+    $("td_favorecido_"+me.sNomeInstancia).innerHTML = labelFavorecido;
+
+    let labelContaDebito = "<b><a href='#' onclick='"+me.sNomeInstancia+".pesquisaConta";
+    labelContaDebito += me.sPesquisaContaDebito+"(true, false);'>Conta Débito:</a></b>";
+
+    let labelCPDebito = "<b><a href='#' onclick='"+me.sNomeInstancia;
+    labelCPDebito += ".pesquisaCaracteristicaPeculiarDebito(true);'>C.Peculiar / C.Aplicação:</a></b>";
+    
+    let labelCPCredito = "<b><a href='#' onclick='"+me.sNomeInstancia;
+    labelCPCredito += ".pesquisaCaracteristicaPeculiarCredito(true);'>C.Peculiar / C.Aplicação:</a></b>";
+
+    let labelHistorico = "<b><a href='#' onclick='"+me.sNomeInstancia+".pesquisaHistorico(true);'>Histórico:</a></b>";
+    
+    document.getElementById("labelContaDebito").innerHTML   =  labelContaDebito;
+    $("td_cpca_contacredito_"+me.sNomeInstancia).innerHTML  = labelCPCredito;
+    $("td_cpca_contadebito_"+me.sNomeInstancia).innerHTML   = labelCPDebito;
+    $("td_historico_"+me.sNomeInstancia).innerHTML          = labelHistorico;
+  }
 
   /**
    * Seta todos os campos do formulario como ReadOnly
@@ -1323,6 +1657,10 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     me.oTxtDescricaoInstituicaoDestino.setReadOnly(true);
     me.oTxtFavorecidoInputCodigo.setReadOnly(true);
     me.oTxtFavorecidoInputDescricao.setReadOnly(true);
+    me.oTxtCodigoRecursoDebito.setReadOnly(true);
+    me.oTxtCodigoRecursoCredito.setReadOnly(true);
+    me.oTxtDescricaoRecursoDebito.setReadOnly(true);
+    me.oTxtDescricaoRecursoCredito.setReadOnly(true);
     me.oTxtCaracteristicaDebitoInputCodigo.setReadOnly(true);
     me.oTxtCaracteristicaDebitoInputDescricao.setReadOnly(true);
     me.oTxtCaracteristicaCreditoInputCodigo.setReadOnly(true);
@@ -1338,6 +1676,10 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     me.oTxtValorInput.setReadOnly(true);
     me.setObservacaoReadOnly(true);
 
+    if (me.lRecursoUniao) {
+      $("labelRecursoDebito").innerHTML = "<b>Recurso Débito:</b>";
+      $("labelRecursoCredito").innerHTML = "<b>Recurso Crédito:</b>";
+    }
 
     $("td_cpca_contacredito_"+me.sNomeInstancia).innerHTML  = "<b>C.Peculiar / C.Aplicação:</b>";
     $("td_cpca_contadebito_"+me.sNomeInstancia).innerHTML   = "<b>C.Peculiar / C.Aplicação:</b>";
@@ -1444,6 +1786,20 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     }
   };
 
+  me.setRecursoUniao = function (lRecursoUniao) {
+    me.lRecursoUniao = false;
+  };
+
+  me.setEfetuarPagamento = function (lEfetuarPagamento) {
+    me.lEfetuarPagamento = lEfetuarPagamento;
+    if ( lEfetuarPagamento ) {
+      me.oButtonEfetuarPagamento.style.display = "";
+    }
+  };
+
+  me.setImportacaoCG = function (importacao) {
+    me.importacaoCG = importacao;
+  };
   /**
    * Funcoes que so devem ser executadas após o componente estar montado na tela
    */
@@ -1468,6 +1824,8 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     if(me.iInscricaoPassivo != null) {
       me.ajustaTelaBaixaPagamento();
     }
+
+
   };
 
   /**
@@ -1519,29 +1877,30 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
 
     js_divCarregando("Aguarde, verificando recurso da conta...", "msgBox");
 
-    var oParam    = new Object();
+    var oParam    = {};
     oParam.exec   = "verificaRecursoContaReduzida";
     oParam.iConta = me.oTxtContaCreditoCodigo.getValue();
 
+
+
     new Ajax.Request ("con4_planoContas.RPC.php",
-                      {method: 'post',
-                       parameters: 'json='+Object.toJSON(oParam),
-                       onComplete: function (oAjax) {
+        {method: 'post',
+          parameters: 'json='+Object.toJSON(oParam),
+          onComplete: function (oAjax) {
 
-                         js_removeObj("msgBox");
-                         var oRetorno = eval("("+oAjax.responseText+")");
-                         if (oRetorno.lUtilizaFundeb) {
+            js_removeObj("msgBox");
+            var oRetorno = JSON.parse(oAjax.responseText);
 
-                           $('tr_finalidadepagamento_credito_'+me.sNomeInstancia).style.display = '';
-                           me.lFinalidadeDePagamentoFundeb = true;
-                         } else {
+            //$('tr_finalidadepagamento_credito_'+me.sNomeInstancia).style.display = 'none';
+            //me.lFinalidadeDePagamentoFundeb = false;
+            //if (oRetorno.lUtilizaFundeb === true) {
 
-                           $('tr_finalidadepagamento_credito_'+me.sNomeInstancia).style.display = 'none';
-                           me.lFinalidadeDePagamentoFundeb = false;
-                         }
+            $('tr_finalidadepagamento_credito_'+me.sNomeInstancia).style.display = '';
+            me.lFinalidadeDePagamentoFundeb = true;
+            //}
 
-                       }
-                      });
+          }
+        });
 
   };
 
@@ -1552,18 +1911,20 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
     var oParam = {"exec":"excluirSlip", "iCodigoSlip":me.oTxtCodigoSlip.getValue()};
 
     new Ajax.Request (me.sUrlRpc,
-                      {method: 'post',
-                       async: false,
-                       parameters: 'json='+Object.toJSON(oParam),
-                       onComplete: function (oAjax) {
+        {method: 'post',
+          async: false,
+          parameters: 'json='+Object.toJSON(oParam),
+          onComplete: function (oAjax) {
 
-                         js_removeObj("msgBox");
-                         var oRetorno = eval("("+oAjax.responseText+")");
-                         alert(oRetorno.message.urlDecode());
-                         js_pesquisaSlip(true);
-                        }
-                      });
-  }
+            js_removeObj("msgBox");
+            var oRetorno = JSON.parse(oAjax.responseText);
+            alert(oRetorno.message.urlDecode());
+            if (oRetorno.status == 1) {
+              js_pesquisaSlip(true);
+            }
+          }
+        });
+  };
 
   /**
    * Define se é rotina de alteração de slip ou não
@@ -1580,4 +1941,53 @@ DBViewSlipPagamento = function(sNomeInstancia, iTipoTransferencia, iOpcao, oDivD
   this.alteracaoSlip = function () {
     return this.lAlteracao;
   };
+
+  /**
+   * Busca a conta sugerida para utilização do Limite de Saque
+   * @todo foi colocado aqui pois o Limite de Saque deve ser incorporado no e-cidade
+   */
+  this.buscarContaSugeridaLimiteSaque = function () {
+
+    AjaxRequest.create(
+        me.sUrlRpc,
+        { "exec" : 'buscaContaSugeridaLimiteSaque', "instituicao" : me.oTxtInstituicaoOrigemCodigo.getValue() },
+        function (retorno, erro) {
+
+          me.oTxtContaCreditoCodigo.setValue(retorno.conta_sugerida);
+          if (retorno.conta_sugerida !== '') {
+            me.pesquisaContaSaltes(false, true);
+          }
+        }
+    ).setMessage('Buscando conta sugerida para limite de saque, aguarde...').execute();
+
+  }
+
+    /**
+     * Busca a conta pagadora padrao da instituicao
+     */
+    this.buscarContaPagadoraPadrao = function (sCampoContaPagadora) {
+
+        AjaxRequest.create(
+            me.sUrlRpc,
+            {"exec": 'buscaContaPagadoraPadrao', "instituicao": me.oTxtInstituicaoOrigemCodigo.getValue()},
+            function (retorno, erro) {
+
+                if (retorno.conta_sugerida !== '') {
+
+                    me.oButtonEfetuarPagamento.disabled = true;
+                    var lCredito = false;
+                    if ( sCampoContaPagadora === "C") {
+                        var lCredito = true;
+                        me.oTxtContaCreditoCodigo.setValue(retorno.conta_sugerida);
+                        me.oTxtContaCreditoCodigo.setReadOnly(true);
+                    }else{
+                        me.oTxtContaDebitoCodigo.setValue(retorno.conta_sugerida);
+                        me.oTxtContaDebitoCodigo.setReadOnly(true);
+                    }
+                    me.pesquisaContaSaltes(false, lCredito);
+                }
+            }
+        ).setMessage('Buscando conta pagadora padrão da instituição, aguarde...').execute();
+    }
+
 };

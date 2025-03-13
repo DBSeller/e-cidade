@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,19 +26,19 @@
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_localizacao_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_localizacao_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cllocalizacao = new cl_localizacao;
 $depto = db_getsession("DB_coddepto");
 $sql = "SELECT bi17_codigo FROM biblioteca WHERE bi17_coddepto = $depto";
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 if($linhas>0){
  db_fieldsmemory($result,0);
@@ -299,3 +299,4 @@ if(document.form1.localizacoesbusca.length>0){
  document.form1.excluirtodos.disabled = false;
 }
 </script>
+

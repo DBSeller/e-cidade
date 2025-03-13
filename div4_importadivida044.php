@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,26 +25,27 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_tabrec_classe.php");
-require_once("classes/db_proced_classe.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_arrematric_classe.php");
-require_once("classes/db_arreinscr_classe.php");
-require_once("classes/db_arreold_classe.php");
-require_once("classes/db_divida_classe.php");
-require_once("classes/db_divmatric_classe.php");
-require_once("classes/db_divold_classe.php");
-require_once ("classes/db_divimporta_classe.php");
-require_once ("classes/db_divimportareg_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_arrecadcompos_classe.php");
-require_once("classes/db_arreckey_classe.php");
-require_once("classes/db_dividaprotprocesso_classe.php");
+use ECidade\Tributario\Divida\Service\TermoInscricaoService;
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_tabrec_classe.php"));
+require_once(modification("classes/db_proced_classe.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_arrematric_classe.php"));
+require_once(modification("classes/db_arreinscr_classe.php"));
+require_once(modification("classes/db_arreold_classe.php"));
+require_once(modification("classes/db_divida_classe.php"));
+require_once(modification("classes/db_divmatric_classe.php"));
+require_once(modification("classes/db_divold_classe.php"));
+require_once(modification("classes/db_divimporta_classe.php"));
+require_once(modification("classes/db_divimportareg_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_arrecadcompos_classe.php"));
+require_once(modification("classes/db_arreckey_classe.php"));
+require_once(modification("classes/db_dividaprotprocesso_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -455,7 +456,16 @@ if (isset($cod_k02_codigo) && trim($cod_k02_codigo)!="" && isset($cod_v03_codigo
       	      }
       	    }
       	  }
-	     }
+
+		  if ($sqlerro == false) {
+
+			 $dataInsc = date("Y-m-d",db_getsession('DB_datausu'));					
+			 $usuario = db_getsession('DB_id_usuario');
+			 $instit = db_getsession('DB_instit');
+			 TermoInscricaoService::salvar($numpre_novo, $cldivida, $v03_receit, $dataInsc, $usuario, $instit);
+		  }
+
+	    } 
       }
     }
 
@@ -527,6 +537,7 @@ if (isset($cod_k02_codigo) && trim($cod_k02_codigo)!="" && isset($cod_v03_codigo
 
   db_fim_transacao($sqlerro);
 }
+
 ?>
 <html>
 <head>
@@ -560,11 +571,11 @@ if (isset($cod_k02_codigo) && trim($cod_k02_codigo)!="" && isset($cod_v03_codigo
                 parent.document.form1.gerar.disabled=true;
     	          alert('Nenhum tipo de débito encontrado com este código');
               </script>";
-        echo "<script>top.corpo.db_iframe.hide();</script>";
-        echo "<script>top.corpo.location.href='div4_importadivida011.php'</script>";
+        echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe.hide();</script>";
+        echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='div4_importadivida011.php'</script>";
       }
 
-      $sql1 = "select v03_codigo, v03_descr from proced where v03_instit = {$iInstit} order by v03_descr ";
+      $sql1 = "select v03_codigo, v03_descr from proced where v03_instit = {$iInstit} and (v03_limite is null or v03_limite >= current_date) order by v03_descr ";
       $result1        = $clproced->sql_record($sql1);
       $numrows1       = $clproced->numrows;
       $vir            = "";
@@ -654,8 +665,8 @@ if ($teste == true){
   if($erro_msg!=""){
     echo "<script>parent.document.getElementById('process').style.visibility='hidden';</script>";
     db_msgbox($erro_msg);
-    echo "<script>top.corpo.db_iframe.hide();</script>";
-    echo "<script>top.corpo.location.href='div4_importadivida011.php'</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe.hide();</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='div4_importadivida011.php'</script>";
   }
 }
 ?>

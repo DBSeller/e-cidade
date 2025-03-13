@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,39 +26,39 @@
  */
 
 //MODULO: educação
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_cardapiodata_classe.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("classes/db_mer_subitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_cardapiodata_classe.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_mer_subitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 //Classes Materiais
-include("classes/db_matrequiitem_classe.php");
-include("classes/db_matrequi_classe.php");
-include("classes/db_atendrequi_classe.php");
-include("classes/db_atendrequiitem_classe.php");
-include("classes/db_atendrequiitemmei_classe.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matestoqueini_classe.php");
-include("classes/db_matestoqueinimei_classe.php");
-include("classes/db_matestoqueinimeiari_classe.php");
-include("classes/db_matestoqueitem_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
-include("classes/db_db_almox_classe.php");
-include("classes/db_matmater_classe.php");
-include("classes/db_matparam_classe.php");
-include("classes/db_db_departorg_classe.php");
-require("classes/requisicaoMaterial.model.php");
-require("libs/db_utils.php");
-require("std/db_stdClass.php");
-require("classes/materialestoque.model.php");
+include(modification("classes/db_matrequiitem_classe.php"));
+include(modification("classes/db_matrequi_classe.php"));
+include(modification("classes/db_atendrequi_classe.php"));
+include(modification("classes/db_atendrequiitem_classe.php"));
+include(modification("classes/db_atendrequiitemmei_classe.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueini_classe.php"));
+include(modification("classes/db_matestoqueinimei_classe.php"));
+include(modification("classes/db_matestoqueinimeiari_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("classes/db_matmater_classe.php"));
+include(modification("classes/db_matparam_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
+require(modification("classes/requisicaoMaterial.model.php"));
+require(modification("libs/db_utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("classes/materialestoque.model.php"));
 //fim classes materiais
 
-require_once "libs/db_app.utils.php";
+require_once modification("libs/db_app.utils.php");
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -423,7 +423,7 @@ $sql1="SELECT m60_codmater,
        ORDER BY matmater.m60_descr,mer_cardapiodia.me12_d_data
        ";
 //db_lovrot($sql1,15,"()","","","","NoMe");
-$result_dados = pg_query($sql1);
+$result_dados = db_query($sql1);
 $result_dia = $clmer_cardapiodia->sql_record($clmer_cardapiodia->sql_query("","DISTINCT me12_d_data as data_cabecalho","me12_d_data"," me12_i_codigo in ($lista)"));
 $array_dias = array();
 for($x=0;$x<$clmer_cardapiodia->numrows;$x++){

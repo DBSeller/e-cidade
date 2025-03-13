@@ -6,8 +6,13 @@ DBViewAlvaraDocumentos = function (sInstance, sContainer) {
   var aHeadersDocumentos = new Array('Código','Documento');
   var sIdField           = sInstance+"_fieldSet";
   var iCodigoAlvara      = null;
+  var isInscricaoVeiculo = false;
   this.setCodigoAlvara = function(iAlvara){
     iCodigoAlvara = iAlvara;
+  }
+
+  this.setIsInscricaoVeiculo = function(inscricaoVeiculo){
+    isInscricaoVeiculo = inscricaoVeiculo;
   }
   /**
    * Renderiza componente na tela
@@ -48,7 +53,7 @@ DBViewAlvaraDocumentos = function (sInstance, sContainer) {
     if(iCodigoAlvara != null) {
       
       var oParam                  = new Object();
-      oParam.exec                 = 'getDocumentosAlvara';
+      oParam.exec                 =  !isInscricaoVeiculo ? 'getDocumentosAlvara' : 'getDocumentosVeiculo';
       oParam.iCodigoAlvara        = iCodigoAlvara;
       me.oGridDocumentos.clearAll(true);
       

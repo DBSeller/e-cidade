@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_notificacao_classe.php");
-include("classes/db_notidebitos_classe.php");
-include("classes/db_notimatric_classe.php");
-include("classes/db_notiinscr_classe.php");
-include("classes/db_notinumcgm_classe.php");
-include("classes/db_notiusu_classe.php");
-include("classes/db_lista_classe.php");
-include("classes/db_listadeb_classe.php");
-include("classes/db_listanotifica_classe.php");
-require_once('libs/db_utils.php');
-require_once("libs/db_libpostgres.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_notificacao_classe.php"));
+include(modification("classes/db_notidebitos_classe.php"));
+include(modification("classes/db_notimatric_classe.php"));
+include(modification("classes/db_notiinscr_classe.php"));
+include(modification("classes/db_notinumcgm_classe.php"));
+include(modification("classes/db_notiusu_classe.php"));
+include(modification("classes/db_lista_classe.php"));
+include(modification("classes/db_listadeb_classe.php"));
+include(modification("classes/db_listanotifica_classe.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_libpostgres.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -314,7 +314,7 @@ function js_emite(){
 function js_pesquisadb02_idparag(mostra){
   if( document.getElementById('k60_codigo').value !='' ){
 		  document.form1.lanca.onclick = "";
-		  parent.bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
+		  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
 		  if(mostra==true){
 		    db_iframe.jan.location.href = 'cai2_geranotif003.php?lista='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostradb_paragrafo1|0|2';
 		    db_iframe.mostraMsg();
@@ -338,7 +338,7 @@ function js_mostradb_paragrafo(chave,erro){
   }else{
     document.form1.lanca.onclick = js_insSelect;
   }
-    parent.bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
 
 }
 

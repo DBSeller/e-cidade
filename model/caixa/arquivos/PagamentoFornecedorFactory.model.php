@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 /**
 * Factory que retorna a instancia da Classe do Banco
@@ -66,6 +66,10 @@ class PagamentoFornecedorFactory {
       case '104':
         return new PagamentoFornecedorCaixaEconomica();
       break;
+
+      case GeradorArquivoPagFor::CODIGO_BANCO_BRADESCO:
+        return new PagamentoFornecedorBradescoPagFor();
+        break;
 
       default:
         return false;

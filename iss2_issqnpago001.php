@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt10');
 $clrotulo->label('DBtxt11');
@@ -79,7 +79,7 @@ function js_emite(){
         <td>
         <?
           $sqlAno  = " select distinct q01_anousu from isscalc order by q01_anousu desc";
-          $rsAno   = pg_query($sqlAno);
+          $rsAno   = db_query($sqlAno);
           $intAno  = pg_numrows($rsAno);
           for($i=0;$i<$intAno;$i++){
             db_fieldsmemory($rsAno,$i);

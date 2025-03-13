@@ -1,69 +1,69 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: issqn
 //CLASSE DA ENTIDADE isscadsimples
-class cl_isscadsimples { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $q38_sequencial = 0; 
-   var $q38_inscr = 0; 
-   var $q38_dtinicial_dia = null; 
-   var $q38_dtinicial_mes = null; 
-   var $q38_dtinicial_ano = null; 
-   var $q38_dtinicial = null; 
-   var $q38_categoria = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_isscadsimples {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $q38_sequencial = 0;
+   var $q38_inscr = 0;
+   var $q38_dtinicial_dia = null;
+   var $q38_dtinicial_mes = null;
+   var $q38_dtinicial_ano = null;
+   var $q38_dtinicial = null;
+   var $q38_categoria = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 q38_sequencial = int4 = Código Sequencial 
-                 q38_inscr = int4 = Número da Inscrição 
-                 q38_dtinicial = date = Data Inicial 
-                 q38_categoria = int4 = Categoria 
+                 q38_sequencial = int4 = Código Sequencial
+                 q38_inscr = int4 = Número da Inscrição
+                 q38_dtinicial = date = Data Inicial
+                 q38_categoria = int4 = Categoria
                  ";
-   //funcao construtor da classe 
-   function cl_isscadsimples() { 
+   //funcao construtor da classe
+   function cl_isscadsimples() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("isscadsimples"); 
+     $this->rotulo = new rotulo("isscadsimples");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -90,9 +90,9 @@ class cl_isscadsimples {
      }
    }
    // funcao para inclusao
-   function incluir ($q38_sequencial){ 
+   function incluir ($q38_sequencial){
       $this->atualizacampos();
-     if($this->q38_inscr == null ){ 
+     if($this->q38_inscr == null ){
        $this->erro_sql = " Campo Número da Inscrição nao Informado.";
        $this->erro_campo = "q38_inscr";
        $this->erro_banco = "";
@@ -101,7 +101,7 @@ class cl_isscadsimples {
        $this->erro_status = "0";
        return false;
      }
-     if($this->q38_dtinicial == null ){ 
+     if($this->q38_dtinicial == null ){
        $this->erro_sql = " Campo Data Inicial nao Informado.";
        $this->erro_campo = "q38_dtinicial_dia";
        $this->erro_banco = "";
@@ -110,7 +110,7 @@ class cl_isscadsimples {
        $this->erro_status = "0";
        return false;
      }
-     if($this->q38_categoria == null ){ 
+     if($this->q38_categoria == null ){
        $this->erro_sql = " Campo Categoria nao Informado.";
        $this->erro_campo = "q38_categoria";
        $this->erro_banco = "";
@@ -120,16 +120,16 @@ class cl_isscadsimples {
        return false;
      }
      if($q38_sequencial == "" || $q38_sequencial == null ){
-       $result = db_query("select nextval('isscadsimples_q38_sequencial_seq')"); 
+       $result = db_query("select nextval('isscadsimples_q38_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: isscadsimples_q38_sequencial_seq do campo: q38_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: isscadsimples_q38_sequencial_seq do campo: q38_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->q38_sequencial = pg_result($result,0,0); 
+       $this->q38_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from isscadsimples_q38_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $q38_sequencial)){
@@ -140,10 +140,10 @@ class cl_isscadsimples {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->q38_sequencial = $q38_sequencial; 
+         $this->q38_sequencial = $q38_sequencial;
        }
      }
-     if(($this->q38_sequencial == null) || ($this->q38_sequencial == "") ){ 
+     if(($this->q38_sequencial == null) || ($this->q38_sequencial == "") ){
        $this->erro_sql = " Campo q38_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -152,19 +152,19 @@ class cl_isscadsimples {
        return false;
      }
      $sql = "insert into isscadsimples(
-                                       q38_sequencial 
-                                      ,q38_inscr 
-                                      ,q38_dtinicial 
-                                      ,q38_categoria 
+                                       q38_sequencial
+                                      ,q38_inscr
+                                      ,q38_dtinicial
+                                      ,q38_categoria
                        )
                 values (
-                                $this->q38_sequencial 
-                               ,$this->q38_inscr 
-                               ,".($this->q38_dtinicial == "null" || $this->q38_dtinicial == ""?"null":"'".$this->q38_dtinicial."'")." 
-                               ,$this->q38_categoria 
+                                $this->q38_sequencial
+                               ,$this->q38_inscr
+                               ,".($this->q38_dtinicial == "null" || $this->q38_dtinicial == ""?"null":"'".$this->q38_dtinicial."'")."
+                               ,$this->q38_categoria
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Cadastro de Optantes pelo Simples ($this->q38_sequencial) nao Incluído. Inclusao Abortada.";
@@ -199,16 +199,16 @@ class cl_isscadsimples {
        $resac = db_query("insert into db_acount values($acount,1821,10560,'','".AddSlashes(pg_result($resaco,0,'q38_categoria'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($q38_sequencial=null) { 
+   function alterar ($q38_sequencial=null) {
       $this->atualizacampos();
      $sql = " update isscadsimples set ";
      $virgula = "";
-     if(trim($this->q38_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q38_sequencial"])){ 
+     if(trim($this->q38_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q38_sequencial"])){
        $sql  .= $virgula." q38_sequencial = $this->q38_sequencial ";
        $virgula = ",";
-       if(trim($this->q38_sequencial) == null ){ 
+       if(trim($this->q38_sequencial) == null ){
          $this->erro_sql = " Campo Código Sequencial nao Informado.";
          $this->erro_campo = "q38_sequencial";
          $this->erro_banco = "";
@@ -218,10 +218,10 @@ class cl_isscadsimples {
          return false;
        }
      }
-     if(trim($this->q38_inscr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q38_inscr"])){ 
+     if(trim($this->q38_inscr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q38_inscr"])){
        $sql  .= $virgula." q38_inscr = $this->q38_inscr ";
        $virgula = ",";
-       if(trim($this->q38_inscr) == null ){ 
+       if(trim($this->q38_inscr) == null ){
          $this->erro_sql = " Campo Número da Inscrição nao Informado.";
          $this->erro_campo = "q38_inscr";
          $this->erro_banco = "";
@@ -231,10 +231,10 @@ class cl_isscadsimples {
          return false;
        }
      }
-     if(trim($this->q38_dtinicial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q38_dtinicial_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["q38_dtinicial_dia"] !="") ){ 
+     if(trim($this->q38_dtinicial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q38_dtinicial_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["q38_dtinicial_dia"] !="") ){
        $sql  .= $virgula." q38_dtinicial = '$this->q38_dtinicial' ";
        $virgula = ",";
-       if(trim($this->q38_dtinicial) == null ){ 
+       if(trim($this->q38_dtinicial) == null ){
          $this->erro_sql = " Campo Data Inicial nao Informado.";
          $this->erro_campo = "q38_dtinicial_dia";
          $this->erro_banco = "";
@@ -243,11 +243,11 @@ class cl_isscadsimples {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["q38_dtinicial_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["q38_dtinicial_dia"])){
          $sql  .= $virgula." q38_dtinicial = null ";
          $virgula = ",";
-         if(trim($this->q38_dtinicial) == null ){ 
+         if(trim($this->q38_dtinicial) == null ){
            $this->erro_sql = " Campo Data Inicial nao Informado.";
            $this->erro_campo = "q38_dtinicial_dia";
            $this->erro_banco = "";
@@ -258,10 +258,10 @@ class cl_isscadsimples {
          }
        }
      }
-     if(trim($this->q38_categoria)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q38_categoria"])){ 
+     if(trim($this->q38_categoria)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q38_categoria"])){
        $sql  .= $virgula." q38_categoria = $this->q38_categoria ";
        $virgula = ",";
-       if(trim($this->q38_categoria) == null ){ 
+       if(trim($this->q38_categoria) == null ){
          $this->erro_sql = " Campo Categoria nao Informado.";
          $this->erro_campo = "q38_categoria";
          $this->erro_banco = "";
@@ -293,7 +293,7 @@ class cl_isscadsimples {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cadastro de Optantes pelo Simples nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->q38_sequencial;
@@ -321,14 +321,14 @@ class cl_isscadsimples {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($q38_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($q38_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($q38_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -357,7 +357,7 @@ class cl_isscadsimples {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cadastro de Optantes pelo Simples nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$q38_sequencial;
@@ -385,11 +385,11 @@ class cl_isscadsimples {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -411,7 +411,7 @@ class cl_isscadsimples {
       }
      return $result;
    }
-   function sql_query ( $q38_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $q38_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -429,8 +429,8 @@ class cl_isscadsimples {
      $sql2 = "";
      if($dbwhere==""){
        if($q38_sequencial!=null ){
-         $sql2 .= " where isscadsimples.q38_sequencial = $q38_sequencial "; 
-       } 
+         $sql2 .= " where isscadsimples.q38_sequencial = $q38_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -446,7 +446,7 @@ class cl_isscadsimples {
      }
      return $sql;
   }
-   function sql_query_baixa( $q38_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_baixa( $q38_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -465,8 +465,8 @@ class cl_isscadsimples {
      $sql2 = "";
      if($dbwhere==""){
        if($q38_sequencial!=null ){
-         $sql2 .= " where isscadsimples.q38_sequencial = $q38_sequencial "; 
-       } 
+         $sql2 .= " where isscadsimples.q38_sequencial = $q38_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -482,7 +482,7 @@ class cl_isscadsimples {
      }
      return $sql;
   }
-   function sql_query_file ( $q38_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $q38_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -498,8 +498,8 @@ class cl_isscadsimples {
      $sql2 = "";
      if($dbwhere==""){
        if($q38_sequencial!=null ){
-         $sql2 .= " where isscadsimples.q38_sequencial = $q38_sequencial "; 
-       } 
+         $sql2 .= " where isscadsimples.q38_sequencial = $q38_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -515,8 +515,8 @@ class cl_isscadsimples {
      }
      return $sql;
   }
-  
-  function sql_query_dadosinscr( $q38_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+  function sql_query_dadosinscr( $q38_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -537,11 +537,11 @@ class cl_isscadsimples {
      $sql .= "                                   and tabativ.q07_seq                   = ativprinc.q88_seq               ";
      $sql .= "      left  join ativid             on ativid.q03_ativ                   = tabativ.q07_ativ                ";
      $sql2 = "";
-     
+
      if($dbwhere==""){
        if($q38_sequencial!=null ){
-         $sql2 .= " where isscadsimples.q38_sequencial = $q38_sequencial "; 
-       } 
+         $sql2 .= " where isscadsimples.q38_sequencial = $q38_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -556,6 +556,28 @@ class cl_isscadsimples {
        }
      }
      return $sql;
-  }  
+  }
+
+  /**
+   * valida se existe competencia ativa para o cadastro do simples
+   * @param  integer $iCodigoInscricao Código da inscrição
+   * @param  string  $sCompentencia    Competencia padrao (yyyy-mm)
+   * @return string                    Sql
+   */
+  function sql_query_valida_competencia($iCodigoInscricao, $sCompentencia) {
+
+    $sSql  = "select *,                                                                                                                                                            ";
+    $sSql .= "       case when q39_dtbaixa is null OR '{$sCompentencia}-15'::date between  (extract(year  from q38_dtinicial) || '-' || extract(month from q38_dtinicial) || '-01')::date                 ";
+    $sSql .= "                                       and ( coalesce( extract(year  from q39_dtbaixa), extract(year from CURRENT_DATE))  || '-' ||                                  ";
+    $sSql .= "                                             coalesce( extract(month from q39_dtbaixa), '12') || '-' ||                                                              ";
+    $sSql .= "                                             (SELECT extract(day from CAST(date_trunc('month', q39_dtbaixa) + interval '1 month'- interval '1 day' as date))))::date ";
+    $sSql .= "                              then true                                                                                                                              ";
+    $sSql .= "                              else false                                                                                                                             ";
+    $sSql .= "        end as validade                                                                                                                                              ";
+    $sSql .= "  from isscadsimples                                                                                                                                                 ";
+    $sSql .= "       left join isscadsimplesbaixa on q39_isscadsimples = q38_sequencial                                                                                            ";
+    $sSql .= " where q38_inscr = {$iCodigoInscricao}                                                                                                                               ";
+
+    return $sSql;
+  }
 }
-?>

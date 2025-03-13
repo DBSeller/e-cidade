@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-//include("fpdf151/fpdf.php");
-require_once('fpdf151/PDF_Label.php');
+include(modification("libs/db_sql.php"));
+//include(modification("fpdf151/fpdf.php"));
+require_once(modification('fpdf151/PDF_Label.php'));
 db_postmemory($HTTP_SERVER_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 

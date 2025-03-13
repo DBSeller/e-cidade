@@ -56,6 +56,25 @@ function mascaraValor(e, oObject) {
     oObject.value = mValor;
     return true;
   }, 1);
-
-
 }
+
+round = function(nValor, casas) {
+
+  if (typeof(casas) =='undefined' || casas == null) {
+    casas = 0;
+  }
+
+  var value  = new Number(nValor);
+  var iCasas = new Number(casas);
+  if (iCasas > 0) {
+    iCasas  = casas - 1;
+  }
+
+  var nValor           = value;
+  var iPotencia        = Math.pow(10, casas);
+
+  var nValorNaPotencia = new Number(nValor * iPotencia).toFixed(iCasas);
+  var nCalculo         = new Number(nValorNaPotencia / iPotencia);
+  var nValorFormatado  = nCalculo.toFixed(casas);
+  return nValorFormatado;
+};

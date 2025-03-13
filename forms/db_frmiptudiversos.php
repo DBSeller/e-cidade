@@ -31,55 +31,58 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("z01_nome");
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tj80_matric?>">
-       <?
-       db_ancora(@$Lj80_matric,"js_pesquisaj80_matric(true);",$db_opcao);
-       ?>
-    </td>
-    <td> 
-<?
-db_input('j80_matric',10,$Ij80_matric,true,'text',$db_opcao," onchange='js_pesquisaj80_matric(false);'")
-?>
-       <?
-db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
-       ?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj80_areatrib?>">
-       <?=@$Lj80_areatrib?>
-    </td>
-    <td> 
-<?
-db_input('j80_areatrib',15,$Ij80_areatrib,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj80_profund?>">
-       <?=@$Lj80_profund?>
-    </td>
-    <td> 
-<?
-db_input('j80_profund',15,$Ij80_profund,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  </table>
+  <center>
+    <fieldset style="width: 600px;">
+      <legend class="bold"><?=($db_opcao==1?"Inclusão":($db_opcao==2||$db_opcao==22?"Alteração":"Exclusão"))?> de Diversos IPTU</legend>
+      <table border="0">
+        <tr>
+          <td nowrap title="<?=@$Tj80_matric?>">
+             <?
+              db_ancora(@$Lj80_matric,"js_pesquisaj80_matric(true);",$db_opcao);
+             ?>
+          </td>
+          <td> 
+            <?
+              db_input('j80_matric',10,$Ij80_matric,true,'text',$db_opcao," onchange='js_pesquisaj80_matric(false);'")
+            ?>
+            <?
+              db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$Tj80_areatrib?>">
+             <?=@$Lj80_areatrib?>
+          </td>
+          <td> 
+            <?
+              db_input('j80_areatrib',15,$Ij80_areatrib,true,'text',$db_opcao,"")
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$Tj80_profund?>">
+             <?=@$Lj80_profund?>
+          </td>
+          <td> 
+            <?
+              db_input('j80_profund',15,$Ij80_profund,true,'text',$db_opcao,"")
+            ?>
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+    <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+    <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
   </center>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
 <script>
 function js_pesquisaj80_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubase.php?funcao_js=parent.js_mostraiptubase1|j01_matric|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubase','func_iptubase.php?funcao_js=parent.js_mostraiptubase1|j01_matric|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.j80_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubase.php?pesquisa_chave='+document.form1.j80_matric.value+'&funcao_js=parent.js_mostraiptubase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubase','func_iptubase.php?pesquisa_chave='+document.form1.j80_matric.value+'&funcao_js=parent.js_mostraiptubase','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -98,7 +101,7 @@ function js_mostraiptubase1(chave1,chave2){
   db_iframe_iptubase.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_iptudiversos','func_iptudiversos.php?funcao_js=parent.js_preenchepesquisa|j80_matric|z01_nome','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptudiversos','func_iptudiversos.php?funcao_js=parent.js_preenchepesquisa|j80_matric|z01_nome','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,nome){
   document.form1.z01_nome.value = nome;

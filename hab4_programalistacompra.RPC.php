@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_sessoes.php"));
 
-require_once("libs/db_utils.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_habitprogramalistacompra_classe.php");
-require_once("classes/db_habitprogramalistacompraitem_classe.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_habitprogramalistacompra_classe.php"));
+require_once(modification("classes/db_habitprogramalistacompraitem_classe.php"));
 
 $clHabitProgramaListaCompra     = new cl_habitprogramalistacompra();
 $clHabitProgramaListaCompraItem = new cl_habitprogramalistacompraitem();
@@ -58,7 +58,7 @@ try {
 		$sSqlListas   = $clHabitProgramaListaCompra->sql_query(null,"*","ht17_sequencial asc",$sWhereListas);
 		$rsListas     = $clHabitProgramaListaCompra->sql_record($sSqlListas);
 		
-		$oRetorno->aDadosListas = db_utils::getColectionByRecord($rsListas,false,false,true); 
+		$oRetorno->aDadosListas = db_utils::getCollectionByRecord($rsListas,false,false,true); 
 		
 		
 	} else if ( $oParam->sMethod == "incluirLista" ) {
@@ -136,7 +136,7 @@ try {
     $sSqlItemLista   = $clHabitProgramaListaCompraItem->sql_query(null,"*","ht18_sequencial",$sWhereItemLista);
     $rsItemLista     = $clHabitProgramaListaCompraItem->sql_record($sSqlItemLista);
     
-    $oRetorno->aDadosItensLista = db_utils::getColectionByRecord($rsItemLista,false,false,true);   	
+    $oRetorno->aDadosItensLista = db_utils::getCollectionByRecord($rsItemLista,false,false,true);   	
 
     
  } else if ( $oParam->sMethod == "incluirItemLista" ) {

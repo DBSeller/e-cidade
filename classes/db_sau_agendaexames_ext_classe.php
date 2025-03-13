@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: Ambulatorial
 //CLASSE DA ENTIDADE sau_agendaexames
-require('db_sau_agendaexames_classe.php');
+require(modification('classes/db_sau_agendaexames_classe.php'));
 class cl_sau_agendaexames_ext extends cl_sau_agendaexames  { 
    // funcao do sql 
    function sql_query_ext ( $s113_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
@@ -51,7 +51,7 @@ class cl_sau_agendaexames_ext extends cl_sau_agendaexames  {
      $sql .= "      inner join sau_tipoficha  on  sau_tipoficha.sd101_i_codigo = sau_prestadorhorarios.s112_i_tipoficha";
      $sql .= "      inner join sau_prestadorvinculos  on  sau_prestadorvinculos.s111_i_codigo = sau_prestadorhorarios.s112_i_prestadorvinc";
 
-     $sql .= "      inner join sau_exames       on  sau_exames.s108_i_codigo = sau_prestadorvinculos.s111_i_exame";
+     $sql .= "      INNER JOIN sau_procedimento ON sau_procedimento.sd63_i_codigo = sau_prestadorvinculos.s111_procedimento";
      $sql .= "      inner join sau_prestadores  on  sau_prestadores.s110_i_codigo = sau_prestadorvinculos.s111_i_prestador ";
      $sql .= "      inner join cgm as prestador on  prestador.z01_numcgm = sau_prestadores.s110_i_numcgm ";
      

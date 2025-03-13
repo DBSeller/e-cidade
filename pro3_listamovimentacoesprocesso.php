@@ -1,7 +1,7 @@
 <?php
-/*
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("std/db_stdClass.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet = db_utils::postMemory($_GET);
 ?>
@@ -41,6 +41,7 @@ $oGet = db_utils::postMemory($_GET);
     <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Expires" CONTENT="0">
+    <script type="text/javascript" src="scripts/classes/http/http.js"></script>
     <?php
      db_app::load('scripts.js, prototype.js, strings.js, datagrid.widget.js, DBHint.widget.js');
      db_app::load('estilos.css, grid.style.css');
@@ -63,13 +64,15 @@ $oGet = db_utils::postMemory($_GET);
 </div>
 <script>
 var iCodigoProcesso = '<?php echo $oGet->codigo_processo;?>';
+var iTipoProcesso = '<?php echo $oGet->tipo_processo;?>';
 var sRPC = 'prot4_processoprotocolo004.RPC.php';
 
 var oDataGridMovimentacoes = new DBGrid('gridMovimentacoes');
 oDataGridMovimentacoes.nameInstance = 'oDataGridMovimentacoes';
-oDataGridMovimentacoes.setCellWidth(['8%', '5%', '20%', '20%', '20%', '10%', '10%', '7%']);
-oDataGridMovimentacoes.setCellAlign(['center', 'center']);
-oDataGridMovimentacoes.setHeader(['Data', 'Hora', 'Departamento', 'Instituicao', 'Login', 'Ocorrência', 'Despacho', 'Imprimir']);
+oDataGridMovimentacoes.allowSelectColumns(true);
+oDataGridMovimentacoes.setCellWidth(['5%', '5%', '20%', '15%', '20%', '10%', '10%', '7%', '7%']);
+oDataGridMovimentacoes.setCellAlign(['center', 'center', 'left', 'left', 'left', 'left', 'left', 'center', 'center' ]);
+oDataGridMovimentacoes.setHeader(['Data', 'Hora', 'Departamento', 'Instituicao', 'Login', 'Ocorrência', 'Despacho', 'Imprimir', 'Documentos']);
 oDataGridMovimentacoes.setHeight(250);
 oDataGridMovimentacoes.show($('ctnDataGridMovimentacoes'));
 oDataGridMovimentacoes.clearAll(true);
@@ -78,24 +81,23 @@ js_buscarMovimentacoes();
 
 function js_buscarMovimentacoes() {
 
-  js_divCarregando('Buscando movimentaçãos do processo.', 'msgbox');
+  js_divCarregando('Buscando movimentações do processo.', 'msgbox');
   var oParametro  = new Object();
   oParametro.exec = 'getMovimentacoesProcesso';
   oParametro.iCodigoProcesso = iCodigoProcesso;
 
   new Ajax.Request( sRPC, { method:'post', parameters:'json='+Object.toJSON(oParametro), onComplete: function(oAjax) {
-
+    
     js_removeObj("msgbox");
-    var oRetorno = eval("(" + oAjax.responseText + ")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if ( oRetorno.lErro ) {
 
       alert(oRetorno.sMensagem.urlDecode());
       return false;
     }
-
+    
     oRetorno.aMovimentacoes.each(function(oMovimento, iSeq) {
-
       var aLinha = new Array();
       aLinha[0] = oMovimento.sData.urlDecode();
       aLinha[1] = oMovimento.sHora.urlDecode();
@@ -103,8 +105,12 @@ function js_buscarMovimentacoes() {
       aLinha[3] = oMovimento.iInstituicao + ' - ' + oMovimento.sInstituicao.urlDecode();
       aLinha[4] = oMovimento.sLogin.urlDecode();
       aLinha[5] = oMovimento.sObservacoes.urlDecode();
-      aLinha[6] = oMovimento.sDespacho.urlDecode().replace(/<br>/g, '');
+
+      var despacho = oMovimento.sDespacho.replace(/%0A/g, "<br>")
+      aLinha[6] = despacho.urlDecode();
+      // Alteracao Plugin TaxonomiaDeProcessosDoMinisterioPublico - pro3_listamovimentacoesprocesso.php #1
       aLinha[7] = '';
+      aLinha[8] = '';
 
       if (oMovimento.lImprimir) {
 
@@ -113,16 +119,32 @@ function js_buscarMovimentacoes() {
         aLinha[7] = sButton;
       }
 
+      if (oMovimento.lAnexos) {
+        var sButton  = "<input type='button' value='Anexos' name='Anexos' ";
+            sButton += " onclick='js_abrepopup(\"" + iCodigoProcesso + "\",\"" + oMovimento.iAndamentoInterno + "\")' />";
+
+        if(iTipoProcesso == 2){
+          var sButton  = "<input type='button' value='Visualizar' name='Visualizar' ";
+              sButton += " onclick='visualizarDocumentosDespacho(\"" + iCodigoProcesso + "\",\"" + oMovimento.iAndamentoInterno + "\")' />";
+        }
+
+        aLinha[8] = sButton;
+      }
+
       oDataGridMovimentacoes.addRow(aLinha);
-      oDataGridMovimentacoes.aRows[iSeq].aCells[5].sEvents += " onmouseover='js_displayAjuda(\""+aLinha[5]+"\", true)'";
-      oDataGridMovimentacoes.aRows[iSeq].aCells[5].sEvents += " onmouseout='js_displayAjuda(\"\", false)'";
-      oDataGridMovimentacoes.aRows[iSeq].aCells[6].sEvents += " onmouseover='js_displayAjuda(\""+oMovimento.sDespacho+"\", true)'";
-      oDataGridMovimentacoes.aRows[iSeq].aCells[6].sEvents += " onmouseout='js_displayAjuda(\"\", false)'";
-      oDataGridMovimentacoes.aRows[iSeq].aCells[4].sEvents += " onmouseover='js_displayAjuda(\""+aLinha[4]+"\", true)'";
-      oDataGridMovimentacoes.aRows[iSeq].aCells[4].sEvents += " onmouseout='js_displayAjuda(\"\", false)'";
+
+      for (var iHint = 0; iHint <= 6; iHint++) {
+
+        var sCampo = iHint != 6 ? aLinha[iHint] : oMovimento.sDespacho;
+        if (iHint == 2) {
+          sCampo += ' / ' + oMovimento.sOrgao.urlDecode();
+        }
+        oDataGridMovimentacoes.aRows[iSeq].aCells[iHint].sEvents += " onmouseover='js_displayAjuda(\""+sCampo+"\", true)'";
+        oDataGridMovimentacoes.aRows[iSeq].aCells[iHint].sEvents += " onmouseout='js_displayAjuda(\"\", false)'";
+      }
     });
 
-    oDataGridMovimentacoes.renderRows(); 
+    oDataGridMovimentacoes.renderRows();
   }});
 
 }
@@ -137,7 +159,9 @@ function js_displayAjuda(sTexto, lShow) {
     var y  = el.offsetHeight;
         x += el.offsetLeft;
         y += el.offsetTop;
-    oElemento.innerHTML     = sTexto.urlDecode().replace(/<br>/g, '');
+
+    var despacho = sTexto.replace(/%0A/g, "<br>")
+    oElemento.innerHTML     = despacho.urlDecode()
     oElemento.style.display = '';
     oElemento.style.top     = $('ctnDataGridMovimentacoes').scrollTop + 20;
     oElemento.style.left    = x;
@@ -152,5 +176,69 @@ function js_imprimeDespacho(codproc, codprocandamint) {
   var sUrl = 'pro2_despachointer002.php?codproc='+codproc+'&codprocandamint='+codprocandamint;
   jan = window.open(sUrl, '', 'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
+}
+
+function js_abrepopup(codproc, codprocandamint) {
+  js_OpenJanelaIframe('CurrentWindow.corpo',
+                      'db_iframe_documentosprocesso',
+                      'func_listaanexosdespacho.php?codproc='+codproc+'&codprocandamint='+codprocandamint,
+                      'Lista de Documentos',
+                      true);
+}
+
+visualizarDocumentosDespacho = (codigoProcesso, procandamint) => {
+
+  getEcidadeInfo().then(apiUrl => {
+    const data = new FormData();
+    data.append('codigoProcesso', codigoProcesso);
+
+    HttpClient.post(`${apiUrl}patrimonial/protocolo/processo/processodocumento/documentosPorProcesso`, {body: data}).then(response => {
+        if(response.error == true){
+          alert(response.message);
+            return;
+        }
+
+        var codigosEStorage = [];
+        var index = 0;
+
+        if(!!procandamint){
+          var ordem = response.data.filter(
+            (dados) => dados.codigo_andamento_interno == procandamint
+          ).map((dados) => dados.ordem).reduce(
+            (accumulator, currentValue) => (currentValue < accumulator) ? currentValue : accumulator
+          );
+
+          index = (ordem || 1) - 1;
+        }
+
+        response.data.forEach((documento) => {
+          codigosEStorage.push(documento.id_estorage);
+        });
+
+
+        if (codigosEStorage.length == 0) {
+          alert("Nenhum documento encontrado para o processo.");
+          return false;
+        }
+
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_visualizador_imagens', `db_visualizador_documentos.php?ids=${codigosEStorage}&viewIndex=${index}`, 'Visualizador de documentos', true);
+    });
+  });
+}
+
+
+function getEcidadeInfo() {
+
+    const data = new FormData();
+    data.append('acao', 'info');
+    return HttpClient.post('con4_ecidadeinfo.RPC.php', { body: data }).then(function (response) {
+        if (response.erro) {
+            alert(response.mensagem);
+            return;
+        }
+
+        return response.url + 'v4/api/';
+    });
+
 }
 </script>

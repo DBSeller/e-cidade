@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("std/db_stdClass.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/JSON.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("dbforms/db_classesgenericas.php");
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $oJson              = new services_json();
 $oParam             = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -45,6 +45,57 @@ $oRetorno->status   = 1;
 
 switch ($oParam->exec){
 
+	
+
+	case "salvaObs":
+		 
+		$clobsboletim = new cl_obsboletim;
+		$iEscola = db_getsession("DB_coddepto");
+		$sObs   = str_replace("'", "\'", DBString::utf8_decode_all($oParam->sObs));
+		db_inicio_transacao();
+		
+		$sQueryObs = $clobsboletim->sql_query("","ed252_i_codigo",""," ed252_i_escola = $iEscola");
+		$resultobs = $clobsboletim->sql_record($sQueryObs);
+		
+		if ($clobsboletim->numrows > 0) {
+			 
+			db_fieldsmemory($resultobs,0);
+			$clobsboletim->ed252_i_escola   = $iEscola;
+			$clobsboletim->ed252_t_mensagem = "$sObs";
+			$clobsboletim->ed252_i_codigo   = $ed252_i_codigo;
+			$clobsboletim->alterar($ed252_i_codigo);
+			if ($clobsboletim->erro_status == "0") {
+					
+				$oRetorno->status = 0;
+				db_fim_transacao(true);
+			}			
+			
+			
+		} else {
+			 
+			if ($sObs != "") {
+				
+				$clobsboletim->ed252_i_escola   = $iEscola;
+				$clobsboletim->ed252_t_mensagem = "$sObs";
+				$clobsboletim->incluir(null);
+				if ($clobsboletim->erro_status == "0") {
+						
+					$oRetorno->status = 0;
+					db_fim_transacao(true);
+				}				
+				
+			}
+		}
+		 
+		
+		db_fim_transacao(false);
+		
+		$oRetorno->iTurma    = $oParam->iTurma;
+		$oRetorno->iPesquisa = $oParam->iPesquisa;
+		 
+  break;	
+	
+	
   case "PesquisaCalendario":
 
     $oDaoCalendario     = db_utils::getdao('calendario');
@@ -59,7 +110,7 @@ switch ($oParam->exec){
     if ($oDaoCalendario->numrows > 0) {
       
       $oRetorno->iEscola  = db_getsession("DB_coddepto");
-      $oRetorno->dados    = db_utils::getColectionByRecord($rsResultCalendario, false, false, true);   
+      $oRetorno->dados    = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);   
     
     } else {
       $oRetorno->iStatus  = 0;

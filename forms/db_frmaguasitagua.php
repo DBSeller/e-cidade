@@ -58,7 +58,7 @@ db_input('x08_nomesituacao',30,$Ix08_nomesituacao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguasitagua','func_aguasitagua.php?funcao_js=parent.js_preenchepesquisa|x08_codsitagua','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguasitagua','func_aguasitagua.php?funcao_js=parent.js_preenchepesquisa|x08_codsitagua','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguasitagua.hide();

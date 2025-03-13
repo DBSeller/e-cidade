@@ -1,37 +1,11 @@
 <?php
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulocampo();
 $oRotulo->label("ed60_i_aluno");
@@ -99,7 +73,7 @@ $dataClassificacao_ano = $oDataSistema->getAno();
           <tr>
             <td nowrap='nowrap' class='bold'>Data:</td>
             <td nowrap='nowrap'>
-              <?db_inputdata('dataClassificacao', $dataClassificacao_dia, $dataClassificacao_mes, 
+              <?db_inputdata('dataClassificacao', $dataClassificacao_dia, $dataClassificacao_mes,
                              $dataClassificacao_ano, true, 'text', 1, "")
               ?>
             </td>
@@ -123,14 +97,14 @@ $dataClassificacao_ano = $oDataSistema->getAno();
         </table>
         <fieldset>
           <legend>Observação:</legend>
-          <?php 
+          <?php
             db_textarea('observacao', 4, 75, '', true, 'text', 1, "");
           ?>
         </fieldset>
       </fieldset>
       <input type="button" value='Processar' id='processar' name='processar'>
     </form>
-  
+
   </div>
 </body>
 <?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
@@ -145,7 +119,7 @@ const URL_EDU04_RECLASSIFICACAO001 = "educacao.escola.edu04reclassicacao001.";
  * Array de disciplina, foi montado como array multdimensional para manter compatbilidade com DBLancador
  * aDisciplinasDestino[][]
  * aDisciplinasDestino[0][0] = codigo
- * aDisciplinasDestino[0][1] = descricao 
+ * aDisciplinasDestino[0][1] = descricao
  */
 var aDisciplinasDestino = new Array();
 var oDadosAlunoOrigem   = {};
@@ -164,11 +138,11 @@ function js_pesquisaAluno(lMostra) {
   aDisciplinasDestino = new Array();
   js_limpaTurmaDestino();
   var sUrl = 'func_alunoavanco.php?';
-  
+
   if (lMostra) {
 
-    sUrl += 'funcao_js=parent.js_mostraAluno1|ed60_i_codigo|ed60_i_aluno|ed47_v_nome';    
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_aluno', sUrl, 'Pesquisa Aluno', true);
+    sUrl += 'funcao_js=parent.js_mostraAluno1|ed60_i_codigo|ed60_i_aluno|ed47_v_nome';
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aluno', sUrl, 'Pesquisa Aluno', true);
 
   } else {
 
@@ -176,7 +150,7 @@ function js_pesquisaAluno(lMostra) {
 
       sUrl += 'pesquisa_chave='+$F('ed60_i_aluno');
       sUrl += '&funcao_js=parent.js_mostraAluno';
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_aluno', sUrl, 'Pesquisa Aluno', false);
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aluno', sUrl, 'Pesquisa Aluno', false);
     } else {
       js_limpaDadosAluno();
     }
@@ -193,7 +167,7 @@ function js_mostraAluno1(iMatricula, iCodigoAluno, sNome) {
 }
 
 /**
- * Retorno  
+ * Retorno
  * arguments[0] : Nome aluno
  * arguments[1] : Código turma
  * arguments[2] : Nome Turma
@@ -210,13 +184,13 @@ function js_mostraAluno(sNome, iCodigoTurma , chave3, chave4, chave5, chave6, ch
 
   $('ed60_i_codigo').value = iMatricula;
   $('ed47_v_nome').value   = sNome;
-  
+
   js_limpaTurmaDestino();
 
   if (lErro) {
-    
+
     js_limpaDadosAluno();
-    return false;    
+    return false;
   }
   js_buscaDadosMatricula(iMatricula);
 }
@@ -229,7 +203,7 @@ function js_pesquisaTurmaDestino() {
   if ($F('ed60_i_aluno') == '') {
 
     alert(_M(URL_EDU04_RECLASSIFICACAO001+"selecione_aluno"));
-    return false;      
+    return false;
   }
   var sUrl = 'func_classificacaoaluno.php?';
   sUrl += 'codigo_aluno='+$F('ed60_i_aluno');
@@ -251,10 +225,10 @@ function js_mostraTurmaDestino(iTurma, sTurma, iEtapa, sEtapa) {
   }
   js_mostraTurnosTurma();
 }
- 
+
 function js_limpaDadosAluno() {
 
-  $('ed60_i_aluno').value  = "";  
+  $('ed60_i_aluno').value  = "";
   $('ed60_i_codigo').value = "";
   $('ed47_v_nome').value   = "";
   $('turmaOrigem').value   = "";
@@ -269,22 +243,22 @@ function js_limpaTurmaDestino() {
   $('iTurmaDestino').value     = "";
   $('iEtapaDestino').value     = "";
   $('registraAvaliacao').value = 'f';
-  
+
 }
 
 /**
  * Busca os dados da Matricula
- */ 
+ */
 function js_buscaDadosMatricula(iMatricula) {
-  
+
   var oParametros        = {};
   oParametros.exec       = 'getDadosOrigemAluno';
   oParametros.iMatricula = iMatricula;
 
   var oRequest        = {};
-  oRequest.method     = 'post';  
+  oRequest.method     = 'post';
   oRequest.parameters = 'json='+Object.toJSON(oParametros);
-  oRequest.onComplete = js_retornoDadosMatricula; 
+  oRequest.onComplete = js_retornoDadosMatricula;
 
   js_divCarregando(_M(URL_EDU04_RECLASSIFICACAO001+"aguarde_buscando_dados_aluno"), "msgBox");
   new Ajax.Request(URLRPC, oRequest);
@@ -293,7 +267,7 @@ function js_buscaDadosMatricula(iMatricula) {
 function js_retornoDadosMatricula(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   oDadosAlunoOrigem        = oRetorno.oDadosAluno;
   $('turmaOrigem').value   = oRetorno.oDadosAluno.turma_descricao.urlDecode();
@@ -301,25 +275,25 @@ function js_retornoDadosMatricula(oAjax) {
   $('dataMatricula').value = oRetorno.oDadosAluno.data_matricula;
 
   js_buscaDisciplinasTurmaOrigem();
-} 
+}
 
 /**
  * @todo Devemos implementar os dados da grid
  */
 $('registraAvaliacao').observe('change', function() {
 
-  $('gradeAvaliacao').style.display = 'none'; 
-  
+  $('gradeAvaliacao').style.display = 'none';
+
   if ($F('registraAvaliacao') == 't') {
 
     if ($F('ed60_i_aluno') == '') {
 
       alert(_M(URL_EDU04_RECLASSIFICACAO001+"selecione_aluno"));
       $('registraAvaliacao').value = 'f';
-      return false;      
+      return false;
     }
     $('gradeAvaliacao').style.display = 'table-row';
-    
+
   }
 });
 
@@ -334,9 +308,9 @@ function js_buscaDisciplinasTurmaOrigem() {
   oParametros.iEtapa = oDadosAlunoOrigem.etapa_codigo;
 
   var oRequest        = {};
-  oRequest.method     = 'post';  
+  oRequest.method     = 'post';
   oRequest.parameters = 'json='+Object.toJSON(oParametros);
-  oRequest.onComplete = js_retornoDisciplinasTurmaOrigem; 
+  oRequest.onComplete = js_retornoDisciplinasTurmaOrigem;
 
   js_divCarregando("Aguarde...", "msgBoxB");
   new Ajax.Request(URLRPC, oRequest);
@@ -345,27 +319,27 @@ function js_buscaDisciplinasTurmaOrigem() {
 function js_retornoDisciplinasTurmaOrigem(oAjax) {
 
   js_removeObj('msgBoxB');
-  var oRetorno = eval('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   oRetorno.aDisciplinas.each( function (oDisciplina) {
-    
+
     var aDisciplina = [oDisciplina.iCodigo, oDisciplina.nome.urlDecode()];
     aDisciplinasDestino.push(aDisciplina);
   });
-  
+
   /**
    * Limpa dados dos campos digitados
    */
 
   oLancador = new DBViewFormularioEducacao.LancamentoDisciplinaReclassificacao('disciplinaAvaliacao');
   //var oLancador = new DBLancador('disciplinaAvaliacao');
-  oLancador.setNomeInstancia('oLancador');  
-  oLancador.setLabelAncora('Componente Curricular:');   
+  oLancador.setNomeInstancia('oLancador');
+  oLancador.setLabelAncora('Componente Curricular:');
   oLancador.setTextoFieldset("Resultado da Avaliação");
   var aCampos = ['ed12_i_codigo','ed232_c_descr'];
   oLancador.setParametrosPesquisa('func_disciplinascurso.php', aCampos, "iEtapa="+oDadosAlunoOrigem.etapa_codigo);
   /**
-   * 
+   *
    */
   $('gradeAvaliacao').style.display = 'table-row';
   oLancador.show($('ctnLancador'));
@@ -380,11 +354,11 @@ function js_retornoDisciplinasTurmaOrigem(oAjax) {
  */
 $('processar').observe('click', function () {
 
-  var aTurnoReferencia = new Array();  
+  var aTurnoReferencia = new Array();
   var lValidacoesTurma = true;
-  
+
   lValidacoesTurma = js_validaTurma();
-  
+
   if (!lValidacoesTurma) {
     return false;
   }
@@ -398,7 +372,7 @@ $('processar').observe('click', function () {
     var aAvaliacaoSelecionada = oLancador.getDisciplinas();
 
     if (aAvaliacaoSelecionada.length == 0 ) {
-      
+
       alert(_M(URL_EDU04_RECLASSIFICACAO001+"resultado_avaliacao_vazio"));
       return false;
     }
@@ -407,14 +381,34 @@ $('processar').observe('click', function () {
       oComponente.sAvaliacao = encodeURIComponent(tagString(oComponente.sAvaliacao));
       aAvaliacao.push(oComponente);
     });
-    
   }
+
+  if ( $F('dataClassificacao') == '' ) {
+
+    alert( _M(URL_EDU04_RECLASSIFICACAO001 + "informe_data") );
+    return;
+  }
+
+  var aDataMatricula = $F('dataMatricula').split('/');
+  var aNovaMatricula = $F('dataClassificacao').split('/');
+  if ( aDataMatricula[2] != aNovaMatricula[2] ) {
+
+    alert( _M(URL_EDU04_RECLASSIFICACAO001 + "ano_data_deve_ser_igual_calendario") );
+    return;
+  }
+
+  if ( js_comparadata( $F('dataMatricula') , $F('dataClassificacao'), ' > ') ) {
+
+    alert( _M(URL_EDU04_RECLASSIFICACAO001 + "data_deve_ser_maior_data_matricula"));
+    return;
+  }
+
   if ($F('iTurmaDestino') == "") {
 
     alert(_M(URL_EDU04_RECLASSIFICACAO001+"turma_destino_nao_informada"));
     return false;
   }
-  
+
   var oParametros              = {};
   oParametros.exec             = 'processar';
   oParametros.iAluno           = $F('ed60_i_aluno');
@@ -426,38 +420,38 @@ $('processar').observe('click', function () {
   oParametros.aAvaliacao       = aAvaliacao;
   oParametros.aTurnoReferencia = aTurnoReferencia;
   oParametros.sObservavcao     = encodeURIComponent(tagString($F('observacao')));
-  
+
 
   var oRequest        = {};
-  oRequest.method     = 'post';  
+  oRequest.method     = 'post';
   oRequest.parameters = 'json='+Object.toJSON(oParametros);
-  oRequest.onComplete = js_retornoProcessar; 
-  
+  oRequest.onComplete = js_retornoProcessar;
+
   js_divCarregando(_M(URL_EDU04_RECLASSIFICACAO001+"aguarde_salvando"), "msgBoxC");
   new Ajax.Request(URLRPC, oRequest);
-  
+
 });
 
 
 function js_retornoProcessar(oAjax) {
 
   js_removeObj('msgBoxC');
-  var oRetorno = eval('(' + oAjax.responseText + ')');
-  
+  var oRetorno = JSON.parse(oAjax.responseText);
+
   if (oRetorno.status == 2) {
-    
+
     alert(oRetorno.message.urlDecode());
     return false;
   } else {
 
     alert(_M(URL_EDU04_RECLASSIFICACAO001+"salvo_sucesso"));
-    location.reload(true);    
+    location.reload(true);
   }
-  
+
 };
 
 /**
- * Função executada ao iniciar 
+ * Função executada ao iniciar
  */
 (function () {
 
@@ -465,14 +459,14 @@ function js_retornoProcessar(oAjax) {
   js_limpaTurmaDestino();
 
   aDisciplinasDestino = new Array();
-  
+
 })();
 
 /**
  * Insntancia a view contendo as linhas de turnos referente a turma e as mostra na tela
  */
 function js_mostraTurnosTurma() {
-  
+
   oTurmaTurno = new DBViewFormularioEducacao.TurmaTurnoReferente($('linhaTurnoTurma'), $F('iTurmaDestino'));
   oTurmaTurno.show();
 }
@@ -481,9 +475,9 @@ function js_mostraTurnosTurma() {
  * Verifica qual tipo de validação deve ser feita
  */
 function js_validaTurma() {
-  
+
   var lValidacoesTurma = false;
-  
+
   if (oTurmaTurno.lEnsinoInfantil && oTurmaTurno.lTurnoIntegral) {
     lValidacoesTurma = js_validaTurmaInfantilIntegral();
   } else {
@@ -502,21 +496,21 @@ function js_validaTurmaInfantilIntegral() {
 
   aTurnoReferencia = js_validaTurnosSelecionados();
 
-  // Verifica se ao menos 1 checkbox esta selecionado 
+  // Verifica se ao menos 1 checkbox esta selecionado
   if (aTurnoReferencia.length == 0) {
 
     alert(_M(URL_EDU04_RECLASSIFICACAO001+"selecione_turno"));
-    return false; 
+    return false;
   }
 
-  // Verifica se existe vagas disponíveis nos turnos referentes 
+  // Verifica se existe vagas disponíveis nos turnos referentes
   var lTemVagas = true;
   var sMsg      = "Turma não possui vaga no(s) turno(s):";
   for (var index = 0; index < aTurnoReferencia.length; index++) {
 
     var aVagasTurno = new Array();
     aVagasTurno     = oTurmaTurno.getVagasDisponiveis(aTurnoReferencia[index]);
-    
+
     if (aVagasTurno.length == 0) {
       lTemVagas = false;
       sMsg += "\n - " + aNomeTurnoReferencia[aTurnoReferencia[index]];
@@ -527,7 +521,7 @@ function js_validaTurmaInfantilIntegral() {
     alert(sMsg);
   }
   return lTemVagas;
-    
+
 }
 
 /**
@@ -535,9 +529,9 @@ function js_validaTurmaInfantilIntegral() {
  */
 function js_validaTurmaNormal() {
 
-  // Verifica se existe vagas disponíveis na turma 
+  // Verifica se existe vagas disponíveis na turma
   if( !oTurmaTurno.temVagasDisponiveis() ) {
-    
+
     alert(_M(URL_EDU04_RECLASSIFICACAO001+"turma_sem_vagas"));
     return false;
   }
@@ -546,9 +540,9 @@ function js_validaTurmaNormal() {
 
 function js_validaTurnosSelecionados() {
   var aTurnoReferencia = new Array()
-  // Verifica quais referências estão selecionadas e adicionas elas ao array aTurnoReferencia 
+  // Verifica quais referências estão selecionadas e adicionas elas ao array aTurnoReferencia
   for (var i = 1; i < 4; i++) {
-    
+
     if ( $("check_turno"+i) && $("check_turno"+i).checked ) {
       aTurnoReferencia.push( $F("check_turno"+i) );
     }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -470,5 +470,31 @@ class cl_contacorrentedetalheconlancamval {
      }
      return $sql;
   }
+
+  function sql_query_lancamentos($sCampos, $sWhere, $sOrder) {
+
+    if (empty($sCampos)) {
+      $sCampos = "*";
+    }
+
+    if (!empty($sWhere)) {
+      $sWhere = " where {$sWhere} ";
+    }
+
+    if (!empty($sOrder)) {
+      $sOrder = " order by {$sOrder} ";
+    }
+
+    $sSql = " select {$sCampos}      ";
+    $sSql .= "   from conlancamval " ;
+    $sSql .= "        inner join conlancam on conlancam.c70_codlan = conlancamval.c69_codlan ";
+    $sSql .= "                           and conlancam.c70_anousu = conlancamval.c69_anousu";
+    $sSql .= "        inner join conlancamdoc on conlancamdoc.c71_codlan = conlancamval.c69_codlan ";
+    $sSql .= "        inner join conhistdoc on conlancamdoc.c71_coddoc = conhistdoc.c53_coddoc ";
+    $sSql .= "        inner join contacorrentedetalheconlancamval on contacorrentedetalheconlancamval.c28_conlancamval = conlancamval.c69_sequen ";
+    $sSql .= "        inner join contacorrentedetalhe on contacorrentedetalhe.c19_sequencial = contacorrentedetalheconlancamval.c28_contacorrentedetalhe";
+    $sSql .= " $sWhere $sOrder";
+
+    return $sSql;
+  }
 }
-?>

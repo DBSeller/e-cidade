@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -824,6 +824,7 @@ class cl_folha {
      $sql .= "                              and c61_anousu   = " . db_getsession("DB_anousu") ;
      $sql .= "      inner join conplanoconta on c63_codcon   = c61_codcon                    ";
      $sql .= "                              and c63_anousu   =c61_anousu                     ";
+     $sql .= "                              and c63_reduz   = c61_reduz                     ";
      $sql2 = "";
      if($dbwhere==""){
        if($r38_regist!=null ){

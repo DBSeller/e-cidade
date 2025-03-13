@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,30 +25,30 @@
  *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include ("classes/db_issvar_classe.php");
-include ("classes/db_issvarold_classe.php");
-include ("classes/db_issvardiv_classe.php");
-include ("classes/db_issvarnotas_classe.php");
-include ("classes/db_issvarnotasold_classe.php");
-include ("classes/db_issvarlev_classe.php");
-include ("classes/db_levanta_classe.php");
-include ("classes/db_levvalor_classe.php");
-include ("classes/db_levinscr_classe.php");
-include ("classes/db_numpref_classe.php");
-include ("classes/db_cadvenc_classe.php");
-include ("classes/db_parissqn_classe.php");
-include ("classes/db_db_confplan_classe.php");
-include ("classes/db_arrecad_classe.php");
-include ("classes/db_arreold_classe.php");
-include ("classes/db_arrecant_classe.php");
-include ("classes/db_arreinscr_classe.php");
-include ("classes/db_issvarlevold_classe.php");
+include(modification("classes/db_issvar_classe.php"));
+include(modification("classes/db_issvarold_classe.php"));
+include(modification("classes/db_issvardiv_classe.php"));
+include(modification("classes/db_issvarnotas_classe.php"));
+include(modification("classes/db_issvarnotasold_classe.php"));
+include(modification("classes/db_issvarlev_classe.php"));
+include(modification("classes/db_levanta_classe.php"));
+include(modification("classes/db_levvalor_classe.php"));
+include(modification("classes/db_levinscr_classe.php"));
+include(modification("classes/db_numpref_classe.php"));
+include(modification("classes/db_cadvenc_classe.php"));
+include(modification("classes/db_parissqn_classe.php"));
+include(modification("classes/db_db_confplan_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arreold_classe.php"));
+include(modification("classes/db_arrecant_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_issvarlevold_classe.php"));
 
 $cllevanta = new cl_levanta;
 $cllevvalor = new cl_levvalor;
@@ -262,12 +262,12 @@ function  js_cancel(){
 function js_lev(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_levanta03.php?funcao_js=parent.js_mostralev1|y60_codlev|DBtxtnome_origem','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_levanta03.php?funcao_js=parent.js_mostralev1|y60_codlev|DBtxtnome_origem','Pesquisa',true);
   }else{
 
     lev = document.form1.y60_codlev.value;
     if(lev != ''){
-      js_OpenJanelaIframe('top.corpo','db_iframe','func_levanta03.php?pesquisa_chave='+lev+'&funcao_js=parent.js_mostralev','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_levanta03.php?pesquisa_chave='+lev+'&funcao_js=parent.js_mostralev','Pesquisa',false);
     }else{
       document.form1.z01_nome.value='';
     }
@@ -299,7 +299,7 @@ if (isset ($cancelar)) {
 	} else {
 
 		db_msgbox("Cancelamento efetivado com sucesso!!");
-		echo "<script>top.corpo.location.href='fis4_cancelimport001.php';</script>";
+		echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='fis4_cancelimport001.php';</script>";
 	}
 }
 ?>

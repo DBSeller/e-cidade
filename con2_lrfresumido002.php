@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,15 +26,15 @@
  */
 
 set_time_limit(7000000000);
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_conrelinfo_classe.php");
-include("classes/db_empresto_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -49,7 +49,7 @@ $instit_rpps  ='';
 if ($emite_rec_desp==1||$emite_proj==1){
   // seleciona instituição do RPPS
   $sql         = "select codigo  from db_config where db21_tipoinstit in (5,6) ";
-  $resultinst  = pg_exec($sql);
+  $resultinst  = db_query($sql);
   $xvirg       = '';
   for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
     db_fieldsmemory($resultinst,$xins);
@@ -124,7 +124,7 @@ if ($emite_balorc_rec==1){
   // RECEITAS
   $db_filtro  = ' o70_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
       $result_rec = db_receitasaldo(4,1,3,true,$db_filtro,$anousu,$dt_ini,$dt_fin);
-      @pg_exec("drop table work_receita");
+      @db_query("drop table work_receita");
       for($i = 0;$i < pg_numrows($result_rec); $i++){
       db_fieldsmemory($result_rec,$i);
       $estrutural = $o57_fonte;
@@ -385,7 +385,7 @@ if ($emite_balorc_rec==1){
       // SALDO ANTERIOR
       $db_filtro  = ' c61_instit in (' . str_replace('-',', ',$db_selinstit) . ' ) ';
       $result_bal = db_planocontassaldo_matriz($anousu,$dt_ini,$dt_fin,false,$db_filtro);
-      @pg_exec("drop table work_pl");
+      @db_query("drop table work_pl");
       for($i = 0; $i < pg_numrows($result_bal); $i++){
         db_fieldsmemory($result_bal,$i);  
         if (in_array($estrutural,$m_saldo_anterior['estrut'])){
@@ -523,10 +523,10 @@ if ($emite_balorc_rec==1){
         // DESPESAS POR FUNCAO/SUBFUNCAO
         if ($emite_desp_funcsub==1){
           /*
-             @pg_query("drop table work_receita"); 
-             @pg_query("drop table work_pl");
-             @pg_query("drop table work_pl_estrut");
-             @pg_query("drop table work_pl_estrutmae");
+             @db_query("drop table work_receita"); 
+             @db_query("drop table work_pl");
+             @db_query("drop table work_pl_estrut");
+             @db_query("drop table work_pl_estrutmae");
            */
 
 
@@ -549,11 +549,11 @@ if ($emite_balorc_rec==1){
         // RECEITA CORRENTE LIQUIDA - RCL
         if ($emite_rcl==1||$emite_ppp==1){     
 
-          @pg_query("drop table work_receita"); 
-          @pg_query("drop table work_pl");
-          @pg_query("drop table work_pl_estrut");
-          @pg_query("drop table work_pl_estrutmae");     
-          @pg_query("rollback"); 
+          @db_query("drop table work_receita"); 
+          @db_query("drop table work_pl");
+          @db_query("drop table work_pl_estrut");
+          @db_query("drop table work_pl_estrutmae");     
+          @db_query("rollback"); 
           // se o ano atual é bissexto deve subtrair 366 somente se a data for superior a 28/02/200X
           $dt = split('-',$dt_fin);  // mktime -- (mes,dia,ano)
           $dt_ini_ant = date('Y-m-d',mktime(0,0,0,$dt[1],$dt[2]+1,$anousu_ant));
@@ -562,24 +562,24 @@ if ($emite_balorc_rec==1){
           $total_rcl  = 0;
           $total_rcl  = calcula_rcl($anousu,$anousu.'-01-01',$dt_fin,$db_selinstit);
           // db_criatabela($total_rcl);exit; 
-          @pg_query("drop table work_plano");
-          @pg_query("commit");
+          @db_query("drop table work_plano");
+          @db_query("commit");
 
           $total_rcl += calcula_rcl($anousu_ant,$dt_ini_ant,$dt_fin_ant,$db_selinstit);
-          @pg_query("drop table work_plano");
-          @pg_query("commit");
+          @db_query("drop table work_plano");
+          @db_query("commit");
           // $total_rcl = 0;
 
         }
         // RECEITAS/DESPESAS DO RPPS
         if ($emite_rec_desp==1){
-          @pg_query("drop table work_receita"); 
-          @pg_query("drop table work_pl");
-          @pg_query("drop table work_pl_estrut");
-          @pg_query("drop table work_pl_estrutmae");
+          @db_query("drop table work_receita"); 
+          @db_query("drop table work_pl");
+          @db_query("drop table work_pl_estrut");
+          @db_query("drop table work_pl_estrutmae");
 
           $arqinclude = true;
-          include("con2_lrfrecdesprpps002.php");
+          include(modification("con2_lrfrecdesprpps002.php"));
 
           $total_rpps_rec_nobim   = $total_rec_bimestre;
           $total_rpps_rec_atebim  = $total_rec_exercicio;
@@ -597,10 +597,10 @@ if ($emite_balorc_rec==1){
         }
         // RESULTADOS NOMINAL/PRIMARIO
         if ($emite_resultado){
-          @pg_query("drop table work_receita"); 
-          @pg_query("drop table work_pl");
-          @pg_query("drop table work_pl_estrut");
-          @pg_query("drop table work_pl_estrutmae");
+          @db_query("drop table work_receita"); 
+          @db_query("drop table work_pl");
+          @db_query("drop table work_pl_estrut");
+          @db_query("drop table work_pl_estrutmae");
 
           $arqinclude = true;
 
@@ -609,7 +609,7 @@ if ($emite_balorc_rec==1){
 
           $periodo = $bimestre;
 
-          include("con2_lrfnominal002.php");    
+          include(modification("con2_lrfnominal002.php"));    
 
           $tot1 = ($somador_III_bim  + $somador_IV_bim) -$somador_V_bim;
           $tot2 = ($somador_III_ant + $somador_IV_ant) - $somador_V_ant;
@@ -621,7 +621,7 @@ if ($emite_balorc_rec==1){
           $arqinclude = true;
 
           $META_PRIMARIA = 0;
-          include("con2_lrfprimario002.php");
+          include(modification("con2_lrfprimario002.php"));
 
           $result_info = $clconrelinfo->sql_record($clconrelinfo->sql_query_valores(17,str_replace('-',',',$db_selinstit)));
           if ($clconrelinfo->numrows > 0 ){
@@ -638,10 +638,10 @@ if ($emite_balorc_rec==1){
 
         // RESTOS A PAGAR
         if ($emite_rp==1){
-          @pg_query("drop table work_receita"); 
-          @pg_query("drop table work_pl");
-          @pg_query("drop table work_pl_estrut");
-          @pg_query("drop table work_pl_estrutmae");
+          @db_query("drop table work_receita"); 
+          @db_query("drop table work_pl");
+          @db_query("drop table work_pl_estrut");
+          @db_query("drop table work_pl_estrutmae");
 
 
           $total_proc_insc       = 0;
@@ -676,7 +676,7 @@ if ($emite_balorc_rec==1){
               from ($sqlperiodo) as x
               group by e60_instit, nomeinst, o58_orgao, o40_descr";
 
-              $resultado_rp = pg_query($sqlperiodo);
+              $resultado_rp = db_query($sqlperiodo);
 
               // TOTAIS PROCESSADOS
               $tot_01 =0;
@@ -734,14 +734,14 @@ if ($emite_balorc_rec==1){
         }
         // MDE
         if ($emite_mde==1) {
-          @pg_query("drop table work_receita"); 
-          @pg_query("drop table work_pl");
-          @pg_query("drop table work_pl_estrut");
-          @pg_query("drop table work_pl_estrutmae");
+          @db_query("drop table work_receita"); 
+          @db_query("drop table work_pl");
+          @db_query("drop table work_pl_estrut");
+          @db_query("drop table work_pl_estrutmae");
 
 
           $arqinclude = true;
-          include("con2_lrfmde002.php"); 
+          include(modification("con2_lrfmde002.php")); 
 
           $somador_VI_inicial           = $receita[1]['inicial']+ $receita[15]['inicial'] - $receita[11]['inicial'] ;
           $somador_VI_atualizada    = $receita[1]['atualizada']+$receita[15]['atualizada']- $receita[11]['atualizada'];
@@ -795,10 +795,10 @@ if ($emite_balorc_rec==1){
         }
         // OPERACOES DE CREDITO E DESPESAS DE CAPITAL
         if ($emite_oper==1){
-          @pg_query("drop table work_receita"); 
-          @pg_query("drop table work_pl");
-          @pg_query("drop table work_pl_estrut");
-          @pg_query("drop table work_pl_estrutmae");
+          @db_query("drop table work_receita"); 
+          @db_query("drop table work_pl");
+          @db_query("drop table work_pl_estrut");
+          @db_query("drop table work_pl_estrutmae");
 
 
 
@@ -814,7 +814,7 @@ if ($emite_balorc_rec==1){
 
           $sele_work      = ' o70_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
               $result_oper    = db_receitasaldo(11,1,3,true,$sele_work,$anousu,$dt_ini,$dt_fin,false);
-              @pg_exec("drop table work_receita");
+              @db_query("drop table work_receita");
 
               $sele_work      = 'o58_instit in ('.str_replace('-', ', ', $db_selinstit).')   ';
               $result_desp    = db_dotacaosaldo(8,2,3,true,$sele_work,$anousu,$dt_ini,$dt_fin);
@@ -838,10 +838,10 @@ if ($emite_balorc_rec==1){
         }
         // PROJECAO ATUARIAL DO RPPS
         if ($emite_proj==1){
-          @pg_query("drop table work_receita"); 
-          @pg_query("drop table work_pl");
-          @pg_query("drop table work_pl_estrut");
-          @pg_query("drop table work_pl_estrutmae");
+          @db_query("drop table work_receita"); 
+          @db_query("drop table work_pl");
+          @db_query("drop table work_pl_estrut");
+          @db_query("drop table work_pl_estrutmae");
 
 
 
@@ -939,13 +939,13 @@ if ($emite_balorc_rec==1){
 
           // Exercicio Atual
           $result_rec = db_receitasaldo(11,1,3,true,$db_filtro,$anousu,$dt_ini,$dt_fin);
-          @pg_exec("drop table work_receita");
+          @db_query("drop table work_receita");
 
           $sele_work = ' c61_instit in ('.$instit_rpps.')';
 
               // Exercicio Atual
               $result_res_rep = db_planocontassaldo_matriz($anousu,$dt_ini,$dt_fin,false,$sele_work); 
-              @pg_exec("drop table work_pl"); 
+              @db_query("drop table work_pl"); 
 
               $db_filtro = "o58_instit in (".$instit_rpps.") ";
 
@@ -999,10 +999,10 @@ if ($emite_balorc_rec==1){
         }
         // RECEITA DA ALIENACAO DE ATIVOS E APLICACAO DOS RECURSOS 
         if ($emite_alienacao==1){
-          @pg_query("drop table work_receita"); 
-          @pg_query("drop table work_pl");
-          @pg_query("drop table work_pl_estrut");
-          @pg_query("drop table work_pl_estrutmae");
+          @db_query("drop table work_receita"); 
+          @db_query("drop table work_pl");
+          @db_query("drop table work_pl_estrut");
+          @db_query("drop table work_pl_estrutmae");
 
 
           $total_alien   = 0;
@@ -1012,7 +1012,7 @@ if ($emite_balorc_rec==1){
 
           $sele_work     = ' o70_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
               $result_rec    = db_receitasaldo(11,1,3,true,$sele_work,$anousu,$dt_ini,$dt_fin,false);
-              @pg_exec("drop table work_receita");
+              @db_query("drop table work_receita");
 
               for($i = 0; $i < pg_numrows($result_rec); $i++){
               db_fieldsmemory($result_rec, $i);
@@ -1029,15 +1029,15 @@ if ($emite_balorc_rec==1){
               }
               // DESPESAS COM SAUDE
               if ($emite_saude==1){
-              @pg_query("drop table work_receita"); 
-              @pg_query("drop table work_pl");
-              @pg_query("drop table work_pl_estrut");
-              @pg_query("drop table work_pl_estrutmae");
+              @db_query("drop table work_receita"); 
+              @db_query("drop table work_pl");
+              @db_query("drop table work_pl_estrut");
+              @db_query("drop table work_pl_estrutmae");
 
 
               $MINIMO_APLICAVEL_NO_EXERCICIO_SAUDE = 0;
               $arqinclude = true;
-              include("con2_lrfimpostossaude002.php"); 
+              include(modification("con2_lrfimpostossaude002.php")); 
 
               $total_atebime = $receitas_atebime["0"] + $receitas_atebime["6"] + $receitas_atebime["11"] + $receitas_atebime["12"] + $receitas_atebime["13"] ;
 
@@ -1056,10 +1056,10 @@ if ($emite_balorc_rec==1){
               }
               // DESPESA DE PPP
               if ($emite_ppp==1){
-                @pg_query("drop table work_receita"); 
-                @pg_query("drop table work_pl");
-                @pg_query("drop table work_pl_estrut");
-                @pg_query("drop table work_pl_estrutmae");
+                @db_query("drop table work_receita"); 
+                @db_query("drop table work_pl");
+                @db_query("drop table work_pl_estrut");
+                @db_query("drop table work_pl_estrutmae");
 
 
                 $total_despesa  = 0;
@@ -1083,7 +1083,7 @@ if ($emite_balorc_rec==1){
               }
               //////////////////////////////// Impressão do PDF /////////////////////////////////
               $xinstit = split("-",$db_selinstit);
-              $resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+              $resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
               $descr_inst = '';
               $xvirg = '';
               $flag_abrev = false;

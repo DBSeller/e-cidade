@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_benstransf_classe.php");
-require_once("classes/db_benstransfdes_classe.php");
-require_once("classes/db_db_depart_classe.php");
-require_once("classes/db_db_usuarios_classe.php");
-require_once("classes/db_db_depusu_classe.php");
-require_once("classes/db_benstransfcodigo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_benstransf_classe.php"));
+require_once(modification("classes/db_benstransfdes_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_db_usuarios_classe.php"));
+require_once(modification("classes/db_db_depusu_classe.php"));
+require_once(modification("classes/db_benstransfcodigo_classe.php"));
 $cldb_depusu        = new cl_db_depusu;
 $clbenstransf       = new cl_benstransf;
 $clbenstransfdes    = new cl_benstransfdes;
@@ -65,11 +65,14 @@ if(isset($alterar)){
   db_inicio_transacao();
   if($t93_data_dia!="" && $t93_data_mes!="" && $t93_data_ano!=""){
     $data = $t93_data_ano."-".$t93_data_mes."-".$t93_data_dia;
-//    db_msgbox($data.'-------------'.date("Y-m-d"));
-    if($data<date("Y-m-d")){
-      $sqlerro = true;
-      $erro_msg = _M("patrimonial.patrimonio.db_frmbenstransf.data_invalida");
+  //    db_msgbox($data.'-------------'.date("Y-m-d"));
+    if ($data > date('Y-m-d', db_getsession('DB_datausu'))) {
+      $erro_msg = _M("patrimonial.patrimonio.db_frmbenstransf.inclusao_nao_efetuada_data_maior");
+    }
+
+    if ($erro_msg) {
       $clapolice->erro_campo = "t93_data_dia";
+      $sqlerro = true;
     }
   }
   if($sqlerro == false){  
@@ -116,7 +119,7 @@ if(isset($chavepesquisa) || isset($alterar)){
 <body bgcolor=#CCCCCC>
 
 	<?
-	include("forms/db_frmbenstransf.php");
+	include(modification("forms/db_frmbenstransf.php"));
 	?>
     
 </body>
@@ -136,7 +139,7 @@ if(isset($chavepesquisa) || (isset($alterar) && $sqlerro == false)){
   <script>     
       function js_db_libera(){
          parent.document.formaba.benstransfcodigo.disabled=false;
-         top.corpo.iframe_benstransfcodigo.location.href='pat1_benstransfcodigo001.php?t95_codtran=".@$t93_codtran."&t93_depart=$t93_depart&db_param=$db_param&depto='+document.form1.t94_depart.value;
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_benstransfcodigo.location.href='pat1_benstransfcodigo001.php?t95_codtran=".@$t93_codtran."&t93_depart=$t93_depart&db_param=$db_param&depto='+document.form1.t94_depart.value;
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('benstransfcodigo');";

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("std/db_stdClass.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/exceptions/BusinessException.php");
-require_once("model/configuracao/DBEstruturaValor.model.php");
-require_once("model/configuracao/DBEstrutura.model.php");
-require_once("classes/db_matparam_classe.php");
-require_once("classes/db_db_estruturavalor_classe.php");
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
+require_once(modification("model/configuracao/DBEstruturaValor.model.php"));
+require_once(modification("model/configuracao/DBEstrutura.model.php"));
+require_once(modification("classes/db_matparam_classe.php"));
+require_once(modification("classes/db_db_estruturavalor_classe.php"));
 
 $oJson              = new services_json();
 $oParam             = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -71,7 +71,7 @@ switch ($oParam->exec) {
 
     }
 
-    function atualizarEstruturaisArvoreDestino($sEstruturalFinal, $iCodigo, $iNivelDestino,$iNivelOrigem, $iMaxNivel,$aMascara) {
+    function atualizarEstruturaisArvoreDestino(&$sEstruturalFinal, &$iCodigo, &$iNivelDestino, &$iNivelOrigem, &$iMaxNivel, &$aMascara) {
 
       // Atualiza Estrutural do nó atual
       atualizarEstruturalNodo($iCodigo, $sEstruturalFinal, $iNivelOrigem,$iNivelDestino, $iMaxNivel, $aMascara);
@@ -207,7 +207,7 @@ switch ($oParam->exec) {
       $sProximaEstrutural = str_pad($iSequencia, $iTotalCasa, "0", STR_PAD_LEFT);
       $sEstruturalFinal   = "{$sEstruturalFinal}.{$sProximaEstrutural}";
 
-      atualizarEstruturaisArvoreDestino(&$sEstruturalFinal, &$iCodigoOrigem, &$iNivelDestino,&$iNivelOrigem, &$iMaxNivel,&$aMascara);
+      atualizarEstruturaisArvoreDestino($sEstruturalFinal, $iCodigoOrigem, $iNivelDestino, $iNivelOrigem, $iMaxNivel, $aMascara);
 
       db_query(" begin; ".$sqlUpdadeDbEstruturaValorPai."; commit ;");
 

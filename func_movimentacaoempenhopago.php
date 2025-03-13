@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_cgmalt_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_cgmalt_classe.php"));
 /*
 No js_OpenJanelaIframe passar o filtro 
 ex:forms/db_frmrhlota.php
@@ -117,7 +117,7 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script>
   function js_close(){
-    var nome = parent.top.corpo.aux.nomeJanela;
+    var nome = (window.CurrentWindow || parent.CurrentWindow).corpo.aux.nomeJanela;
     eval('parent.'+nome+'.hide();');
   }
 
@@ -143,7 +143,7 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
 	<?
 	  
 	  if (isset($incproc) && ($incproc!="")) {
-		$result_protparam = pg_exec("select * from protparam where p90_instit = ".db_getsession("DB_instit"));
+		$result_protparam = db_query("select * from protparam where p90_instit = ".db_getsession("DB_instit"));
 		if (pg_numrows($result_protparam)>0){
 	  	  db_fieldsmemory($result_protparam,0);
 		  if ($p90_valcpfcnpj == 'f'){
@@ -346,7 +346,7 @@ $sql = "";
 					}
 				
 					if(isset($sql) && trim($sql) != ""){
-						 $rsNome = pg_query($sql) or die($sql); 
+						 $rsNome = db_query($sql) or die($sql); 
 						 if( pg_num_rows($rsNome) == 0){
 								if(isset($nomeDigitadoParaPesquisa) && trim($nomeDigitadoParaPesquisa!="")){ 
 									?>						
@@ -486,3 +486,9 @@ $sql = "";
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

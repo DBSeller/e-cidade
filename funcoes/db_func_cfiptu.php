@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "cfiptu.j18_vlrref,cfiptu.j18_dtoper,cfiptu.j18_rterri,cfiptu.j18_rpredi,cfiptu.j18_vencim,cfiptu.j18_logradauto,cfiptu.j18_segundavia,cfiptu.j18_infla,cfiptu.j18_utilizasetfisc,cfiptu.j18_testadanumero,cfiptu.j18_excconscalc,cfiptu.j18_textoprom,cfiptu.j18_calcvenc,cfiptu.j18_utilizaloc,cfiptu.j18_permvenc,cfiptu.j18_utidadosdiver,cfiptu.j18_dadoscertisen,cfiptu.j18_formatsetor,cfiptu.j18_formatquadra,cfiptu.j18_formatlote,cfiptu.j18_utilpontos,cfiptu.j18_ordendent,cfiptu.j18_iptuhistisen,cfiptu.j18_db_sysfuncoes,cfiptu.j18_tipoisen,cfiptu.j18_anousu as db_j18_anousu";
+$campos = "cfiptu.j18_vlrref,cfiptu.j18_dtoper,cfiptu.j18_rterri,cfiptu.j18_rpredi,cfiptu.j18_vencim,cfiptu.j18_logradauto,cfiptu.j18_segundavia,cfiptu.j18_infla,cfiptu.j18_utilizasetfisc,cfiptu.j18_testadanumero,cfiptu.j18_excconscalc,cfiptu.j18_textoprom,cfiptu.j18_calcvenc,cfiptu.j18_utilizaloc,cfiptu.j18_permvenc,cfiptu.j18_utidadosdiver,cfiptu.j18_dadoscertisen,cfiptu.j18_formatsetor,cfiptu.j18_formatquadra,cfiptu.j18_formatlote,cfiptu.j18_utilpontos,cfiptu.j18_ordendent,cfiptu.j18_iptuhistisen,cfiptu.j18_db_sysfuncoes,cfiptu.j18_tipoisen,cfiptu.j18_anousu as db_j18_anousu,cfiptu.j18_utilizaareaprivativa";
 ?>

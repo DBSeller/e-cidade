@@ -26,7 +26,7 @@
  */
 
 //MODULO: Ambulatorial
-include("libs/db_jsplibwebseller.php");
+include(modification("libs/db_jsplibwebseller.php"));
 
 $clsau_turnoatend->rotulo->label();
 ?>
@@ -90,7 +90,7 @@ db_input('sd43_c_horafinal',5,$Isd43_c_horafinal,true,'text',$db_opcao," onKeyUp
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_turnoatend','func_sau_turnoatend.php?funcao_js=parent.js_preenchepesquisa|sd43_cod_turnat','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_turnoatend','func_sau_turnoatend.php?funcao_js=parent.js_preenchepesquisa|sd43_cod_turnat','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_turnoatend.hide();

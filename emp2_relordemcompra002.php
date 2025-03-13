@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_matordem_classe.php");
-include("classes/db_matordemitem_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -355,7 +355,7 @@ if ($itens=="true"){
 		  inner join db_depart on db_depart.coddepto = matordem.m51_depto 
 		  left join matordemanu on m53_codordem=m51_codordem  
 	   where $where $txt_where $where1 group by pc01_descrmater,pc01_codmater";
-    $result_totitens=pg_exec($sql);	   
+    $result_totitens=db_query($sql);	   
     for($y = 0; $y < pg_numrows($result_totitens);$y++){
       db_fieldsmemory($result_totitens,$y);
       if ($pdf->gety() > $pdf->h - 30 || $troca != 0 ){

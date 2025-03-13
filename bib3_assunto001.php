@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_tipoitem_classe.php");
-include("classes/db_classiliteraria_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_tipoitem_classe.php"));
+include(modification("classes/db_classiliteraria_classe.php"));
 $cltipoitem = new cl_tipoitem;
 $clclassiliteraria = new cl_classiliteraria;
 $clcgm = new cl_cgm;
@@ -101,7 +101,7 @@ $clcgm->rotulo->label("z01_nome");
     <tr>
      <td align="center" colspan="3">
       <?
-       include ("bib3_assunto002.php");
+       include(modification("bib3_assunto002.php"));
       ?>
      </td>
     </tr>

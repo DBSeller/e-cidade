@@ -1,0 +1,275 @@
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+
+namespace ECidade\RecursosHumanos\ESocial\Repository\ProcessoJudicial;
+
+use BusinessException;
+use cl_rhprocessoretencao;
+use ECidade\RecursosHumanos\ESocial\Model\ProcessoJudicial\Retencao;
+
+class RetencaoRepository
+{
+    /**
+     * @var array
+     */
+    private $scopes = [];
+
+    /**
+     * @param int $sequencial
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeSequencial($sequencial, $operator = '=')
+    {
+        $this->scopes['sequencial'] = "rh306_sequencial {$operator} {$sequencial}";
+        return $this;
+    }
+
+     /**
+     * @param int $sequencialTributoIRRF
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeSequencialTributoIRRF($sequencialTributoIRRF, $operator = '=')
+    {
+        $this->scopes['valorRetencao'] =
+            "rh306_sequencialtributoirrf {$operator} {$sequencialTributoIRRF}";
+        return $this;
+    }
+
+     /**
+     * @param string $numeroRetencao
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeNumeroRetencao($numeroRetencao, $operator = '=')
+    {
+        $this->scopes['numeroRetencao'] =
+            "rh306_nrprocret {$operator} '{$numeroRetencao}'";
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetScopes()
+    {
+        $this->scopes = [];
+
+        return $this;
+    }
+
+    /**
+     * @param array|int $ids
+     * @return int
+     * @throws BusinessException
+     */
+    public static function destroy($ids)
+    {
+        $count = 0;
+        $ids = is_array($ids) ? $ids : func_get_args();
+
+        $self = new self();
+
+        foreach ($ids as $id) {
+            $self->delete(self::find($id));
+            $count++;
+        }
+
+        return $count;
+    }
+
+    /**
+     * @param  Retencao|null $retencao
+     * @throws BusinessException
+     */
+    public function delete(Retencao $retencao = null)
+    {
+        $id = $retencao instanceof Retencao ? $retencao->getSequencial() : null;
+
+        $dao = new cl_rhprocessoretencao;
+        $dao->excluir($id, implode(' AND ', $this->scopes));
+
+        if ($dao->erro_status === '0') {
+            throw new BusinessException("Não foi possível excluir relacionados a não retenção de tributos " .
+                "ou a depósitos judiciais.");
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $columns
+     * @return bool| Retencao
+     * @throws BusinessException
+     */
+    public static function find($id, $columns = array('*'), $order = null, $where = null)
+    {
+        $dao = new cl_rhprocessoretencao;
+        $sql = $dao->sql_query($id, implode(', ', $columns), $order, $where);
+
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new BusinessException("Não foi possível buscar relacionados a não retenção de tributos " .
+                "ou a depósitos judiciais.");
+        }
+
+        if (pg_num_rows($rs) === 0) {
+            return false;
+        }
+
+        $resultado = pg_fetch_array($rs);
+
+        return  Retencao::fromState($resultado);
+    }
+
+    /**
+     * @param array $columns
+     * @return  Retencao[]
+     * @throws BusinessException
+     */
+    public static function all($columns = ['*'], $order = null, $where = null)
+    {
+        $dao = new cl_rhprocessoretencao;
+        $sql = $dao->sql_query(null, implode(', ', $columns), $order, $where);
+        $rs = db_query($sql);
+
+        $retencao = [];
+
+        if (pg_num_rows($rs) === 0) {
+            return $retencao;
+        }
+
+        while ($retencaoItem = pg_fetch_array($rs)) {
+            $retencao[] =  Retencao::fromState($retencaoItem);
+        }
+        
+        return $retencao;
+    }
+
+     /**
+     * @param array $columns
+     * @param string $ordem
+     * @return Retencao[]
+     * @throws BusinessException
+     */
+    public function allOrderBy($columns = ['*'], $ordem = null)
+    {
+        $dao = new cl_rhprocessoretencao;
+        $sql = $dao->sql_query(null, implode(', ', $columns), $ordem);
+        $rs = db_query($sql);
+
+        $retencao = [];
+
+        if (pg_num_rows($rs) === 0) {
+            return $retencao;
+        }
+
+        while ($retencaoItem = pg_fetch_array($rs)) {
+            $retencao[] = Retencao::fromState($retencaoItem);
+        }
+        
+        return $retencao;
+    }
+
+    /**
+     * @return  Retencao[]
+     * @throws BusinessException
+     */
+    public function get()
+    {
+        $dao = new cl_rhprocessoretencao;
+        $campos = [
+            'rh306_sequencial',
+            'rh306_sequencialtributoirrf',
+            'rh306_tpprocret',
+            'rh306_nrprocret',
+            'rh306_codsusp'
+        ];
+        $sql = $dao->sql_query(null, implode(', ', $campos), null, implode(' AND ', $this->scopes));
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new BusinessException("Não foi possível buscar deduções com exigibilidade suspensa..");
+        }
+
+        $retencao = [];
+
+        if (pg_num_rows($rs) === 0) {
+            return $retencao;
+        }
+
+        while ($retencaoProcesso = pg_fetch_array($rs)) {
+            $retencao[] =  Retencao::fromState($retencaoProcesso);
+        }
+
+        return $retencao;
+    }
+
+    /**
+     * @return int
+     * @throws BusinessException
+     */
+    public function count()
+    {
+        $dao = new cl_rhprocessoretencao;
+        $sql = $dao->sql_query(null, 'count(*)', null, implode(' AND ', $this->scopes));
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new BusinessException("Não foi possível buscar deduções com exigibilidade suspensa.");
+        }
+
+        return (int)pg_fetch_result($rs, 0, 'count');
+    }
+
+    /**
+     * @param  Retencao $retencao
+     * @return  Retencao
+     * @throws BusinessException
+     */
+    public function save(Retencao $retencao)
+    {
+        $dao = new cl_rhprocessoretencao;
+        $dao->rh306_sequencial = $retencao->getSequencial();
+        $dao->rh306_sequencialtributoirrf = $retencao->getSequencialTributoIRRF();
+        $dao->rh306_tpprocret = $retencao->getTipoProcesso();
+        $dao->rh306_nrprocret = $retencao->getNumeroProcesso();
+        $dao->rh306_codsusp = $retencao->getCodigoIndicativoSuspensao();
+
+        $dao->rh306_sequencial ? $dao->alterar($retencao->getSequencial()) : $dao->incluir(null);
+
+        if ($dao->erro_status === '0') {
+            throw new BusinessException("Não foi possível salvar registro deduções com exigibilidade suspensa."
+                . $dao->erro_msg);
+        }
+
+        $retencao->setSequencial($dao->rh306_sequencial);
+
+        return $retencao;
+    }
+}

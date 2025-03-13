@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -586,5 +586,73 @@ class cl_basesr {
      }
      return $sql;
   }
+
+  function sql_rubricas_base ( $r09_anousu=null,$r09_mesusu=null,$r09_base=null,$r09_rubric=null,$r09_instit=null,$campos="*",$ordem=null,$dbwhere=""){ 
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from basesr ";
+     $sql .= " inner join rhrubricas on rh27_rubric = r09_rubric";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($r09_anousu!=null ){
+         $sql2 .= " where basesr.r09_anousu = $r09_anousu "; 
+       } 
+       if($r09_mesusu!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         } 
+         $sql2 .= " basesr.r09_mesusu = $r09_mesusu "; 
+       } 
+       if($r09_base!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         } 
+         $sql2 .= " basesr.r09_base = '$r09_base' "; 
+       } 
+       if($r09_rubric!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         } 
+         $sql2 .= " basesr.r09_rubric = '$r09_rubric' "; 
+       } 
+       if($r09_instit!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         } 
+         $sql2 .= " basesr.r09_instit = $r09_instit "; 
+       } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+
 }
 ?>

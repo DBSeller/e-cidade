@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -62,7 +62,7 @@ class Etapa {
       if ($oDaoEtapa->numrows > 0) {
 
         $oDadosEtapa = db_utils::fieldsMemory($rsEtapa, 0);
-        $oEnsino     = new Ensino($oDadosEtapa->ed11_i_ensino);
+        $oEnsino     = EnsinoRepository::getEnsinoByCodigo($oDadosEtapa->ed11_i_ensino);
         $oEnsino->setNome(trim($oDadosEtapa->ed10_c_descr));
         $this->setEnsino($oEnsino);
         $this->setNome($oDadosEtapa->ed11_c_descr);
@@ -146,7 +146,7 @@ class Etapa {
   public function setNomeAbreviado($sNomeAbreviado) {
     $this->sNomeAbreviado = $sNomeAbreviado;
   }
-  
+
   /**
    * Retorna o codigo da etapa no censo
    * @return integer
@@ -154,7 +154,7 @@ class Etapa {
   public function getEtapaCenso() {
     return $this->iEtapaCenso;
   }
-  
+
   /**
    * Seta o codigo da etapa no censo
    * @param integer $iEtapaCenso
@@ -162,7 +162,7 @@ class Etapa {
   public function setEtapaCenso($iEtapaCenso) {
     $this->iEtapaCenso = $iEtapaCenso;
   }
-  
+
   /**
    * Busca as etapas equivalentes de uma Etapa
    * @throws DBException
@@ -172,22 +172,43 @@ class Etapa {
 
     $sCampos = " serieequiv.ed234_i_serieequiv ";
     $sWhere  = " ed234_i_serie = {$this->getCodigo()} ";
-    
+
     $oDaoSerieEquiv  = new cl_serieequiv();
     $sSqlEquivalente = $oDaoSerieEquiv->sql_query( null, $sCampos, null, $sWhere );
     $rsEquivalente   = db_query( $sSqlEquivalente );
-    
+
     if ( !$rsEquivalente ) {
       throw new DBException( "Error ao executar query: Não foi possível buscar equivalências" );
     }
-    
+
     $iLinhas             = pg_num_rows( $rsEquivalente );
     $aSeriesEquivalentes = array();
-    
+
     for ($i = 0; $i < $iLinhas; $i++) {
       $aSeriesEquivalentes[] = EtapaRepository::getEtapaByCodigo(db_utils::fieldsMemory($rsEquivalente, $i)->ed234_i_serieequiv);
     }
-    
+
     return $aSeriesEquivalentes;
   }
+
+    /**
+     * @param bool $recursive
+     * @return array
+     */
+    public function toArray($recursive = false)
+    {
+       $data = array(
+           'codigo' => $this->getCodigo(),
+           'nome' => $this->getNome(),
+           'nomeAbreviado' => $this->getNomeAbreviado(),
+           'ordem' => $this->getOrdem(),
+           'codigoEtapaCenso' => $this->getEtapaCenso(),
+       );
+
+       if ($recursive) {
+           $data['ensinos'] = $this->getEnsino()->toArray();
+       }
+
+       return $data;
+    }
 }

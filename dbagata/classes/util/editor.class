@@ -189,7 +189,7 @@ class ScintillaPHP extends GtkScintilla
     function ScintillaPHP()
     {
         GtkScintilla::GtkScintilla();
-        GtkScintilla::connect_object('char_added', array(&$this,'char_added'));
+        GtkScintilla::connect_object('char_added', array($this,'char_added'));
         GtkScintilla::set_margin_type_n(2, 0);
         GtkScintilla::set_margin_width_n(2, 0);
         GtkScintilla::set_margin_width_n(1, 20);

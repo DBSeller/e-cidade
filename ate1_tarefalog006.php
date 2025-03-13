@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tarefalog_classe.php");
-include("classes/db_tarefalogsituacao_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tarefalog_classe.php"));
+include(modification("classes/db_tarefalogsituacao_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cltarefalog         = new cl_tarefalog;
@@ -95,7 +95,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmtarefalog.php");
+	include(modification("forms/db_frmtarefalog.php"));
 	?>
     </center>
 	</td>
@@ -128,7 +128,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          // parent.document.formaba.tarefalog.disabled=false;
-         top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?db_opcaoal=33&at40_sequencial=".@$at40_sequencial."&at43_usuario=".@$at43_usuario."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?db_opcaoal=33&at40_sequencial=".@$at40_sequencial."&at43_usuario=".@$at43_usuario."';
      ";
          if(isset($liberaaba)){
 //           echo "  parent.mo_camada('tarefalog');";

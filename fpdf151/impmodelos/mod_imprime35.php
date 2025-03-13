@@ -1,5 +1,5 @@
 <?
-//require('fpdf151/alphapdf.php');
+//require(modification('fpdf151/alphapdf.php'));
 //$obj_alpha   = new alphapdf;
 //ie("aki");
 $cldb_config = new cl_db_config;
@@ -322,7 +322,7 @@ $cldb_config = new cl_db_config;
 					where db03_tipodoc = 1010 and db03_instit = ".db_getsession("DB_instit")." 
 					  and db02_descr ilike 'assinatura_%' 
 					order by db04_ordem ";
-		$resparag = pg_query($sqlparag);
+		$resparag = db_query($sqlparag);
 		
 //		db_criatabela($resparag);exit;
 //		die($sqlparag);

@@ -1,0 +1,35 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="nomeinstabrev"  label="nomeinstabrev"  />
+        <campo campo="z01_cgccpf" label="cpf"    />
+        <campo campo="p51_descr"  label="descricao"  />
+        <campo campo="p58_numero" label="numero"    />
+        <campo campo="p58_obs"  label="observacao"  />
+        <campo campo="descrdepto" label="descricaodepartamento"    />
+        <campo campo="p58_codproc" label="codigoprocesso"    />
+        <campo campo="p58_ano" label="anoprocesso"    />
+        <campo campo="p58_dtproc" label="dataprocesso"    />
+        <campo campo="p92_processofilho" label="processofilho"    />
+        <campo campo="p58_tipoprocesso" label="tipoprocesso"    />
+        <campo campo="p43_formareclamacao" label="formareclamacao"    />
+    </campos>
+    <from tabela="protprocesso"/>
+    <juncoes>
+        <join tipo="inner" tabela="tipoproc" condicao="p58_codigo = p51_codigo " />
+        <join tipo="inner" tabela="tipoprocformareclamacao" condicao="p43_tipoproc = p51_codigo" />
+        <join tipo="inner" tabela="db_config" condicao="p58_instit = codigo" />
+        <join tipo="inner" tabela="db_depart" condicao="p58_coddepto = coddepto" />
+        <join tipo="inner" tabela="cgm" condicao="z01_numcgm = p58_numcgm" />
+        <join tipo="left" tabela="processosvinculados" condicao="p92_processofilho = p58_codproc" />
+    </juncoes>
+    <filtros>
+        <filtro label="cpfBusca" condicao="z01_cgccpf = '$cpfBusca'" obrigatorio="false" />
+        <filtro condicao="p92_processofilho is null" obrigatorio="true" />
+        <filtro condicao="p43_formareclamacao != 9" obrigatorio="true" />
+
+
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao   campos="dataprocesso desc"/>
+</consulta>

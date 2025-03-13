@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -543,5 +543,28 @@ class cl_rhbasesreg {
      }
      return $sql;
   }
+  
+  /**
+   * Retorna uma query com a junção de duas tabelas: rhbasesreg e basesr.
+   * A união entre estas tabelas, encontra as rubricas da base do servidor
+   * 
+   * @param Base $oBase
+   * @param Servidor $oServidor
+   * @return String
+   */
+  public function sql_query_base_servidor(Base $oBase, Servidor $oServidor) {
+    
+    $sSqlRubrica  = "(select rh54_rubric ";
+    $sSqlRubrica .= "     from rhbasesreg ";
+    $sSqlRubrica .= "   where rh54_base = '{$oBase->getCodigo()}') ";      
+    $sSqlRubrica .= " union ";
+    $sSqlRubrica .= "(select r09_rubric ";
+    $sSqlRubrica .= "     from basesr ";
+    $sSqlRubrica .= "   where r09_anousu  = {$oBase->getCompetencia()->getAno()} ";
+    $sSqlRubrica .= "     and r09_mesusu  = {$oBase->getCompetencia()->getMes()} ";
+    $sSqlRubrica .= "     and r09_base    = '{$oBase->getCodigo()}' ";
+    $sSqlRubrica .= "     and r09_instit  = {$oBase->getInstituicao()->getCodigo()}) ";  
+    
+    return $sSqlRubrica;
+  }
 }
-?>

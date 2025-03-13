@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,16 +24,15 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
 if(isset($retorno)) {
-  $result = pg_exec("select * from db_contatos where id = $retorno");
+  $result = db_query("select * from db_contatos where id = $retorno");
   db_fieldsmemory($result,0);
 }
 
@@ -53,8 +52,8 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   $email = $HTTP_POST_VARS["email"];
   $pagina = $HTTP_POST_VARS["pagina"];
 
-  pg_exec("BEGIN");
-  $result = pg_exec("UPDATE db_contatos SET  organizacao = '$organizacao',
+  db_query("BEGIN");
+  $result = db_query("UPDATE db_contatos SET  organizacao = '$organizacao',
                                           nome = '$nome',
                                           rua = '$rua',
                                           bairro = '$bairro',
@@ -68,7 +67,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
                                           email = '$email',
                                           pagina = '$pagina'
 				     WHERE id = $id") or die("Erro(36) alterando db_contatos");
-  pg_exec("COMMIT");
+  db_query("COMMIT");
   db_redireciona();
 }
 
@@ -108,7 +107,7 @@ function js_submeter() {
 	   if(isset($HTTP_POST_VARS["procurar"]) || isset($HTTP_POST_VARS["priNoMe"]) || isset($HTTP_POST_VARS["antNoMe"]) || isset($HTTP_POST_VARS["proxNoMe"]) || isset($HTTP_POST_VARS["ultNoMe"])) {
 	     db_postmemory($HTTP_POST_VARS);
          if(!empty($id)) {
-           $result = pg_exec("select id from db_contatos where id = $id");
+           $result = db_query("select id from db_contatos where id = $id");
 	       if(pg_numrows($result) > 0) {
  	         db_redireciona("age1_agenda002.php?".base64_encode("retorno=".pg_result($result,0,0)));
 	         exit;
@@ -153,7 +152,7 @@ function js_submeter() {
 		</center>
 	  <?
 	    } else {
-          include("forms/db_frmagenda.php");
+          include(modification("forms/db_frmagenda.php"));
 		}
 		      
       ?>

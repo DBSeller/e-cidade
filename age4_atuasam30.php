@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -42,7 +42,7 @@ if(isset($btAtualiza)){
 				* 
 			from 
 				orctiporec";
-   $resultRecurso  = pg_query($sqlRecurso);   
+   $resultRecurso  = db_query($sqlRecurso);   
    $connSam30      = pg_connect("host = $ipSAM dbname = $dbSAM user = postgres");
    while($linha    = pg_fetch_array($resultRecurso)){
    	$selectRec = "
@@ -54,7 +54,7 @@ if(isset($btAtualiza)){
 			o15_codigo = '".$linha["o15_codigo"]."' and 
 			o15_anoexe = 2005";
 //	echo $selectRec."<br>";
-	$resultRec = pg_query($connSam30, $selectRec);
+	$resultRec = db_query($connSam30, $selectRec);
 	if (pg_num_rows($resultRec) == 0){
 	  	$finali    = substr($linha["o15_finali"], 0, 160);
 		$insertRec = 
@@ -73,7 +73,7 @@ if(isset($btAtualiza)){
 			'".$linha["o15_descr"]."', 
 			'".$finali."'
 			)";
-		$resultRec = pg_query($connSam30, $insertRec);
+		$resultRec = db_query($connSam30, $insertRec);
 		if ($resultRec){
 			$erro = 0;  
 		}
@@ -93,7 +93,7 @@ if(isset($btAtualiza)){
 	FROM 
 		orcreceita 
 	inner join orcfontes on o57_codfon = o70_codfon";
-   $result = pg_query($conn, $sql);
+   $result = db_query($conn, $sql);
    while($linha = pg_fetch_array($result)){
      	if (substr($linha["o57_fonte"],0,7) == '4199099' ){
 		$direita  = substr($linha["o57_fonte"], 1, 7);
@@ -112,7 +112,7 @@ if(isset($btAtualiza)){
 				o08_codest = '".$fonte."' and 
 				o08_anoexe = 2005";
         //echo $selectSam30."<br>";exit;
-	$resultSelect = pg_query($connSam30, $selectSam30);
+	$resultSelect = db_query($connSam30, $selectSam30);
 	if (pg_num_rows($resultSelect) == 0){
             $insert = 
 		"insert into
@@ -135,7 +135,7 @@ if(isset($btAtualiza)){
 			'".$fonte."'
 			)";
 //	    echo $insert."<br>";
-	    $resultSam30 = pg_query($connSam30, $insert);
+	    $resultSam30 = db_query($connSam30, $insert);
      	    if ($resultSam30){
 	    	$erro = 0;
 	    }
@@ -150,7 +150,7 @@ if(isset($btAtualiza)){
 			o57_descr 
 		from 
 			orcfontes";
-   $resultFonte = pg_query($conn, $sqlFonte); 
+   $resultFonte = db_query($conn, $sqlFonte); 
    while($linha = pg_fetch_array($resultFonte)){	  
      	if (substr($linha["o57_fonte"],0,7) == '4199099' ){
 		$direita  = substr($linha["o57_fonte"], 1, 7);
@@ -170,7 +170,7 @@ if(isset($btAtualiza)){
 			where 
 				o19_anoexe = 2005 and 
 				o19_codigo = '".$fonte."'";
-	$resultF = pg_query($connSam30, $selectFonte);
+	$resultF = db_query($connSam30, $selectFonte);
 	if (pg_num_rows($resultF) == 0){
 		$insertFonte = "
 				insert into 
@@ -186,7 +186,7 @@ if(isset($btAtualiza)){
 					'".$fonte."', 
 					'".$descr."'
 					)";
-		$resultInsert = pg_query($connSam30, $insertFonte);
+		$resultInsert = db_query($connSam30, $insertFonte);
 		if ($resultInsert){
 			$erro = 0;
 		}
@@ -201,7 +201,7 @@ if(isset($btAtualiza)){
    else{
    	db_msgbox("Erro! Receitas já atualizadas"); 
    }
-   require("libs/db_conecta.php");
+   require(modification("libs/db_conecta.php"));
 }
 ?>
 <html>

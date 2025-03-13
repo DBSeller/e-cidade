@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -34,8 +34,11 @@ $clrotulo->label('k00_valor');
 $clrotulo->label('k00_numpar');
 ?>
 <form name="form1" enctype="multipart/form-data" method="post" action="">
-<center>
-<table border="0">
+  <fieldset style="margin: 40px auto 10px; width: 700px;">
+    <legend>
+      <strong>Processa Retorno Banco</strong>
+    </legend>
+  <table border="0">
   <tr>   
       <td>
       <?
@@ -69,52 +72,52 @@ db_input('k15_codage',10,$Ik15_codage,true,'text',$db_opcao,"")
       <tr> 
         <td nowrap><?=$Larqret?> </td>
         <td> 
-	<?
-	db_input('arq_name',50,"",true,'text',3,"");
-        ?>	
+  <?
+  db_input('arq_name',50,"",true,'text',3,"");
+        ?>  
       </tr>
-	<tr> 
-	  <td nowrap><?=$Lk00_numpar?> </td>
-	  <td> 
-	  <?
-	  //db_input("k00_numpar",50,$Ik00_numpar,true,"file",4)
+  <tr> 
+    <td nowrap><?=$Lk00_numpar?> </td>
+    <td> 
+    <?
+    //db_input("k00_numpar",50,$Ik00_numpar,true,"file",4)
     db_input('k00_numpar',3,$Ik00_numpar,true,'text',3,"")
-	  ?>	
-	</tr>
+    ?>  
+  </tr>
 
       <?
       } else {
       ?>
-	<tr> 
-	  <td nowrap><?=$Larqret?> </td>
-	  <td> 
-	  <?
-	  db_input("arqret",50,$Iarqret,true,"file",4)
-	  ?>	
-	</tr>
+  <tr> 
+    <td nowrap><?=$Larqret?> </td>
+    <td> 
+    <?
+    db_input("arqret",50,$Iarqret,true,"file",4)
+    ?>  
+  </tr>
   
-	<tr> 
-	  <td nowrap><?=$Lk00_numpar?> </td>
-	  <td> 
-	  <?
-	  //db_input("k00_numpar",50,$Ik00_numpar,true,"file",4)
+  <tr> 
+    <td nowrap><?=$Lk00_numpar?> </td>
+    <td> 
+    <?
+    //db_input("k00_numpar",50,$Ik00_numpar,true,"file",4)
     db_input('k00_numpar',3,$Ik00_numpar,true,'text',$db_opcao,"")
-	  ?>	
-	</tr>
+    ?>  
+  </tr>
 
       <?
       }
       ?>
 
       <?
-	if (isset($totalvalorpago)) {
+  if (isset($totalvalorpago)) {
       ?>
       <tr> 
         <td nowrap><?=$Lk00_valor?> </td>
         <td> 
-	<?
-	db_input('totalvalorpago',10,"",true,'text',3,"");
-        ?>	
+  <?
+  db_input('totalvalorpago',10,"",true,'text',3,"");
+        ?>  
       </tr>
       <?
       }
@@ -122,7 +125,7 @@ db_input('k15_codage',10,$Ik15_codage,true,'text',$db_opcao,"")
 
 
       <?
-	if (isset($totalproc)) {
+  if (isset($totalproc)) {
       ?>
       <tr> 
         <td nowrap><b>Linhas</b></td>
@@ -131,25 +134,31 @@ db_input('k15_codage',10,$Ik15_codage,true,'text',$db_opcao,"")
       <?
       }
       ?>
-      
+      <tr> 
+        <td nowrap><b>Ano</b></td>
+        <td><input name="ano" id="ano" type="text" id="totalproc" value="<?=$ano?>" size="3" maxlength="4"></td>
+      </tr>
   
   </table>
-  </center>
+  </fieldset>
 <!--<input name="processar" type="submit" id="processar" value="Processar"> -->
-	<?
-	if(isset($processar)) {
-	?>
+  <?
+  if(isset($processar)) {
+  ?>
+<center>
 <input name="arq_tmpname" type="hidden" id="arq_tmpname" value="<?=$DOCUMENT_ROOT."/tmp/".$arq_tmpname?>">
 <input name="k00_numpar" type="hidden" id="k00_numpar" value="<?=$k00_numpar?>">
 <input name="geradebcta" type="submit" id="geradebcta" value="Processar">
-
+</center>
   <?
-	} else {
-	?>
-<input name="processar" type="submit" id="processar" value="Processar">
+  } else {
+  ?>
+  <center>
+    <input name="processar" type="submit" id="processar" value="Processar">
+  </center>
   <?
-	}
-	?>
+  }
+  ?>
 
 </form>
 <script>

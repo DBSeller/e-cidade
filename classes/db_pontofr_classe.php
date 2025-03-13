@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -99,7 +99,8 @@ class cl_pontofr {
      }
    }
    // funcao para inclusao
-   function incluir ($r19_anousu,$r19_mesusu,$r19_regist,$r19_rubric,$r19_tpp){ 
+    function incluir($r19_anousu, $r19_mesusu, $r19_regist, $r19_rubric, $r19_tpp = '')
+    {
       $this->atualizacampos();
      if($this->r19_valor == null ){ 
        $this->erro_sql = " Campo Valor do Ponto nao Informado.";
@@ -174,7 +175,7 @@ class cl_pontofr {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->r19_tpp == null) || ($this->r19_tpp == "") ){ 
+        if (is_null($this->r19_tpp)) {
        $this->erro_sql = " Campo r19_tpp nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";

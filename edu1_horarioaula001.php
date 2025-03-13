@@ -2,7 +2,7 @@
 
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 
 <style type="text/css">
@@ -41,6 +41,7 @@ require_once ("dbforms/db_funcoes.php");
   padding: 0;
   text-align: right;
 }
+
 </style>
   <div class="container">
 
@@ -49,7 +50,9 @@ require_once ("dbforms/db_funcoes.php");
         <legend>Horários de Aula</legend>
         <table class="form-container">
           <tr>
-            <td nowrap="nowrap" class="bold">Turno:</td>
+            <td nowrap="nowrap" class="bold">
+              <label for="turnoEscola">Turno:</label>
+            </td>
             <td>
               <select id='turnoEscola'>
                 <option value="">Selecione</option>
@@ -58,7 +61,7 @@ require_once ("dbforms/db_funcoes.php");
           </tr>
         </table>
 
-        <fieldset style='width:500px;'>
+        <fieldset style='width:600px;'>
           <legend>Períodos</legend>
           <div id='ctnGridPeriodosAula'></div>
         </fieldset>
@@ -75,14 +78,12 @@ require_once ("dbforms/db_funcoes.php");
   </div>
   <div class="subcontainer">
 
-    <fieldset style='width:526px;'>
+    <fieldset style='width:600px;'>
       <legend>Horários Inclusos</legend>
       <div id='cntGridHorariosInclusos'></div>
     </fieldset>
 
   </div>
-
-
 
 <script type="text/javascript">
 
@@ -96,9 +97,9 @@ var aPeriodosInclusos          = []; // Períodos de aula vínculados com a escola
 var oGridPeriodosEscola          = new DBGrid('gridPeriodosEscola');
 oGridPeriodosEscola.nameInstance = 'oGridPeriodosEscola';
 oGridPeriodosEscola.setCheckbox(0);
-oGridPeriodosEscola.setCellWidth( [ '0%', '49%', '17%', '17%', '17%' ] );
-oGridPeriodosEscola.setHeader( [ 'codigo', 'Período', 'H. Início', 'H. Fim', 'Duração', 'periodo_aula' ] );
-oGridPeriodosEscola.setCellAlign( [ 'left', 'left', 'left', 'left', 'left' ] );
+oGridPeriodosEscola.setCellWidth( [ '0%', '35%', '15%', '15%', '15%', '0%', '20%' ] );
+oGridPeriodosEscola.setHeader( [ 'codigo', 'Período', 'H. Início', 'H. Fim', 'Duração', 'periodo_aula', 'Referência' ] );
+oGridPeriodosEscola.setCellAlign( [ 'left', 'left', 'left', 'left', 'left', 'left', 'left' ] );
 oGridPeriodosEscola.setHeight(130);
 oGridPeriodosEscola.aHeaders[1].lDisplayed = false;
 oGridPeriodosEscola.aHeaders[6].lDisplayed = false;
@@ -142,7 +143,7 @@ function js_buscaTurnos() {
   oRequest.asynchronous = false;
   oRequest.onComplete   = function (oAjax) {
 
-    var oRetorno = eval('(' + oAjax.responseText + ')' );
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     aTurnosCadastrados = oRetorno.aTurnos;
     js_montaTurnos();
@@ -159,7 +160,17 @@ function js_buscaTurnos() {
 function js_montaTurnos() {
 
   aTurnosCadastrados.each( function( oTurno ) {
-    $('turnoEscola').add(new Option(oTurno.sDescricao.urlDecode(), oTurno.iCodigo));
+
+    var oOption = new Option(oTurno.sDescricao.urlDecode(), oTurno.iCodigo);
+
+    oOption.setAttribute('integral', 'false');
+    oOption.setAttribute('turnoreferente', oTurno.aTurnosReferente);
+
+    if ( oTurno.aTurnosReferente.length > 1 ) {
+      oOption.setAttribute('integral', 'true');
+    }
+
+    $('turnoEscola').add(oOption);
   });
 }
 
@@ -183,7 +194,7 @@ function js_buscaPeriodosAula () {
   oRequest.asynchronous = false;
   oRequest.onComplete   = function (oAjax) {
 
-    var oRetorno = eval('(' + oAjax.responseText + ')' );
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     aPeriodosEscolaCadastrados = oRetorno.aPeriodos;
     js_renderizaPeriodos();
@@ -205,6 +216,7 @@ function js_renderizaPeriodos () {
     aLinha.push('');
     aLinha.push('');
     aLinha.push('');
+    aLinha.push('');
 
     oGridPeriodosEscola.addRow(aLinha);
   });
@@ -213,33 +225,45 @@ function js_renderizaPeriodos () {
 
   aPeriodosEscolaCadastrados.each (function ( oPeriodo, i ) {
 
-    var sIdDuracao        = 'duracao_'+oPeriodo.iCodigo;
-    var sIdCodigoVinculo  = 'codigo_vinculo_periodo_'+oPeriodo.iCodigo;
-    var oInputHoraDuracao = new Element('input', {'type':'text', 'class' : 'tamanhoInputHora readonly', 'id':sIdDuracao});
+    var sIdDuracao           = 'duracao_'+oPeriodo.iCodigo;
+    var sIdCodigoVinculo     = 'codigo_vinculo_periodo_'+oPeriodo.iCodigo;
+    var oInputHoraDuracao    = new Element('input' , {'type':'text', 'class' : 'tamanhoInputHora readonly', 'id':sIdDuracao});
     oInputHoraDuracao.setAttribute('disabled', 'disabled');
 
+    var sIdTurnoReferente    = 'turno_referente_'+oPeriodo.iCodigo;
+    var oComboTurnoReferente = new Element('select', {'type':'select', 'id': sIdTurnoReferente});
+    oComboTurnoReferente.add( new Option('Selecione...', 'null') );
+    oComboTurnoReferente.add( new Option('Manhã', '1') );
+    oComboTurnoReferente.add( new Option('Tarde', '2') );
+    oComboTurnoReferente.add( new Option('Noite', '3') );
+    oComboTurnoReferente.add( new Option('Manhã/Tarde', '4') );
+    oComboTurnoReferente.add( new Option('Tarde/Noite', '5') );
+
+    oComboTurnoReferente.setAttribute('disabled', 'disabled');
 
     var oInputVinculo = new Element('input', {'type':'hidden', 'class' : 'readonly', 'id':sIdCodigoVinculo});
-
-
-    var oHoraInicio = js_generateImput (oPeriodo, 'inicio');
-    var oHoraFim    = js_generateImput (oPeriodo, 'fim');
+    var oHoraInicio   = js_generateInput (oPeriodo, 'inicio');
+    var oHoraFim      = js_generateInput (oPeriodo, 'fim');
 
     oHoraInicio.show( $(oGridPeriodosEscola.aRows[i].aCells[3].sId) );
     oHoraFim.show( $(oGridPeriodosEscola.aRows[i].aCells[4].sId) );
+
+    $(oGridPeriodosEscola.aRows[i].aCells[0].sId).setAttribute('ordem', oPeriodo.iOrdem );
     $(oGridPeriodosEscola.aRows[i].aCells[5].sId).appendChild( oInputHoraDuracao );
     $(oGridPeriodosEscola.aRows[i].aCells[6].sId).appendChild( oInputVinculo );
+    $(oGridPeriodosEscola.aRows[i].aCells[7].sId).appendChild( oComboTurnoReferente );
   });
 }
 
 
-function js_generateImput (oDadosPeriodo, sTipo) {
+function js_generateInput (oDadosPeriodo, sTipo) {
 
   var sId    = sTipo + '_' +  oDadosPeriodo.iCodigo;
   var oInput = new DBInputHora( new Element('input', {'type':'text', 'id' : sId}) );
   oInput.getElement().setAttribute( 'tipo', sTipo );
   oInput.getElement().setAttribute( 'nome_periodo', oDadosPeriodo.sDescricao.urlDecode() );
   oInput.getElement().setAttribute( 'codigo_periodo', oDadosPeriodo.iCodigo );
+  oInput.getElement().setAttribute( 'ordem', oDadosPeriodo.iOrdem );
   oInput.getElement().addClassName( 'tamanhoInputHora' );
   oInput.getElement().addClassName( 'readonly' );
   oInput.getElement().setAttribute('disabled', 'disabled');
@@ -280,14 +304,17 @@ function js_calculaIntervalo(oElement, oEvent) {
 
   if ($F(sIdInicio) != '' && $F(sIdFim) != '') {
 
-    var aHoraInicio = $(sIdInicio).value.split(':');
-    var aHoraFim    = $(sIdFim).value.split(':');
-    var oDataInicio = new Date();
-    var oDataFim    = new Date();
+    var aHoraInicio    = $(sIdInicio).value.split(':');
+    var aHoraFim       = $(sIdFim).value.split(':');
+    var iMinutosInicio = new Number( ( aHoraInicio[0] * 60 ) + aHoraInicio[1] );
+    var iMinutosFim    = new Number( ( aHoraFim[0] * 60 ) + aHoraFim[1] );
+    var oDataInicio    = new Date();
+    var oDataFim       = new Date();
+
     oDataInicio.setHours(aHoraInicio[0], aHoraInicio[1]);
     oDataFim.setHours(aHoraFim[0], aHoraFim[1]);
 
-    if (oDataFim.getTime() <= oDataInicio.getTime() ) {
+    if (iMinutosFim <= iMinutosInicio ) {
 
       alert(_M( MSG_HORARIOAULA +'hora_final_menor_igual'));
 
@@ -313,9 +340,115 @@ function js_calculaIntervalo(oElement, oEvent) {
     $(sIdDuracao).value = iHoras + ':' + iMinutos;
   }
 
+  js_validaConflitoEntrePeriodos(oElement, oEvent);
   return true;
 }
 
+/**
+ * Valida o conflito entre os períodos informados
+ * @param  {Element} oElementoAtual  Elemento alterado no momento
+ * @param  {event}   oEvent
+ * @return {Boolean}
+ */
+function js_validaConflitoEntrePeriodos(oElementoAtual, oEvent) {
+
+  var aPeriodosAnteriores  = [];
+  var aPeriodosPosteriores = [];
+
+  $$('#gridgridPeriodosEscola input[type="checkbox"]:checked').each ( function(oElemento) {
+
+    if( oElemento.getAttribute('value') ) {
+
+      var iOrdem      = parseInt( oElemento.parentNode.getAttribute('ordem') );
+      var iOrdemAtual = parseInt( oElementoAtual.getAttribute('ordem') );
+
+      if ( iOrdem < iOrdemAtual ) {
+        aPeriodosAnteriores.push( oElemento );
+      } else if (  iOrdem > iOrdemAtual  ) {
+        aPeriodosPosteriores.push( oElemento );
+      }
+    }
+  });
+
+  var oHoraAtual = new Date();
+
+  /**
+   * Valida a hora inicial do período alterado com a hora final do anterior
+   */
+  if ( oElementoAtual.getAttribute('tipo') == 'inicio' && aPeriodosAnteriores.length > 0) {
+
+    var iCodigoPeriodoAnterior = aPeriodosAnteriores[aPeriodosAnteriores.length - 1].value;
+    var oElementoAnterior      = $('fim_' + iCodigoPeriodoAnterior);
+
+    if (oElementoAnterior.value == '') {
+      return;
+    }
+
+    var aHoraAtual       = oElementoAtual.value.split(':');
+    var aHoraAnterior    = oElementoAnterior.value.split(":");
+    var iMinutosAtual    = new Number( ( aHoraAtual[0] * 60 ) + aHoraAtual[1] );
+    var iMinutosAnterior = new Number( ( aHoraAnterior[0] * 60 ) + aHoraAnterior[1] );
+    var oHoraAnterior    = new Date();
+
+    oHoraAtual.setHours( aHoraAtual[0], aHoraAtual[1] );
+    oHoraAnterior.setHours( aHoraAnterior[0], aHoraAnterior[1] );
+
+    if ( iMinutosAtual < iMinutosAnterior ) {
+
+      var oMsgErro = {'sPeriodo' : oElementoAnterior.getAttribute('nome_periodo')};
+      alert ( _M (MSG_HORARIOAULA + 'hora_inicio_conflita_periodo', oMsgErro) );
+
+      oElementoAtual.value = '';
+      oEvent.stopImmediatePropagation();
+      setTimeout(function (event) {
+        oElementoAtual.focus();
+      }, 1);
+
+      $('processarHorarioAula').setAttribute('disabled','disabled');
+      return false;
+    }
+  }
+
+  /**
+   * Valida a hora final do período alterado com a hora inicial do próximo
+   */
+  if ( oElementoAtual.getAttribute('tipo') == 'fim' && aPeriodosPosteriores.length > 0) {
+
+    var iCodigoPeriodoPosterior = aPeriodosPosteriores[0].value;
+    var oElementoPosterior      = $('inicio_' + iCodigoPeriodoPosterior);
+
+    if ( oElementoPosterior.value == '' ) {
+      return;
+    }
+
+    var aHoraAtual        = oElementoAtual.value.split(':');
+    var aHoraPosterior    = oElementoPosterior.value.split(":");
+    var iMinutosAtual     = new Number( ( aHoraAtual[0] * 60 ) + aHoraAtual[1] );
+    var iMinutosPosterior = new Number( ( aHoraPosterior[0] * 60 ) + aHoraPosterior[1] );
+    var oHoraPosterior    = new Date();
+
+    oHoraAtual.setHours( aHoraAtual[0], aHoraAtual[1] );
+    oHoraPosterior.setHours( aHoraPosterior[0], aHoraPosterior[1] );
+
+    if( iMinutosAtual > iMinutosPosterior ) {
+
+      var oMsgErro = {'sPeriodo' : oElementoPosterior.getAttribute('nome_periodo')};
+      alert ( _M (MSG_HORARIOAULA + 'hora_final_conflita_periodo', oMsgErro) );
+
+      oElementoAtual.value = '';
+      oEvent.stopImmediatePropagation();
+      setTimeout(function (event) {
+        oElementoAtual.focus();
+      }, 1);
+
+      $('processarHorarioAula').setAttribute('disabled','disabled');
+      return false;
+    }
+  }
+  oElementoAtual.style.backgroundColor = '';
+  $('processarHorarioAula').removeAttribute('disabled');
+  return true;
+}
 
 /**
  * Reescreve a função selectSingle da DBGrid
@@ -323,14 +456,24 @@ function js_calculaIntervalo(oElement, oEvent) {
 var fGridSelectSingle = oGridPeriodosEscola.selectSingle;
 oGridPeriodosEscola.selectSingle = function (oCheckbox, sRow, oRow) {
 
+
+  var lIntegral       = $('turnoEscola').options[$('turnoEscola').selectedIndex].getAttribute('integral');
+  var iTurnoReferente = $('turnoEscola').options[$('turnoEscola').selectedIndex].getAttribute('turnoreferente');
+
   var oInputInicio = $('inicio_'+oCheckbox.value);
   var oInputFim    = $('fim_'+oCheckbox.value);
+  var oComboTurnoReferente = $('turno_referente_'+oCheckbox.value);
+
+
   oInputInicio.setAttribute('disabled', 'disabled');
   oInputFim.setAttribute('disabled', 'disabled');
+  oComboTurnoReferente.setAttribute('disabled', 'disabled');
   oInputInicio.addClassName( 'readonly' );
   oInputFim.addClassName( 'readonly' );
 
   fGridSelectSingle.apply(this, arguments) ;
+
+  oComboTurnoReferente.value = 'null';
 
   if ( oCheckbox.checked ) {
 
@@ -338,6 +481,8 @@ oGridPeriodosEscola.selectSingle = function (oCheckbox, sRow, oRow) {
     oInputFim.removeClassName('readonly');
     oInputInicio.removeAttribute('disabled');
     oInputFim.removeAttribute('disabled');
+
+    bloqueiaTurnosReferencia(oCheckbox.value);
   }
 
   return true;
@@ -367,17 +512,19 @@ function js_validaPeriodosSelecionados() {
 
       var iCodigoPeriodo = oElemento.value;
 
-      var oHoraInicio  = $('inicio_'+iCodigoPeriodo);
-      var oHoraFim     = $('fim_'+iCodigoPeriodo);
-      var oHoraDuracao = $('duracao_'+iCodigoPeriodo);
-      var oHoraVinculo = $('codigo_vinculo_periodo_'+iCodigoPeriodo);
+      var oHoraInicio            = $('inicio_'+iCodigoPeriodo);
+      var oHoraFim               = $('fim_'+iCodigoPeriodo);
+      var oHoraDuracao           = $('duracao_'+iCodigoPeriodo);
+      var oHoraVinculo           = $('codigo_vinculo_periodo_'+iCodigoPeriodo);
+      var oComboTurnoReferente   = $('turno_referente_'+iCodigoPeriodo);
+      var aTurnoReferentePeriodo = [];
 
       var sNomePeriodo = oHoraInicio.getAttribute('nome_periodo');
 
-      var oMsgErro = {};
+      var oMsgErro     = {};
+      oMsgErro.periodo = sNomePeriodo;
       if (oHoraInicio.value == '') {
 
-        oMsgErro.periodo = sNomePeriodo;
         alert( _M( MSG_HORARIOAULA + "hora_inicio_nao_informada", oMsgErro ) );
         lErro = true;
         throw $break;
@@ -385,7 +532,6 @@ function js_validaPeriodosSelecionados() {
 
       if (oHoraFim.value == '') {
 
-        oMsgErro.periodo = sNomePeriodo;
         alert( _M( MSG_HORARIOAULA + "hora_final_nao_informada", oMsgErro) );
         lErro = true;
         throw $break;
@@ -402,9 +548,21 @@ function js_validaPeriodosSelecionados() {
         }
       }
 
+      if ( oComboTurnoReferente.value == 4 ) {
+
+        aTurnoReferentePeriodo.push(1);
+        aTurnoReferentePeriodo.push(2);
+      } else if (oComboTurnoReferente.value == 5) {
+
+        aTurnoReferentePeriodo.push(2);
+        aTurnoReferentePeriodo.push(3);
+      } else {
+        aTurnoReferentePeriodo.push(oComboTurnoReferente.value);
+      }
+
       var oPeriodoSelecionado = {'iPeriodo': iCodigoPeriodo, 'iCodigoVinculo' : oHoraVinculo.value,
         'sHoraInicio' : oHoraInicio.value, 'sHoraFim' : oHoraFim.value,
-        'sDuracao' : oHoraDuracao.value};
+        'sDuracao' : oHoraDuracao.value, 'aTurnoReferentePeriodo' : aTurnoReferentePeriodo};
       aPeriodosSelecionados.push(oPeriodoSelecionado);
     }
   });
@@ -416,8 +574,19 @@ function js_validaPeriodosSelecionados() {
 
 }
 
-
 $('processarHorarioAula').observe('click', function() {
+
+  /**
+   * Valida inconsistencias entre horarios de toda a grade
+   * @type object
+   */
+  var oRetornoValidaGradeHorario = js_validaGradeHorarios();
+
+  if ( oRetornoValidaGradeHorario.iError === true ) {
+
+    alert( oRetornoValidaGradeHorario.sMessage );
+    return;
+  }
 
   var aPeriodosValidados = js_validaPeriodosSelecionados();
   var aPeriodosExcluidos = [];
@@ -453,18 +622,18 @@ $('processarHorarioAula').observe('click', function() {
     }
   }
 
-  var iTurnoSelecionado          = $F('turnoEscola');
-  var oParametros                = {'exec' : 'salvarPeriodoAula'};
-  oParametros.iTurno             = iTurnoSelecionado;
-  oParametros.aPeriodos          = aPeriodosValidados;
-  oParametros.aPeriodosExcluidos = aPeriodosExcluidos;
+  var iTurnoSelecionado              = $F('turnoEscola');
+  var oParametros                    = {'exec' : 'salvarPeriodoAula'};
+  oParametros.iTurno                 = iTurnoSelecionado;
+  oParametros.aPeriodos              = aPeriodosValidados;
+  oParametros.aPeriodosExcluidos     = aPeriodosExcluidos;
 
   var oRequest          = {'method' : 'post'};
   oRequest.parameters   = 'json='+Object.toJSON(oParametros)
   oRequest.asynchronous = false;
   oRequest.onComplete   = function (oAjax) {
 
-    var oRetorno = eval( "(" + oAjax.responseText + ")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     alert(oRetorno.sMessage.urlDecode());
     if ( parseInt(oRetorno.iStatus) == 2) {
@@ -508,28 +677,50 @@ function js_buscaPeriodosVinculados() {
   new Ajax.Request(RPC_HORARIOAULA, oRequest);
 }
 
+/**
+ * Função criada para reordenar o array de Periodos Inclusos pois foi alterado o index no rpc para trazer ordenado
+ * conforme configurado na secretaria de educação
+ * @param  {Array} aPeriodosEscola
+ * @return {void}
+ */
+function js_reIndexaArrayDosPeriodos( aPeriodosEscola ) {
+
+  for (var sIndex in aPeriodosEscola) {
+
+    if (typeof aPeriodosEscola[sIndex] == 'function') {
+      continue;
+    }
+
+    var iTurno = sIndex.split('#')[1];
+    aPeriodosInclusos[iTurno] = aPeriodosEscola[sIndex];
+  }
+}
+
 
 function js_retornoPeriodosVinculados(oAjax) {
 
-  var oRetorno = eval('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   oGridHorariosInclusos.clearAll(true);
-  aPeriodosInclusos = oRetorno.aPeriodosEscola;
+
+  js_reIndexaArrayDosPeriodos(oRetorno.aPeriodosEscola);
 
   var aCodigoTurno = [];
-  for (var iTurno in aPeriodosInclusos ) {
+  for (var sHash in oRetorno.aPeriodosEscola ) {
+
+    var iTurno = sHash.split('#')[1];
 
     var aLinha   = [];
-    var sHorario = aPeriodosInclusos[iTurno].sHoraInicio + ' às ' + aPeriodosInclusos[iTurno].sHoraFim;
+    var sHorario = oRetorno.aPeriodosEscola[sHash].sHoraInicio + ' às ' + oRetorno.aPeriodosEscola[sHash].sHoraFim;
 
     var oBtnAlterar = new Element('input', {'type':'button', 'id':'alertar'+iTurno, 'value': 'A'});
     var oBtnExcluir = new Element('input', {'type':'button', 'id':'excluir'+iTurno, 'value': 'E'});
     oBtnAlterar.setAttribute('codigo_turno', iTurno);
     oBtnExcluir.setAttribute('codigo_turno', iTurno);
-    oBtnAlterar.setAttribute('descricao_turno', aPeriodosInclusos[iTurno].sTurno.urlDecode());
-    oBtnExcluir.setAttribute('descricao_turno', aPeriodosInclusos[iTurno].sTurno.urlDecode());
+    oBtnAlterar.setAttribute('descricao_turno', oRetorno.aPeriodosEscola[sHash].sTurno.urlDecode());
+    oBtnExcluir.setAttribute('descricao_turno', oRetorno.aPeriodosEscola[sHash].sTurno.urlDecode());
 
-    aLinha.push(aPeriodosInclusos[iTurno].sTurno.urlDecode());
+    aLinha.push(oRetorno.aPeriodosEscola[sHash].sTurno.urlDecode());
     aLinha.push(sHorario);
     aLinha.push(oBtnAlterar.outerHTML+ ' ' + oBtnExcluir.outerHTML);
 
@@ -584,7 +775,6 @@ function js_atualizaExclusao (iTurno) {
 function js_atualizaGradePeriodos (iTurno, lAlteracao) {
 
   var aPeriodosSelecionado = aPeriodosInclusos[iTurno].aPeriodos;
-
   for (var iIndice in aPeriodosSelecionado) {
 
     if (typeof aPeriodosSelecionado[iIndice] == 'function') {
@@ -595,10 +785,16 @@ function js_atualizaGradePeriodos (iTurno, lAlteracao) {
 
     $('chkgridPeriodosEscola'+iCodigoPeriodo).checked  = true;
 
-    var oInputInicio   = $('inicio_'+iCodigoPeriodo);
-    var oInputFim      = $('fim_'+iCodigoPeriodo);
-    var oInputDuracao  = $('duracao_'+iCodigoPeriodo);
-    var oInputVinculo  = $('codigo_vinculo_periodo_'+iCodigoPeriodo);
+    var oInputInicio         = $('inicio_'+iCodigoPeriodo);
+    var oInputFim            = $('fim_'+iCodigoPeriodo);
+    var oInputDuracao        = $('duracao_'+iCodigoPeriodo);
+    var oInputVinculo        = $('codigo_vinculo_periodo_'+iCodigoPeriodo);
+    var lIntegral            = $('turnoEscola').options[$('turnoEscola').selectedIndex].getAttribute('integral');
+    var iTurnoReferente      = $('turnoEscola').options[$('turnoEscola').selectedIndex].getAttribute('turnoreferente');
+    var oComboTurnoReferente = $('turno_referente_'+iCodigoPeriodo);
+    var aTurnosReferentePeriodo = aPeriodosSelecionado[iIndice].aTurnosReferentesPeriodo;
+    var iTurnoReferentePeriodo  = null;
+
 
     oInputInicio.value  = aPeriodosSelecionado[iIndice].sHoraInicio;
     oInputFim.value     = aPeriodosSelecionado[iIndice].sHoraFim;
@@ -610,6 +806,19 @@ function js_atualizaGradePeriodos (iTurno, lAlteracao) {
 
     oInputInicio.addClassName( 'readonly' );
     oInputFim.addClassName( 'readonly' );
+
+    iTurnoReferentePeriodo = 'null';
+
+    if ( aTurnosReferentePeriodo.join() == '1,2' ) {
+      iTurnoReferentePeriodo = 4;
+    } else if (aTurnosReferentePeriodo.join() == '2,3') {
+      iTurnoReferentePeriodo = 5;
+    } else if ( aTurnosReferentePeriodo.join() != "" ){
+      iTurnoReferentePeriodo = aTurnosReferentePeriodo.join();
+    }
+
+    oComboTurnoReferente.value = iTurnoReferentePeriodo;
+
     if (lAlteracao) {
 
       oInputInicio.removeAttribute('disabled', 'disabled');
@@ -617,6 +826,8 @@ function js_atualizaGradePeriodos (iTurno, lAlteracao) {
 
       oInputInicio.removeClassName( 'readonly' );
       oInputFim.removeClassName( 'readonly' );
+
+      bloqueiaTurnosReferencia(iCodigoPeriodo);
     }
   }
 
@@ -646,7 +857,7 @@ $('excluirVinculoPeriodo').observe('click', function() {
   oRequest.asynchronous = false;
   oRequest.onComplete   = function (oAjax) {
 
-    var oRetorno = eval( "(" + oAjax.responseText + ")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     alert(oRetorno.sMessage.urlDecode());
     if ( parseInt(oRetorno.iStatus) == 2) {
@@ -677,6 +888,121 @@ function js_atualizaSituacaoComboTurno(iTurno, lBloqueia) {
       break;
     }
   }
+}
+
+function js_validaGradeHorarios() {
+
+  var aElementos = new Array();
+  var oElementos = "";
+
+  $$('#gridgridPeriodosEscola input[type="checkbox"]:checked').each ( function(oElemento) {
+
+    if( oElemento.getAttribute('value') ) {
+
+      var iOrdem        = parseInt( oElemento.parentNode.getAttribute('ordem') );
+      if ( iOrdem != '' && iOrdem != undefined ) {
+        var iCodigoPeriodo  = oElemento.value;
+        var sHoraInicio     = $F('inicio_'+iCodigoPeriodo);
+        var sHoraFim        = $F('fim_'+iCodigoPeriodo);
+        var sNomePeriodo    = $('inicio_'+iCodigoPeriodo).getAttribute('nome_periodo');
+
+        if( sHoraInicio != '' && sHoraFim != '' ) {
+          oElementos = {
+            "ordem"         : iOrdem,
+            "nomePeriodo"   : sNomePeriodo,
+            "horaInicio"    : sHoraInicio,
+            "horaFim"       : sHoraFim
+          }
+          aElementos.push( oElementos );
+        }
+      }
+    }
+  });
+
+  aElementos   = js_sortByKey( aElementos, 'ordem' );
+
+  var iError   = false;
+  var sMessage = "";
+
+  var oHoraInicio         = new Date();
+  var oHoraFim            = new Date();
+  var oHoraInicioProximo  = new Date();
+
+  aElementos.each( function( oItem, iKey ) {
+
+    var aHoraInicio    = oItem.horaInicio.split(':');
+    var aHoraFim       = oItem.horaFim.split(":");
+    var iMinutosInicio = new Number( ( aHoraInicio[0] * 60 ) + aHoraInicio[1] );
+    var iMinutosFim    = new Number( ( aHoraFim[0] * 60 ) + aHoraFim[1] );
+
+    oHoraInicio.setHours( aHoraInicio[0], aHoraInicio[1] );
+    oHoraFim.setHours( aHoraFim[0], aHoraFim[1] );
+
+    if ( iMinutosInicio > iMinutosFim ) {
+
+      iError  = true;
+      sMessage   += "Hora inicial maior que hora final no periodo: " + oItem.nomePeriodo;
+    }
+
+    if ( typeof aElementos[(iKey+1)] !== 'undefined' ) {
+
+      var sNomePeriodoProximo = aElementos[(iKey+1)].nomePeriodo;
+      var aHoraInicioProximo  = aElementos[(iKey+1)].horaInicio.split(':');
+      oHoraInicioProximo.setHours( aHoraInicioProximo[0], aHoraInicioProximo[1] );
+
+      if ( oHoraFim.getTime() > oHoraInicioProximo.getTime() ) {
+
+        iError  = true;
+        sMessage   += "Hora final no periodo " + oItem.nomePeriodo;
+        sMessage   += " maior que hora inicial do periodo " + sNomePeriodoProximo;
+      }
+    }
+  });
+
+  var oReturn = {
+    'iError'   : iError,
+    'sMessage' : sMessage
+  }
+
+  return oReturn;
+}
+
+function js_sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
+
+$('turnoEscola').onchange = function() {
+  js_renderizaPeriodos();
+};
+
+function bloqueiaTurnosReferencia( iCheckbox ) {
+
+  var lIntegral            = $('turnoEscola').options[$('turnoEscola').selectedIndex].getAttribute('integral');
+  var iTurnoReferente      = $('turnoEscola').options[$('turnoEscola').selectedIndex].getAttribute('turnoreferente');
+  var oComboTurnoReferente = $('turno_referente_'+iCheckbox);
+  var optionsTurnos        = oComboTurnoReferente.getElementsByTagName("option");
+
+    if ( lIntegral == 'true' ) {
+
+      oComboTurnoReferente.removeAttribute('disabled');
+
+      for (var i = 0; i < optionsTurnos.length; i++) {
+
+        if ( iTurnoReferente == '1,2' ) {
+          (optionsTurnos[i].value == "3" || optionsTurnos[i].value == "5") ? optionsTurnos[i].disabled = true : optionsTurnos[i].disabled = false ;
+        }
+
+        if ( iTurnoReferente == '2,3' ) {
+          (optionsTurnos[i].value == "1" || optionsTurnos[i].value == "4") ? optionsTurnos[i].disabled = true : optionsTurnos[i].disabled = false ;
+        }
+      }
+    } else {
+      oComboTurnoReferente.value = iTurnoReferente;
+    }
+
 }
 
 </script>

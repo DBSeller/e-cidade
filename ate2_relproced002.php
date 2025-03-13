@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 
-require ('fpdf151/pdf.php');
-include("classes/db_db_sysmodulo_classe.php");
+require(modification('fpdf151/pdf.php'));
+include(modification("classes/db_db_sysmodulo_classe.php"));
 $total2 = 0;
 $cl_db_sysmodulo = new cl_db_sysmodulo;
 
@@ -56,7 +56,7 @@ inner join db_syscadproced on codproced = at29_syscadproced
 inner join tarefacadmotivo on at54_sequencial = at34_tarefacadmotivo
 where at02_datafim<='$data1' and at02_datafim>='$data'
 order by  at54_nome";
-$resultmot= pg_query($sqlmot) or die($sqlmot);
+$resultmot= db_query($sqlmot) or die($sqlmot);
 $linhasmot=pg_num_rows($resultmot);
 
 $pdf->Cell(65,6,"MÓDULOS",0,0,"C",1);
@@ -128,7 +128,7 @@ if($linhas >0){
     and at02_datafim<='$data1' and at02_datafim>='$data'
     order by  descrproced";
     
-    $resultproced = pg_query($sqlproced);
+    $resultproced = db_query($sqlproced);
     $linhasproced = pg_num_rows($resultproced);
     if ($linhasproced>0){
       $total1 = 0 ;
@@ -151,7 +151,7 @@ if($linhas >0){
         inner join tarefacadmotivo on at54_sequencial = at34_tarefacadmotivo
         where at02_datafim<='$data1' and at02_datafim>='$data'
         order by  at54_nome";
-        $resultmot1= pg_query($sqlmot1) or die($sqlmot1);
+        $resultmot1= db_query($sqlmot1) or die($sqlmot1);
         $linhasmot1=pg_num_rows($resultmot1);
 				
         $quant = 0;
@@ -175,7 +175,7 @@ if($linhas >0){
             where at02_datafim<='$data1' and at02_datafim>='$data'
             and at54_sequencial = $at54_sequencial 
             and codproced = $codproced";
-            $resultmoti=pg_query($sqlmoti);
+            $resultmoti=db_query($sqlmoti);
             db_fieldsmemory($resultmoti,0);
             //die($sqlmot);
 						if ($tipo == "a") {

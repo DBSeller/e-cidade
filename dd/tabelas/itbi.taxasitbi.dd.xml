@@ -1,0 +1,107 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010597' name='itbi.taxasitbi' description="Tabela para guardar as taxas do ITBI." prefix="it36" label="taxasitbi" type="0">
+  <fields>
+    <field codigo="1011656" 
+           campo_api='' 
+           name="it36_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela taxasitbi." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='itbi.taxasitbi_it36_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011657" 
+           campo_api='' 
+           name="it36_descricao" 
+           conteudo="varchar(255)" 
+           description="Descrição da taxa." 
+           inivalue="" 
+           label="Descriçao" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descriçao" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011669" 
+           campo_api='' 
+           name="it36_imovelurbano" 
+           conteudo="char(1)" 
+           description="Tipo de imóvel Urbano." 
+           inivalue="" 
+           label="Urbano" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Urbano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011670" 
+           campo_api='' 
+           name="it36_imovelrural" 
+           conteudo="char(1)" 
+           description="Tipo de imóvel Rural." 
+           inivalue="" 
+           label="Rural" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Rural" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011687" 
+           campo_api='' 
+           name="it36_imovelurbanopleno" 
+           conteudo="char(1)" 
+           description="Tipo de imóvel Urbano Pleno." 
+           inivalue="" 
+           label="Urbano Pleno" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Urbano Pleno" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="it36_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

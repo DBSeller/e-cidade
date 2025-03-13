@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_unidademedicos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_unidademedicos_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrotulo = new rotulocampo;
@@ -109,7 +109,7 @@ $clunidademedicos->rotulo->label("sd04_i_codigo");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_unidademedicos.php")==true){
-             include("funcoes/db_func_unidademedicos.php");
+             include(modification("funcoes/db_func_unidademedicos.php"));
            }else{
            $campos = "unidademedicos.*";
            }
@@ -126,6 +126,34 @@ $clunidademedicos->rotulo->label("sd04_i_codigo");
         }else{
            $sql = $clunidademedicos->sql_query("",$campos,"sd04_i_codigo","$where");
         }
+
+
+        if (isset($nao_mostra)) {
+          
+          $sSep    = '';
+          $aFuncao = explode('|', $funcao_js);
+          $rs      = $clunidademedicos->sql_record($sql);
+           if ($clunidademedicos->numrows == 0) {
+	           die('<script>'.$aFuncao[0]."('','Chave(".@$chave_sd04_i_unidade.") não Encontrado');</script>");
+           } else {
+            
+             db_fieldsmemory($rs, 0);
+             $sFuncao = $aFuncao[0].'(';
+             for($iCont = 1; $iCont < count($aFuncao); $iCont++) {
+
+               $sFuncao .= $sSep.'"'.eval('return @$'.$aFuncao[$iCont].';').'"';
+               $sSep     = ', ';
+
+             }
+
+             $sFuncao  = substr($sFuncao, 0, strlen($sFuncao));
+             $sFuncao .= ');';
+             die("<script>".$sFuncao.'</script>');
+
+          }
+
+        }
+
         $repassa = array();
         if(isset($chave_sd04_i_codigo)){
           $repassa = array("chave_sd04_i_codigo"=>$chave_sd04_i_codigo,"chave_sd04_i_codigo"=>$chave_sd04_i_codigo);
@@ -163,4 +191,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_sd04_i_codigo",true,1,"chave_sd04_i_codigo",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

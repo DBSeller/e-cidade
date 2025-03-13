@@ -96,4 +96,26 @@
     return count(AcordoRepository::getInstance()->aItens);
   }
 
+   /**
+    * Retorna os acordos atraves de um filtro where
+    * @param $where
+    * @return \Acordo[]
+    * @throws \DBException
+    */
+  public static function getAcordosPorFiltro($where) {
+    
+    $oDaoAcordo = new cl_acordo();
+    
+    $sSql      = $oDaoAcordo->sql_query_completo(null, "ac16_sequencial", 'ac16_anousu, ac16_numero', $where);
+    $rsAcordos = db_query($sSql);
+    if (!$rsAcordos) {
+      throw new DBException("Erro ao consultar acordos.\n".pg_last_error());
+    }
+    $acordos       = array();
+    $iTotalAcordos = pg_num_rows($rsAcordos);
+    for ($iAcordo  = 0; $iAcordo < $iTotalAcordos; $iAcordo++) {
+       $acordos[] = AcordoRepository::getByCodigo(db_utils::fieldsMemory($rsAcordos, $iAcordo)->ac16_sequencial);
+    }
+    return $acordos;
+  }
 }

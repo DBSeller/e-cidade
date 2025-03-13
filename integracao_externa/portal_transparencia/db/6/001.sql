@@ -85,8 +85,8 @@ cache 1;
 create table acordo_documentos(
   id integer default nextval('acordo_documentos_id_seq'),
   acordo_id integer,
-  nome character varying(100),
-  descricao character varying(100),
+  nome text,
+  descricao character varying(300),
   arquivo oid,
   constraint acordo_documentos_id_pk primary key(id),
   constraint acordo_documentos_acordos_fk foreign key(acordo_id) references acordos

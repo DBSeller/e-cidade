@@ -26,7 +26,7 @@
  */
 
 //MODULO: compras
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clpcfornecert->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -140,10 +140,10 @@ function js_cancelar(){
 }
 function js_pesquisapc61_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_pcfornecert','db_iframe_pcforne','func_pcforne.php?funcao_js=parent.js_mostrapcforne1|pc60_numcgm|pc60_dtlanc','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pcfornecert','db_iframe_pcforne','func_pcforne.php?funcao_js=parent.js_mostrapcforne1|pc60_numcgm|pc60_dtlanc','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.pc61_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_pcfornecert','db_iframe_pcforne','func_pcforne.php?pesquisa_chave='+document.form1.pc61_numcgm.value+'&funcao_js=parent.js_mostrapcforne','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pcfornecert','db_iframe_pcforne','func_pcforne.php?pesquisa_chave='+document.form1.pc61_numcgm.value+'&funcao_js=parent.js_mostrapcforne','Pesquisa',false);
      }else{
        document.form1.pc60_dtlanc.value = ''; 
      }
@@ -163,10 +163,10 @@ function js_mostrapcforne1(chave1,chave2){
 }
 function js_pesquisapc61_certif(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_pcfornecert','db_iframe_pccertif','func_pccertif.php?funcao_js=parent.js_mostrapccertif1|pc59_certif|pc59_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pcfornecert','db_iframe_pccertif','func_pccertif.php?funcao_js=parent.js_mostrapccertif1|pc59_certif|pc59_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.pc61_certif.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_pcfornecert','db_iframe_pccertif','func_pccertif.php?pesquisa_chave='+document.form1.pc61_certif.value+'&funcao_js=parent.js_mostrapccertif','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pcfornecert','db_iframe_pccertif','func_pccertif.php?pesquisa_chave='+document.form1.pc61_certif.value+'&funcao_js=parent.js_mostrapccertif','Pesquisa',false);
      }else{
        document.form1.pc59_descr.value = ''; 
      }

@@ -1,28 +1,28 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 $clescola->rotulo->label();
@@ -39,6 +39,19 @@ $clrotulo->label("j13_descr");
         <tr>
           <td>
             <table>
+              <tr>
+                <td title="Tipo">
+                  <label for="tipo" class="bold"><?= @$Led18_i_tipoescola ?></label>
+                </td>
+                <td>
+                  <?php
+                    
+
+                    $x = array( '1' => 'Unidade escolar', '2' => 'Interno' );
+                    db_select( 'ed18_i_tipoescola', $x, true, @$db_opcao_tipoescola );
+                  ?>
+                </td>
+              </tr>
               <tr>
                 <td nowrap title="<?=@$Ted18_i_codigo?>">
                   <?php
@@ -94,7 +107,18 @@ $clrotulo->label("j13_descr");
                   db_input( 'ed18_i_cnpj', 15, $Ied18_i_cnpj, true, 'text', $db_opcao );
                   echo @$Led18_i_credenciamento;
                   $x = array( '' => '', '0' => 'NÃO CREDENCIADA', '1' => 'CREDENCIADA', '2' => 'EM TRAMITAÇÃO' );
-                  db_select( 'ed18_i_credenciamento', $x, true, $db_opcao );
+                  db_select( 'ed18_i_credenciamento', $x, true, $db_opcao, "onchange=\"js_esferaadministrativa();\"");
+                  ?>
+                </td>
+              </tr>
+              <tr id="esferaadministrativa" <?php echo $ed18_i_credenciamento != 1 && $ed18_i_credenciamento != 2 ? 'style="display:none;"' : ''?> >
+                <td nowrap title="<?=@$Ted18_i_esferaadministrativa?>">
+                  <?php echo @$Led18_i_esferaadministrativa;?>
+                </td>
+                <td>
+                  <?php
+                  $x = array( '' => '', '1' => 'FEDERAL', '2' => 'ESTADUAL', '3' => 'MUNICIPAL');
+                  db_select( 'ed18_i_esferaadministrativa', $x, true, $db_opcao);
                   ?>
                 </td>
               </tr>
@@ -285,7 +309,7 @@ $clrotulo->label("j13_descr");
               </tr>
               <tr>
                 <td colspan="2">
-                  <table border="0" style="position:absolute;">
+                  <table border="0">
                     <tr>
                       <td >
                         <?=@$Led18_c_mantenedora?>
@@ -457,18 +481,6 @@ $clrotulo->label("j13_descr");
                            <?=(@$ed18_i_locdiferenciada == "3" ? "checked" : "" )?>>Área remanescente de quilombos<br/>
                     <input type="radio"
                            name="ed18_i_locdiferenciada"
-                           value="4"
-                           <?=(@$ed18_i_locdiferenciada == "4" ? "checked" : "" )?>>Unidade de uso sustentável<br/>
-                    <input type="radio"
-                           name="ed18_i_locdiferenciada"
-                           value="5"
-                           <?=(@$ed18_i_locdiferenciada == "5" ? "checked" : "" )?>>Unidade de uso sustentável em Terra indígena<br/>
-                    <input type="radio"
-                           name="ed18_i_locdiferenciada"
-                           value="6"
-                           <?=(@$ed18_i_locdiferenciada == "6" ? "checked" : "" )?>>Unidade de uso sustentável em Área remanescente de quilombos<br/>
-                    <input type="radio"
-                           name="ed18_i_locdiferenciada"
                            value="7"
                            <?=(@$ed18_i_locdiferenciada == "7" ? "checked" : "" )?>>Não se aplica
                   </fieldset>
@@ -478,7 +490,7 @@ $clrotulo->label("j13_descr");
                     <legend>Logotipo</legend>
                     <?php
                     if( @$ed18_c_logo != "" ) {
-                      echo "<img src='imagens/".trim($ed18_c_logo)."' width='130' height='110'>";
+                      echo "<img src='imagens/".$ed18_c_logo."' width='130' height='110'>";
                     }
                     ?>
                   </fieldset>
@@ -528,6 +540,8 @@ $clrotulo->label("j13_descr");
                       } else {
                         $visibility2 = "hidden";
                       }
+
+                        db_input( 'ed144_i_codigo', 10, @$Ied144_i_codigo, true, 'hidden', 3 );
                       ?>
                       <span id="codigolingua" style="visibility:<?=$visibility2?>">
                         <?php
@@ -535,10 +549,33 @@ $clrotulo->label("j13_descr");
                         ?>
                         <br>
                         <?php
-                        db_input( 'ed18_i_linguaindigena', 10, @$Ied18_i_linguaindigena, true, 'text', 3 );
-                        db_input( 'ed264_c_nome',          35, @$Ied264_c_nome,          true, 'text', 3 );
+                        db_input( 'ed144_i_linguaindigena1', 10, @$Ied18_i_linguaindigena, true, 'text', 3 );
+                        db_input( 'ed264_c_nome1',          35, @$Ied264_c_nome,          true, 'text', 3 );
                         ?>
-                                </span>
+                      </span>
+                      <br/>
+                      <span id="codigolingua2" style="visibility:<?=$visibility2?>">
+                        <?php
+                        db_ancora( @$Led18_i_linguaindigena, "js_pesquisaed144_i_linguaindigena2(true);", $db_opcao );
+                        ?>
+                        <br>
+                        <?php
+                        db_input( 'ed144_i_linguaindigena2', 10, @$Ied18_i_linguaindigena, true, 'text', 3 );
+                        db_input( 'ed264_c_nome2',          35, @$Ied264_c_nome,          true, 'text', 3 );
+                        ?>
+                      </span>
+                      <br/>
+                      <span id="codigolingua3" style="visibility:<?=$visibility2?>">
+                        <?php
+                        db_ancora( @$Led18_i_linguaindigena, "js_pesquisaed144_i_linguaindigena3(true);", $db_opcao );
+                        ?>
+                        <br>
+                        <?php
+                        db_input( 'ed144_i_linguaindigena3', 10, @$Ied18_i_linguaindigena, true, 'text', 3 );
+                        db_input( 'ed264_c_nome3',          35, @$Ied264_c_nome,          true, 'text', 3 );
+                        ?>
+                      </span>
+
                     </fieldset>
                   </fieldset>
                 </td>
@@ -566,6 +603,8 @@ $clrotulo->label("j13_descr");
   </form>
 </div>
 <script>
+
+
 function js_pesquisaed18_i_rua( mostra ) {
 
   if( mostra == true ) {
@@ -632,8 +671,48 @@ function js_pesquisaed18_i_linguaindigena( mostra ) {
 
 function js_mostralingua1( chave1, chave2 ) {
 
-  document.form1.ed18_i_linguaindigena.value = chave1;
-  document.form1.ed264_c_nome.value          = chave2;
+  document.form1.ed144_i_linguaindigena1.value = chave1;
+  document.form1.ed264_c_nome1.value          = chave2;
+  db_iframe_lingua.hide();
+}
+
+function js_pesquisaed144_i_linguaindigena2( mostra ) {
+
+  if( mostra == true ) {
+    js_OpenJanelaIframe(
+                         '',
+                         'db_iframe_lingua',
+                         'func_censolinguaindig.php?funcao_js=parent.js_mostralingua2|ed264_i_codigo|ed264_c_nome',
+                         'Pesquisa Lingua Indígena',
+                         true
+                       );
+  }
+}
+
+function js_mostralingua2( chave1, chave2 ) {
+
+  document.form1.ed144_i_linguaindigena2.value = chave1;
+  document.form1.ed264_c_nome2.value            = chave2;
+  db_iframe_lingua.hide();
+}
+
+function js_pesquisaed144_i_linguaindigena3( mostra ) {
+
+  if( mostra == true ) {
+    js_OpenJanelaIframe(
+                         '',
+                         'db_iframe_lingua',
+                         'func_censolinguaindig.php?funcao_js=parent.js_mostralingua3|ed264_i_codigo|ed264_c_nome',
+                         'Pesquisa Lingua Indígena',
+                         true
+                       );
+  }
+}
+
+function js_mostralingua3( chave1, chave2 ) {
+
+  document.form1.ed144_i_linguaindigena3.value = chave1;
+  document.form1.ed264_c_nome3.value            = chave2;
   db_iframe_lingua.hide();
 }
 
@@ -689,6 +768,8 @@ function js_educingidena( valor ) {
 
     document.getElementById("linguaministrada").style.visibility = "hidden";
     document.getElementById("codigolingua").style.visibility     = "hidden";
+    document.getElementById("codigolingua2").style.visibility     = "hidden";
+    document.getElementById("codigolingua3").style.visibility     = "hidden";
     document.form1.ed18_i_tipolinguapt.checked                   = false;
     document.form1.ed18_i_tipolinguain.checked                   = false;
     document.form1.ed18_i_tipolinguapt.value                     = 0;
@@ -703,10 +784,14 @@ function js_tipolinguain() {
   if( document.form1.ed18_i_tipolinguain.checked == true ) {
 
     document.getElementById("codigolingua").style.visibility = "visible";
+    document.getElementById("codigolingua2").style.visibility = "visible";
+    document.getElementById("codigolingua3").style.visibility = "visible";
     document.form1.ed18_i_tipolinguain.value                 = 1;
   } else {
 
     document.getElementById("codigolingua").style.visibility = "hidden";
+    document.getElementById("codigolingua2").style.visibility = "hidden";
+    document.getElementById("codigolingua3").style.visibility = "hidden";
     document.form1.ed18_i_linguaindigena.value               = "";
     document.form1.ed264_c_nome.value                        = "";
     document.form1.ed18_i_tipolinguain.value                 = 0;
@@ -802,16 +887,16 @@ function js_valida() {
 
     if( !isNumeric( document.form1.ed18_latitude.value, false ) ) {
 
-      alert ('A latitude esta informada de forma incorreta. Valores para latitude devem estar entre -33.750833 e 5.272222.');
+      alert ('A latitude esta informada de forma incorreta. Valores para latitude devem estar entre -33.75208 e 5.271841.');
       document.form1.ed18_latitude.focus();
       return false;
     }
 
     if( document.form1.ed18_latitude.value.charAt(0) != '-' ) {
 
-      if( document.form1.ed18_latitude.value > 5.272222 ) {
+      if( document.form1.ed18_latitude.value > 5.271841 ) {
 
-        alert ('A latitude não pode ser maior que 5.272222. Valores para latitude devem estar entre -33.750833 e 5.272222.');
+        alert ('A latitude não pode ser maior que 5.271841. Valores para latitude devem estar entre -33.75208 e 5.271841.');
         document.form1.ed18_latitude.focus();
         return false;
       }
@@ -819,9 +904,9 @@ function js_valida() {
 
     if( document.form1.ed18_latitude.value.charAt(0) == '-' ) {
 
-      if( document.form1.ed18_latitude.value.substr(1) > 33.750833 ) {
+      if( document.form1.ed18_latitude.value.substr(1) > 33.75208 ) {
 
-        alert ('A latitude não pode ser menor que -33.750833. Valores para latitude devem estar entre -33.750833 e 5.272222.');
+        alert ('A latitude não pode ser menor que -33.75208. Valores para latitude devem estar entre -33.75208 e 5.271841.');
         document.form1.ed18_latitude.focus();
         return false;
       }
@@ -832,29 +917,29 @@ function js_valida() {
 
     if( !isNumeric( document.form1.ed18_longitude.value, false ) ) {
 
-      alert ('A longitude esta informada de forma incorreta. Valores para longitude devem estar entre -32.411280 e -73.992222.');
+      alert ('A longitude esta informada de forma incorreta. Valores para longitude devem estar entre -32.39091 e -73.99045.');
       document.form1.ed18_longitude.focus();
       return false;
     }
 
     if( document.form1.ed18_longitude.value.charAt(0) == '-' ) {
 
-      if( document.form1.ed18_longitude.value.substr(1) < 32.411280 ) {
+      if( document.form1.ed18_longitude.value.substr(1) < 32.39091 ) {
 
-        alert ('A longitude não pode ser maior que -32.411280. Valores para longitude devem estar entre -32.411280 e -73.992222.');
+        alert ('A longitude não pode ser maior que -32.39091. Valores para longitude devem estar entre -32.39091 e -73.99045.');
         document.form1.ed18_longitude.focus();
         return false;
       }
 
-      if( document.form1.ed18_longitude.value.substr(1) > 73.992222 ) {
+      if( document.form1.ed18_longitude.value.substr(1) > 73.99045 ) {
 
-        alert ('A longitude não pode ser maior que -73.992222. Valores para longitude devem estar entre -32.411280 e -73.992222.');
+        alert ('A longitude não pode ser maior que -73.99045. Valores para longitude devem estar entre -32.39091 e -73.99045.');
         document.form1.ed18_longitude.focus();
         return false;
       }
     } else {
 
-      alert ('A longitude não pode conter valores positivos. Valores para longitude devem estar entre -32.411280 e -73.992222.');
+      alert ('A longitude não pode conter valores positivos. Valores para longitude devem estar entre -32.39091 e -73.99045.');
       return false;
     }
   }
@@ -920,6 +1005,16 @@ function js_cnascebas( tipo, campo ) {
   }
 }
 
+function js_esferaadministrativa(){
+  var credenciamento = document.getElementById("ed18_i_credenciamento").value;
+  if(credenciamento == 1 || credenciamento == 2){
+    document.getElementById("esferaadministrativa").removeAttribute("style");
+  }else{
+    document.getElementById("esferaadministrativa").style.display = "none";
+  }
+}
+
+$('ed18_i_tipoescola').className         = 'field-size3';
 $('ed18_i_codigo').className         = 'field-size2';
 $('ed18_codigoreferencia').className = 'field-size2';
 $('ed18_i_funcionamento').className  = 'field-size3';
@@ -944,4 +1039,6 @@ $('ed18_c_compl').className          = 'field-size4';
 $('ed18_c_local').className          = 'field-size3';
 $('ed18_i_censoorgreg').className    = 'field-size-max';
 $('ed18_c_mantenedora').className    = 'field-size3';
+$('ed18_i_esferaadministrativa').className    = 'field-size-max';
+
 </script>

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,38 +29,38 @@
 //CLASSE DA ENTIDADE itbinumpre
 class cl_itbinumpre { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   public $rotulo     = null; 
+   public $query_sql  = null; 
+   public $numrows    = 0; 
+   public $numrows_incluir = 0; 
+   public $numrows_alterar = 0; 
+   public $numrows_excluir = 0; 
+   public $erro_status= null; 
+   public $erro_sql   = null; 
+   public $erro_banco = null;  
+   public $erro_msg   = null;  
+   public $erro_campo = null;  
+   public $pagina_retorno = null; 
    // cria variaveis do arquivo 
-   var $it15_guia = 0; 
-   var $it15_numpre = 0; 
-   var $it15_sequencial = 0; 
-   var $it15_ultimaguia = 'f'; 
+   public $it15_guia = 0; 
+   public $it15_numpre = 0; 
+   public $it15_sequencial = 0; 
+   public $it15_ultimaguia = 'f'; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+   public $campos = "
                  it15_guia = int8 = Número da guia de ITBI 
                  it15_numpre = int8 = Numpre da guia de itbi 
                  it15_sequencial = int8 = Sequencial da Tabela 
                  it15_ultimaguia = bool = Ultima Guia Emitida 
                  ";
    //funcao construtor da classe 
-   function cl_itbinumpre() { 
+   public function  cl_itbinumpre() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("itbinumpre"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+   public function  erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -69,7 +69,7 @@ class cl_itbinumpre {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function  atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->it15_guia = ($this->it15_guia == ""?@$GLOBALS["HTTP_POST_VARS"]["it15_guia"]:$this->it15_guia);
        $this->it15_numpre = ($this->it15_numpre == ""?@$GLOBALS["HTTP_POST_VARS"]["it15_numpre"]:$this->it15_numpre);
@@ -80,7 +80,7 @@ class cl_itbinumpre {
      }
    }
    // funcao para inclusao
-   function incluir ($it15_sequencial){ 
+   public function  incluir ($it15_sequencial){ 
       $this->atualizacampos();
      if($this->it15_guia == null ){ 
        $this->erro_sql = " Campo Número da guia de ITBI nao Informado.";
@@ -191,7 +191,7 @@ class cl_itbinumpre {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($it15_sequencial=null) { 
+   public function  alterar ($it15_sequencial=null) { 
       $this->atualizacampos();
      $sql = " update itbinumpre set ";
      $virgula = "";
@@ -301,7 +301,7 @@ class cl_itbinumpre {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($it15_sequencial=null,$dbwhere=null) { 
+   public function  excluir ($it15_sequencial=null,$dbwhere=null) { 
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($it15_sequencial));
      }else{ 
@@ -365,7 +365,7 @@ class cl_itbinumpre {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function  sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -388,10 +388,10 @@ class cl_itbinumpre {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $it15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function  sql_query ( $it15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -416,7 +416,7 @@ class cl_itbinumpre {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -426,10 +426,10 @@ class cl_itbinumpre {
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $it15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function  sql_query_file ( $it15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -450,7 +450,7 @@ class cl_itbinumpre {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -468,10 +468,10 @@ class cl_itbinumpre {
    * @param string   $dbwhere
    * @return string - Consuta SQL
    */
-   function sql_query_recibo($it15_guia=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function  sql_query_recibo($it15_guia=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -499,7 +499,7 @@ class cl_itbinumpre {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

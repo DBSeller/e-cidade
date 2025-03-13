@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_stdlibwebseller.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 
 $resultedu             = eduparametros(db_getsession("DB_coddepto"));
 $decimais              = $resultedu == "N" ? 0 : 2;
@@ -39,10 +39,10 @@ $sCamposTurma .= ", ed57_i_base, ed11_c_descr";
 $sSqlTurma     = $clturma->sql_query_turmaserie( "", $sCamposTurma, "", "ed220_i_codigo = {$turma}" );
 $result        = $clturma->sql_record( $sSqlTurma );
 
+
 if( $clturma->numrows > 0 ) {
 
   $aCadDisciplinas = array();
-
   db_fieldsmemory( $result, 0 );
 
   //seleciona medias da turma escolhida
@@ -108,14 +108,15 @@ if( $clturma->numrows > 0 ) {
       $sql2 .= "       ed59_i_ordenacao,                                                          ";
       $sql2 .= "       ed232_i_codigo                                                             ";
       $sql2 .= "  FROM matricula                                                                  ";
-      $sql2 .= "       inner join matriculaserie  on ed221_i_matricula = ed60_i_codigo            ";
-      $sql2 .= "       inner join aluno           on ed47_i_codigo     = ed60_i_aluno             ";
-      $sql2 .= "       inner join diario          on ed95_i_aluno      = ed47_i_codigo            ";
-      $sql2 .= "       inner join diarioavaliacao on ed72_i_diario     = ed95_i_codigo            ";
-      $sql2 .= "       inner join regencia        on ed59_i_codigo     = ed95_i_regencia          ";
-      $sql2 .= "       inner join turma           on ed57_i_codigo     = ed59_i_turma             ";
-      $sql2 .= "       inner join disciplina      on ed12_i_codigo     = ed59_i_disciplina        ";
-      $sql2 .= "       inner join caddisciplina   on ed232_i_codigo    = ed12_i_caddisciplina     ";
+      $sql2 .= "       inner join matriculaserie   on ed221_i_matricula = ed60_i_codigo           ";
+      $sql2 .= "       inner join aluno            on ed47_i_codigo     = ed60_i_aluno            ";
+      $sql2 .= "       inner join turma            on ed57_i_codigo     = ed60_i_turma            ";
+      $sql2 .= "       inner join diario           on ed95_i_aluno      = ed47_i_codigo           ";
+      $sql2 .= "                                  and ed95_i_calendario = ed57_i_calendario       ";
+      $sql2 .= "       inner join regencia         on ed59_i_codigo     = ed95_i_regencia         ";
+      $sql2 .= "       inner join diarioavaliacao  on ed72_i_diario     = ed95_i_codigo           ";
+      $sql2 .= "       inner join disciplina       on ed12_i_codigo     = ed59_i_disciplina       ";
+      $sql2 .= "       inner join caddisciplina    on ed232_i_codigo    = ed12_i_caddisciplina    ";
       $sql2 .= " WHERE ed72_i_procavaliacao = {$periodo}                                          ";
       $sql2 .= "   AND ed57_i_calendario    = {$ed57_i_calendario}                                ";
       $sql2 .= "   AND ed221_i_serie       in ({$ed223_i_serie})                                  ";

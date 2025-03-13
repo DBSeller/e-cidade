@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_clientes_classe.php");
-include("classes/db_atendemail_classe.php");
-include("classes/db_clientesmodulos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("classes/db_atendemail_classe.php"));
+include(modification("classes/db_clientesmodulos_classe.php"));
 $clclientes = new cl_clientes;
   /*
 $clatendemail = new cl_atendemail;
@@ -73,7 +73,7 @@ if(isset($alterar)){
     <td> 
 	    <center>
 				<?
-				  include("forms/db_frmclientes.php");
+				  include(modification("forms/db_frmclientes.php"));
 				?>
 	    </center>
 		</td>
@@ -106,11 +106,11 @@ if(isset($chavepesquisa)){
          parent.document.formaba.atendemail.disabled      = false;
          parent.document.formaba.clientesmodulos.disabled = false;
          
-         top.corpo.iframe_produtos.location.href          = 'ate1_clientesprodutoscomercial001.php?at91_cliente='+iCodCliente;
-         top.corpo.iframe_contatos.location.href          = 'ate1_clientescontato001.php?at92_cliente='+iCodCliente;
-         top.corpo.iframe_atributos.location.href         = 'ate1_atributoscliente001.php?at94_cliente='+iCodCliente;         
-         top.corpo.iframe_atendemail.location.href        = 'ate1_atendemail001.php?at12_codcli='+iCodCliente;
-         top.corpo.iframe_clientesmodulos.location.href = 'ate1_clientesmodulos001.php?at74_codcli='+iCodCliente;
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_produtos.location.href          = 'ate1_clientesprodutoscomercial001.php?at91_cliente='+iCodCliente;
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_contatos.location.href          = 'ate1_clientescontato001.php?at92_cliente='+iCodCliente;
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_atributos.location.href         = 'ate1_atributoscliente001.php?at94_cliente='+iCodCliente;         
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_atendemail.location.href        = 'ate1_atendemail001.php?at12_codcli='+iCodCliente;
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_clientesmodulos.location.href = 'ate1_clientesmodulos001.php?at74_codcli='+iCodCliente;
          
      ";
       if(isset($liberaaba)){

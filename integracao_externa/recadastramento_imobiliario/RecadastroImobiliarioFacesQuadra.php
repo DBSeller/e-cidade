@@ -1,4 +1,30 @@
-<?php 
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+ 
 /**
  * 
  * @author dbseller
@@ -31,12 +57,12 @@ class RecadastroImobiliarioFacesQuadra {
     $sDataHora = date('YmdHi');
     
     $this->oLog->escreverLog("Criando backup dos registros da tabela face na nova tabela: w_face_$sDataHora", DBLog::LOG_INFO);
-    pg_query(Conexao::getInstancia()->getConexao(), "drop table if exists w_face_$sDataHora");
-    pg_query(Conexao::getInstancia()->getConexao(), "create table w_face_$sDataHora as select * from face;");
+    db_query(Conexao::getInstancia()->getConexao(), "drop table if exists w_face_$sDataHora");
+    db_query(Conexao::getInstancia()->getConexao(), "create table w_face_$sDataHora as select * from face;");
     
     $this->oLog->escreverLog("Criando backup dos registros da tabela carface na nova tabela: w_carface_$sDataHora", DBLog::LOG_INFO);
-    pg_query(Conexao::getInstancia()->getConexao(), "drop table if exists w_carface_$sDataHora");
-    pg_query(Conexao::getInstancia()->getConexao(), "create table w_carface_$sDataHora as select * from carface;");
+    db_query(Conexao::getInstancia()->getConexao(), "drop table if exists w_carface_$sDataHora");
+    db_query(Conexao::getInstancia()->getConexao(), "create table w_carface_$sDataHora as select * from carface;");
     
   }
 
@@ -219,7 +245,7 @@ class RecadastroImobiliarioFacesQuadra {
 
     $iCodigoImportacao         = $this->salvar();
     $sSqlDadosImportados       = "select * from recadastroimobiliariofacesquadra where ie26_recadastroimobiliarioarquivos = {$iCodigoImportacao}";
-    $rsDadosImportados         = pg_query( Conexao::getInstancia()->getConexao(), " $sSqlDadosImportados" );
+    $rsDadosImportados         = db_query( Conexao::getInstancia()->getConexao(), " $sSqlDadosImportados" );
 
     if (!$rsDadosImportados) {
       $this->oLog->escreverLog("Erro ao consultar registros do arquivo {$iCodigoImportacao}.", DBLog::LOG_ERROR);
@@ -272,7 +298,7 @@ class RecadastroImobiliarioFacesQuadra {
           $sUpdate                = "update cadastro.face                                         ";
           $sUpdate               .= "   set j37_valor = {$oRegistroImportado->ie26_valorm2terreno}";
           $sUpdate               .= " where j37_face  = {$iCodigoFace}                            ";
-          $rsUpdate               = pg_query(Conexao::getInstancia()->getConexao(), $sUpdate);
+          $rsUpdate               = db_query(Conexao::getInstancia()->getConexao(), $sUpdate);
 
           if ( !$rsUpdate ) {
 
@@ -293,7 +319,7 @@ class RecadastroImobiliarioFacesQuadra {
         $this->oLog->escreverLog("Excluindo caracteristicas da face de quadra {$iCodigoFace}.", DBLog::LOG_INFO);
         
         $sDeleteCaracteristicas  = "delete from carface where j38_face = {$iCodigoFace}";
-        $rsDeleteCaracteristicas = pg_query(conexao::getinstancia()->getconexao(), $sDeleteCaracteristicas);
+        $rsDeleteCaracteristicas = db_query(conexao::getinstancia()->getconexao(), $sDeleteCaracteristicas);
 
         if ( !$rsDeleteCaracteristicas ) {
           
@@ -489,7 +515,7 @@ class RecadastroImobiliarioFacesQuadra {
     $sSqlFace.= "   and j37_codigo = {$iCodigoLogradouro} ";
 
 
-    $rsFaceQuadra = pg_query( Conexao::getInstancia()->getConexao(), $sSqlFace );
+    $rsFaceQuadra = db_query( Conexao::getInstancia()->getConexao(), $sSqlFace );
 
     if ( !$rsFaceQuadra ) {
 
@@ -511,7 +537,7 @@ class RecadastroImobiliarioFacesQuadra {
     
     $sSqlLogradouro = "select * from ruas where j14_codigo = $iCodigoLogradouro";
     
-    $rsLogradouro   = pg_query($sSqlLogradouro);
+    $rsLogradouro   = db_query($sSqlLogradouro);
     
     if (!$rsLogradouro || pg_num_rows($rsLogradouro) == 0) {
       
@@ -529,7 +555,7 @@ class RecadastroImobiliarioFacesQuadra {
     
     $sSqlSetor = "select * from setor where j30_codi::varchar = '$iCodigoSetor'::varchar";
     
-    $rsSetor   = pg_query($sSqlSetor);
+    $rsSetor   = db_query($sSqlSetor);
     
     if (!$rsSetor || pg_num_rows($rsSetor) == 0) {
       

@@ -1,32 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Classe de manipulaÁ„o de String
+ *
  * @package std
  * @author Rafael Serpa Nery <rafael.nery@dbseller.com.br>
  * @author Renan Melo <renan@dbseller.com.br>
@@ -38,7 +39,7 @@ abstract class DBString {
    */
   const NOME_REGRA_1 = 1;
   /**
-   * Verifica se a string de nome È composta por nome e sobrenome e cada um deles tem no minimo 2 caracteres 
+   * Verifica se a string de nome È composta por nome e sobrenome e cada um deles tem no minimo 2 caracteres
    */
   const NOME_REGRA_2 = 2;
   /**
@@ -64,22 +65,22 @@ abstract class DBString {
    * @return array
    */
   public static function quebrarLinha( $sString, $iNroMaxCaract, $sValorCompl=' ') {
-    
+
     $aPalavras      = explode(' ',$sString);
     $iTamanhoTotal  = 0;
     $iIndLinha      = 0;
     $aRetornoString = array();
-    
+
     foreach ( $aPalavras as $iInd => $sPalavra ) {
-    
+
       $iTamanhoPalavra = strlen($sPalavra);
-    
+
       if ( isset($aRetornoString[$iIndLinha]) ) {
         $iTamanhoPalavra += 1;
       }
-    
+
       $iTamanhoTotal  += $iTamanhoPalavra;
-    
+
       if ( $iTamanhoTotal <= $iNroMaxCaract  ) {
         if ( isset($aRetornoString[$iIndLinha]) ) {
           $aRetornoString[$iIndLinha].= ' '.$sPalavra;
@@ -91,14 +92,14 @@ abstract class DBString {
         $aRetornoString[++$iIndLinha]  = $sPalavra;
         $iTamanhoTotal                 = ($iTamanhoPalavra-1);
       }
-    
+
     }
-    
+
     $aRetornoString[$iIndLinha] .= str_repeat($sValorCompl,$iNroMaxCaract-(strlen($aRetornoString[$iIndLinha])));
-    
+
     return $aRetornoString;
   }
-  
+
   /**
    * Recebe a String e valida seu tamanho com o tamanho informado
    * @param string $sString
@@ -111,19 +112,19 @@ abstract class DBString {
 
   /**
    * Recebe um PIS e v·lido.
-   * 
+   *
    * @example DBString::isPIS("20097809998");
-   * @param   String  $sPis 
-   * @return  boolean 
+   * @param   String  $sPis
+   * @return  boolean
    */
   public static function isPIS($sPIS) {
 
     /**
      * Valida se foi informado o PIS
      */
-    
+
     if (empty($sPIS)){
-      return false;  
+      return false;
     }
 
     /**
@@ -148,7 +149,7 @@ abstract class DBString {
     }
 
     /**
-     * Multiplica os 10 primeiros algarismos do PIS pelos respectivos pesos [3,2,9,8,7,6,5,4,3,2], 
+     * Multiplica os 10 primeiros algarismos do PIS pelos respectivos pesos [3,2,9,8,7,6,5,4,3,2],
      * somando o produto obtido a partir da multiplicaÁ„o na variavel $iSoma.
      */
     $iSoma  = $sPIS[0] * 3;
@@ -171,7 +172,7 @@ abstract class DBString {
 
 
     /**
-     * Se $iTotal for igual a 10 ou 11 o digito verificador ser· 11, 
+     * Se $iTotal for igual a 10 ou 11 o digito verificador ser· 11,
      * caso contratio o digito verificador ser· o valor de $iTotal
      */
     if ($iTotal == 10 || $iTotal == 11){
@@ -187,7 +188,7 @@ abstract class DBString {
       return true;
     } else {
       return false;
-    } 
+    }
   }
 
   /**
@@ -198,15 +199,15 @@ abstract class DBString {
   public static function isCPF($sCpf) {
 
     $aBlackList = array(str_repeat("0",11),
-        str_repeat("1",11),
-        str_repeat("2",11),
-        str_repeat("3",11),
-        str_repeat("4",11),
-        str_repeat("5",11),
-        str_repeat("6",11),
-        str_repeat("7",11),
-        str_repeat("8",11),
-        str_repeat("9",11));
+      str_repeat("1",11),
+      str_repeat("2",11),
+      str_repeat("3",11),
+      str_repeat("4",11),
+      str_repeat("5",11),
+      str_repeat("6",11),
+      str_repeat("7",11),
+      str_repeat("8",11),
+      str_repeat("9",11));
     /**
      * Validamos se a String tem o tamanho correto
      */
@@ -224,7 +225,7 @@ abstract class DBString {
     $sCPFBase            = substr($sCpf, 0, 9);
     $iPosicaoCPFBase     = 0;
     $nTotalCalculoDigito1= 0;
-     
+
     for ( $iPosicaoCalculada = strlen($sCPFBase)+1; $iPosicaoCalculada > 1; $iPosicaoCalculada-- ) {
 
       $nTotalCalculoDigito1 += $iPosicaoCalculada * $sCPFBase[$iPosicaoCPFBase];
@@ -259,7 +260,7 @@ abstract class DBString {
     $iResto2  = $nTotalCalculoDigito2 % 11;
     $iDigito2 = ($iResto2 < 2) ? 0 : (11 - $iResto2);
     $sCPFBase.= $iDigito2;
-    
+
     return ($sCPFBase == $sCpf);
   }
 
@@ -269,7 +270,7 @@ abstract class DBString {
    * @return boolean
    */
   public static function isCNPJ( $sCNPJ ) {
-  
+
     $aBlackList = array(
       str_repeat("0",14),
       str_repeat("1",14),
@@ -347,87 +348,99 @@ abstract class DBString {
      * verifica se possui cacteres validos para um email
      */
     $sEmail = strtolower($sEmail);
-    $sRegex = '/^([0-9a-z\.\-_])+@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
+    $sRegex = '/^([0-9a-z\.\-_])+@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/';
     return preg_match($sRegex, $sEmail) ? true : false;
+  }
+
+    /**
+     * @param string $email
+     * @return bool
+     */
+  public static function isEmailCenso($email)
+  {
+      if (!preg_match('/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i', $email)) {
+          return false;
+      }
+      return true;
   }
 
   public static function isNomeValido($sNome, $iRegra){
 
-      $aComposicaoNome = explode(' ', $sNome);
-        
-      switch ( $iRegra ) {
-        /**
-         * Verifica se o nome tem no minimo 2 caracteres
-         */
-        case DBString::NOME_REGRA_1:
-          return DBString::validarTamanhoMinimo($sNome, 2);
-        break;
-        
-        /**
-         *  Verifica se o nome È composto pelo menos por 1 espaco, ou seja, nome e sobrenome
-         */
-        case DBString::NOME_REGRA_2:
+    $aComposicaoNome = explode(' ', $sNome);
 
-          if ( !DBString::isNomeValido($sNome, DBString::NOME_REGRA_3) ) {
-            return false;
-          }
-          if ( strlen($aComposicaoNome[0]) < 2 || strlen($aComposicaoNome[1]) < 2 ) {
-            return false;
-          }
-          
-        break;
-        
-        /**
-         *  Verifica se o nome È composto(nome e sobrenome)
-         */
-        case DBString::NOME_REGRA_3:
-          
-          $aComposicaoNome = explode(' ', $sNome);
-          
-          if ( count($aComposicaoNome) < 2 ) {
-            return false;
-          }
-          
-        break;
-        
-        /**
-         *  Verifica se o nome possui mais de 4 letras repetidas em sequencia
-         */
-        case DBString::NOME_REGRA_4:
+    switch ( $iRegra ) {
+      /**
+       * Verifica se o nome tem no minimo 2 caracteres
+       */
+    case DBString::NOME_REGRA_1:
+      return DBString::validarTamanhoMinimo($sNome, 2);
+      break;
 
-          $sExpressao = '/([a-zA-Z¿-ˇ\s])\1{3}/';
-          return preg_match( $sExpressao, $sNome ) ? false : true;
+      /**
+       *  Verifica se o nome È composto pelo menos por 1 espaco, ou seja, nome e sobrenome
+       */
+    case DBString::NOME_REGRA_2:
 
-        break;
-
-        /**
-         *  Verifica se nome esta ascentuado, possui n˙meros ou caractÈres especiais
-         */
-        case DBString::NOME_REGRA_5:
-
-          // $sExpressao = '/^([a-zA-Z\s]+)$/';
-          $sExpressao = '/[¿-ˇ0-9.]/';
-          return preg_match($sExpressao, $sNome) ? false : true;
-
-        break;
-
-        /**
-         * Verifica nome e sobrenome, se possui ao menos 2 caractÈres em cada nome, se possui quatro letras repetidas
-         * em sequencia e se possui caractÈres especiais
-         */
-        case DBString::NOME_REGRA_6:
-
-          
-        break;
-
-        default:
-          throw new Exception("Regra Inv·lida");  
-        break;
+      if ( !DBString::isNomeValido($sNome, DBString::NOME_REGRA_3) ) {
+        return false;
       }
-      
-      return true;
+      if ( strlen($aComposicaoNome[0]) < 2 || strlen($aComposicaoNome[1]) < 1 ) {
+        return false;
+      }
+
+      break;
+
+      /**
+       *  Verifica se o nome È composto(nome e sobrenome)
+       */
+    case DBString::NOME_REGRA_3:
+
+      $aComposicaoNome = explode(' ', $sNome);
+
+      if ( count($aComposicaoNome) < 2 ) {
+        return false;
+      }
+
+      break;
+
+      /**
+       *  Verifica se o nome possui mais de 4 letras repetidas em sequencia
+       */
+    case DBString::NOME_REGRA_4:
+
+      $sExpressao = '/([a-zA-Z¿-ˇ\s])\1{3}/';
+      return preg_match( $sExpressao, $sNome ) ? false : true;
+
+      break;
+
+      /**
+       *  Verifica se nome esta ascentuado, possui n˙meros ou caractÈres especiais
+       */
+    case DBString::NOME_REGRA_5:
+
+      // $sExpressao = '/^([a-zA-Z\s]+)$/';
+      $sExpressao = '/[¿-ˇ0-9.]/';
+      return preg_match($sExpressao, $sNome) ? false : true;
+
+      break;
+
+      /**
+       * Verifica nome e sobrenome, se possui ao menos 2 caractÈres em cada nome, se possui quatro letras repetidas
+       * em sequencia e se possui caractÈres especiais
+       */
+    case DBString::NOME_REGRA_6:
+
+
+      break;
+
+    default:
+      throw new Exception("Regra Inv·lida");
+      break;
+    }
+
+    return true;
   }
-  
+
   /**
    * Verifica se a String informada possui o tamanho minimo solicitado
    * @param stringnknown_type $sSting
@@ -435,19 +448,45 @@ abstract class DBString {
    * @return boolean
    */
   public static function validarTamanhoMinimo($sString, $iTamanhoMinimo) {
-    
+
     return (strlen($sString) >= $iTamanhoMinimo);
   }
-  
+
+  /**
+   * Verifica se a string n„o ultrapassa o tamanho m·ximo solicitado.
+   *
+   * @access public
+   * @param String $sString
+   * @param Integer $iTamanhoMaximo
+   * @return Boolean
+   */
+  public static function validarTamanhoMaximo($sString, $iTamanhoMaximo) {
+
+    return (strlen($sString) <= $iTamanhoMaximo);
+  }
+
+  /**
+   * Verifica se a string possui somente n˙meros.
+   *
+   * @access public
+   * @param String $sPalavra
+   * @return Boolean
+   */
+  public static function isSomenteNumero($sPalavra) {
+
+    $sRegex = '/^[0-9]+$/';
+    return preg_match($sRegex, $sPalavra) ? true : false;
+  }
+
   public static function isSomenteLetras($sPalavra, $lLetrasAcentuadas = false) {
-    
+
     $sRegex = '/^[a-zA-Z\s]+$/';
     if ($lLetrasAcentuadas ) {
       $sRegex = '/^[a-zA-Z¿-ˇ\s]+$/';
     }
     return preg_match($sRegex, $sPalavra) ? true : false;
   }
-  
+
   /**
    * Valida se a string È somente alfanumerica
    * @param string $sPalavra
@@ -457,27 +496,27 @@ abstract class DBString {
    * @return boolean
    */
   public static function isSomenteAlfanumerico($sPalavra, $lAceitaBarra=true, $lAceitaHifen=false, $lAceitaPonto=false) {
-                            
-   $sBarra = '';         
-   if($lAceitaBarra){       
-      $sBarra = '\/';       
-   }
 
-   $sHifen = '';
-   if($lAceitaHifen){
+    $sBarra = '';
+    if($lAceitaBarra){
+      $sBarra = '\/';
+    }
+
+    $sHifen = '';
+    if($lAceitaHifen){
       $sHifen = '\-';
-   }
+    }
 
-   $sPonto = '';
-   if($lAceitaPonto){
+    $sPonto = '';
+    if($lAceitaPonto){
       $sPonto = '\.';
-   }
+    }
 
-   $sRegex = "/^[a-zA-Z0-9$sPonto$sHifen$sBarra\s]+$/";
-                            
-   return preg_match($sRegex, $sPalavra) ? true : false;
-  }                          
-  
+    $sRegex = "/^[a-zA-Z0-9$sPonto$sHifen$sBarra\s]+$/";
+
+    return preg_match($sRegex, $sPalavra) ? true : false;
+  }
+
   /**
    * Remove acentuaÁ„o na string passada
    *
@@ -494,11 +533,14 @@ abstract class DBString {
     $sString = preg_replace("/[…» ]/",  "E", $sString);
     $sString = preg_replace("/[ÈËÍ]/",  "e", $sString);
 
-    $sString = preg_replace("/[”“‘’]/", "O", $sString);
-    $sString = preg_replace("/[ÛÚÙı∫]/","o", $sString);
+    $sString = preg_replace("/[”“‘’÷]/", "O", $sString);
+    $sString = preg_replace("/[ÛÚÙıˆ∫]/","o", $sString);
 
-    $sString = preg_replace("/[⁄Ÿ€]/",  "U", $sString);
-    $sString = preg_replace("/[˙˘˚]/",  "u", $sString);
+    $sString = preg_replace("/[⁄Ÿ€‹]/",  "U", $sString);
+    $sString = preg_replace("/[˙˘˚¸]/",  "u", $sString);
+
+    $sString = preg_replace("/[ÕÃŒ]/",  "I", $sString);
+    $sString = preg_replace("/[ÌÏÓ]/",  "i", $sString);
 
     $sString = preg_replace("/«/", "C", $sString);
     $sString = preg_replace("/Á/", "c", $sString);
@@ -509,7 +551,7 @@ abstract class DBString {
   /**
    * Remove os caracteres especiais da String
    *
-   * @param String $sString 
+   * @param String $sString
    * @static
    * @access public
    * @return String - Retorna a string sem caracteres especiais
@@ -519,5 +561,400 @@ abstract class DBString {
     return implode("", $aOcorrencias[0]);
   }
 
+  /**
+   * Recebe uma string e se ela for maior que o limite informado, corta o final
+   * e substitui pelo sufixo informado
+   * Se o limite for 0 ou menor que 0, retorna vazio
+   * @param  string  $sString
+   * @param  integer $iLimite
+   * @param  string  $sSufixo
+   * @return string
+   */
+  public static function retornaStringLimitada($sString, $iLimite = 0, $sSufixo = '...') {
+    return ( $iLimite > 0 ? mb_strimwidth($sString, 0, $iLimite, $sSufixo) : '' );
+  }
+
+  /**
+   * Retorna o Primeiro e Ultimo nome
+   * Verifica se o ultimo nome possui prefixo da, de, dos, etc.
+   * @param  string $sString
+   * @param  string $sDelimitador
+   * @return string
+   */
+  public static function retornaNomeReduzido($sString, $sDelimitador = ' ') {
+
+    $aString        = array_values( explode($sDelimitador,$sString) );
+    $sPrimeiroNome  = $aString[0];
+    $sPref          = "";
+
+    if ( $aString[count($aString)-2] != $sPrimeiroNome &&
+      (strlen($aString[count($aString)-2]) == 2 ||
+      strlen($aString[count($aString)-2]) == 3 )) {
+
+        $sPref = $aString[count($aString)-2];
+      }
+
+    $sUltimoNome    = array_pop($aString);
+    return "{$sPrimeiroNome} {$sPref} {$sUltimoNome}";
+  }
+
+  /**
+   * Abrevia somente o(s) nome(s) do meio
+   * @param  string  $sNome               Nome que ser· abreviado
+   * @param  boolean $lRemoverPreposicoes Se deve remover as preposiÁıes
+   * @return string                       Nome abreviado
+   */
+  public static function abreviaSobrenome($sNome, $lRemoverPreposicoes = true) {
+
+    $aConectivos = array('do', 'da', 'de', 'dos', 'das', 'des');
+
+    $aNome  = explode(" ", $sNome);
+    $iNomes = count($aNome);
+
+    if ($iNomes == 2 ) {
+      return $sNome;
+    }
+
+    $aNovoNome   = array();
+    $aNovoNome[] = array_shift($aNome);
+    $sUltimoNome = array_pop($aNome);
+
+    foreach ($aNome as $sValue) {
+
+      if ( in_array(mb_strtolower($sValue), $aConectivos) && $lRemoverPreposicoes ) {
+        continue;
+      } else if (in_array(mb_strtolower($sValue), $aConectivos)) {
+        $aNovoNome[] = $sValue;
+      } else {
+        $aNovoNome[] = substr($sValue, 0, 1). ".";
+      }
+    }
+
+    $aNovoNome[] = $sUltimoNome;
+    return implode(" ", $aNovoNome);
+  }
+
+  /**
+   * Adiciona mascara de telefone em uma string numÈrica
+   * @param  string $sNumero N˙mero sem formataÁ„o
+   * @return string          N˙mero com mascara
+   */
+  public static function formatarTelefone($sNumero) {
+
+
+    if ( strlen($sNumero) > 10 ) {
+      return preg_replace('/(\d{2})(\d{5})(\d*)/', '($1) $2-$3', $sNumero);
+    }
+
+    return preg_replace('/(\d{2})(\d{4})(\d*)/', '($1) $2-$3', $sNumero);
+  }
+
+
+  /**
+   * Alterada funÁ„o de tracrever valores do agata para transcrever um n˙mero
+   * @param  integer $iNumero    N˙mero a ser transcrito
+   * @param  boolean $lMaiusculo se deve retornar em maiusculo
+   * @return string              n˙mero transcrito
+   */
+  static public function numeroPorExtenso($iNumero, $lMaiusculo = false) {
+
+    $nValor = ereg_replace(",", "\.", $iNumero);
+
+    $zeros = '000.000.000,00';
+    $nValor = number_format($nValor,2);
+    $nValor = substr($zeros,0,strlen($zeros)-strlen($nValor)) . $nValor;
+
+    $sMilhao  = self::transcreveNumero(substr($nValor,0,3));
+    $sMilhao .= ( (substr($nValor,0,3) > 1) ? 'milhıes' : '' );
+    $sMilhar  = self::transcreveNumero(substr($nValor,4,3));
+
+    if (trim($sMilhar) == "um") {
+      $sMilhar = 'mil';
+    } else {
+      $sMilhar .= ( (substr($nValor,4,3) > 0) ? 'mil' : '' );
+    }
+
+    $sUnidades  = self::transcreveNumero(substr($nValor,8,3));
+    if (trim($sMilhar) == "mil" && (strlen(trim($sMilhar))<>0 && strlen(trim($sUnidades))<>0) ) {
+      $sMilhar .=" e ";
+    } elseif (strlen(trim($sMilhar)) <> 0 && strlen(trim($sUnidades)) <> 0) {
+
+      /**
+       * verifica se a unidade se trata de uma centena ou uma dezena
+       */
+      $sMilhar .=", ";
+      if (strlen( (int) substr($nValor,8,3)) <= 2) {
+        $sMilhar .=" e ";
+      }
+    } else {
+      $sMilhar .="";
+    }
+
+    $sRetorno = $sMilhao . ((strlen(trim($sMilhao))<>0 && strlen(trim($sMilhar))<>0) ? ', ' : '') .
+      $sMilhar .
+      $sUnidades ;
+
+    if ($iNumero === 0) {
+      $sRetorno = "zero";
+    }
+
+    if ( $lMaiusculo ) {
+      return mb_strtoupper( trim($sRetorno) );
+    }
+    return trim($sRetorno);
+  }
+
+  static private function transcreveNumero($nValor) {
+
+    $aUnidade  = array('','um ','dois ','trÍs ','quatro ','cinco ','seis ','sete ','oito ','nove ');
+    $aDezenas  = array('',' ','vinte ','trinta ','quarenta ', 'cinquenta ', 'sessenta ', 'setenta ','oitenta ','noventa ');
+    $aCentenas = array('','cento ','duzentos ','trezentos ','quatrocentos ','quinhentos ','seiscentos ','setecentos ','oitocentos ','novecentos ');
+    $aExcessao = array('dez ', 'onze ', 'doze ', 'treze ', 'quatorze ', 'quinze ', 'desesseis ', 'desessete ', 'dezoito ', 'desenove ');
+
+    $nPosicao1 = substr($nValor,0,1);
+    $nPosicao2 = substr($nValor,1,1);
+    $nPosicao3 = substr($nValor,2,1);
+
+    $sCentena  = $aCentenas[($nPosicao1)];
+    $sDezena   = $aDezenas[($nPosicao2)];
+    $sUnidade  = $aUnidade[($nPosicao3)];
+
+    if (substr($nValor,0,3) == '100')
+    { $sCentena = 'cem '; }
+
+    if (substr($nValor,1,1) == '1') {
+      $sDezena = $aExcessao[$nPosicao3];
+      $sUnidade = '';
+    }
+
+    $aResultado = array();
+    if (!empty($sCentena)) {
+      $aResultado[] = $sCentena;
+    }
+    if (!empty($sDezena)) {
+      $aResultado[] = $sDezena;
+    }
+    if (!empty($sUnidade)) {
+      $aResultado[] = $sUnidade;
+    }
+
+    $sResultado = implode(" e ", $aResultado);
+    $sResultado = substr($sResultado,0, strlen($sResultado));
+    return $sResultado;
+  }
+
+  public static function formatStringRecursive($entrada, \Closure $callback) {
+
+    switch(getType($entrada)) {
+
+      case "boolean":
+      case "integer":
+      case "double":
+        return $entrada;
+        break;
+
+      case "string":
+        $entrada = $callback($entrada);
+        break;
+      case "array":
+
+        foreach ($entrada as $chave => $valor) {
+          $entrada[$chave] = self::formatStringRecursive($valor, $callback);
+        }
+        break;
+
+      case "object":
+
+        foreach ($entrada as $chave => $valor) {
+          $entrada->{$chave} = self::formatStringRecursive($valor, $callback);
+        }
+        break;
+
+      case "NULL":
+        return null;
+      case "resource":
+      case "unknown type":
+        return "";
+        break;
+    }
+    return $entrada;
+  }
+
+  /**
+   * Codifica o objeto passado recursivamente(*se necess·rio)
+   *
+   * @param string mixed $entrada
+   */
+  public static function utf8_encode_all($entrada) {
+
+    return \DBString::formatStringRecursive($entrada, function($string) {
+
+      if (!db_utils::isUTF8($string)) {
+       $string = utf8_encode($string);
+      }
+      return $string;
+    });
+  }
+
+  /**
+   * Codifica o objeto passado recursivamente(*se necess·rio)
+   *
+   * @param string mixed $entrada
+   */
+  public static function utf8_decode_all($entrada) {
+
+    return \DBString::formatStringRecursive($entrada, function($string) {
+
+      if (db_utils::isUTF8($string)) {
+        $string = utf8_decode($string);
+      }
+      return $string;
+    });
+  }
+
+  public static function urldecode_all($entrada) {
+
+    return \DBString::formatStringRecursive($entrada, function($string) {
+
+      return urldecode($string);
+    });
+  }
+
+  public static function urlencode_all($entrada) {
+
+    return \DBString::formatStringRecursive($entrada, function($string) {
+
+      return urlencode($string);
+    });
+  }
+
+  /**
+   * Formata os bytes em um formato humanamente legÌvel
+   *
+   * @param  integer $bytes Quantiade em Bytes inseridas para convers„o
+   * @return String  Valor Formatado.
+   *
+   */
+  public static function formatSizeUnits($bytes) {
+
+    if ($bytes >= 1073741824) {
+      $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+    }
+    elseif ($bytes >= 1048576) {
+      $bytes = number_format($bytes / 1048576, 2) . ' MB';
+    }
+    elseif ($bytes >= 1024) {
+      $bytes = number_format($bytes / 1024, 2) . ' KB';
+    }
+    elseif ($bytes > 1) {
+      $bytes = $bytes . ' bytes';
+    }
+    elseif ($bytes == 1) {
+      $bytes = $bytes . ' byte';
+    }
+    else {
+      $bytes = '0 bytes';
+    }
+
+    return $bytes;
+  }
+
+  /**
+   * Slugify string
+   *
+   * @param string $string
+   * @return string
+   */
+  public static function slugify($string) {
+
+    $response = \DBString::removerAcentuacao($string);
+    $response = \DBString::removerCaracteresEspeciais($response);
+    $response = preg_replace("/\s+/",  "-", $response);
+    $response = mb_strtolower($response);
+    return $response;
+  }
+
+    /**
+     * Determina se uma determinada string contÈm uma determinada substring.
+     *
+     * @param string $haystack
+     * @param string|array $needles
+     * @return bool
+     */
+    public static function contem($haystack, $needles)
+    {
+        foreach ((array)$needles as $needle) {
+            if ($needle !== '' && mb_strpos($haystack, $needle) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Retorna o tamanho da string dada.
+     *
+     * @param string $value
+     * @param string $encoding
+     * @return int
+     */
+    public static function comprimento($value, $encoding = null)
+    {
+        if ($encoding) {
+            return mb_strlen($value, $encoding);
+        }
+
+        return mb_strlen($value);
+    }
+
+    /**
+     * Verifica o se qualquer item da array est· na string informada
+     * @param $valor
+     * @param $array
+     * @return bool
+     */
+    public static function string_contains_any_value($valor, $array)
+    {
+
+        $has = false;
+        foreach ($array as $item) {
+            $has = strpos($valor, $item) !== false;
+            if ($has) {
+                break;
+            }
+        }
+
+        return $has;
+
+
+    }
+
+    /**
+     * @param $string
+     * @return string
+     */
+    public static function removeMascaraTelefone($string)
+    {
+        return preg_replace("/\s|[A-z]|-|\(|\)+/",  "", $string);
+    }
+
+    public static function removerCaracteresEspeciaisAcentos($string)
+    {
+        return preg_replace(
+            "[^a-zA-Z0-9]",
+            "",
+            strtr($string, "·‡„‚ÈÍÌÛÙı˙¸Á¡¿√¬… Õ”‘’⁄‹«", "aaaaeeiooouucAAAAEEIOOOUUC")
+        );
+    }
+
+    public static function upperCaseCaracteresComAcentos($string, $chageEncodeUT8toISO88591 = true)
+    {
+        $string  =  preg_replace("[^a-zA-Z0-9]", "", strtr($string, "·‡„‚ÈÍÌÛÙı˙¸Á", "¡¿√¬… Õ”‘’⁄‹«"));
+        if (mb_detect_encoding($string) == "UTF-8" and $chageEncodeUT8toISO88591===true) {
+            $string = mb_convert_encoding($string, "ISO-8859-1");
+        }
+        return $string;
+    }
 
 }

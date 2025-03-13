@@ -1,535 +1,425 @@
-/**
- * @fileoverview Define classe para Criar janelas internas
- *
- * @version  $Revision: 1.21 $
- */
 require_once('estilos/windowAux.css');
+require_once('scripts/widgets/DBMask.widget.js');
+
 /**
  * Cria uma janela interna , podendo criar aplicacoes MDI
  *
- * @class windowAux
+ * @version  $Revision: 1.34 $
  * @constructor
  * @author  Iuri Guntchnigg - <iuri@dbseller.com.br>
  *
- * @example Uma Janela de 400x500
+ * @example
+ * // Uma Janela de 400x500
  * var windowTeste = new windowAux('windowTeste', 'Testando Janela', 400, 500);
  *     windowTeste.setContent("<b>Ola Mundo</b>");
  *     windowTeste.show(10,10)
  *
- * @example Uma Janela com HTML node como conteudo
- * var oConteudo           = document.createElement('b');
- *     oConteudo.innerHTML = "OlÃ¡ Mundo";
- * var windowTeste         = new windowAux('windowTeste', 'Testando Janela', 300, 300);
- *     windowTeste.setContent( oConteudo );
- *     windowTeste.show(100,200)
+ * @example
+ * Uma Janela com HTML node como conteudo
+ * var oConteudo = document.createElement('b');
+ *     oConteudo.innerHTML = "Olá Mundo";
+ *
+ * var windowTeste = new windowAux(
+ *      'windowTeste',
+ *      'Testando Janela',
+ *       300,
+ *       300
+ * );
+ * windowTeste.setContent( oConteudo );
+ * windowTeste.show(100,200)
  *
  *
  * @param {String}  iIdWindow identificar da janela
  * @param {String}  sTitle titulo da Janela
- * @param {Integer} iWidth largura em pixeis da janela
- * @param {Integer} iHeight  largura em pixeis da janela
- *
+ * @param {int} iWidth largura em pixeis da janela
+ * @param {int} iHeight  largura em pixeis da janela
  */
-windowAux = function (iIdWindow, sTitle, iWidth, iHeight) {
+windowAux = function(iIdWindow, sTitle, iWidth, iHeight) {
+    const _this = this;
 
-  if (iIdWindow == null) {
-    iIdWindow = "window" + getElementsByClass('windowAux12').length + 1;
-  }
+    if (!iIdWindow) {
+        iIdWindow = 'window' + getElementsByClass('windowAux12').length + 1;
+    }
 
-  /**
-   *@default window#id
-   */
-  var idWindow            = iIdWindow;
-  this.idWindow           = iIdWindow;
-  var me                  = this;
-  this.sWindowTitle       = sTitle;
-  this.iWidth             = iWidth;
-  this.allowDrag          = true;
-  this.iHeight            = iHeight;
-  var allowCloseWithEsc   = true;
-  this.parent             = null;
-  this.lShowAsModal       = false;
-  this.aChilds            = new Array();
-  isdrag = false;
-  var self             = this;
-  this.iMaxBottom      = document.body.clientHeight - 50;
-  this.iMaxTop         = 20;
-  this.iMaxLeft        = null;
-  this.iMaxRight       = null;
-  this.divWindow      = document.createElement("DIV");
+    var idWindow = iIdWindow;
+    var allowCloseWithEsc = true;
 
-  if (this.iWidth == 0 || this.iWidth == null) {
-     this.iWidth = document.width-12;
-  }
+    this.idWindow = iIdWindow;
+    this.sWindowTitle = sTitle;
+    this.iWidth = iWidth;
+    this.allowDrag = true;
+    this.iHeight = iHeight;
+    this.parent = null;
+    this.zIndex = 500;
+    this.aChilds = [];
+    this.divWindow = document.createElement('div');
+    this.oDBMask = null;
 
-  if (this.iHeight == 0 || iHeight == null) {
-     this.iHeight  = document.body.scrollHeight-50;
-  }
+    if (!this.iWidth) {
+        this.iWidth = document.width - 12;
+    }
 
-  /*
-   * Criamos a div principal
-   */
-  this.divWindow.id                    = idWindow;
-  this.divWindow.style.height          = this.iHeight+"px";
-  this.divWindow.style.width           = this.iWidth+"px";
-  this.divWindow.style.position        = "absolute";
-  this.divWindow.style.border          = "3px outset black";
-  this.divWindow.style.backgroundColor = "#CCCCCC";
-  this.divWindow.style.display         = "none";
-  this.divWindow.className             = "windowAux12";
-  this.divWindow.tabIndex              = "0";
-  var shutDown = function () {
-     me.divWindow.style.display="none";
-  }
-  var shutDownFunction  = shutDown;
-  /*
-   * Criamos a div do titulo
-   */
-   this.divTitleWindow           = document.createElement("DIV");
-   this.divTitleWindow.id        = idWindow+"TitleBar";
-   this.divTitleWindow.className = "windowAuxTitle";
-   this.divTitleWindow.setAttribute('divParent',idWindow);
-   with (this.divTitleWindow.style) {
+    if (!this.iHeight) {
+        this.iHeight = document.body.scrollHeight;
+    }
 
-     padding         = "0px";
-     textAlign       = "right";
-     borderBottom    = "2px outset white";
-     backgroundColor = "#2C7AFE";
-     color           = "white";
+    /*
+     * Criamos a div principal
+     */
+    this.divWindow.id = idWindow;
+    this.divWindow.style.height = this.iHeight + 'px';
+    this.divWindow.style.width = this.iWidth + 'px';
+    this.divWindow.style.position = 'absolute';
+    this.divWindow.style.display = 'none';
+    this.divWindow.classList.add('windowAux12', 'shadow');
+    this.divWindow.tabIndex = 0;
 
-   }
-   this.divTitleWindow.innerHTML  ="<span class='dragme' style='width:90%;text-align:left;padding:1px; -moz-user-select:none;cursor:default;float:left;font-weight:bold' id='"+idWindow+"_title'>"+this.sWindowTitle+"</span>";
-   //this.divTitleWindow.innerHTML +="<img style='z-index:10001;-moz-user-select:none;'src='imagens/jan_fechar_on.gif' id='window"+idWindow+"_btnclose' border='0'>";
-   this.oImagem = document.createElement("img");
-   this.oImagem.setAttribute('style', 'z-index:10001;-moz-user-select:none;');
-   this.oImagem.src    = "skins/img.php?file=Controles/jan_fechar_on.png";
-   this.oImagem.id     = 'window'+idWindow+'_btnclose';
-   this.oImagem.border = 0;
+    var shutDownFunction = function() {
+        _this.divWindow.style.display = 'none';
+    };
+    /*
+     * Criamos a div do titulo
+     */
+    this.divTitleWindow = document.createElement('DIV');
+    this.divTitleWindow.id = idWindow + 'TitleBar';
+    this.divTitleWindow.classList.add('windowAuxTitle');
+    this.divTitleWindow.setAttribute('divParent', idWindow);
+    this.divTitleWindow.style.textAlign = 'right';
+    this.divTitleWindow.style.color = 'white';
+    this.linkWindow = document.createElement('a');
+    this.linkWindow.classList.add('close');
+    this.linkWindow.id = `window${idWindow}_btnclose`;
+    this.linkWindow.innerHTML = `<span aria-hidden="true" title="Fechar">×</span>`;
 
-  this.oImagem.onclick = function(){
-    shutDownFunction();
-  };
+    _this.h4 = document.createElement('h4');
+    _this.h4.id = `${idWindow}_title`;
+    _this.h4.classList.add('modal-title', 'dragme');
+    _this.h4.innerText = this.sWindowTitle;
 
-   this.divTitleWindow.appendChild(this.oImagem);
+    this.divTitleWindow.appendChild(_this.h4);
+    this.divTitleWindow.appendChild(this.linkWindow);
 
-   this.divWindow.appendChild(this.divTitleWindow);
+    this.divWindow.appendChild(this.divTitleWindow);
 
-    var divWindowContent  = document.createElement("DIV");
-    divWindowContent.style.padding   = "3px";
-    divWindowContent.id              = "window"+idWindow+"_content";
-    divWindowContent.style.border    = "2px inset white";
-    divWindowContent.style.overflow  = "auto";
-    divWindowContent.style.padding   = "0px";
-    divWindowContent.tabIndex        = "1";
-    me.divContent                    = divWindowContent;
+    var divWindowContent = document.createElement('div');
+    divWindowContent.classList.add('window-content');
+    divWindowContent.style.padding = '2.5px';
+    divWindowContent.id = 'window' + idWindow + '_content';
+    divWindowContent.style.overflow = 'auto';
+    divWindowContent.tabIndex = 1;
+    _this.divContent = divWindowContent;
+
     document.body.appendChild(this.divWindow);
 
     /**
      * mostra a janela nas posicoes passadas
-     * @param {integer} top  altura da tela
-     * @param {integer} left altura da tela
+     * @param {int} top  altura da tela
+     * @param {int} left altura da tela
+     * @param {boolean} lModal
+     * @param {int|null} right
+     * @param {int|null} bottom
      */
-    this.show = function (top, left, lModal) {
+    this.show = function(top, left, lModal, right = null, bottom = null) {
+        this.dragElement(this.divWindow);
+        if (!top) {
+            top = 25;
+        }
+        if (!left) {
+            left = ((window.outerWidth - this.iWidth) / 2);
+        }
 
-      if (top == null) {
-        top = 25;
-      }
-      if (left == null) {
-        left = ((screen.availWidth-this.iWidth)/2)
-      }
+        this.divWindow.style.top = top === 0 ? top.toString() : `${top}px`;
+        this.divWindow.style.bottom = bottom === 0
+            ? bottom.toString()
+            : `${bottom}px`;
+        this.divWindow.style.left = left === 0 ? left.toString() : `${left}px`;
+        this.divWindow.style.right = right === 0
+            ? right.toString()
+            : `${right}px`;
 
-      this.divWindow.style.left = left+"px";
-      this.divWindow.style.top = top+"px";
-      this.divWindow.style.display = '';
-      self.toFront();
-    }
+        this.divWindow.style.display = '';
+        _this.toFront();
 
+        if (lModal && lModal === true) {
+            this.oDBMask = new DBMask();
+            this.oDBMask.getMaskElement().appendChild(this.divWindow);
+        }
+    };
 
-   /**
-    * esconde a janela
-    * @return void
-    */
-    this.hide = function () {
-
-      this.divWindow.style.display='none';
-    }
     /**
-     * Define o Conteudo da janela, aceitando strings html.
-     * @param {Mixed} Conteudo da janela
+     * esconde a janela
+     * @return {void}
      */
-  this.setContent = function (Content) {
+    this.hide = function() {
+        this.divWindow.style.display = 'none';
+    };
 
-     divWindowContent.style.height = (this.iHeight -32)+"px";
-     this.divWindow.appendChild(divWindowContent);
+    /**
+     * @param {string|HTMLElement} Content
+     */
+    this.setContent = function(Content) {
+        divWindowContent.style.height = (this.iHeight - 32) + 'px';
+        this.divWindow.appendChild(divWindowContent);
 
-     divWindowContent.innerHTML = '';
+        divWindowContent.innerHTML = '';
 
-     if ( typeof(Content) === "string" ) {
+        if (typeof Content === 'string') {
+            divWindowContent.innerHTML = Content;
+        }
+        else {
+            divWindowContent.appendChild(Content);
+        }
+    };
 
-       divWindowContent.innerHTML = Content;
-       return;
-     }
-     divWindowContent.appendChild(Content);
-  }
+    this.divWindow.addEventListener('keydown', event => {
+        if (allowCloseWithEsc) {
+            if (event.which == 27) {
+                shutDownFunction();
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }
+    });
 
+    /**
+     * Define se Permite Fazer Drag'Drop da Janela
+     *
+     * @param {Boolean} lDrag Permite a janela ser arrastada
+     */
+    this.allowDrag = function(lDrag) {
+        if (lDrag) {
+            _this.h4.classList.add('dragme');
+        }
+        else {
+            _this.h4.classList.remove('dragme');
+        }
+    };
 
-  this.divWindow.observe("keydown", function(event){
+    this.getId = function() {
+        return _this.idWindow;
+    };
 
-    if (allowCloseWithEsc) {
-      if (event.which == 27) {
+    /**
+     * Define como Conteudo da janela  um Objeto HTML ja existente na pagina.
+     * @param {Object} oDiv Node HTML
+     */
+    this.setObjectForContent = function(oDiv) {
+        oDiv.style.display = '';
+        var divWindowContent = oDiv;
+        this.divWindow.appendChild(divWindowContent);
+        divWindowContent.style.height = (this.iHeight - 32) + 'px';
+        divWindowContent.style.border = '2px inset white';
+        divWindowContent.style.overflow = 'auto';
+    };
 
+    /**
+     * Define o Titulo da Janela
+     * @param {string} sTitle titulo da janela
+     */
+    this.setTitle = function(sTitle) {
+        this.sWindowTitle = sTitle;
+
+        if (_this.h4) {
+            _this.h4.innerHTML = this.sWindowTitle;
+        }
+    };
+
+    /**
+     * Destroi a janela
+     * @returns {void}
+     */
+    this.destroy = function() {
+        if (!!this.oDBMask) {
+            this.oDBMask.destroy();
+        }
+
+        if (this.divWindow.parentNode !== null) {
+            this.divWindow.parentNode.removeChild(this.divWindow);
+        }
+    };
+
+    this.setShutDownFunction = function(sFunction) {
+        shutDownFunction = sFunction;
+    };
+
+    /**
+     * Permite fechar a janela com a tecla esc
+     */
+    this.allowCloseWithEsc = function(lAllow) {
+        allowCloseWithEsc = lAllow;
+    };
+
+    /**
+     * Retorna o titulo da Janela
+     */
+    this.getTitle = function() {
+        return this.sWindowTitle;
+    };
+
+    /**
+     * seta a janela como filha de outra
+     * @param {windowAux} oWindowAuxObject instancia de windowAux
+     */
+    this.setChildOf = function(oWindowAuxObject) {
+        this.parent = oWindowAuxObject;
+        oWindowAuxObject.add(this);
+    };
+
+    /**
+     * Adiciona um Elemento a Janela
+     * @private
+     */
+    this.add = function(oElement) {
+        this.aChilds.push(oElement);
+        this.divWindow.appendChild(oElement.divWindow);
+    };
+
+    this.toFront = function() {
+        if (_this.aChilds.length > 0) {
+            return true;
+        }
+        /**
+         * procuramos todos os zIndex dos objetos window, e definos ele como o
+         * maior, e diminuio os outros;
+         */
+        if (!this.divWindow) {
+            return false;
+        }
+        if (this.divWindow.style.zIndex == this.zIndex) {
+            return true;
+        }
+
+        var zIndexInicial = 1;
+
+        var aWindowns = Array.from(
+            document.querySelectorAll('div.windowAuxTitle'));
+
+        aWindowns.forEach(function(oDiv) {
+            var parentDiv = oDiv.getAttribute('divParent');
+
+            if (_this.parent && _this.parent.getId() == parentDiv) {
+                oDiv.style.backgroundColor = '#2C7AFE';
+            }
+            else {
+                oDiv.style.backgroundColor = 'gray';
+
+                document.getElementById(
+                    parentDiv).style.zIndex = zIndexInicial++;
+            }
+        });
+
+        _this.divTitleWindow.style.backgroundColor = '#2C7AFE';
+        _this.divWindow.style.zIndex = this.zIndex;
+
+        this.divWindow.focus();
+    };
+
+    /**
+     * Seta o zIndex para a windowAux
+     * @param {integer} iIndex
+     */
+    _this.setIndex = function(iIndex) {
+        this.zIndex = iIndex;
+    };
+
+    _this.divTitleWindow.addEventListener('click', function() {
+        _this.toFront();
+    });
+
+    this.divWindow.addEventListener('click', function() {
+        _this.toFront();
+    });
+
+    /**
+     * Retorna a Altura da Janela
+     *@return {integer}
+     */
+    this.getHeight = function() {
+        return this.iHeight;
+    };
+
+    /**
+     * Retorna a Largura da Janela
+     * @return {integer}
+     */
+    this.getWidth = function() {
+        return this.iWidth;
+    };
+
+    this.linkWindow.addEventListener('click', e => {
+        e.preventDefault();
         shutDownFunction();
-        event.preventDefault();
-        event.stopPropagation();
-      }
-    }
+    });
 
-  });
+    /**
+     * Adiciona um event listener a window
+     *
+     * @param {string} sEvent Evento que sera 'escutado' sendo o nome do evento
+     *     sem as letras 'on'
+     * @param {Object} oCallBack  funcao que sera executada ao disparar o
+     *     evento
+     * @example
+     * window1.addEvent('keydown', function(event) {
+     *   this.setTitle(this.getTitle()+" - "+toCharCode(event.which));
+     * });
+     */
+    this.addEvent = function(sEvent, oCallBack) {
+        this.divWindow.addEventListener(sEvent, oCallBack);
+    };
 
-  /**
-   * Define se Permite Fazer Drag'Drop da Janela
-   * @param {bool} lDrag Permite a janela ser arrastada
-   */
-  this.allowDrag = function (lDrag) {
+    _this.getContentContainer = function() {
+        return _this.divContent;
+    };
 
-    if (lDrag) {
-      $(idWindow+"_title").className ='dragme';
-    } else {
-      $(idWindow+"_title").className   ='';
-    }
-  }
-  this.getId = function() {
-    return self.idWindow;
-  }
-  /**
-   * Define como Conteudo da janela  um Objeto HTML ja existente na pagina.
-   * @param {Object} oDiv Node HTML
-   */
-  this.setObjectForContent = function (oDiv) {
+    this.dragElement = function(element) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-    oDiv.style.display='';
-    var divWindowContent = oDiv;
-    this.divWindow.appendChild(divWindowContent);
-    divWindowContent.style.height = (this.iHeight-32)+"px";
-    divWindowContent.style.border    = "2px inset white";
-    divWindowContent.style.overflow  = "auto";
+        this.divTitleWindow.onmousedown = dragMouseDown;
 
-  }
+        function dragMouseDown(e) {
+            _this.divTitleWindow.style.cursor = 'grab';
 
-  /**
-   * Define o Titulo da Janela
-   * @Param {string} sTitle titulo da janela
-   */
-  this.setTitle = function (sTitle) {
+            e = e || window.event;
+            e.preventDefault();
 
-    this.sWindowTitle = sTitle;
-    $(idWindow+"_title").innerHTML = this.sWindowTitle;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            window.onmouseup = closeDragElement;
+            window.onmousemove = elementDrag;
+        }
 
-  }
+        function elementDrag(e) {
+            _this.divTitleWindow.style.cursor = 'grabbing';
 
-  /**
-   * Destroi a janela
-   * @void
-   */
-  this.destroy = function () {
+            e = e || window.event;
+            e.preventDefault();
 
-    oWindow = this.divWindow;
-    oWindow.parentNode.removeChild(oWindow);
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
 
-  }
+            element.style.top = (element.offsetTop - pos2) + 'px';
+            element.style.left = (element.offsetLeft - pos1) + 'px';
+        }
 
-  this.setShutDownFunction = function(sFunction) {
-    shutDownFunction = sFunction;
-  }
+        function closeDragElement(e) {
+            e = e || window.event;
+            e.preventDefault();
 
-  /**
-   * Permite fechar a janela com a tecla esc
-   */
-  this.allowCloseWithEsc= function (lAllow) {
-    allowCloseWithEsc = lAllow;
-  }
+            if (e.clientY < 10) {
+                element.style.top = '25px';
+            }
 
-  /**
-   * Retorna o titulo da Janela
-   */
-   this.getTitle = function () {
-     return this.sWindowTitle;
-   }
-
-   /**
-    * realiza o Drag
-    * @private
-    */
-  doDrag = function (event){
-    if (isdrag) {
-
-      var iLeft = iPosicaoX + event.clientX - iMouseX;
-      var iTop  = iPosicaoY + event.clientY - iMouseY;
-      if (iTop > (iMaxBottom)) {
-
-       iTop = iMaxBottom;
-      }
-      if (iTop  < 0 || iTop < iMaxTop) {
-        iTop = iMaxTop;
-      }
-      if ((iLeft < iMaxLeft) && iMaxLeft != null) {
-       iLeft = iMaxLeft;
-      }
-
-      if ((iLeft > iMaxRight) && iMaxRight != null) {
-       iLeft = iMaxRight;
-      }
-      oDivDragDrop.style.left = iLeft;
-      oDivDragDrop.style.top  = iTop;
-      return false;
-    }
-  }
-
-  /**
-   * Inicia o Drag An Drop da Janela
-   * @private
-   */
-  this.initDrag = function (e) {
-
-
-    if (e.button == 0) {
-
-		  self.toFront();
-		  var oObjetoInicio = e.target;
-		  var oTopElement   = "HTML";
-
-
-		  while (oObjetoInicio.tagName != oTopElement && oObjetoInicio.className != "dragme" ) {
-		    oObjetoInicio = oObjetoInicio.parentNode;
-		  }
-
-		  if (oObjetoInicio.className == "dragme") {
-
-		    //objectDrag.style.opacity='0.7';
-		    objectDrag = oObjetoInicio.parentNode.parentNode;
-		    isdrag = true;
-		    oDivDragDrop  = document.createElement("DIV");
-		    oDivDragDrop.id   = "drag";
-		    oDivDragDrop.className  = "box_drag";
-		    with (oDivDragDrop.style) {
-
-		       padding         = "0px";
-		       textAlign       = "right";
-		       border          = "3px dotted #999999";
-		       //backgroundColor = "transparent";
-		       backgroundImage = "url(imagens/transparencia.png)";
-		       backgroundRepeat = "repeat";
-		       //opacity         = "0.3";
-		       color           = "white";
-		       cursor          = "hand";
-		       zIndex          = "1002";
-
-		    }
-
-		    document.body.appendChild(oDivDragDrop);
-		    document.body.style.cursor  = "hand";
-		    objectDrag.style.cursor     = "hand";
-		    oDivDragDrop.style.top  = parseInt(objectDrag.style.top+0,10);
-		    oDivDragDrop.style.left = parseInt(objectDrag.style.left+0,10);
-		    oDivDragDrop.style.position = "absolute";
-		    oDivDragDrop.style.height   = objectDrag.style.height;
-		    oDivDragDrop.style.width    = objectDrag.style.width;
-
-		    iPosicaoX = parseInt(oDivDragDrop.style.left+0,10);
-		    iPosicaoY = parseInt(oDivDragDrop.style.top+0,10);
-		    iMouseX   = e.clientX;
-		    iMouseY   = e.clientY;
-
-		    iMaxBottom = self.getMaxBottom();
-		    iMaxTop    = self.getMaxTop();
-		    iMaxLeft   = self.getMaxLeft();
-		    iMaxRight  = self.getMaxRight();
-		    document.onmousemove  = doDrag;
-		    //return false;
-		  }
-	  }
-	}
-
-  /**
-   * Termina o Drag and Drop da Janela
-   * @private
-   */
-  this.endDrag = function(){
-
-	  document.body.style.cursor  = "default";
-	  if (isdrag) {
-		  objectDrag.style.top        = oDivDragDrop.style.top;
-		  objectDrag.style.left       = oDivDragDrop.style.left;
-		  objectDrag.style.opacity    = '';
-		  var paioDivDragDrop = oDivDragDrop.parentNode;
-		  if (paioDivDragDrop && paioDivDragDrop != null) {
-	      paioDivDragDrop.removeChild(oDivDragDrop);
-	    }
-    }
-	  isdrag = false;
-	}
-
-	/**
-	 * seta a janela como filha de outra
-	 * @param {windowAux} oWindowAuxObject instancia de windowAux
-	 */
-	this.setChildOf   = function (oWindowAuxObject) {
-
-	   this.parent = oWindowAuxObject;
-	   oWindowAuxObject.add(this);
-
-	}
-
-	/**
-	 * Adiciona um Elemento a Janela
-	 *@private
-	 */
-	this.add = function (oElement) {
-
-	  this.aChilds.push(oElement);
-	  $(idWindow).appendChild(oElement.divWindow);
-
-	}
-
-	this.toFront = function() {
-
-	  if (self.aChilds.length > 0) {
-	   return true;
-	  }
-	  /**
-	   * procuramos todos os zIndex dos objetos window, e definos ele como o maior, e diminuio os outros;
-	   */
-	   if (!$(idWindow)) {
-	    return false;
-	   }
-	   if ($(self.idWindow).style.zIndex == 500) {
-	     return true;
-	   }
-
-	   var zIndexInicial  = 1;
-	   var aWindowns      = $$('div.windowAuxTitle');
-	   aWindowns.each(function(oDiv, id){
-
-	     var parentDiv = oDiv.getAttribute('divParent');
-	     if (self.parent &&  self.parent.getId() == parentDiv) {
-
-	       oDiv.style.backgroundColor='#2C7AFE';
-	     } else {
-
-		     oDiv.style.backgroundColor = 'gray';
-		     $(parentDiv).style.zIndex = zIndexInicial++;
-	     }
-
-	   });
-	   self.divTitleWindow.style.backgroundColor='#2C7AFE';
-	   self.divWindow.style.zIndex = 500;
-	   $(idWindow).focus();
-	}
-
-	 self.divTitleWindow.observe('click',function(event) {
-     self.toFront();
-   });
-   $(idWindow).observe('click',function(event) {
-     self.toFront();
-   })
-	/**
-   * Retorna a o ponto maximo abaixo da janela
-   * @private
-   */
-	this.getMaxBottom = function() {
-
-	  if (this.parent != null) {
-      this.iMaxBottom  = this.parent.getHeight()-(this.getHeight()+10)
-    }
-	  return this.iMaxBottom;
-	}
-
-	/**
-   * retorna a altura maxima do viewport
-   * @private
-   */
-	this.getMaxTop = function() {
-
-    if (this.parent != null) {
-      this.iMaxTop  = this.parent.iMaxTop+25;
-    }
-    return this.iMaxTop;
-  }
-
-  /**
-   * retorna a altura maxima do viewport
-   * @private
-   */
-  this.getMaxtop = function() {
-
-    if (this.parent != null) {
-      this.iMaxBottom  = this.parent.getHeight()-(this.getHeight()+10);
-    }
-    return this.iMaxBottom;
-  }
-
-  /**
-   * retorna a maior ponto a esquerda do viewport
-   * @private
-   */
-  this.getMaxLeft = function() {
-
-     if (this.parent != null) {
-       this.iMaxLeft = parseInt($(this.parent.idWindow).style.left+0,10) + 10;
-     }
-     return this.iMaxLeft;
-  }
-
-  /**
-   * retorna a maior ponto a direita do viewport
-   * @private
-   */
-  this.getMaxRight = function () {
-
-    if (this.parent != null) {
-      this.iMaxRight = parseInt($(this.parent.idWindow).style.width+0,10)- (this.iWidth+10);
-    }
-    return this.iMaxRight;
-  }
-
-	/**
-	 * Retorna a Altura da Janela
-	 *@return integer
-	 */
-	this.getHeight = function () {
-	  return this.iHeight;
-	}
-	/**
-	 * Retorna a Largura da Janela
-	 * @return integer
-	 */
-	this.getWidth = function () {
-	  return this.iWidth;
-	}
-	$(idWindow+"_title").observe("mousedown", this.initDrag);
-  document.observe("mouseup",  this.endDrag);
-
-  /**
-   * Adiciona um event listener a window
-   * @param {string} sEvent Evento que sera 'escutado' sendo o nome do evento sem as letras 'on'
-   * @param {Object} oCallBack  funcao que sera executada ao disparar o evento
-   * @example
-   * window1.addEvent('keydown', function(event) {
-   *   this.setTitle(this.getTitle()+" - "+toCharCode(event.which));
-   * });
-   */
-  this.addEvent = function(sEvent, oCallBack) {
-    this.divWindow.observe(sEvent, oCallBack);
-  }
-
-  me.getContentContainer = function() {
-
-    return me.divContent;
-  }
-}
+            _this.divTitleWindow.style.cursor = 'grab';
+            window.onmouseup = null;
+            window.onmousemove = null;
+        }
+    };
+};
 
 windowAux.prototype.getElement = function() {
-  return this.divWindow;
-}
+    return this.divWindow;
+};
 
 

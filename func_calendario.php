@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str($HTTP_SERVER_VARS['QUERY_STRING'], $queryString);
+
+foreach ($queryString as $key => $value) {
+    ${$key} = $value;
+}
 
 function checa_eventos($dia,$mes,$ano){
   return 'false';
@@ -90,7 +94,7 @@ class calendario{
 	 if($this->sem[$diasem] == 1 || $this->sem[$diasem] == 7){
             $str.="  class=\"fimsemana\" ";
          }
-         $str .="  width=\"25\">
+         $str .="  width=\"25\" height=\"25\">
                  <a href=\"\" onclick=\"return janela($s,$mes,$ano);\">$s</a>
               </td>";
 
@@ -106,7 +110,7 @@ class calendario{
 
       $str="
   <link href=\"estilos.css\" rel=\"stylesheet\" type=\"text/css\">
-  <table border=\"1\"  cellspacing=\"0\" cellpadding=\"0\" class=\"dbdatepicker\">
+  <table cellspacing=\"0\" cellpadding=\"0\" class=\"dbdatepicker\">
   <tr>
    <td>
      <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
@@ -171,33 +175,35 @@ $clcalendario->cria(date("d",db_getsession("DB_datausu")),date("$mes_solicitado"
 
 ?>
 <script>
-function janela(d,m,a){
-  <?
-  echo "parent.document.getElementById('".$nome_objeto_data."_dia').value = (d<10?'0'+d:d);\n";
-  echo "parent.document.getElementById('".$nome_objeto_data."_mes').value = (m<10?'0'+m:m);\n";
-  echo "parent.document.getElementById('".$nome_objeto_data."_ano').value = a;\n";
-  echo "parent.js_comparaDatas".$nome_objeto_data."((d<10?'0'+d:d),(m<10?'0'+m:m),a);\n";
-  echo "parent.iframe_data_".$nome_objeto_data.".hide();\n";
+    function janela(d, m, a) {
+        <?php
 
-  if (isset($shutdown_function) && ($shutdown_function!='none')){
-      echo $shutdown_function."\n";
-  }
+        echo "parent.document.getElementById('{$nome_objeto_data}_dia').value = (d<10?'0'+d:d);\n";
+        echo "parent.document.getElementById('{$nome_objeto_data}_mes').value = (m<10?'0'+m:m);\n";
+        echo "parent.document.getElementById('{$nome_objeto_data}_ano').value = a;\n";
+        echo "parent.js_comparaDatas{$nome_objeto_data}((d<10?'0'+d:d),(m<10?'0'+m:m),a);\n";
+        echo "parent.iframe_data_{$nome_objeto_data}.style.display = 'none';\n";
 
-  ?>
-}
-function janela_zera(){
-  <?
-  echo "parent.document.getElementById('".$nome_objeto_data."').value     = '';\n";
-  echo "parent.document.getElementById('".$nome_objeto_data."_dia').value = '';\n";
-  echo "parent.document.getElementById('".$nome_objeto_data."_mes').value = '';\n";
-  echo "parent.document.getElementById('".$nome_objeto_data."_ano').value = '';\n";
-  echo "parent.iframe_data_".$nome_objeto_data.".hide();\n";
+        if (isset($shutdown_function) && $shutdown_function !== 'none') {
+            echo "{$shutdown_function}\n";
+        }
 
-  if (isset($shutdown_function) && ($shutdown_function!='none')){
-      echo $shutdown_function."\n";
-  }
+        ?>
+    }
 
-  ?>
-}
+    function janela_zera() {
+        <?php
 
+        echo "parent.document.getElementById('{$nome_objeto_data}').value = '';\n";
+        echo "parent.document.getElementById('{$nome_objeto_data}_dia').value = '';\n";
+        echo "parent.document.getElementById('{$nome_objeto_data}_mes').value = '';\n";
+        echo "parent.document.getElementById('{$nome_objeto_data}_ano').value = '';\n";
+        echo "parent.iframe_data_{$nome_objeto_data}.style.display = 'none';\n";
+
+        if (isset($shutdown_function) && ($shutdown_function != 'none')) {
+            echo "{$shutdown_function}\n";
+        }
+
+        ?>
+    }
 </script>

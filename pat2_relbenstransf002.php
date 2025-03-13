@@ -1,7 +1,7 @@
 <?PHP
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_benstransf_classe.php");
-require_once("classes/db_benstransfdes_classe.php");
-require_once("classes/db_benstransfcodigo_classe.php");
-require_once("classes/db_db_depart_classe.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_benstransf_classe.php"));
+require_once(modification("classes/db_benstransfdes_classe.php"));
+require_once(modification("classes/db_benstransfcodigo_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
 $clbenstransf       = new cl_benstransf;
 $clbenstransfdes    = new cl_benstransfdes;
 $clbenstransfcodigo = new cl_benstransfcodigo;
@@ -147,7 +147,7 @@ $pdf1->situacao   = "situacao";
 
 $pdf1->imprime();
 
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf1->objpdf->Output();
 
 

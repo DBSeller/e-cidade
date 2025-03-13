@@ -58,7 +58,7 @@ db_input('rh03_padrao',10,$Irh03_padrao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpespadrao','func_rhpespadrao.php?funcao_js=parent.js_preenchepesquisa|rh03_seqpes','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpespadrao','func_rhpespadrao.php?funcao_js=parent.js_preenchepesquisa|rh03_seqpes','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpespadrao.hide();

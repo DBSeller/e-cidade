@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,61 +25,92 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhsindicato_classe.php");
-include("dbforms/db_funcoes.php");
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
-$clrhsindicato = new cl_rhsindicato;
-$db_botao = false;
-$db_opcao = 33;
-if(isset($excluir)){
-  db_inicio_transacao();
-  $db_opcao = 3;
-  $clrhsindicato->excluir($rh116_sequencial);
-  db_fim_transacao();
-}else if(isset($chavepesquisa)){
-   $db_opcao = 3;
-   $result = $clrhsindicato->sql_record($clrhsindicato->sql_query($chavepesquisa)); 
-   db_fieldsmemory($result,0);
-   $db_botao = true;
+use ECidade\RecursosHumanos\Pessoal\Repository\SindicatoRepository;
+
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
+require_once modification('classes/db_rhsindicato_classe.php');
+require_once modification('dbforms/db_funcoes.php');
+
+$parametros = JSON::requestParameters();
+
+foreach (get_object_vars($parametros) as $key => $value) {
+    $GLOBALS[$key] = $value;
+    ${$key} = $value;
 }
+
+$clrhsindicato = new cl_rhsindicato;
+$db_opcao = 33;
+$db_botao = false;
+$erro = false;
+$excluido = false;
+$mensagem = '';
+
+db_inicio_transacao();
+
+try {
+    if (isset($parametros->excluir)) {
+        $sindicato = SindicatoRepository::find($parametros->rh116_sequencial);
+
+        $sindicatoRepository = new SindicatoRepository();
+        $sindicatoRepository->delete($sindicato);
+
+        $mensagem = 'Sindicato excluído com sucesso!';
+
+        $db_opcao = 3;
+        $excluido = true;
+        $db_botao = true;
+    } elseif (isset($parametros->chavepesquisa)) {
+        $sindicato = SindicatoRepository::find($chavepesquisa);
+
+        $rh116_sequencial = $sindicato->getSequencial();
+        $rh116_codigo = $sindicato->getCodigo();
+        $rh116_descricao = $sindicato->getRazaoSocial();
+        $rh116_cnpj = $sindicato->getCnpj();
+
+        $db_opcao = 3;
+        $db_botao = true;
+    }
+} catch (Exception $exception) {
+    $erro = true;
+    $mensagem = $exception->getMessage();
+}
+
+if ($mensagem) {
+    db_msgbox($mensagem);
+}
+
+db_fim_transacao($erro);
+
 ?>
-<html>
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>DBSeller Informática Ltda</title>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="scripts/scripts.js"></script>
+    <script type="text/javascript" src="scripts/prototype.js"></script>
+    <script type="text/javascript" src="scripts/widgets/Input/DBInput.widget.js"></script>
+    <script type="text/javascript" src="scripts/widgets/Input/DBInputCNPJ.js"></script>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
+<body>
+<div class="container">
+    <?php require_once modification('forms/db_frmrhsindicato.php'); ?>
+</div>
+<?php
 
-<br /><br />
+db_menu();
 
-<center>
-	<?php include("forms/db_frmrhsindicato.php"); ?>
-</center>
+if ($excluido) { ?>
+    <script>document.location = 'pes1_rhsindicato003.php';</script>
+<?php }
 
-<?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
-
+if ($db_opcao === 33) { ?>
+    <script>document.form1.pesquisar.click();</script>
+<?php } ?>
 </body>
 </html>
-<?
-if(isset($excluir)){
-  if($clrhsindicato->erro_status=="0"){
-    $clrhsindicato->erro(true,false);
-  }else{
-    $clrhsindicato->erro(true,true);
-  }
-}
-if($db_opcao==33){
-  echo "<script>document.form1.pesquisar.click();</script>";
-}
-?>
-<script>
-js_tabulacaoforms("form1","excluir",true,1,"excluir",true);
-</script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orctiporec_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -69,7 +69,7 @@ for($tiporec=0;$tiporec<$cltiporec->numrows;$tiporec++){
    
    $recurso = $o15_codigo;
 
-pg_exec("begin");
+db_query("begin");
 
 $tipo_mesini = 1;
 $tipo_mesfim = 1;
@@ -123,7 +123,7 @@ $clselorcdotacao = new cl_selorcdotacao();
 
 $instits = "(".db_getsession("DB_instit").")";
 
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in $instits");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in $instits");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -143,7 +143,7 @@ $completo = false;
 $nivela = 8; 
 $sql_dotacao = db_dotacaosaldo($nivela,2,2,true,$sele_work,$anousu,$dataini,$datafin,8,0,true);
  
-pg_query("create temporary table prev_desp as ".$sql_dotacao);
+db_query("create temporary table prev_desp as ".$sql_dotacao);
 
 $sql = "
         select
@@ -257,10 +257,10 @@ $sql = "
           $grupo
 ";
 //echo $sql;exit;
-$resultdesp = pg_query($sql); 
+$resultdesp = db_query($sql); 
  
-pg_exec("commit");
-pg_query("drop table prev_desp");
+db_query("commit");
+db_query("drop table prev_desp");
 
 if(pg_numrows($resultdesp)==0){
   continue;
@@ -328,7 +328,7 @@ group by o70_codigo,o15_descr
 
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 
 $xxnum = pg_numrows($result);

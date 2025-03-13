@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,5 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "cursoformacao.ed94_i_codigo,cursoformacao.ed94_c_descr";
+$campos = "cursoformacao.ed94_i_codigo,
+           cursoformacao.ed94_c_codigocenso,
+           cursoformacao.ed94_c_descr,
+           cursoformacao.ed94_c_descrclasse,
+           ed94_i_grauacademico as db_ed94_i_grauacademico
+          ";
 ?>

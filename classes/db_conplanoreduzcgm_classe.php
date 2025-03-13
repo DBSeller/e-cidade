@@ -1,66 +1,66 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: contabilidade
 //CLASSE DA ENTIDADE conplanoreduzcgm
-class cl_conplanoreduzcgm { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $c22_sequencial = 0; 
-   var $c22_anousu = 0; 
-   var $c22_reduz = 0; 
-   var $c22_numcgm = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_conplanoreduzcgm {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $c22_sequencial = 0;
+   var $c22_anousu = 0;
+   var $c22_reduz = 0;
+   var $c22_numcgm = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 c22_sequencial = int4 = Código Sequencial 
-                 c22_anousu = int4 = Ano da conta 
-                 c22_reduz = int4 = Reduzido 
-                 c22_numcgm = int4 = Código do CGM 
+                 c22_sequencial = int4 = Código Sequencial
+                 c22_anousu = int4 = Ano da conta
+                 c22_reduz = int4 = Reduzido
+                 c22_numcgm = int4 = Código do CGM
                  ";
-   //funcao construtor da classe 
-   function cl_conplanoreduzcgm() { 
+   //funcao construtor da classe
+   function cl_conplanoreduzcgm() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("conplanoreduzcgm"); 
+     $this->rotulo = new rotulo("conplanoreduzcgm");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -80,9 +80,9 @@ class cl_conplanoreduzcgm {
      }
    }
    // funcao para inclusao
-   function incluir ($c22_sequencial){ 
+   function incluir ($c22_sequencial){
       $this->atualizacampos();
-     if($this->c22_anousu == null ){ 
+     if($this->c22_anousu == null ){
        $this->erro_sql = " Campo Ano da conta nao Informado.";
        $this->erro_campo = "c22_anousu";
        $this->erro_banco = "";
@@ -91,7 +91,7 @@ class cl_conplanoreduzcgm {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c22_reduz == null ){ 
+     if($this->c22_reduz == null ){
        $this->erro_sql = " Campo Reduzido nao Informado.";
        $this->erro_campo = "c22_reduz";
        $this->erro_banco = "";
@@ -100,20 +100,20 @@ class cl_conplanoreduzcgm {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c22_numcgm == null ){ 
+     if($this->c22_numcgm == null ){
        $this->c22_numcgm = "0";
      }
      if($c22_sequencial == "" || $c22_sequencial == null ){
-       $result = db_query("select nextval('conplanoreduzcgm_c22_sequencial_seq')"); 
+       $result = db_query("select nextval('conplanoreduzcgm_c22_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: conplanoreduzcgm_c22_sequencial_seq do campo: c22_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: conplanoreduzcgm_c22_sequencial_seq do campo: c22_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->c22_sequencial = pg_result($result,0,0); 
+       $this->c22_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from conplanoreduzcgm_c22_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $c22_sequencial)){
@@ -124,10 +124,10 @@ class cl_conplanoreduzcgm {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->c22_sequencial = $c22_sequencial; 
+         $this->c22_sequencial = $c22_sequencial;
        }
      }
-     if(($this->c22_sequencial == null) || ($this->c22_sequencial == "") ){ 
+     if(($this->c22_sequencial == null) || ($this->c22_sequencial == "") ){
        $this->erro_sql = " Campo c22_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -136,19 +136,19 @@ class cl_conplanoreduzcgm {
        return false;
      }
      $sql = "insert into conplanoreduzcgm(
-                                       c22_sequencial 
-                                      ,c22_anousu 
-                                      ,c22_reduz 
-                                      ,c22_numcgm 
+                                       c22_sequencial
+                                      ,c22_anousu
+                                      ,c22_reduz
+                                      ,c22_numcgm
                        )
                 values (
-                                $this->c22_sequencial 
-                               ,$this->c22_anousu 
-                               ,$this->c22_reduz 
-                               ,$this->c22_numcgm 
+                                $this->c22_sequencial
+                               ,$this->c22_anousu
+                               ,$this->c22_reduz
+                               ,$this->c22_numcgm
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Cgm da conta ($this->c22_sequencial) nao Incluído. Inclusao Abortada.";
@@ -172,27 +172,17 @@ class cl_conplanoreduzcgm {
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->c22_sequencial));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,11817,'$this->c22_sequencial','I')");
-       $resac = db_query("insert into db_acount values($acount,2043,11817,'','".AddSlashes(pg_result($resaco,0,'c22_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2043,11818,'','".AddSlashes(pg_result($resaco,0,'c22_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2043,11819,'','".AddSlashes(pg_result($resaco,0,'c22_reduz'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2043,11820,'','".AddSlashes(pg_result($resaco,0,'c22_numcgm'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-     }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($c22_sequencial=null) { 
+   function alterar ($c22_sequencial=null) {
       $this->atualizacampos();
      $sql = " update conplanoreduzcgm set ";
      $virgula = "";
-     if(trim($this->c22_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c22_sequencial"])){ 
+     if(trim($this->c22_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c22_sequencial"])){
        $sql  .= $virgula." c22_sequencial = $this->c22_sequencial ";
        $virgula = ",";
-       if(trim($this->c22_sequencial) == null ){ 
+       if(trim($this->c22_sequencial) == null ){
          $this->erro_sql = " Campo Código Sequencial nao Informado.";
          $this->erro_campo = "c22_sequencial";
          $this->erro_banco = "";
@@ -202,10 +192,10 @@ class cl_conplanoreduzcgm {
          return false;
        }
      }
-     if(trim($this->c22_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c22_anousu"])){ 
+     if(trim($this->c22_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c22_anousu"])){
        $sql  .= $virgula." c22_anousu = $this->c22_anousu ";
        $virgula = ",";
-       if(trim($this->c22_anousu) == null ){ 
+       if(trim($this->c22_anousu) == null ){
          $this->erro_sql = " Campo Ano da conta nao Informado.";
          $this->erro_campo = "c22_anousu";
          $this->erro_banco = "";
@@ -215,10 +205,10 @@ class cl_conplanoreduzcgm {
          return false;
        }
      }
-     if(trim($this->c22_reduz)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c22_reduz"])){ 
+     if(trim($this->c22_reduz)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c22_reduz"])){
        $sql  .= $virgula." c22_reduz = $this->c22_reduz ";
        $virgula = ",";
-       if(trim($this->c22_reduz) == null ){ 
+       if(trim($this->c22_reduz) == null ){
          $this->erro_sql = " Campo Reduzido nao Informado.";
          $this->erro_campo = "c22_reduz";
          $this->erro_banco = "";
@@ -228,10 +218,10 @@ class cl_conplanoreduzcgm {
          return false;
        }
      }
-     if(trim($this->c22_numcgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c22_numcgm"])){ 
-        if(trim($this->c22_numcgm)=="" && isset($GLOBALS["HTTP_POST_VARS"]["c22_numcgm"])){ 
-           $this->c22_numcgm = "0" ; 
-        } 
+     if(trim($this->c22_numcgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c22_numcgm"])){
+        if(trim($this->c22_numcgm)=="" && isset($GLOBALS["HTTP_POST_VARS"]["c22_numcgm"])){
+           $this->c22_numcgm = "0" ;
+        }
        $sql  .= $virgula." c22_numcgm = $this->c22_numcgm ";
        $virgula = ",";
      }
@@ -240,24 +230,8 @@ class cl_conplanoreduzcgm {
        $sql .= " c22_sequencial = $this->c22_sequencial";
      }
      $resaco = $this->sql_record($this->sql_query_file($this->c22_sequencial));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,11817,'$this->c22_sequencial','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["c22_sequencial"]))
-           $resac = db_query("insert into db_acount values($acount,2043,11817,'".AddSlashes(pg_result($resaco,$conresaco,'c22_sequencial'))."','$this->c22_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["c22_anousu"]))
-           $resac = db_query("insert into db_acount values($acount,2043,11818,'".AddSlashes(pg_result($resaco,$conresaco,'c22_anousu'))."','$this->c22_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["c22_reduz"]))
-           $resac = db_query("insert into db_acount values($acount,2043,11819,'".AddSlashes(pg_result($resaco,$conresaco,'c22_reduz'))."','$this->c22_reduz',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["c22_numcgm"]))
-           $resac = db_query("insert into db_acount values($acount,2043,11820,'".AddSlashes(pg_result($resaco,$conresaco,'c22_numcgm'))."','$this->c22_numcgm',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
-     }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cgm da conta nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->c22_sequencial;
@@ -285,27 +259,15 @@ class cl_conplanoreduzcgm {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($c22_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($c22_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($c22_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,11817,'$c22_sequencial','E')");
-         $resac = db_query("insert into db_acount values($acount,2043,11817,'','".AddSlashes(pg_result($resaco,$iresaco,'c22_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2043,11818,'','".AddSlashes(pg_result($resaco,$iresaco,'c22_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2043,11819,'','".AddSlashes(pg_result($resaco,$iresaco,'c22_reduz'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2043,11820,'','".AddSlashes(pg_result($resaco,$iresaco,'c22_numcgm'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
      }
      $sql = " delete from conplanoreduzcgm
                     where ";
@@ -321,7 +283,7 @@ class cl_conplanoreduzcgm {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cgm da conta nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$c22_sequencial;
@@ -349,11 +311,11 @@ class cl_conplanoreduzcgm {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -375,7 +337,7 @@ class cl_conplanoreduzcgm {
       }
      return $result;
    }
-   function sql_query ( $c22_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $c22_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -399,8 +361,8 @@ class cl_conplanoreduzcgm {
      $sql2 = "";
      if($dbwhere==""){
        if($c22_sequencial!=null ){
-         $sql2 .= " where conplanoreduzcgm.c22_sequencial = $c22_sequencial "; 
-       } 
+         $sql2 .= " where conplanoreduzcgm.c22_sequencial = $c22_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -416,7 +378,7 @@ class cl_conplanoreduzcgm {
      }
      return $sql;
   }
-   function sql_query_file ( $c22_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $c22_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -432,8 +394,8 @@ class cl_conplanoreduzcgm {
      $sql2 = "";
      if($dbwhere==""){
        if($c22_sequencial!=null ){
-         $sql2 .= " where conplanoreduzcgm.c22_sequencial = $c22_sequencial "; 
-       } 
+         $sql2 .= " where conplanoreduzcgm.c22_sequencial = $c22_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

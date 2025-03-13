@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["salvar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec("BEGIN");
-  pg_exec("UPDATE db_confmensagem SET mens = '$obs1',alinhamento = 'posx1=$posx1&posy1=$posy1&tam1=$tam1' where cod = 'obsboleto1'");
-  pg_exec("UPDATE db_confmensagem SET mens = '$obs2',alinhamento = 'posx2=$posx2&posy2=$posy2&tam2=$tam2' where cod = 'obsboleto2'");
-  pg_exec("UPDATE db_confmensagem SET mens = '$obs3',alinhamento = 'posx3=$posx3&posy3=$posy3&tam3=$tam3' where cod = 'obsboleto3'");
-  pg_exec("UPDATE db_confmensagem SET mens = '$obs4',alinhamento = 'posx4=$posx4&posy4=$posy4&tam4=$tam4' where cod = 'obsboleto4'");                       
-  pg_exec("COMMIT");
+  db_query("BEGIN");
+  db_query("UPDATE db_confmensagem SET mens = '$obs1',alinhamento = 'posx1=$posx1&posy1=$posy1&tam1=$tam1' where cod = 'obsboleto1'");
+  db_query("UPDATE db_confmensagem SET mens = '$obs2',alinhamento = 'posx2=$posx2&posy2=$posy2&tam2=$tam2' where cod = 'obsboleto2'");
+  db_query("UPDATE db_confmensagem SET mens = '$obs3',alinhamento = 'posx3=$posx3&posy3=$posy3&tam3=$tam3' where cod = 'obsboleto3'");
+  db_query("UPDATE db_confmensagem SET mens = '$obs4',alinhamento = 'posx4=$posx4&posy4=$posy4&tam4=$tam4' where cod = 'obsboleto4'");                       
+  db_query("COMMIT");
 }
-$result = pg_exec("select mens,alinhamento from db_confmensagem where cod in('obsboleto1','obsboleto2','obsboleto3','obsboleto4')");
+$result = db_query("select mens,alinhamento from db_confmensagem where cod in('obsboleto1','obsboleto2','obsboleto3','obsboleto4')");
 $obs1 = @pg_result($result,0,0);
 parse_str(@pg_result($result,0,1));
 $obs2 = @pg_result($result,1,0);

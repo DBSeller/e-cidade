@@ -68,7 +68,7 @@ db_textarea('pc02_complobjeto',0,0,$Ipc02_complobjeto,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pcobjeto','func_pcobjeto.php?funcao_js=parent.js_preenchepesquisa|pc02_codobjeto','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcobjeto','func_pcobjeto.php?funcao_js=parent.js_preenchepesquisa|pc02_codobjeto','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_pcobjeto.hide();

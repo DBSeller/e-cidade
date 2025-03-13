@@ -75,7 +75,7 @@ db_input('fa12_c_descricao',40,$Ifa12_c_descricao,true,'text',$db_opcao,"")
     <td>
      <?
       $sql="select s148_i_codigo,s148_c_sigla,s148_c_descr from sau_tipoacaoprog";
-      $result=pg_query($sql);
+      $result=db_query($sql);
       $linhas=pg_num_rows($result);
       $vet= array("0"=>"");
       for($x=0;$x<$linhas;$x++){
@@ -100,7 +100,7 @@ db_input('fa12_c_descricao',40,$Ifa12_c_descricao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_programa','func_far_programa.php?funcao_js=parent.js_preenchepesquisa|fa12_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_programa','func_far_programa.php?funcao_js=parent.js_preenchepesquisa|fa12_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_programa.hide();

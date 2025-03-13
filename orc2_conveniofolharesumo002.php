@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,13 +28,13 @@
 /**
  * 
  * @author I
- * @revision $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.5 $
  */
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oGet = db_utils::postMemory($_GET);
 
 $pdf = new PDF("L"); 
@@ -129,7 +129,7 @@ $sSqlDados    .= "  and o103_anousu  = 2009 ";
 $sSqlDados    .= " order by e69_numero ";
 $rsDados       = db_query($sSqlDados);
 $aLinhasRelatorio = array();
-$aDadosConsulta   = db_utils::getColectionByRecord($rsDados);
+$aDadosConsulta   = db_utils::getCollectionByRecord($rsDados);
 $iIndice          = 0;
 for ($i = 0; $i < count($aDadosConsulta) ; $i++) {
   

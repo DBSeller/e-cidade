@@ -29,7 +29,7 @@
 $clregistroprecoparam->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("nomeinst");
-require_once("libs/db_libdicionario.php");
+require_once(modification("libs/db_libdicionario.php"));
 ?>
 <form name="form1" method="post" action="">
   <table>
@@ -100,10 +100,10 @@ iMin = 0;
 iMax = 100;
 function js_pesquisapc08_instit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
   }else{
      if(document.form1.pc08_instit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.pc08_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.pc08_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
      }else{
        document.form1.nomeinst.value = ''; 
      }
@@ -122,7 +122,7 @@ function js_mostradb_config1(chave1,chave2){
   db_iframe_db_config.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_registroprecoparam','func_registroprecoparam.php?funcao_js=parent.js_preenchepesquisa|pc08_instit','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_registroprecoparam','func_registroprecoparam.php?funcao_js=parent.js_preenchepesquisa|pc08_instit','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_registroprecoparam.hide();

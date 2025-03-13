@@ -1,50 +1,37 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_tabativ_classe.php");
-require_once("classes/db_ativprinc_classe.php");
-require_once("classes/db_tabativtipcalc_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_parissqn_classe.php");
-require_once("classes/db_saniatividade_classe.php");
-require_once("classes/db_sanitarioinscr_classe.php");
-require_once("classes/db_sanitario_classe.php");
-require_once("classes/db_issporte_classe.php"); 
-require_once("classes/db_clasativ_classe.php"); 
-require_once("classes/db_ativid_classe.php");
-require_once("model/logAtividade.model.php");
-require_once("classes/db_issalvara_classe.php");
-require_once("classes/db_issmovalvara_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/logAtividade.model.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -69,9 +56,8 @@ $clativid         = new cl_ativid;
 $cllogatividade   = new logatividade;
 $lAtivPrinc       = "f";
 $lAlvaraPerm      = "";
-
 //************************************************************************************************//
- 
+
 // func para retornar os dias entre datas
 function quantDias($data1, $data2) {
   $aVet1=explode("/",$data1);
@@ -80,13 +66,9 @@ function quantDias($data1, $data2) {
                 mktime(0,0,0,$aVet1[1],$aVet1[0],$aVet1[2])) / (24 * 60 * 60), 0);
 }
 
-
-
 //verifica o parametro na tabela parissqn para gerar sanitario automaticamente apartir do ISSQN
-//die($clparissqn->sql_query(null,"q60_integrasani",null,""));
-$rsParissqn      = $clparissqn->sql_record($clparissqn->sql_query(null,"q60_integrasani",null,""));
+$rsParissqn      = $clparissqn->sql_record($clparissqn->sql_query(null, "q60_integrasani", null, ""));
 $numrowsParissqn = $clparissqn->numrows;
-//   db_msgbox("procura os parametros");
 if ($numrowsParissqn > 0) {
   db_fieldsmemory($rsParissqn,0);
 } else {
@@ -94,32 +76,82 @@ if ($numrowsParissqn > 0) {
 }
 
 $db_botao = true;
-if (isset($incluir)) {
-	
-	//echo "<br><br> q07_perman -> " . $q07_perman; die();
-	$lAlvaraPerm = $q07_perman;
-	
-  $sqlerro=false;
-  db_inicio_transacao();
-  
-  if( $q07_perman == 'f' ){
-    $tipoperman = 'true';    
-  }else{
-    $tipoperman = 'false';
-  }
-  //
-  // Verifica se esta tentando incluir uma atividade diferente do tipo de alvara permanente/rpovisorio
-  //
+$sqlerro  = false;
 
+try {
+
+  if (!empty($incluir) || !empty($alterar)) {
+
+    if (empty($q07_ativ)) {
+      throw new Exception("Atividade não informada.");
+    }
+
+    $aWhereValidacaoData = array(
+        "q07_inscr = {$q07_inscr}",
+        "q07_databx is null",
+        "q07_ativ = {$q07_ativ}"
+      );
+
+    if ($q07_perman == 'f') {
+      $oDataInicial = new DBDate("{$q07_datain_ano}-{$q07_datain_mes}-{$q07_datain_dia}");
+
+      $aWhereValidacaoData[] = "q07_datafi >= '{$oDataInicial->getDate()}'::date";
+    } else {
+      $aWhereValidacaoData[] = "q07_perman is true";
+    }
+
+    $sSqlValidacaoData = $cltabativ->sql_query_file( null,
+                                                     null,
+                                                     '*',
+                                                     null,
+                                                     implode(" and ", $aWhereValidacaoData) );
+
+    $rsValidacaoData = $cltabativ->sql_record($sSqlValidacaoData);
+
+    if ($cltabativ->numrows > 0) {
+
+     if ((!empty($alterar) && db_utils::fieldsMemory($rsValidacaoData, 0)->q07_seq != $q07_seq) || !empty($incluir)) {
+
+       if ($q07_perman == 'f') {
+
+         $oDataFinalAtividade = new DBDate( db_utils::fieldsMemory($rsValidacaoData, 0)->q07_datafi );
+         throw new Exception("A data de início da atividade deve ser maior que {$oDataFinalAtividade->getDate(DBDate::DATA_PTBR)}.");
+       }
+
+       throw new Exception("A Atividade {$q07_ativ} já foi cadastrada como uma atividade permanente.");
+     }
+   }
+
+  }
+
+} catch (Exception $e) {
+
+    $erromsg = $e->getMessage();
+    $sqlerro = true;
+}
+
+if (isset($incluir) && !$sqlerro) {
+
+  $lAlvaraPerm = $q07_perman;
+
+  db_inicio_transacao();
+
+  $tipoperman = 'false';
+  if( $q07_perman == 'f' ){
+    $tipoperman = 'true';
+  }
+
+  /**
+   * Verifica se esta tentando incluir uma atividade diferente do tipo de alvara permanente/provisorio
+   */
   $rsPesquisaAtivTipo = $cltabativ->sql_record($cltabativ->sql_query_file($q07_inscr,'','*',null," q07_perman is {$tipoperman} and q07_inscr = $q07_inscr and q07_databx is null"));
   if ( $cltabativ->numrows > 0 ) {
 
-    $erromsg = "Não é permitido inclusão de atividade permanente e provisório para o mesmo alvara.";
+    $erromsg = "Não é permitido inclusão de atividade permanente e provisório para o mesmo alvará.";
     $sqlerro = true;
-    
-  } 
+  }
 
-  $result01=$cltabativ->sql_record($cltabativ->sql_query_file($q07_inscr,'','max(q07_seq)+1 as seq'));
+  $result01 = $cltabativ->sql_record($cltabativ->sql_query_file($q07_inscr,'','max(q07_seq)+1 as seq'));
   db_fieldsmemory($result01,0);
   $q07_seq = $seq == ""?"1":$seq;
   $cltabativ->q07_inscr  = $q07_inscr;
@@ -130,14 +162,16 @@ if (isset($incluir)) {
   $cltabativ->q07_datain = "$q07_datain_ano-$q07_datain_mes-$q07_datain_dia";
   $cltabativ->q07_horaini= $q07_horaini;
   $cltabativ->q07_horafim= $q07_horafim;
+  $cltabativ->q07_val_ativ_int = "$q07_val_ativ_int";
+  $cltabativ->q07_imprimealvara = "$q07_imprimealvara";
   if (@$q07_datafi_ano!="" && @$q07_datafi_mes!="" && @$q07_datafi_dia!="") {
     $cltabativ->q07_datafi = "$q07_datafi_ano-$q07_datafi_mes-$q07_datafi_dia";
   } else {
     $cltabativ->q07_datafi = null;
   }
-  
+
   $cltabativ->q07_tipbx = "0";
-// db_msgbox("incluindo na tabativ -- $q07_inscr -- $q07_seq");
+
   $cltabativ->incluir($q07_inscr,$q07_seq);
   if ($cltabativ->erro_status==0) {
     $sqlerro = true;
@@ -170,7 +204,7 @@ if (isset($incluir)) {
       $erromsg = "Inclusão ativprinc : ".$clativprinc->erro_msg;
       $sqlerro = true;
     } else {
-    	
+
     	$lAtivPrinc = 't';
     }
   } else {
@@ -185,14 +219,14 @@ if (isset($incluir)) {
       }
     }
   }
-  
+
 //**********************************************************************************************************************************
-  
+
   if($sqlerro==false){
 
-  
+
     if (isset($q60_integrasani) && $q60_integrasani == 1) {
-    	
+
       // verifica se porte, eh do tipo juridica
       $sql = " select q40_fisica from issbaseporte inner join issporte on q45_codporte = q40_codporte where q40_fisica is false and q45_inscr = $q07_inscr";
       $rsPorte = $clissporte->sql_record($sql);
@@ -202,10 +236,10 @@ if (isset($incluir)) {
         $incluiativ = 't';
       }
     }else if (isset($q60_integrasani) && $q60_integrasani == 2) {
-      
+
       // verifica a classe se a classe esta configurada
-      $rsClasAtiv  = $clclasativ->sql_record($clclasativ->sql_query(null,null,"*",null," q82_ativ = $q07_ativ and q12_integrasani = 't' ")); 
-      //die($clclasativ->sql_query(null,null,"*",null," q82_ativ = $q07_ativ and q12_integrasani = 't' ")); 
+      $rsClasAtiv  = $clclasativ->sql_record($clclasativ->sql_query(null,null,"*",null," q82_ativ = $q07_ativ and q12_integrasani = 't' "));
+      //die($clclasativ->sql_query(null,null,"*",null," q82_ativ = $q07_ativ and q12_integrasani = 't' "));
       if( $clclasativ->numrows > 0 ){
 
         $incluisani = 't';
@@ -218,7 +252,7 @@ if (isset($incluir)) {
     if (isset($incluisani) && $incluisani = 't') {
       $rsSanitario = $clsanitario->sql_record($clsanitario->sql_query_file($q07_inscr,"*",null,""));
       if($clsanitario->numrows == 0){
-        //db_msgbox('sanitario inclusao2222222');
+
         $sqlIssbase  = "select issbase.q02_inscr, issbase.q02_numcgm, q30_area, j14_codigo, q13_bairro as j13_codi, q02_numero, q02_compl, q02_dtbaix";
         $sqlIssbase .= "  from issbase ";
         $sqlIssbase .= "   inner join issquant  on issquant.q30_inscr  = issbase.q02_inscr ";
@@ -226,12 +260,11 @@ if (isset($incluir)) {
         $sqlIssbase .= "   left  join issruas   on issruas.q02_inscr   = issbase.q02_inscr ";
         $sqlIssbase .= "   left  join issbairro on issbairro.q13_inscr = issbase.q02_inscr ";
         $sqlIssbase .= "where issbase.q02_inscr = $q07_inscr ";
-        //die($sqlIssbase);                                                   
         $rsIssbase  = $clissbase->sql_record($sqlIssbase);
         if($clissbase->numrows > 0){
-        	
+
           db_fieldsmemory($rsIssbase,0);
- 
+
           $clsanitario->y80_codsani   = $q02_inscr;
           $clsanitario->y80_numbloco  = 0;
           $clsanitario->y80_numcgm    = $q02_numcgm;
@@ -266,7 +299,6 @@ if (isset($incluir)) {
             $sqlerro = true;
             $erromsg = " -- Sanitario ".$clsanitario->erro_msg;
           }
-        //db_msgbox("sanitarioinscr");
 
 	        $clsanitarioinscr->y18_codsani = $q07_inscr;
 		    $clsanitarioinscr->y18_inscr = $q07_inscr;
@@ -274,36 +306,36 @@ if (isset($incluir)) {
 		    if($clsanitarioinscr->erro_status==0){
 		        $sqlerro=true;
 		        $erromsg=$clsanitarioinscr->erro_msg;
-		    } 
-          
+		    }
+
         }
       }
 
-    
+
     }
 
 //*********************************************************************************************************************************
-  		
-    
+
+
     if (isset($incluiativ) && $incluiativ = 't') {
       $sqlrua = "select * from issruas where q02_inscr= $q07_inscr";
-      $resultrua = pg_query($sqlrua);
+      $resultrua = db_query($sqlrua);
       $linhasrua = pg_num_rows($resultrua);
       if($linhasrua==0){
         $erromsg = "Inscrição sem logradouro cadastrado.";
         $sqlerro = true;
-      } 
+      }
 
       $sqlbairro = "select * from issbairro where q13_inscr =  $q07_inscr";
-      $resultbairro = pg_query($sqlbairro);
+      $resultbairro = db_query($sqlbairro);
       $linhasbairro = pg_num_rows($resultbairro);
       if($linhasbairro==0){
         $erromsg = "Inscrição sem Bairro cadastrado.";
         $sqlerro = true;
-      } 
+      }
 
-      
-      if($sqlerro==false){  
+
+      if($sqlerro==false){
       $clsaniatividade->y83_codsani   = $q07_inscr;
       $clsaniatividade->y83_seq       = $q07_seq;
       $clsaniatividade->y83_ativ      = $q07_ativ;
@@ -324,9 +356,8 @@ if (isset($incluir)) {
       } else {
         $clsaniatividade->y83_ativprinc = 'false';
       }
-           
+
       $clsaniatividade->incluir($clsaniatividade->y83_codsani,$clsaniatividade->y83_seq);
-      //db_msgbox("incluindo na tabativ -- ".$clsaniatividade->y83_codsani." -- ".$clsaniatividade->y83_seq);
       if ($clsaniatividade->erro_status==0) {
         $erromsg = "Inclusão saniatividade : ".$clsaniatividade->erro_msg;
         $sqlerro = true;
@@ -334,23 +365,23 @@ if (isset($incluir)) {
     }
     }
   }
-  
+
 //**********************************************************************************************************************************//
-  
+
 if($sqlerro==false){
-    $result05 = $clissbase->sql_record($clissbase->sql_query_file($q07_inscr,"q02_dtbaix"));
-//    db_criatabela($result05);
+
+  $result05 = $clissbase->sql_record($clissbase->sql_query_file($q07_inscr));
     if( $clissbase->numrows > 0 ){
       db_fieldsmemory($result05,0);
     }
     $result01 = $cltabativ->sql_record($cltabativ->sql_query_file('','','min(q07_datain) as datainicial','',' q07_inscr = '.$q07_inscr.''));
-//    echo $cltabativ->sql_query_file('','','min(q07_datain) as datainicial','',' q07_inscr = '.$q07_inscr.'');
-//    db_criatabela($result01);
+
     if( $cltabativ->numrows > 0 ){
       db_fieldsmemory($result01,0);
     }
     $clissbase->q02_inscr  = $q07_inscr;
     $clissbase->q02_dtinic = $datainicial;
+    $clissbase->q02_formalocalvara = $q02_formalocalvara;
     $clissbase->alterar($q07_inscr);
     if ($clissbase->erro_status==0) {
       $erromsg = "Alteração issbase erro 3: ".$clissbase->erro_msg;
@@ -367,7 +398,7 @@ if($sqlerro==false){
       }
     }
   }
-  
+
   if ($sqlerro==false) {
     $q07_ativ="";
     $q07_seq="";
@@ -385,17 +416,17 @@ if($sqlerro==false){
   }
 
   if (!$sqlerro) {
-  	
+
     try {
 
       if (isset($cltabativ->q07_ativ) && !empty($cltabativ->q07_ativ)) {
 
-        $cllogatividade->identificaAlteracao($q07_inscr,1,5,$cltabativ->q07_ativ);        
+        $cllogatividade->identificaAlteracao($q07_inscr,1,5,$cltabativ->q07_ativ);
         $cllogatividade->gravarLog();
       }
-    
+
     } catch ( Exception $eExeption ){
-      
+
       $sqlerro  = true;
       $erromsg  = $eExeption->getMessage();
     }
@@ -410,46 +441,67 @@ if($sqlerro==false){
        }
        js_src();
    </script>
-       ";  
+       ";
   }
   db_fim_transacao($sqlerro);
-} else if (isset($alterar)) {
+} else if (isset($alterar) && !$sqlerro) {
     $sqlerro = false;
     db_inicio_transacao();
-    
+
     // Verifica se esta tentando incluir uma atividade diferente do tipo de alvara permanente/provisorio
+    $tipoperman = 'false';
     if( $q07_perman == 'f' ){
-      $tipoperman = 'true';    
-    }else{
-      $tipoperman = 'false';
+      $tipoperman = 'true';
     }
-    $cltabativ->q07_inscr   = $q07_inscr;
-    $cltabativ->q07_seq     = $q07_seq;
-    $cltabativ->q07_ativ    = $q07_ativ;
-    $cltabativ->q07_quant   = $q07_quant;
-    $cltabativ->q07_perman  = $q07_perman;
-    $cltabativ->q07_datain  = "$q07_datain_ano-$q07_datain_mes-$q07_datain_dia";
-    $cltabativ->q07_horaini = "$q07_horaini";
-    $cltabativ->q07_horafim = "$q07_horafim";
-    if(isset($q07_datafi_ano) && $q07_datafi_ano!="" && isset($q07_datafi_mes) && $q07_datafi_mes!="" && isset($q07_datafi_dia) && $q07_datafi_dia!=""){
-      $cltabativ->q07_datafi = "$q07_datafi_ano-$q07_datafi_mes-$q07_datafi_dia";
-    }else{
-      $cltabativ->q07_datafi = null;
-    }
-    $cltabativ->q07_tipbx = "0";
 
-    $rsPesquisaAtivTipo = $cltabativ->sql_record($cltabativ->sql_query_file($q07_inscr,'','*',null," q07_perman is {$tipoperman} and q07_seq <> $q07_seq and q07_inscr = $q07_inscr and (case when q07_databx is null then true else false end)"));
-    if ( $cltabativ->numrows > 1 and $cltabativ->q07_datafi == "") {
-      $erromsg = "Não é permitido inclusão de atividade permanente sem data de baixa e provisório para o mesmo alvara.";
-      $sqlerro = true;
-    } 
+    /**
+     * Verifica se esta tentando incluir uma atividade diferente do tipo de alvara permanente/provisorio
+     */
+    $sWhereAtividade = "    q07_databx is null
+                        and q07_seq <> {$q07_seq}
+                        and q07_inscr = {$q07_inscr}
+                        and q07_perman is {$tipoperman} ";
+    $sSqlAtividade   = $cltabativ->sql_query_file($q07_inscr, '', '*', null, $sWhereAtividade);
+    $rsPesquisaAtivTipo = $cltabativ->sql_record($sSqlAtividade);
 
-    $cltabativ->alterar($q07_inscr,$q07_seq);
-    if($cltabativ->erro_status==0){
-       db_msgbox("aquiiiii");
-      $erromsg = "Alteração tabativ : ".$cltabativ->erro_msg;
+    if ( $cltabativ->numrows > 0 ) {
+
+      $erromsg = "Não é permitido inclusão de atividade permanente e provisório para o mesmo alvará.";
       $sqlerro = true;
     }
+
+    if(!$sqlerro){
+
+      $cltabativ->q07_inscr        = $q07_inscr;
+      $cltabativ->q07_seq          = $q07_seq;
+      $cltabativ->q07_ativ         = $q07_ativ;
+      $cltabativ->q07_quant        = $q07_quant;
+      $cltabativ->q07_perman       = $q07_perman;
+      $cltabativ->q07_datain       = "$q07_datain_ano-$q07_datain_mes-$q07_datain_dia";
+      $cltabativ->q07_horaini      = "$q07_horaini";
+      $cltabativ->q07_horafim      = "$q07_horafim";
+      $cltabativ->q07_val_ativ_int = "$q07_val_ativ_int";
+      $cltabativ->q07_imprimealvara = "$q07_imprimealvara";
+      if(isset($q07_datafi_ano) && $q07_datafi_ano!="" && isset($q07_datafi_mes) && $q07_datafi_mes!="" && isset($q07_datafi_dia) && $q07_datafi_dia!=""){
+        $cltabativ->q07_datafi = "$q07_datafi_ano-$q07_datafi_mes-$q07_datafi_dia";
+      }else{
+        $cltabativ->q07_datafi = null;
+      }
+      $cltabativ->q07_tipbx = "0";
+
+      $rsPesquisaAtivTipo = $cltabativ->sql_record($cltabativ->sql_query_file($q07_inscr,'','*',null," q07_perman is {$tipoperman} and q07_seq <> $q07_seq and q07_inscr = $q07_inscr and (case when q07_databx is null then true else false end)"));
+      if ( $cltabativ->numrows > 1 and $cltabativ->q07_datafi == "") {
+        $erromsg = "Não é permitido inclusão de atividade permanente sem data de baixa e provisório para o mesmo alvara.";
+        $sqlerro = true;
+      }
+
+      $cltabativ->alterar($q07_inscr,$q07_seq);
+      if($cltabativ->erro_status==0){
+        $erromsg = "Alteração tabativ : ".$cltabativ->erro_msg;
+        $sqlerro = true;
+      }
+    }
+
     if(!$sqlerro){
       $cltabativtipcalc->q11_inscr   = $q07_inscr;
       $cltabativtipcalc->q11_seq     = $q07_seq;
@@ -459,19 +511,24 @@ if($sqlerro==false){
         $erromsg = "Alteração tabativ : ".$cltabativtipcalc->erro_msg;
         $sqlerro = true;
       }
-    
+
     }
     $result01=$cltabativ->sql_record($cltabativ->sql_query_file('','','min(q07_datain) as datainicial','',' q07_inscr = '.$q07_inscr.' '));
-    db_fieldsmemory($result01,0);   
+    db_fieldsmemory($result01,0);
+
+    // Busca q02_formalocalvara
+    $resultFormaLocalAlvara = $clissbase->sql_record($clissbase->sql_query_file($q07_inscr, 'q02_formalocalvara'));
+    db_fieldsmemory($resultFormaLocalAlvara,0);
     $clissbase->q02_inscr  = $q07_inscr;
     $clissbase->q02_dtinic = $datainicial;
-    $clissbase->alterar($q07_inscr); 
+    $clissbase->q02_formalocalvara = $q02_formalocalvara;
+    $clissbase->alterar($q07_inscr);
     if($clissbase->erro_status==0){
       $erromsg = "Alteração issbas : ".$clissbase->erro_msg;
       $sqlerro=true;
     }
     if(isset($princ) && $princ=='t'){
-       $clativprinc->sql_record($clativprinc->sql_query_file($q07_inscr));	
+       $clativprinc->sql_record($clativprinc->sql_query_file($q07_inscr));
        if($clativprinc->numrows>0){
    	     $clativprinc->q88_inscr = $q07_inscr;
          $clativprinc->excluir($q07_inscr);
@@ -488,7 +545,7 @@ if($sqlerro==false){
           $sqlerro = true;
        }
     }elseif(isset($princ) && $princ=='f'){
-       $clativprinc->sql_record($clativprinc->sql_query_file($q07_inscr,"q88_seq","","q88_inscr=$q07_inscr and  q88_seq=$q07_seq"));	
+       $clativprinc->sql_record($clativprinc->sql_query_file($q07_inscr,"q88_seq","","q88_inscr=$q07_inscr and  q88_seq=$q07_seq"));
        if($clativprinc->numrows>0){
   	     $clativprinc->q88_inscr=$q07_inscr;
          $clativprinc->excluir($q07_inscr);
@@ -500,7 +557,7 @@ if($sqlerro==false){
     }
     if(!$sqlerro){
       if(isset($q60_integrasani) && $q60_integrasani == 1){
-        $clsaniatividade->y83_codsani   = $q07_inscr; 
+        $clsaniatividade->y83_codsani   = $q07_inscr;
         $clsaniatividade->y83_seq       = $q07_seq;
         $clsaniatividade->y83_ativ      = $q07_ativ;
         $clsaniatividade->y83_area      = 0;
@@ -539,13 +596,13 @@ if($sqlerro==false){
       $q07_horaini="";
       $q07_horafim="";
     }
-    
+
   }else if(isset($excluir)){
-   
+
     $sqlerro=false;
     db_inicio_transacao();
     if(!$sqlerro){
-      
+
       $cltabativtipcalc->q11_inscr=$q07_inscr;
       $cltabativtipcalc->q11_seq=$q07_seq;
       $cltabativtipcalc->excluir($q07_inscr,$q07_seq);
@@ -555,8 +612,8 @@ if($sqlerro==false){
       }
     }
     if(!$sqlerro){
-      
-      $result22=$clativprinc->sql_record($clativprinc->sql_query_file($q07_inscr));	
+
+      $result22=$clativprinc->sql_record($clativprinc->sql_query_file($q07_inscr));
       if($clativprinc->numrows>0){
 	      db_fieldsmemory($result22,0);
 	      if($q88_seq==$q07_seq){
@@ -566,14 +623,14 @@ if($sqlerro==false){
              $erromsg = "Excluir ativprinc : ".$clativprinc->erro_msg;
              $sqlerro=true;
           }
-	      }  
+	      }
       }
     }
 
     if(!$sqlerro){
-      
+
 		  if(isset($q60_integrasani) && ( $q60_integrasani == 1 || $q60_integrasani == 2) ){
-		      
+
 			  $clsaniatividade->excluir($q07_inscr,$q07_seq);
 			  if($clsaniatividade->erro_status==0){
 				  $erromsg = "Excluir saniatividade : ".$clsaniatividade->erro_msg;
@@ -585,12 +642,12 @@ if($sqlerro==false){
 /*****************************************************************************************************/
 
     $result01=$cltabativ->sql_record($cltabativ->sql_query_file('','','min(q07_datain) as datainicial','',' q07_inscr = '.$q07_inscr.' and q07_ativ <> '.$q07_ativ.''));
-    db_fieldsmemory($result01,0);   
+    db_fieldsmemory($result01,0);
     $clissbase->q02_inscr=$q07_inscr;
     $clissbase->q02_dtinic=$datainicial;
-    $clissbase->alterar($q07_inscr); 
+    $clissbase->alterar($q07_inscr);
     if($clissbase->erro_status==0){
-      $erromsg = "Alteração issbase erro 2 : ".$clissbase->erro_msg; 
+      $erromsg = "Alteração issbase erro 2 : ".$clissbase->erro_msg;
       $sqlerro = true;
     }
     if(!$sqlerro){
@@ -598,21 +655,21 @@ if($sqlerro==false){
       $cltabativ->q07_seq=$q07_seq;
       $cltabativ->excluir($q07_inscr,$q07_seq);
       if($cltabativ->erro_status==0){
-        $erromsg = "Exclusão tabativ : ".$cltabativ->erro_msg; 
+        $erromsg = "Exclusão tabativ : ".$cltabativ->erro_msg;
         $sqlerro = true;
       }
-    }  
+    }
     if(!$sqlerro){
       $cltabativ->sql_record($cltabativ->sql_query_file($q07_inscr,"","q07_inscr","","q07_databx is null and q07_inscr=$q07_inscr"));
       if($cltabativ->numrows<1){
         $result87 = $cltabativ->sql_record($cltabativ->sql_query_file($q07_inscr,"","max(q07_databx) as q07_databx"));
-        db_fieldsmemory($result87,0);  
+        db_fieldsmemory($result87,0);
         $clissbase->q02_dtbaix=$q07_databx;
         $clissbase->q02_inscr=$q07_inscr;
-        $clissbase->alterar($q07_inscr); 
-        //$clissbase->erro(true,false); 
+        $clissbase->alterar($q07_inscr);
+        //$clissbase->erro(true,false);
         if($clissbase->erro_status==0){
-          $erromsg = "Alteração issbase erro 1 : ".$clissbase->erro_msg; 
+          $erromsg = "Alteração issbase erro 1 : ".$clissbase->erro_msg;
           $sqlerro = true;
         }
       }
@@ -638,7 +695,7 @@ if(isset($db_opcaoal)){
   $db_opcao=3;
   $db_botao=false;
 }
- 
+
 
 //================================================  GERAÇÂO AUTOMATICA DO ALVARA ======================================
 
@@ -647,15 +704,15 @@ if(isset($db_opcaoal)){
 // verificamos nas classes se alguma das atividades está como principal para verificar o q12_alvaraautomatico
 
 $sSqlAlvaraAuto  = "select   q03_ativ,                                                           ";
-$sSqlAlvaraAuto .= "				 q12_alvaraautomatico,																							 ";	
+$sSqlAlvaraAuto .= "				 q12_alvaraautomatico,																							 ";
 $sSqlAlvaraAuto .= "				 q12_classe,                                                         ";
 $sSqlAlvaraAuto .= "				 case                                                                ";
-$sSqlAlvaraAuto .= "				  when q88_inscr is not null then																		 ";	
+$sSqlAlvaraAuto .= "				  when q88_inscr is not null then																		 ";
 $sSqlAlvaraAuto .= "				     'sim' else                                                      ";
 $sSqlAlvaraAuto .= "				     'nao'                                                           ";
 $sSqlAlvaraAuto .= "				 end as principal ,                                                  ";
 $sSqlAlvaraAuto .= "				 case                                                                ";
-$sSqlAlvaraAuto .= "				  when q07_perman is true then																		   ";	
+$sSqlAlvaraAuto .= "				  when q07_perman is true then																		   ";
 $sSqlAlvaraAuto .= "				     'sim' else                                                      ";
 $sSqlAlvaraAuto .= "				     'nao'                                                           ";
 $sSqlAlvaraAuto .= "				 end as permanente                                                   ";
@@ -665,7 +722,7 @@ $sSqlAlvaraAuto .= "                             and q88_seq = q07_seq          
 $sSqlAlvaraAuto .= "			   inner join ativid on ativid.q03_ativ = tabativ.q07_ativ             ";
 $sSqlAlvaraAuto .= "         inner join clasativ on q82_ativ = q03_ativ                          ";
 $sSqlAlvaraAuto .= "         inner join classe on q82_classe = q12_classe                        ";
-$sSqlAlvaraAuto .= "    where q07_inscr = {$q07_inscr}                                           "; 
+$sSqlAlvaraAuto .= "    where q07_inscr = {$q07_inscr}                                           ";
 
 $rsAlvaraAuto      = db_query($sSqlAlvaraAuto);
 $iLinhasAlvaraAuto = pg_num_rows($rsAlvaraAuto);
@@ -679,16 +736,16 @@ $iTipoalvara       = "";
 
 if ($iLinhasAlvaraAuto > 0){
 
-	$aAlvaraAuto     = db_utils::getColectionByRecord($rsAlvaraAuto);
+	$aAlvaraAuto     = db_utils::getCollectionByRecord($rsAlvaraAuto);
 	foreach ($aAlvaraAuto as $iIndice => $oValor){
-	
+
 		if ($oValor->principal == 'sim' && $oValor->q12_alvaraautomatico == 'f') {
 
 			$lGeraAutomatico = 'false';
-			
-		}	
+
+		}
 		if($oValor->principal == 'sim' && $oValor->permanente == "sim"){
-			
+
 			$lPermanente = 'true';
 		}
 	}
@@ -712,7 +769,7 @@ if($clIssAlvara->numrows > 0){
        }
        js_src();
    </script>
-       "; 
+       ";
 	$lInserirAlvara = "false";
 }
 
@@ -724,13 +781,11 @@ $oTipoAlvara    = db_utils::fieldsMemory($rsTipoAlvara,0);
 
 
 if (@$lAlvaraPerm == 't') {
-	
+
 	$iTipoalvara = $oTipoAlvara->q60_isstipoalvaraper;
 } else {
 	$iTipoalvara = $oTipoAlvara->q60_isstipoalvaraprov;
 }
-
-
 
 /*
  * INICIAMOS AS INCLUSOES NECESSARIAS CONFORME DEFINIÇOES ANTERIORES.
@@ -738,30 +793,30 @@ if (@$lAlvaraPerm == 't') {
  * se for false inserimos somente na iss alvara
  * situação:
  *   1 - Ativo
- *    
+ *
  * tipo de Movimentação :
- *   1 - LIBERACAO  
+ *   1 - LIBERACAO
  */
 $sDtInclusao     = implode("-", array_reverse(explode("/",@$q07_datain)));
 $sValidadeAlvara = '0';
 $iValidadeAlvara = "";
 
 if (@$q07_datafi != null || @$q07_datafi != '') {
-	
+
 	$sValidadeAlvara = implode("-", array_reverse(explode("/",$q07_datafi)));
 	$iValidadeAlvara = quantDias($q07_datain, $q07_datafi);
-	
+
 }
 
 if ($lGeraAutomatico == 'false') {
-  
-  
+
+
   $sCampo   = "q120_issalvara, q123_inscr ";
   $sSql     = $clIssMovAlvara->sql_AlvaraLiberado(null, $q07_inscr, $sCampo, null);
   $rsMovAlv = $clIssMovAlvara->sql_record($sSql);
 
   if ($clIssMovAlvara->numrows > 0) {
-    
+
     echo "
           <script>
              function js_src(){
@@ -770,9 +825,9 @@ if ($lGeraAutomatico == 'false') {
              }
              js_src();
          </script>
-       ";   
+       ";
   } else {
-    
+
     echo "
           <script>
              function js_src(){
@@ -781,18 +836,18 @@ if ($lGeraAutomatico == 'false') {
              }
              js_src();
          </script>
-       ";   
+       ";
   }
-  
-    
+
+
 }
 
 if ($lInserirAlvara == 'true' && $lAtivPrinc == 't' && isset($incluir)){
-	
+
 	try{
-		
+
     db_inicio_transacao();
-		
+
 		$clIssAlvara->q123_isstipoalvara = $iTipoalvara;  // valor a partir da parissqn
 		$clIssAlvara->q123_inscr         = $q07_inscr;
 		$clIssAlvara->q123_dtinclusao    = $sDtInclusao;
@@ -807,13 +862,28 @@ if ($lInserirAlvara == 'true' && $lAtivPrinc == 't' && isset($incluir)){
 		if($clIssAlvara->erro_status == '0'){
 			throw new Exception($clIssAlvara->erro_msg);
 		}
-		
+
 		// se a for tru a geração automatica, criamos um movimento para o alvara
 		if ($lGeraAutomatico == 'true') {
-			
+      
+      if($lAlvaraPerm == 't') {
+        
+        $clisstipoalvara   = new cl_isstipoalvara();
+        $sSqlIssTipoAlvara = $clisstipoalvara->sql_query_file($iTipoalvara,
+                                                            "q98_quantvalidade" 
+                                                           );
+
+        $rsIssTipoAlvara = $clisstipoalvara->sql_record($sSqlIssTipoAlvara);
+        if($clisstipoalvara->numrows > 0) {
+          
+          $oIssTipoAlvara  = db_utils::fieldsMemory($rsIssTipoAlvara, 0);
+          $iValidadeAlvara = $oIssTipoAlvara->q98_quantvalidade;
+        }        
+      }
+
 			$clIssMovAlvara->q120_codproc          = "";
 			$clIssMovAlvara->q120_issalvara        = $clIssAlvara->q123_sequencial;
-			$clIssMovAlvara->q120_isstipomovalvara = 1 ;// liberação
+			$clIssMovAlvara->q120_isstipomovalvara = 1; // liberação
 			$clIssMovAlvara->q120_dtmov            = $sDtInclusao;
 			$clIssMovAlvara->q120_validadealvara   = $iValidadeAlvara;
 			$clIssMovAlvara->q120_usuario          = db_getsession("DB_id_usuario");
@@ -821,60 +891,49 @@ if ($lInserirAlvara == 'true' && $lAtivPrinc == 't' && isset($incluir)){
 			$clIssMovAlvara->incluir(null);
 			if($clIssMovAlvara->erro_status == '0'){
 				throw new Exception($clIssMovAlvara->erro_msg);
-			}		
+			}
 		}
-		
+
 		db_fim_transacao(false);
 	} catch (Exception $eException){
-		
+
 		db_msgbox($eException->getMessage());
 		db_fim_transacao(true);
 	}
-	
+
 }
 
 
 
 ?>
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<center>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmtabativalt.php");
-	?>
-    </center>
-	</td>
-  </tr>
-</table>
-</center>
-</body>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+  </head>
+  <body class="body-default">
+    <div class="container">
+    	<?php include modification("forms/db_frmtabativalt.php"); ?>
+    </div>
+  </body>
 </html>
 <?
 if(isset($incluir) || isset($alterar) || isset($excluir)){
-	
+
   if($sqlerro==true){
-  	
-		db_msgbox("Ocorreu um erro durante a inclusao! Contate suporte!");
+
 		db_msgbox($erromsg);
   }else{
-  	
+
      if(isset($errox)){
        db_msgbox($errox);
-     }else{  
+     }else{
        $cltabativ->erro(true,false);
      }
-     echo "<script>top.corpo.iframe_calculo.location.href=\"iss1_isscalc004.php?automatico=$lGeraAutomatico&q07_inscr=$q07_inscr&z01_nome=$z01_nome\";</script>";
+     echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_calculo.location.href=\"iss1_isscalc004.php?automatico=$lGeraAutomatico&q07_inscr=$q07_inscr&z01_nome=$z01_nome\";</script>";
   }
-}  
+}
 ?>

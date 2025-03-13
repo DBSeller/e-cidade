@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
+$gform = new cl_formulario_rel_pes;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
 $clrotulo->label('DBtxt27');
@@ -66,8 +68,9 @@ function js_emite(){
 	'&perc='+document.form1.perc.value+
 	'&tipo_margem='+document.form1.tipo_margem.value+
 	'&ordem='+document.form1.ordem.value+
-	'&ano='+document.form1.DBtxt23.value+
-	'&mes='+document.form1.DBtxt25.value;
+	'&ano='+document.form1.anofolha.value+
+	'&mes='+document.form1.mesfolha.value+
+	'&select='+document.form1.selecao.value;
   jan = window.open('pes2_margemconsignavel002.php?'+qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 }
@@ -88,30 +91,24 @@ function js_emite(){
 
 <fieldset style="width: 30%"><legend><b>Margem Consignável</b></legend>
   <table  align="center">
-      <tr>
-      </tr>
       <tr >
-        <td align="left" nowrap title="Digite o Ano / Mes de competência" >
-        <strong>Ano / Mês :&nbsp;&nbsp;</strong>
-        </td>
-        <td>
-          <?
+        <td nowrap colspan="2" >
+        <?
             $DBtxt23 = db_anofolha();
-            db_input('DBtxt23',4,$IDBtxt23,true,'text',2,'')
-          ?>
-          &nbsp;/&nbsp;
-          <?
             $DBtxt25 = db_mesfolha();
-            db_input('DBtxt25',2,$IDBtxt25,true,'text',2,'')
-          ?>
-        </td>
+        $gform->selecao = true;
+        $gform->gera_form($DBtxt23,$DBtxt25);
+        ?>
+        <td>
       </tr>
+
+
           <tr>
-            <td nowrap align="left" title="" width="30%"><b>
+            <td nowrap align="right" title="" width="30%"><b>
               <?
                db_ancora('Remuneração',"js_pesquisabase01(true)",@$db_opcao);
               ?>
-	      </b>&nbsp;&nbsp;
+	      </b>
             </td>
             <td nowrap> 
               <?
@@ -121,11 +118,11 @@ function js_emite(){
             </td>
           </tr>
           <tr>
-            <td nowrap align="left" title="" width="30%"><b>
+            <td nowrap align="right" title="" width="30%"><b>
               <?
                db_ancora('Desc. Obrigatórios',"js_pesquisabase02(true)",@$db_opcao);
               ?>
-	      </b>&nbsp;&nbsp;
+	      </b>
             </td>
             <td nowrap> 
               <?
@@ -135,7 +132,7 @@ function js_emite(){
             </td>
           </tr>
           <tr>
-            <td nowrap align="left" title="" width="30%"><b>
+            <td nowrap align="right" title="" width="30%"><b>
               <?
                db_ancora('Comprometido',"js_pesquisabase03(true)",@$db_opcao);
               ?>
@@ -149,8 +146,8 @@ function js_emite(){
             </td>
           </tr>
       <tr>
-        <td align="left" nowrap title="Percentual da margem consignável" >
-        <strong>Perc. Consignável :&nbsp;&nbsp;</strong>
+        <td align="right" nowrap title="Percentual da margem consignável" >
+        <strong>Perc. Consignável :</strong>
         </td>
         <td>
           <?
@@ -160,7 +157,7 @@ function js_emite(){
 	</td>
       </tr>
       <tr>
-	      <td align="left" nowrap><strong>Apresentar Servidores :</strong>&nbsp;&nbsp;
+	      <td align="right" nowrap><strong>Apresentar Servidores :</strong>
         </td>
         <td>
          <?
@@ -170,7 +167,7 @@ function js_emite(){
 	      </td>
       </tr>
       <tr>
-        <td align="left" nowrap><strong>Ordem :</strong>&nbsp;&nbsp;</td>
+        <td align="right" nowrap><strong>Ordem :</strong></td>
         <td>
          <?
            $xy = array("a"=>"Nome","n"=>"Matricula");
@@ -199,10 +196,10 @@ function js_emite(){
 
 function js_pesquisabase01(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bases','func_bases.php?funcao_js=parent.js_mostrabase011|r08_codigo|r08_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bases','func_bases.php?funcao_js=parent.js_mostrabase011|r08_codigo|r08_descr','Pesquisa',true);
   }else{
     if(document.form1.base01.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_base01','func_bases.php?pesquisa_chave='+document.form1.base01.value+'&funcao_js=parent.js_mostrabase01','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_base01','func_bases.php?pesquisa_chave='+document.form1.base01.value+'&funcao_js=parent.js_mostrabase01','Pesquisa',false);
     }else{
       document.form1.descr_base01.value = ''; 
     }
@@ -225,10 +222,10 @@ function js_mostrabase011(chave1,chave2){
 
 function js_pesquisabase02(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bases','func_bases.php?funcao_js=parent.js_mostrabase021|r08_codigo|r08_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bases','func_bases.php?funcao_js=parent.js_mostrabase021|r08_codigo|r08_descr','Pesquisa',true);
   }else{
     if(document.form1.base02.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_base02','func_bases.php?pesquisa_chave='+document.form1.base02.value+'&funcao_js=parent.js_mostrabase02','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_base02','func_bases.php?pesquisa_chave='+document.form1.base02.value+'&funcao_js=parent.js_mostrabase02','Pesquisa',false);
     }else{
       document.form1.descr_base02.value = ''; 
     }
@@ -250,10 +247,10 @@ function js_mostrabase021(chave1,chave2){
 
 function js_pesquisabase03(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bases','func_bases.php?funcao_js=parent.js_mostrabase031|r08_codigo|r08_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bases','func_bases.php?funcao_js=parent.js_mostrabase031|r08_codigo|r08_descr','Pesquisa',true);
   }else{
     if(document.form1.base03.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_base03','func_bases.php?pesquisa_chave='+document.form1.base03.value+'&funcao_js=parent.js_mostrabase03','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_base03','func_bases.php?pesquisa_chave='+document.form1.base03.value+'&funcao_js=parent.js_mostrabase03','Pesquisa',false);
     }else{
       document.form1.descr_base03.value = ''; 
     }

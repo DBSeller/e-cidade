@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_clientesmodulos_classe.php");
-include("classes/db_db_versao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_clientesmodulos_classe.php"));
+include(modification("classes/db_db_versao_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -111,7 +111,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$espacos,$nivel=1,$pr
             and m.modulo = $id_modulo and
 						itemativo = '1'
           order by menusequencia";
-  $res = pg_exec($sql) or die($sql);
+  $res = db_query($sql) or die($sql);
 
   if(pg_numrows($res)>0){
 
@@ -125,7 +125,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$espacos,$nivel=1,$pr
 			$descrproced	= trim(pg_result($res,$i,5));
 
       $sqlbuscamenus = "select upper(rsmenu) as rsmenu from fc_buscamenus('$item', 1) order by riseq desc";
-      $resultbuscamenus = pg_query($sqlbuscamenus) or die($sqlbuscamenus);
+      $resultbuscamenus = db_query($sqlbuscamenus) or die($sqlbuscamenus);
       global $rsmenu;
       $menu_completo="";
       if (pg_numrows($resultbuscamenus) > 0) {
@@ -158,7 +158,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$espacos,$nivel=1,$pr
         }
         $sql .= "
                 where id_item = $item_filho";
-        $resproced = pg_exec($sql);
+        $resproced = db_query($sql);
 
         if(pg_numrows($resproced)>0){
           global $codproced,$descrproced,$codmod,$nomemod,$at75_data,$at76_usuario;
@@ -187,7 +187,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$espacos,$nivel=1,$pr
                         where at74_codcli = $cliente ) as x on p.codproced = at75_codproced
  
                 where codproced = $procedimento";
-            $resproced = pg_exec($sql);
+            $resproced = db_query($sql);
             global $descrproced,$codmod,$at75_data,$at76_usuario;
             db_fieldsmemory($resproced,0);
  
@@ -204,7 +204,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$espacos,$nivel=1,$pr
                 from db_syscadproceditem i
                      inner join db_syscadproced p on p.codproced = i.codproced 
                 where id_item = $item_filho";
-        $resproced = pg_exec($sql);
+        $resproced = db_query($sql);
 
         if(pg_numrows($resproced)>0){
           global $codproced;
@@ -283,4 +283,10 @@ function js_busca_procedimento(coditem,descrmenu,codproced,codmod,menu_completo)
 
 }
 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

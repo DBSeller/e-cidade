@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
  
 define("URL_MENSAGEM_TFD4_TDF_FECHAMENTO", "saude.tfd.tfd4_tfd_fechamento.");
 $dataSistema = date("d/m/Y", db_getsession("DB_datausu"));
@@ -261,7 +261,7 @@ function js_buscaDadosFinanciamentos() {
 function js_retornoBuscaDadosFinanciamentos(oAjax) {
 
   js_removeObj('db_msgBox');
-  var oRetorno = eval("(" + oAjax.responseText + ")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.aDados.length == 0) {
 
@@ -295,7 +295,7 @@ function js_buscaCompetenciasEncerradas() {
 function js_retornoBuscaUltimaCompetenciaEncerrada(oAjax) {
 
   js_removeObj('db_msgBoxB');
-  var oRetorno = eval("(" + oAjax.responseText + ")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   oGridFechamento.clearAll(true);
   oRetorno.aDados.each(function (oDados) {
@@ -403,7 +403,7 @@ function js_excluirFechamento(oDadosFechamento) {
 function js_retornoExcluiFechamento(oAjax) {
 
   js_removeObj('db_msgBoxC');
-  var oRetorno = eval ('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 1) {
     
@@ -463,7 +463,7 @@ function js_salvar() {
 function js_retornoSalvar(oAjax) {
 
   js_removeObj('db_msgBoxD');
-  var oRetorno = eval( "(" + oAjax.responseText + ")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 1) {
 

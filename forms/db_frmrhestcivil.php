@@ -58,7 +58,7 @@ db_input('rh08_descr',20,$Irh08_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhestcivil','func_rhestcivil.php?funcao_js=parent.js_preenchepesquisa|rh08_estciv','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhestcivil','func_rhestcivil.php?funcao_js=parent.js_preenchepesquisa|rh08_estciv','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhestcivil.hide();

@@ -6,17 +6,15 @@ if(!defined('DB_BIBLIOT')){
   if ( !isset($_SESSION) ) {
     session_start();
   }
+  require_once modification("libs/db_stdlib.php");
+  require_once modification("libs/db_conecta.php");
+  include_once modification("libs/db_sessoes.php");
 
-  require_once "libs/db_stdlib.php";
-  require_once "libs/db_conecta.php";
-  include_once "libs/db_sessoes.php";
-  include_once "libs/db_usuariosonline.php";
+  db_postmemory($_POST);
+  db_postmemory($_SERVER);
 
-  db_postmemory($HTTP_POST_VARS);
-  db_postmemory($HTTP_SERVER_VARS);
-
-  define('FPDF_FONTPATH','font/');
-  require_once "fpdf.php";
+  define('FPDF_FONTPATH','fpdf151/font/');
+  require_once modification("fpdf151/fpdf.php");
   
 }
 
@@ -44,6 +42,8 @@ if(!defined('DB_BIBLIOT')){
 class PDFNovo extends FPDF {
 
   private $aTableHeaders = array();
+
+  private $oTableTitleHeaders = null;
 
   private $aHeaders = array();
 
@@ -130,7 +130,7 @@ class PDFNovo extends FPDF {
                             from db_config where codigo = ".db_getsession("DB_instit"));
     $url = @pg_result($dados,0,"url");
     $this->SetXY(1,1);
-    $this->Image('imagens/files/'.pg_result($dados,0,"logo"),7,3,20);
+    $this->Image('imagens/files/'.pg_result($dados,0,'logo'),7,3,20);
 
   //$this->Cell(100,32,"",1);
     $nome = pg_result($dados,0,"nomeinst");
@@ -186,8 +186,26 @@ class PDFNovo extends FPDF {
     $this->renderTableHeaders();
   }
 
+  public function removeTableHeaders() { 
+    $this->aTableHeaders = array();
+  }
+
+  public function addTableTitle($sTitulo = '', $iTamanho = 0, $iAltura = 0, $sAlinhamento = 'C', $lPreenche = false) {
+
+    $oTableTitleHeader = new StdClass();
+    $oTableTitleHeader->sTitulo      = $sTitulo;
+    $oTableTitleHeader->iTamanho     = $iTamanho;
+    $oTableTitleHeader->iAltura      = $iAltura;
+    $oTableTitleHeader->sAlinhamento = $sAlinhamento;
+    $oTableTitleHeader->lPreenche    = $lPreenche;
+
+    $this->oTableTitleHeaders = $oTableTitleHeader;
+  }
+
   public function renderTableHeaders() {
+
     $this->setFont('Arial', 'b');
+
     if (!empty($this->oQuebra)) {
 
       $iLarguraCelula = 0;
@@ -211,6 +229,18 @@ class PDFNovo extends FPDF {
      * Adiciona os headers da tabela ao final do header do cabeçalho
      */
     if (!empty($this->aTableHeaders)) {
+
+      if(!empty($this->oTableTitleHeaders)) {
+
+        $this->cell( $this->oTableTitleHeaders->iTamanho, 
+                     $this->oTableTitleHeaders->iAltura, 
+                     $this->oTableTitleHeaders->sTitulo, 
+                     false, 
+                     1,
+                     $this->oTableTitleHeaders->sAlinhamento,
+                     $this->oTableTitleHeaders->lPreenche );
+      }
+
       $this->setFont('', 'b');
 
       foreach ($this->aTableHeaders as $iIndice => $aColuna) {

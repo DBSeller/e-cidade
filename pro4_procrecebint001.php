@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sql.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_proctransferint_classe.php");
-include("classes/db_proctransferintand_classe.php");
-include("classes/db_proctransferintusu_classe.php");
-include("classes/db_protprocesso_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_proctransferint_classe.php"));
+include(modification("classes/db_proctransferintand_classe.php"));
+include(modification("classes/db_proctransferintusu_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
 
 $clproctransferint = new cl_proctransferint;
 $clproctransferintand = new cl_proctransferintand;
@@ -214,7 +214,7 @@ if (isset($incluir)){
       echo "<script> document.form1.".$clproctransferint->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clproctransferint->erro_campo.".focus();</script>";
     }else{ 
-      echo"<script>top.corpo.location.href='pro4_tranferinter001.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='pro4_tranferinter001.php';</script>";
     }
 }
 

@@ -1,36 +1,36 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include ("fpdf151/pdf.php");
-include ("libs/db_liborcamento.php");
-include ("classes/db_empresto_classe.php");
-include ("classes/db_cgm_classe.php");
-include ("classes/db_orcelemento_classe.php");
-include ("classes/db_orcprojativ_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_orcprojativ_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -40,13 +40,28 @@ $clrotulo      = new rotulocampo;
 $clorcelemento = new cl_orcelemento;
 $clorcprojativ = new cl_orcprojativ;
 
-//função para retornar desdobramento
-function retorna_desdob($elemento,$e64_codele,$clorcelemento){
-  
- return  pg_query($clorcelemento->sql_query_file(null,null,"o56_elemento as estrutural,o56_descr as descr",null,"o56_codele = $e64_codele and o56_elemento like '$elemento%'")); 
+function retorna_desdob($elemento, $desdobramentos, $clorcelemento)
+{
+    $where = array(
+        "o56_elemento LIKE '{$elemento}%'"
+    );
 
-  }
+    $listaDesdobramentos = explode(',', $desdobramentos);
 
+    if ($listaDesdobramentos[0]) {
+        $where[] = "e64_codele IN ({$desdobramentos})";
+    }
+
+    $sql = $clorcelemento->sql_query_file(
+        null,
+        null,
+        'o56_elemento AS estrutural, o56_descr AS descr',
+        null,
+        implode(' AND ', $where)
+    );
+
+    return db_query($sql);
+}
 
 $troca = 1;
 
@@ -96,7 +111,7 @@ if ($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
 
 
 $xinstit = split("-", $db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for ($xins = 0; $xins < pg_numrows($resultinst); $xins ++) {
@@ -114,41 +129,41 @@ if ($tipo=="or"){
 
 if ($tipo=="un"){
     $tipofiltro="Unidade";
-} 
+}
 
 if ($tipo=="fu"){
     $tipofiltro="Função";
-} 
+}
 
 if ($tipo=="su"){
     $tipofiltro="Subfunção";
-} 
+}
 if ($tipo=="pr"){
     $tipofiltro="Programa";
-} 
+}
 
 if ($tipo=="pa"){
     $tipofiltro="Projeto Atividade";
-} 
+}
 
 if ($tipo=="el"){
     $tipofiltro="Elemento";
-} 
+}
 
 if ($tipo=="de"){
     $tipofiltro="Desdobramento";
-} 
+}
 if ($tipo=="re"){
     $tipofiltro="Recurso";
-} 
+}
 
 if ($tipo=="tr"){
     $tipofiltro="Tipo de Resto";
-} 
+}
 
 if ($tipo=="cr"){
     $tipofiltro="Credor";
-} 
+}
 
 if ($commov=="0"){
   $commovfiltro= "Todos";
@@ -188,7 +203,7 @@ $pdf->SetTextColor(0, 0, 0);
 $pdf->SetFillColor(235);
 $tam="10";
 $tam2="5";
-            
+
 //filtro por posição
 $dtini = db_getsession("DB_anousu").'-01-01';
 $dtfim = $dtfim_ano."-".$dtfim_mes."-".$dtfim_dia;
@@ -225,9 +240,16 @@ if ($tipo=="el"){//elemento - tabela orcdotacao
 $sql_order = " order by o58_codele,e60_anousu,e60_codemp::integer";
 }
 
+$sql_where_externo = ' ';
 
-if ($tipo=="de"){//desdobramento-tabela empelemento
-$sql_order = " order by e64_codele,e60_anousu,e60_codemp::integer";
+if ($tipo == 'de') {
+    $listaDesdobramentos = explode(',', $desdobramentos);
+
+    if ($listaDesdobramentos[0]) {
+        $sql_where_externo = "AND e64_codele IN ({$desdobramentos})";
+    }
+
+    $sql_order = ' order by e64_codele,e60_anousu,e60_codemp::integer';
 }
 
 if ($tipo=="re"){//recurso - tabela orcdotacao
@@ -235,7 +257,7 @@ $sql_order = " order by o58_codigo,e60_anousu,e60_codemp::integer";
 }
 
 
-if ($tipo=="tr"){//resto - tabela empresto 
+if ($tipo=="tr"){//resto - tabela empresto
 $sql_order = "order by e91_codtipo,e60_anousu,e60_codemp::integer";
 }
 
@@ -244,9 +266,6 @@ if ($tipo=="cr"){//credor - tabela cgm
 $sql_order = " order by z01_nome,e60_anousu,e60_codemp::integer ";
 }
 
-
-//filtro por restos a pagar
- $sql_where_externo = " ";
 if ($commov=="0"){//geral
  $sql_where_externo .= "  ";
 }
@@ -370,7 +389,7 @@ $troca=0;
 //subtotal
 if ($vorgaosub!=$o58_orgao and $tipo=="or"){
        if ($vorgaosub!=0){
-                   
+
                    $pdf->Cell(100, $tam, "Subtotal", "TBR", 0, "C", 1);
                    $pdf->Cell(20, $tam, db_formatar(abs($subtotal_rp_n_proc),'f'), 1, 0, "R", 1);
                    $pdf->Cell(20, $tam, db_formatar(abs($subtotal_rp_proc),'f'), 1, 0, "R", 1);
@@ -717,12 +736,12 @@ if ($tipo=="un" and  $vunidade!=$o58_unidade){//unidade
         $troca=1;
         cabecalho($pdf,$troca);
         }
-    
+
     $pdf->SetFont('Arial', 'B',8);
     $pdf->cell(0, 2,"", 0, 1, "", 0);
     $pdf->cell(0, 5,"Órgão:$o58_orgao $o40_descr  ", 0, 1, "L", 0);
     $pdf->cell(0, 5,"Unidade:$o58_unidade $o41_descr  ", 0, 1, "L", 0);
-    $vunidade=$o58_unidade; 
+    $vunidade=$o58_unidade;
     $verifica=false;
 }
 
@@ -769,8 +788,8 @@ if ($tipo=="pa" and $vprojativ!=$o58_projativ ){//projetto atividade
       cabecalho($pdf,$troca);
       }
     if ($vprojativ!=$o58_projativ or $o55anousu!=$e60_anousu){
-    
-      
+
+
              $pdf->SetFont('Arial', 'B',8);
              $pdf->cell(0, 2,"", 0, 1, "", 0);
              $pdf->cell(0, 5,"Projeto/atividade:$o58_projativ $o55_descr", 0, 1, "L", 0);
@@ -778,7 +797,7 @@ if ($tipo=="pa" and $vprojativ!=$o58_projativ ){//projetto atividade
              $vprojativ=$o58_projativ;
              $o55anousu=$e60_anousu;
      }
-          
+
    $verifica=false;
 }
 if ($tipo=="el"  and $velemento!=$o56_elemento){//elemento
@@ -786,9 +805,10 @@ if ($tipo=="el"  and $velemento!=$o56_elemento){//elemento
       $troca=1;
       cabecalho($pdf,$troca);
       }
+   $elemento = substr($o56_elemento, 0, 7);
   $pdf->SetFont('Arial', 'B',8);
   $pdf->cell(0, 2,"", 0, 1, "", 0);
-  $pdf->cell(0, 5,"Elemento:$o56_elemento  $o56_descr  ", 0, 1, "L", 0);
+  $pdf->cell(0, 5,"Elemento: {$elemento} {$o56_descr}  ", 0, 1, "L", 0);
   $velemento=$o56_elemento;
   $verifica=false;
 }
@@ -796,7 +816,7 @@ if ($tipo=="el"  and $velemento!=$o56_elemento){//elemento
 if ($tipo=="de" ){//desdobramento
 
 
-$resdesdob = retorna_desdob(substr($o56_elemento,0,7),$e64_codele,$clorcelemento);
+    $resdesdob = retorna_desdob(substr($o56_elemento, 0, 7), $desdobramentos, $clorcelemento);
 $numrows   = pg_numrows($resdesdob);
 
 for ($i = 0; $i < $numrows; $i ++) {
@@ -854,7 +874,7 @@ if ($tipo=="cr" and $vnumcgm!=$z01_numcgm){//credor
    $pdf->cell(0, 5,"Credor:".$z01_numcgm." ".substr($z01_nome,0,100), 0, 1, "L", 0);
    $vnumcgm=$z01_numcgm;
    $verifica=false;
-                     
+
                      }
 
 
@@ -872,15 +892,15 @@ $tam="5";
     $total_rp_n_proc += ($e91_vlremp - $e91_vlranu - $e91_vlrliq);
 
     $pdf->Cell(20, $tam, db_formatar(abs($e91_vlrliq - $e91_vlrpag), 'f'), 1, 0, "R", 0);//rp proc
-    $total_rp_proc += ($e91_vlrliq - $e91_vlrpag); 
+    $total_rp_proc += ($e91_vlrliq - $e91_vlrpag);
 
-//movimentação dos restos a pagar no período    
+//movimentação dos restos a pagar no período
     $pdf->Cell(20, $tam, db_formatar(abs($vlranuliqnaoproc), 'f'), 1, 0, "R", 0);//anulacao -> rp nao proc
     $total_anula_rp_n_proc += $vlranuliqnaoproc;
 
     $pdf->Cell(20, $tam, db_formatar(abs($vlranuliq), 'f'), 1, 0, "R", 0);//anulacao -> rp proc
     $total_anula_rp_proc += $vlranuliq;
- 
+
  if ($c70_anousu == $anoatual ){
     $pdf->Cell(20, $tam, db_formatar(abs($vlrliq), 'f'), 1, 0, "R", 0);//liquidado=rpproc
     $total_mov_liquida += ($vlrliq);
@@ -893,7 +913,7 @@ $tam="5";
     $total_mov_pagmento += $vlrpag;
 
 
-//saldos a pagar finais  
+//saldos a pagar finais
 
     $liquidado_anterior = ($e91_vlremp - $e91_vlranu - $e91_vlrliq) + ($e91_vlrliq - $e91_vlrpag);
     $apagargeral=( $liquidado_anterior - $vlranu - $vlrpag);
@@ -910,9 +930,9 @@ $tam="5";
     $total_aliquidar_finais = $total_aliquidar_finais + $aliquidargeral;
 
     // liquidados
-    $pdf->Cell(20, $tam, db_formatar(abs($liquidados), 'f'), 1, 0, "R", 0); 
+    $pdf->Cell(20, $tam, db_formatar(abs($liquidados), 'f'), 1, 0, "R", 0);
     $total_liquidados_finais = $total_liquidados_finais + $liquidados;
- 
+
     // a pagar
      $pdf->Cell(20, $tam, db_formatar(abs($apagargeral),'f'), "TBL", 1, "R", 0);
     $total_geral_finais = ($total_geral_finais + $apagargeral);
@@ -920,7 +940,7 @@ $tam="5";
 
 //subtotal
 $subtotal_rp_n_proc         += $e91_vlremp - $e91_vlranu - $e91_vlrliq;
-$subtotal_rp_proc           += $e91_vlrliq - $e91_vlrpag; 
+$subtotal_rp_proc           += $e91_vlrliq - $e91_vlrpag;
 $subtotal_anula_rp_n_proc   += $vlranuliqnaoproc;
 $subtotal_anula_rp_proc     += $vlranuliq;
 $subtotal_mov_liquida       += $vlrliq;
@@ -933,16 +953,16 @@ $subtotal_geral_finais      += $apagargeral;
 }
 
 
-if(  $subtotal_rp_n_proc        !=0 || 
-     $subtotal_rp_proc          !=0 || 
-     $subtotal_anula_rp_n_proc  !=0 || 
+if(  $subtotal_rp_n_proc        !=0 ||
+     $subtotal_rp_proc          !=0 ||
+     $subtotal_anula_rp_n_proc  !=0 ||
      $subtotal_anula_rp_proc    !=0 ||
      $subtotal_mov_liquida      !=0 ||
      $subtotal_mov_pagmento     !=0 ||
      $subtotal_aliquidar_finais !=0 ||
      $subtotal_liquidados_finais!=0 ||
      $subtotal_geral_finais     !=0 ){
-     
+
      $pdf->Cell(100, $tam, "Subtotal", "TBR", 0, "C", 1);
      $pdf->Cell(20, $tam, db_formatar(abs($subtotal_rp_n_proc),'f'), 1, 0, "R", 1);
      $pdf->Cell(20, $tam, db_formatar(abs($subtotal_rp_proc),'f'), 1, 0, "R", 1);
@@ -968,8 +988,4 @@ $pdf->Cell(20, $tam, db_formatar(abs($total_mov_pagmento),'f'), 1, 0, "R", 1);
 $pdf->Cell(20, $tam, db_formatar(abs($total_aliquidar_finais),'f'), 1, 0, "R",1);
 $pdf->Cell(20, $tam, db_formatar(abs($total_liquidados_finais),'f'), 1, 0, "R", 1);
 $pdf->Cell(20, $tam, db_formatar(abs($total_geral_finais),'f'), "TBL", 1, "R", 1);
-
 $pdf->output();
-
-
-?>

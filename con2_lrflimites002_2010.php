@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,22 +26,22 @@
  */
 
 set_time_limit(0);
-require_once("libs/db_utils.php");
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_orcparamrel_classe.php");
-require_once("classes/db_empresto_classe.php");
-include_once("classes/db_db_config_classe.php");
-include_once("classes/db_orcparamelemento_classe.php");
-include_once("classes/db_conrelinfo_classe.php");
-include_once("classes/db_conrelvalor_classe.php");
-require_once("libs/db_app.utils.php");
-require_once("model/linhaRelatorioContabil.model.php");
-require_once("model/relatorioContabil.model.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_orcparamrel_classe.php"));
+require_once(modification("classes/db_empresto_classe.php"));
+include_once(modification("classes/db_db_config_classe.php"));
+include_once(modification("classes/db_orcparamelemento_classe.php"));
+include_once(modification("classes/db_conrelinfo_classe.php"));
+include_once(modification("classes/db_conrelvalor_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("model/linhaRelatorioContabil.model.php"));
+require_once(modification("model/relatorioContabil.model.php"));
 
 /*
  * Classes para calculo do restos a pagar
@@ -216,7 +216,7 @@ if ($divida == 'true') {
   $periodo  = $iCodigoPeriodo;
   $executar = "con2_lrfdivida002";
   $executar = validaarquivo($executar,$anousu);
-  include($executar);
+  include(modification($executar));
 }
 
 if ($garantias == 'true') {
@@ -225,7 +225,7 @@ if ($garantias == 'true') {
   $periodo  = $iCodigoPeriodo;
   $executar = "con2_lrfgarantias002";
   $executar = validaarquivo($executar,$anousu);
-  include($executar);
+  include(modification($executar));
 }
 
 if ($operacoes == 'true') {
@@ -233,7 +233,7 @@ if ($operacoes == 'true') {
   $periodo  = $iCodigoPeriodo;
   $executar = "con2_opercredito002";
   $executar = validaarquivo($executar,$anousu);
-  include($executar);
+  include(modification($executar));
 
   $total_operacoes_credito 				= $aLinhasRelatorio[28]->nobimestre;
   $perc_total_operacoes_credito		=	$aLinhasRelatorio[28]->atebimestre;
@@ -260,7 +260,7 @@ if ($restosapagar == 'true') {
   
   $lGeraPDF = false;
   
-  //include($executar);
+  //include(modification($executar));
   
   $nTotalInscricaoRpNaoProcessados            = $oDados->restoapagarexericioanterior + $oDados->restoapagarexericio;
   $nSuficienciaAntesInscricaoRpNaoProcessados = $oDados->disponibilidadedecaixa;

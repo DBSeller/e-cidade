@@ -27,15 +27,15 @@
 
 
 //21.833.694.
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_cgm_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clcgm = new cl_cgm;
 $clcgm->rotulo->label();
@@ -154,10 +154,10 @@ function js_pesquisa(){
 
 function js_pesquisaregistro(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframepessoal','func_rhpessoal.php?funcao_js=parent.js_mostraregistro1|rh01_regist|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframepessoal','func_rhpessoal.php?funcao_js=parent.js_mostraregistro1|rh01_regist|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.r01_regist.value != ''){
-       js_OpenJanelaIframe('top.corpo','db_iframepessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.r01_regist.value+'&funcao_js=parent.js_mostraregistro','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframepessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.r01_regist.value+'&funcao_js=parent.js_mostraregistro','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }

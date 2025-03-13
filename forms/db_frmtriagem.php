@@ -105,7 +105,7 @@ $clrotulo->label("z01_v_nome");
                              <option Value="0">Selecione:::</option>
                              <?
                              $sql="select * from sau_procsemfatura";
-                             $result=pg_query($sql);
+                             $result=db_query($sql);
                              $linhas=pg_num_rows($result);
                              for($x=0;$x<$linhas;$x++){
                                 db_fieldsmemory($result,$x);

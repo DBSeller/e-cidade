@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,9 +31,9 @@
  * @author   Alberto Ferri Neto alberto@dbseller.com.br
  * @package  Pessoal
  * @revision $Author: dbjeferson.belmiro $
- * @version  $Revision: 1.5 $
+ * @version  $Revision: 1.8 $
  */
-require_once("interfaces/ICalculoMediaRubrica.interface.php");
+require_once(modification("interfaces/ICalculoMediaRubrica.interface.php"));
 class CalculoMediaRubricaExistindoIntegral implements ICalculoMediaRubrica{
 
   /**

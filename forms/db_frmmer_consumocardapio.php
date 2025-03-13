@@ -259,7 +259,7 @@ function js_pesquisaEscola(iCodTipoCardapio) {
                     );
   parent.document.formaba.a2.disabled    = false;
   parent.document.formaba.a2.style.color = "black";
-  top.corpo.iframe_a2.location.href   = 'mer1_mer_cardapiodia001.php?me37_i_tipocardapio='+document.form1.me37_i_tipocardapio.value+'&me27_c_nome='+document.form1.me27_c_nome.value+'&me38_i_codigo='+document.form1.me38_i_codigo.value;
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'mer1_mer_cardapiodia001.php?me37_i_tipocardapio='+document.form1.me37_i_tipocardapio.value+'&me27_c_nome='+document.form1.me27_c_nome.value+'&me38_i_codigo='+document.form1.me38_i_codigo.value;
 
 }
 
@@ -270,7 +270,7 @@ function js_retornoPesquisaEscola(oAjax) {
   $('listaDptos').innerHTML         = "";
   $('dptosSelecionados').innerHTML  = "";
   
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   $('listaDptos').innerHTML  = js_carregaGridDeptos(aRetorno.aItensDptos);
   
   js_carregaGridDeptosSelecionados(aRetorno.aItensDptosSel); 
@@ -322,7 +322,7 @@ function js_retornoAtualizaEscola(oAjax) {
   js_removeObj('msgBoxAtualizaEscola');
 
   var iCodCardapio = $F('me37_i_tipocardapio'); 
-  var aRetorno     = eval("("+oAjax.responseText+")");
+  var aRetorno     = JSON.parse(oAjax.responseText);
  /* if (aRetorno.erroexclusao !="" && aRetorno.erroexclusao ==0){
 	  sMsg = "Usuário: \nExclusão não efetuada, existe etapas vinculadas nesta escola e neste cardápio \nAdministrador: \n";
 	  alert(sMsg);
@@ -340,7 +340,7 @@ function js_retornoAtualizaEscola(oAjax) {
     js_pesquisaEscola(document.form1.me37_i_tipocardapio.value);
     parent.document.formaba.a2.disabled    = false;
     parent.document.formaba.a2.style.color = "black";
-    top.corpo.iframe_a2.location.href   = 'mer1_mer_cardapiodia001.php?me37_i_tipocardapio='+document.form1.me37_i_tipocardapio.value+'&me27_c_nome='+document.form1.me27_c_nome.value+'&me38_i_codigo='+document.form1.me38_i_codigo.value;
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'mer1_mer_cardapiodia001.php?me37_i_tipocardapio='+document.form1.me37_i_tipocardapio.value+'&me27_c_nome='+document.form1.me27_c_nome.value+'&me38_i_codigo='+document.form1.me38_i_codigo.value;
     parent.mo_camada('a2');
   }  
 }

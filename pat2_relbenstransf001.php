@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_benstransfconf_classe.php");
-include("classes/db_bens_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_benstransfconf_classe.php"));
+include(modification("classes/db_bens_classe.php"));
 $clbens = new cl_bens;
 $clbenstransfconf = new cl_benstransfconf;
 $clrotulo = new rotulocampo;
@@ -99,10 +99,10 @@ function js_reemite() {
 <script>
 function js_pesquisat96_codtran(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_benstransf','func_benstransf001.php?funcao_js=parent.js_mostrabenstransf1|t93_codtran|nome&rel=true','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstransf','func_benstransf001.php?funcao_js=parent.js_mostrabenstransf1|t93_codtran|nome&rel=true','Pesquisa',true);
   }else{
     if(document.form1.t96_codtran.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_benstransf','func_benstransf001.php?pesquisa_chave='+document.form1.t96_codtran.value+'&funcao_js=parent.js_mostrabenstransf&rel=true','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstransf','func_benstransf001.php?pesquisa_chave='+document.form1.t96_codtran.value+'&funcao_js=parent.js_mostrabenstransf&rel=true','Pesquisa',false);
     }else{
       document.form1.nome_transf.value = ''; 
     }

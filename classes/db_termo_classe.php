@@ -1,83 +1,85 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: divida
 //CLASSE DA ENTIDADE termo
-class cl_termo { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $v07_parcel = 0; 
-   var $v07_dtlanc_dia = null; 
-   var $v07_dtlanc_mes = null; 
-   var $v07_dtlanc_ano = null; 
-   var $v07_dtlanc = null; 
-   var $v07_valor = 0; 
-   var $v07_numpre = 0; 
-   var $v07_totpar = 0; 
-   var $v07_vlrpar = 0; 
-   var $v07_dtvenc_dia = null; 
-   var $v07_dtvenc_mes = null; 
-   var $v07_dtvenc_ano = null; 
-   var $v07_dtvenc = null; 
-   var $v07_vlrent = 0; 
-   var $v07_datpri_dia = null; 
-   var $v07_datpri_mes = null; 
-   var $v07_datpri_ano = null; 
-   var $v07_datpri = null; 
-   var $v07_vlrmul = 0; 
-   var $v07_vlrjur = 0; 
-   var $v07_perjur = 0; 
-   var $v07_permul = 0; 
-   var $v07_login = 0; 
-   var $v07_mtermo = 0; 
-   var $v07_numcgm = 0; 
-   var $v07_hist = null; 
-   var $v07_ultpar = 0; 
-   var $v07_desconto = 0; 
-   var $v07_descjur = 0; 
-   var $v07_descmul = 0; 
-   var $v07_situacao = 0; 
-   var $v07_instit = 0; 
-   var $v07_vlrhis = 0; 
-   var $v07_vlrcor = 0; 
-   var $v07_vlrdes = 0; 
-   // cria propriedade com as variaveis do arquivo 
+use ECidade\Tributario\Divida\Factory\TermoOrigemRepositoryFactory;
+
+class cl_termo {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $v07_parcel = 0;
+   var $v07_dtlanc_dia = null;
+   var $v07_dtlanc_mes = null;
+   var $v07_dtlanc_ano = null;
+   var $v07_dtlanc = null;
+   var $v07_valor = 0;
+   var $v07_numpre = 0;
+   var $v07_totpar = 0;
+   var $v07_vlrpar = 0;
+   var $v07_dtvenc_dia = null;
+   var $v07_dtvenc_mes = null;
+   var $v07_dtvenc_ano = null;
+   var $v07_dtvenc = null;
+   var $v07_vlrent = 0;
+   var $v07_datpri_dia = null;
+   var $v07_datpri_mes = null;
+   var $v07_datpri_ano = null;
+   var $v07_datpri = null;
+   var $v07_vlrmul = 0;
+   var $v07_vlrjur = 0;
+   var $v07_perjur = 0;
+   var $v07_permul = 0;
+   var $v07_login = 0;
+   var $v07_mtermo = 0;
+   var $v07_numcgm = 0;
+   var $v07_hist = null;
+   var $v07_ultpar = 0;
+   var $v07_desconto = 0;
+   var $v07_descjur = 0;
+   var $v07_descmul = 0;
+   var $v07_situacao = 0;
+   var $v07_instit = 0;
+   var $v07_vlrhis = 0;
+   var $v07_vlrcor = 0;
+   var $v07_vlrdes = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  v07_parcel = int4 = Parcelamento 
                  v07_dtlanc = date = data de lancamento do parcelamento 
@@ -106,14 +108,14 @@ class cl_termo {
                  v07_vlrcor = float8 = Valor Corrigido 
                  v07_vlrdes = float8 = Valor Desconto 
                  ";
-   //funcao construtor da classe 
-   function cl_termo() { 
+   //funcao construtor da classe
+   function cl_termo() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("termo"); 
+     $this->rotulo = new rotulo("termo");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -176,9 +178,9 @@ class cl_termo {
      }
    }
    // funcao para inclusao
-   function incluir ($v07_parcel){ 
+   function incluir ($v07_parcel){
       $this->atualizacampos();
-     if($this->v07_dtlanc == null ){ 
+     if($this->v07_dtlanc == null ){
        $this->erro_sql = " Campo data de lancamento do parcelamento nao Informado.";
        $this->erro_campo = "v07_dtlanc_dia";
        $this->erro_banco = "";
@@ -187,7 +189,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_valor == null ){ 
+     if($this->v07_valor == null ){
        $this->erro_sql = " Campo valor do parcelamento nao Informado.";
        $this->erro_campo = "v07_valor";
        $this->erro_banco = "";
@@ -196,7 +198,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_numpre == null ){ 
+     if($this->v07_numpre == null ){
        $this->erro_sql = " Campo numpre do parcelamento nao Informado.";
        $this->erro_campo = "v07_numpre";
        $this->erro_banco = "";
@@ -205,7 +207,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_totpar == null ){ 
+     if($this->v07_totpar == null ){
        $this->erro_sql = " Campo total de parcelas nao Informado.";
        $this->erro_campo = "v07_totpar";
        $this->erro_banco = "";
@@ -214,7 +216,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_vlrpar == null ){ 
+     if($this->v07_vlrpar == null ){
        $this->erro_sql = " Campo valor das parcelas nao Informado.";
        $this->erro_campo = "v07_vlrpar";
        $this->erro_banco = "";
@@ -223,7 +225,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_dtvenc == null ){ 
+     if($this->v07_dtvenc == null ){
        $this->erro_sql = " Campo data de vencimento nao Informado.";
        $this->erro_campo = "v07_dtvenc_dia";
        $this->erro_banco = "";
@@ -232,7 +234,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_vlrent == null ){ 
+     if($this->v07_vlrent == null ){
        $this->erro_sql = " Campo valor da entrada nao Informado.";
        $this->erro_campo = "v07_vlrent";
        $this->erro_banco = "";
@@ -241,7 +243,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_datpri == null ){ 
+     if($this->v07_datpri == null ){
        $this->erro_sql = " Campo data da primeira parcela nao Informado.";
        $this->erro_campo = "v07_datpri_dia";
        $this->erro_banco = "";
@@ -250,7 +252,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_vlrmul == null ){ 
+     if($this->v07_vlrmul == null ){
        $this->erro_sql = " Campo valor da multa nao Informado.";
        $this->erro_campo = "v07_vlrmul";
        $this->erro_banco = "";
@@ -259,7 +261,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_vlrjur == null ){ 
+     if($this->v07_vlrjur == null ){
        $this->erro_sql = " Campo valor dos juros nao Informado.";
        $this->erro_campo = "v07_vlrjur";
        $this->erro_banco = "";
@@ -268,7 +270,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_perjur == null ){ 
+     if($this->v07_perjur == null ){
        $this->erro_sql = " Campo percentual dos juros nao Informado.";
        $this->erro_campo = "v07_perjur";
        $this->erro_banco = "";
@@ -277,7 +279,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_permul == null ){ 
+     if($this->v07_permul == null ){
        $this->erro_sql = " Campo percentual das multas nao Informado.";
        $this->erro_campo = "v07_permul";
        $this->erro_banco = "";
@@ -286,7 +288,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_login == null ){ 
+     if($this->v07_login == null ){
        $this->erro_sql = " Campo login nao Informado.";
        $this->erro_campo = "v07_login";
        $this->erro_banco = "";
@@ -295,7 +297,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_mtermo == null ){ 
+     if($this->v07_mtermo == null ){
        $this->erro_sql = " Campo termo nao Informado.";
        $this->erro_campo = "v07_mtermo";
        $this->erro_banco = "";
@@ -304,7 +306,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_numcgm == null ){ 
+     if($this->v07_numcgm == null ){
        $this->erro_sql = " Campo Responsável pelo parcelamento nao Informado.";
        $this->erro_campo = "v07_numcgm";
        $this->erro_banco = "";
@@ -313,7 +315,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_hist == null ){ 
+     if($this->v07_hist == null ){
        $this->erro_sql = " Campo historico nao Informado.";
        $this->erro_campo = "v07_hist";
        $this->erro_banco = "";
@@ -322,7 +324,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_ultpar == null ){ 
+     if($this->v07_ultpar == null ){
        $this->erro_sql = " Campo Valor da ultima parcela nao Informado.";
        $this->erro_campo = "v07_ultpar";
        $this->erro_banco = "";
@@ -331,7 +333,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_desconto == null ){ 
+     if($this->v07_desconto == null ){
        $this->erro_sql = " Campo Código do desconto nao Informado.";
        $this->erro_campo = "v07_desconto";
        $this->erro_banco = "";
@@ -340,7 +342,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_descjur == null ){ 
+     if($this->v07_descjur == null ){
        $this->erro_sql = " Campo Desconto nos juros nao Informado.";
        $this->erro_campo = "v07_descjur";
        $this->erro_banco = "";
@@ -349,7 +351,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_descmul == null ){ 
+     if($this->v07_descmul == null ){
        $this->erro_sql = " Campo Desconto na multa nao Informado.";
        $this->erro_campo = "v07_descmul";
        $this->erro_banco = "";
@@ -358,7 +360,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_situacao == null ){ 
+     if($this->v07_situacao == null ){
        $this->erro_sql = " Campo Situacao nao Informado.";
        $this->erro_campo = "v07_situacao";
        $this->erro_banco = "";
@@ -367,7 +369,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_instit == null ){ 
+     if($this->v07_instit == null ){
        $this->erro_sql = " Campo Cod. Instituição nao Informado.";
        $this->erro_campo = "v07_instit";
        $this->erro_banco = "";
@@ -376,7 +378,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_vlrhis == null ){ 
+     if($this->v07_vlrhis == null ){
        $this->erro_sql = " Campo Valor Histórico nao Informado.";
        $this->erro_campo = "v07_vlrhis";
        $this->erro_banco = "";
@@ -385,7 +387,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_vlrcor == null ){ 
+     if($this->v07_vlrcor == null ){
        $this->erro_sql = " Campo Valor Corrigido nao Informado.";
        $this->erro_campo = "v07_vlrcor";
        $this->erro_banco = "";
@@ -394,7 +396,7 @@ class cl_termo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->v07_vlrdes == null ){ 
+     if($this->v07_vlrdes == null ){
        $this->erro_sql = " Campo Valor Desconto nao Informado.";
        $this->erro_campo = "v07_vlrdes";
        $this->erro_banco = "";
@@ -404,16 +406,16 @@ class cl_termo {
        return false;
      }
      if($v07_parcel == "" || $v07_parcel == null ){
-       $result = db_query("select nextval('termo_v07_parcel_seq')"); 
+       $result = db_query("select nextval('termo_v07_parcel_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: termo_v07_parcel_seq do campo: v07_parcel"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: termo_v07_parcel_seq do campo: v07_parcel";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->v07_parcel = pg_result($result,0,0); 
+       $this->v07_parcel = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from termo_v07_parcel_seq");
        if(($result != false) && (pg_result($result,0,0) < $v07_parcel)){
@@ -424,10 +426,10 @@ class cl_termo {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->v07_parcel = $v07_parcel; 
+         $this->v07_parcel = $v07_parcel;
        }
      }
-     if(($this->v07_parcel == null) || ($this->v07_parcel == "") ){ 
+     if(($this->v07_parcel == null) || ($this->v07_parcel == "") ){
        $this->erro_sql = " Campo v07_parcel nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -491,8 +493,8 @@ class cl_termo {
                                ,$this->v07_vlrcor 
                                ,$this->v07_vlrdes 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = " ($this->v07_parcel) nao Incluído. Inclusao Abortada.";
@@ -549,16 +551,16 @@ class cl_termo {
        $resac = db_query("insert into db_acount values($acount,103,10788,'','".AddSlashes(pg_result($resaco,0,'v07_vlrdes'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($v07_parcel=null) { 
+   function alterar ($v07_parcel=null) {
       $this->atualizacampos();
      $sql = " update termo set ";
      $virgula = "";
-     if(trim($this->v07_parcel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_parcel"])){ 
+     if(trim($this->v07_parcel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_parcel"])){
        $sql  .= $virgula." v07_parcel = $this->v07_parcel ";
        $virgula = ",";
-       if(trim($this->v07_parcel) == null ){ 
+       if(trim($this->v07_parcel) == null ){
          $this->erro_sql = " Campo Parcelamento nao Informado.";
          $this->erro_campo = "v07_parcel";
          $this->erro_banco = "";
@@ -568,10 +570,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_dtlanc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_dtlanc_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["v07_dtlanc_dia"] !="") ){ 
+     if(trim($this->v07_dtlanc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_dtlanc_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["v07_dtlanc_dia"] !="") ){
        $sql  .= $virgula." v07_dtlanc = '$this->v07_dtlanc' ";
        $virgula = ",";
-       if(trim($this->v07_dtlanc) == null ){ 
+       if(trim($this->v07_dtlanc) == null ){
          $this->erro_sql = " Campo data de lancamento do parcelamento nao Informado.";
          $this->erro_campo = "v07_dtlanc_dia";
          $this->erro_banco = "";
@@ -580,11 +582,11 @@ class cl_termo {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["v07_dtlanc_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["v07_dtlanc_dia"])){
          $sql  .= $virgula." v07_dtlanc = null ";
          $virgula = ",";
-         if(trim($this->v07_dtlanc) == null ){ 
+         if(trim($this->v07_dtlanc) == null ){
            $this->erro_sql = " Campo data de lancamento do parcelamento nao Informado.";
            $this->erro_campo = "v07_dtlanc_dia";
            $this->erro_banco = "";
@@ -595,10 +597,10 @@ class cl_termo {
          }
        }
      }
-     if(trim($this->v07_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_valor"])){ 
+     if(trim($this->v07_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_valor"])){
        $sql  .= $virgula." v07_valor = $this->v07_valor ";
        $virgula = ",";
-       if(trim($this->v07_valor) == null ){ 
+       if(trim($this->v07_valor) == null ){
          $this->erro_sql = " Campo valor do parcelamento nao Informado.";
          $this->erro_campo = "v07_valor";
          $this->erro_banco = "";
@@ -608,10 +610,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_numpre)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_numpre"])){ 
+     if(trim($this->v07_numpre)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_numpre"])){
        $sql  .= $virgula." v07_numpre = $this->v07_numpre ";
        $virgula = ",";
-       if(trim($this->v07_numpre) == null ){ 
+       if(trim($this->v07_numpre) == null ){
          $this->erro_sql = " Campo numpre do parcelamento nao Informado.";
          $this->erro_campo = "v07_numpre";
          $this->erro_banco = "";
@@ -621,10 +623,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_totpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_totpar"])){ 
+     if(trim($this->v07_totpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_totpar"])){
        $sql  .= $virgula." v07_totpar = $this->v07_totpar ";
        $virgula = ",";
-       if(trim($this->v07_totpar) == null ){ 
+       if(trim($this->v07_totpar) == null ){
          $this->erro_sql = " Campo total de parcelas nao Informado.";
          $this->erro_campo = "v07_totpar";
          $this->erro_banco = "";
@@ -634,10 +636,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_vlrpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrpar"])){ 
+     if(trim($this->v07_vlrpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrpar"])){
        $sql  .= $virgula." v07_vlrpar = $this->v07_vlrpar ";
        $virgula = ",";
-       if(trim($this->v07_vlrpar) == null ){ 
+       if(trim($this->v07_vlrpar) == null ){
          $this->erro_sql = " Campo valor das parcelas nao Informado.";
          $this->erro_campo = "v07_vlrpar";
          $this->erro_banco = "";
@@ -647,10 +649,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_dtvenc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_dtvenc_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["v07_dtvenc_dia"] !="") ){ 
+     if(trim($this->v07_dtvenc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_dtvenc_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["v07_dtvenc_dia"] !="") ){
        $sql  .= $virgula." v07_dtvenc = '$this->v07_dtvenc' ";
        $virgula = ",";
-       if(trim($this->v07_dtvenc) == null ){ 
+       if(trim($this->v07_dtvenc) == null ){
          $this->erro_sql = " Campo data de vencimento nao Informado.";
          $this->erro_campo = "v07_dtvenc_dia";
          $this->erro_banco = "";
@@ -659,11 +661,11 @@ class cl_termo {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["v07_dtvenc_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["v07_dtvenc_dia"])){
          $sql  .= $virgula." v07_dtvenc = null ";
          $virgula = ",";
-         if(trim($this->v07_dtvenc) == null ){ 
+         if(trim($this->v07_dtvenc) == null ){
            $this->erro_sql = " Campo data de vencimento nao Informado.";
            $this->erro_campo = "v07_dtvenc_dia";
            $this->erro_banco = "";
@@ -674,10 +676,10 @@ class cl_termo {
          }
        }
      }
-     if(trim($this->v07_vlrent)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrent"])){ 
+     if(trim($this->v07_vlrent)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrent"])){
        $sql  .= $virgula." v07_vlrent = $this->v07_vlrent ";
        $virgula = ",";
-       if(trim($this->v07_vlrent) == null ){ 
+       if(trim($this->v07_vlrent) == null ){
          $this->erro_sql = " Campo valor da entrada nao Informado.";
          $this->erro_campo = "v07_vlrent";
          $this->erro_banco = "";
@@ -687,10 +689,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_datpri)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_datpri_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["v07_datpri_dia"] !="") ){ 
+     if(trim($this->v07_datpri)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_datpri_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["v07_datpri_dia"] !="") ){
        $sql  .= $virgula." v07_datpri = '$this->v07_datpri' ";
        $virgula = ",";
-       if(trim($this->v07_datpri) == null ){ 
+       if(trim($this->v07_datpri) == null ){
          $this->erro_sql = " Campo data da primeira parcela nao Informado.";
          $this->erro_campo = "v07_datpri_dia";
          $this->erro_banco = "";
@@ -699,11 +701,11 @@ class cl_termo {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["v07_datpri_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["v07_datpri_dia"])){
          $sql  .= $virgula." v07_datpri = null ";
          $virgula = ",";
-         if(trim($this->v07_datpri) == null ){ 
+         if(trim($this->v07_datpri) == null ){
            $this->erro_sql = " Campo data da primeira parcela nao Informado.";
            $this->erro_campo = "v07_datpri_dia";
            $this->erro_banco = "";
@@ -714,10 +716,10 @@ class cl_termo {
          }
        }
      }
-     if(trim($this->v07_vlrmul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrmul"])){ 
+     if(trim($this->v07_vlrmul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrmul"])){
        $sql  .= $virgula." v07_vlrmul = $this->v07_vlrmul ";
        $virgula = ",";
-       if(trim($this->v07_vlrmul) == null ){ 
+       if(trim($this->v07_vlrmul) == null ){
          $this->erro_sql = " Campo valor da multa nao Informado.";
          $this->erro_campo = "v07_vlrmul";
          $this->erro_banco = "";
@@ -727,10 +729,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_vlrjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrjur"])){ 
+     if(trim($this->v07_vlrjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrjur"])){
        $sql  .= $virgula." v07_vlrjur = $this->v07_vlrjur ";
        $virgula = ",";
-       if(trim($this->v07_vlrjur) == null ){ 
+       if(trim($this->v07_vlrjur) == null ){
          $this->erro_sql = " Campo valor dos juros nao Informado.";
          $this->erro_campo = "v07_vlrjur";
          $this->erro_banco = "";
@@ -740,10 +742,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_perjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_perjur"])){ 
+     if(trim($this->v07_perjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_perjur"])){
        $sql  .= $virgula." v07_perjur = $this->v07_perjur ";
        $virgula = ",";
-       if(trim($this->v07_perjur) == null ){ 
+       if(trim($this->v07_perjur) == null ){
          $this->erro_sql = " Campo percentual dos juros nao Informado.";
          $this->erro_campo = "v07_perjur";
          $this->erro_banco = "";
@@ -753,10 +755,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_permul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_permul"])){ 
+     if(trim($this->v07_permul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_permul"])){
        $sql  .= $virgula." v07_permul = $this->v07_permul ";
        $virgula = ",";
-       if(trim($this->v07_permul) == null ){ 
+       if(trim($this->v07_permul) == null ){
          $this->erro_sql = " Campo percentual das multas nao Informado.";
          $this->erro_campo = "v07_permul";
          $this->erro_banco = "";
@@ -766,10 +768,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_login"])){ 
+     if(trim($this->v07_login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_login"])){
        $sql  .= $virgula." v07_login = $this->v07_login ";
        $virgula = ",";
-       if(trim($this->v07_login) == null ){ 
+       if(trim($this->v07_login) == null ){
          $this->erro_sql = " Campo login nao Informado.";
          $this->erro_campo = "v07_login";
          $this->erro_banco = "";
@@ -779,10 +781,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_mtermo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_mtermo"])){ 
+     if(trim($this->v07_mtermo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_mtermo"])){
        $sql  .= $virgula." v07_mtermo = $this->v07_mtermo ";
        $virgula = ",";
-       if(trim($this->v07_mtermo) == null ){ 
+       if(trim($this->v07_mtermo) == null ){
          $this->erro_sql = " Campo termo nao Informado.";
          $this->erro_campo = "v07_mtermo";
          $this->erro_banco = "";
@@ -792,10 +794,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_numcgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_numcgm"])){ 
+     if(trim($this->v07_numcgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_numcgm"])){
        $sql  .= $virgula." v07_numcgm = $this->v07_numcgm ";
        $virgula = ",";
-       if(trim($this->v07_numcgm) == null ){ 
+       if(trim($this->v07_numcgm) == null ){
          $this->erro_sql = " Campo Responsável pelo parcelamento nao Informado.";
          $this->erro_campo = "v07_numcgm";
          $this->erro_banco = "";
@@ -805,10 +807,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_hist)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_hist"])){ 
+     if(trim($this->v07_hist)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_hist"])){
        $sql  .= $virgula." v07_hist = '$this->v07_hist' ";
        $virgula = ",";
-       if(trim($this->v07_hist) == null ){ 
+       if(trim($this->v07_hist) == null ){
          $this->erro_sql = " Campo historico nao Informado.";
          $this->erro_campo = "v07_hist";
          $this->erro_banco = "";
@@ -818,10 +820,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_ultpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_ultpar"])){ 
+     if(trim($this->v07_ultpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_ultpar"])){
        $sql  .= $virgula." v07_ultpar = $this->v07_ultpar ";
        $virgula = ",";
-       if(trim($this->v07_ultpar) == null ){ 
+       if(trim($this->v07_ultpar) == null ){
          $this->erro_sql = " Campo Valor da ultima parcela nao Informado.";
          $this->erro_campo = "v07_ultpar";
          $this->erro_banco = "";
@@ -831,10 +833,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_desconto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_desconto"])){ 
+     if(trim($this->v07_desconto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_desconto"])){
        $sql  .= $virgula." v07_desconto = $this->v07_desconto ";
        $virgula = ",";
-       if(trim($this->v07_desconto) == null ){ 
+       if(trim($this->v07_desconto) == null ){
          $this->erro_sql = " Campo Código do desconto nao Informado.";
          $this->erro_campo = "v07_desconto";
          $this->erro_banco = "";
@@ -844,10 +846,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_descjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_descjur"])){ 
+     if(trim($this->v07_descjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_descjur"])){
        $sql  .= $virgula." v07_descjur = $this->v07_descjur ";
        $virgula = ",";
-       if(trim($this->v07_descjur) == null ){ 
+       if(trim($this->v07_descjur) == null ){
          $this->erro_sql = " Campo Desconto nos juros nao Informado.";
          $this->erro_campo = "v07_descjur";
          $this->erro_banco = "";
@@ -857,10 +859,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_descmul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_descmul"])){ 
+     if(trim($this->v07_descmul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_descmul"])){
        $sql  .= $virgula." v07_descmul = $this->v07_descmul ";
        $virgula = ",";
-       if(trim($this->v07_descmul) == null ){ 
+       if(trim($this->v07_descmul) == null ){
          $this->erro_sql = " Campo Desconto na multa nao Informado.";
          $this->erro_campo = "v07_descmul";
          $this->erro_banco = "";
@@ -870,10 +872,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_situacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_situacao"])){ 
+     if(trim($this->v07_situacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_situacao"])){
        $sql  .= $virgula." v07_situacao = $this->v07_situacao ";
        $virgula = ",";
-       if(trim($this->v07_situacao) == null ){ 
+       if(trim($this->v07_situacao) == null ){
          $this->erro_sql = " Campo Situacao nao Informado.";
          $this->erro_campo = "v07_situacao";
          $this->erro_banco = "";
@@ -883,10 +885,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_instit"])){ 
+     if(trim($this->v07_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_instit"])){
        $sql  .= $virgula." v07_instit = $this->v07_instit ";
        $virgula = ",";
-       if(trim($this->v07_instit) == null ){ 
+       if(trim($this->v07_instit) == null ){
          $this->erro_sql = " Campo Cod. Instituição nao Informado.";
          $this->erro_campo = "v07_instit";
          $this->erro_banco = "";
@@ -896,10 +898,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_vlrhis)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrhis"])){ 
+     if(trim($this->v07_vlrhis)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrhis"])){
        $sql  .= $virgula." v07_vlrhis = $this->v07_vlrhis ";
        $virgula = ",";
-       if(trim($this->v07_vlrhis) == null ){ 
+       if(trim($this->v07_vlrhis) == null ){
          $this->erro_sql = " Campo Valor Histórico nao Informado.";
          $this->erro_campo = "v07_vlrhis";
          $this->erro_banco = "";
@@ -909,10 +911,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_vlrcor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrcor"])){ 
+     if(trim($this->v07_vlrcor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrcor"])){
        $sql  .= $virgula." v07_vlrcor = $this->v07_vlrcor ";
        $virgula = ",";
-       if(trim($this->v07_vlrcor) == null ){ 
+       if(trim($this->v07_vlrcor) == null ){
          $this->erro_sql = " Campo Valor Corrigido nao Informado.";
          $this->erro_campo = "v07_vlrcor";
          $this->erro_banco = "";
@@ -922,10 +924,10 @@ class cl_termo {
          return false;
        }
      }
-     if(trim($this->v07_vlrdes)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrdes"])){ 
+     if(trim($this->v07_vlrdes)!="" || isset($GLOBALS["HTTP_POST_VARS"]["v07_vlrdes"])){
        $sql  .= $virgula." v07_vlrdes = $this->v07_vlrdes ";
        $virgula = ",";
-       if(trim($this->v07_vlrdes) == null ){ 
+       if(trim($this->v07_vlrdes) == null ){
          $this->erro_sql = " Campo Valor Desconto nao Informado.";
          $this->erro_campo = "v07_vlrdes";
          $this->erro_banco = "";
@@ -1001,7 +1003,7 @@ class cl_termo {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->v07_parcel;
@@ -1029,14 +1031,14 @@ class cl_termo {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($v07_parcel=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($v07_parcel=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($v07_parcel));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -1075,227 +1077,227 @@ class cl_termo {
      }
      $sql = " delete from termo
                     where ";
-     $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($v07_parcel != ""){
-          if($sql2!=""){
-            $sql2 .= " and ";
-          }
-          $sql2 .= " v07_parcel = $v07_parcel ";
+        $sql2 = "";
+        if($dbwhere==null || $dbwhere ==""){
+            if($v07_parcel != ""){
+                if($sql2!=""){
+                    $sql2 .= " and ";
+                }
+                $sql2 .= " v07_parcel = $v07_parcel ";
+            }
+        }else{
+            $sql2 = $dbwhere;
         }
-     }else{
-       $sql2 = $dbwhere;
-     }
-     $result = db_query($sql.$sql2);
-     if($result==false){ 
-       $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = " nao Excluído. Exclusão Abortada.\\n";
-       $this->erro_sql .= "Valores : ".$v07_parcel;
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       $this->erro_status = "0";
-       $this->numrows_excluir = 0;
-       return false;
-     }else{
-       if(pg_affected_rows($result)==0){
-         $this->erro_banco = "";
-         $this->erro_sql = " nao Encontrado. Exclusão não Efetuada.\\n";
-         $this->erro_sql .= "Valores : ".$v07_parcel;
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "1";
-         $this->numrows_excluir = 0;
-         return true;
-       }else{
-         $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
-         $this->erro_sql .= "Valores : ".$v07_parcel;
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "1";
-         $this->numrows_excluir = pg_affected_rows($result);
-         return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
-     $result = db_query($sql);
-     if($result==false){
-       $this->numrows    = 0;
-       $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Erro ao selecionar os registros.";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       $this->erro_status = "0";
-       return false;
-     }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
-        $this->erro_banco = "";
-        $this->erro_sql   = "Record Vazio na Tabela:termo";
-        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-        $this->erro_status = "0";
-        return false;
-      }
-     return $result;
-   }
-   function sql_query ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from termo ";
-     $sql .= "      inner join cgm  on  cgm.z01_numcgm = termo.v07_numcgm";
-     $sql .= "      inner join db_config  on  db_config.codigo = termo.v07_instit";
+        $result = db_query($sql.$sql2);
+        if($result==false){
+            $this->erro_banco = str_replace("\n","",@pg_last_error());
+            $this->erro_sql   = " nao Excluído. Exclusão Abortada.\\n";
+            $this->erro_sql .= "Valores : ".$v07_parcel;
+            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+            $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+            $this->erro_status = "0";
+            $this->numrows_excluir = 0;
+            return false;
+        }else{
+            if(pg_affected_rows($result)==0){
+                $this->erro_banco = "";
+                $this->erro_sql = " nao Encontrado. Exclusão não Efetuada.\\n";
+                $this->erro_sql .= "Valores : ".$v07_parcel;
+                $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+                $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+                $this->erro_status = "1";
+                $this->numrows_excluir = 0;
+                return true;
+            }else{
+                $this->erro_banco = "";
+                $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+                $this->erro_sql .= "Valores : ".$v07_parcel;
+                $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+                $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+                $this->erro_status = "1";
+                $this->numrows_excluir = pg_affected_rows($result);
+                return true;
+            }
+        }
+    }
+    // funcao do recordset
+    function sql_record($sql) {
+        $result = db_query($sql);
+        if($result==false){
+            $this->numrows    = 0;
+            $this->erro_banco = str_replace("\n","",@pg_last_error());
+            $this->erro_sql   = "Erro ao selecionar os registros.";
+            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+            $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+            $this->erro_status = "0";
+            return false;
+        }
+        $this->numrows = pg_numrows($result);
+        if($this->numrows==0){
+            $this->erro_banco = "";
+            $this->erro_sql   = "Record Vazio na Tabela:termo";
+            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+            $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+            $this->erro_status = "0";
+            return false;
+        }
+        return $result;
+    }
+    function sql_query ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){
+        $sql = "select ";
+        if($campos != "*" ){
+            $campos_sql = explode("#",$campos);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }else{
+            $sql .= $campos;
+        }
+        $sql .= " from termo ";
+        $sql .= "      inner join cgm  on  cgm.z01_numcgm = termo.v07_numcgm";
+        $sql .= "      inner join db_config  on  db_config.codigo = termo.v07_instit";
 //     $sql .= "      inner join cgm  on  cgm.z01_numcgm = db_config.numcgm";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($v07_parcel!=null ){
-         $sql2 .= " where termo.v07_parcel = $v07_parcel "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-   function sql_query_arre ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from termo ";
-     $sql .= "      inner join cgm on  cgm.z01_numcgm = termo.v07_numcgm";
-     $sql .= "      inner join arrecad on  arrecad.k00_numpre = termo.v07_numpre";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($v07_parcel!=null ){
-         $sql2 .= " where termo.v07_parcel = $v07_parcel "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-   function sql_query_consulta ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from termo ";
-     $sql .= "      inner join cgm        on cgm.z01_numcgm        = termo.v07_numcgm      ";
-     $sql .= "      inner join db_config  on db_config.codigo      = termo.v07_instit      ";
-     $sql .= "      inner join arrenumcgm on arrenumcgm.k00_numpre = termo.v07_numpre      ";
-     $sql .= "      inner join cgm resp   on resp.z01_numcgm       = arrenumcgm.k00_numcgm ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($v07_parcel!=null ){
-         $sql2 .= " where termo.v07_parcel = $v07_parcel "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-   function sql_query_file ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from termo ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($v07_parcel!=null ){
-         $sql2 .= " where termo.v07_parcel = $v07_parcel "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-   function sql_query_inf ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from (select ";
-     $sql .= "distinct v07_parcel,
+        $sql2 = "";
+        if($dbwhere==""){
+            if($v07_parcel!=null ){
+                $sql2 .= " where termo.v07_parcel = $v07_parcel ";
+            }
+        }else if($dbwhere != ""){
+            $sql2 = " where $dbwhere";
+        }
+        $sql .= $sql2;
+        if($ordem != null ){
+            $sql .= " order by ";
+            $campos_sql = explode("#",$ordem);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }
+        return $sql;
+    }
+    function sql_query_arre ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){
+        $sql = "select ";
+        if($campos != "*" ){
+            $campos_sql = explode("#",$campos);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }else{
+            $sql .= $campos;
+        }
+        $sql .= " from termo ";
+        $sql .= "      inner join cgm on  cgm.z01_numcgm = termo.v07_numcgm";
+        $sql .= "      inner join arrecad on  arrecad.k00_numpre = termo.v07_numpre";
+        $sql2 = "";
+        if($dbwhere==""){
+            if($v07_parcel!=null ){
+                $sql2 .= " where termo.v07_parcel = $v07_parcel ";
+            }
+        }else if($dbwhere != ""){
+            $sql2 = " where $dbwhere";
+        }
+        $sql .= $sql2;
+        if($ordem != null ){
+            $sql .= " order by ";
+            $campos_sql = explode("#",$ordem);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }
+        return $sql;
+    }
+    function sql_query_consulta ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){
+        $sql = "select ";
+        if($campos != "*" ){
+            $campos_sql = explode("#",$campos);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }else{
+            $sql .= $campos;
+        }
+        $sql .= " from termo ";
+        $sql .= "      inner join cgm        on cgm.z01_numcgm        = termo.v07_numcgm      ";
+        $sql .= "      inner join db_config  on db_config.codigo      = termo.v07_instit      ";
+        $sql .= "      inner join arrenumcgm on arrenumcgm.k00_numpre = termo.v07_numpre      ";
+        $sql .= "      inner join cgm resp   on resp.z01_numcgm       = arrenumcgm.k00_numcgm ";
+        $sql2 = "";
+        if($dbwhere==""){
+            if($v07_parcel!=null ){
+                $sql2 .= " where termo.v07_parcel = $v07_parcel ";
+            }
+        }else if($dbwhere != ""){
+            $sql2 = " where $dbwhere";
+        }
+        $sql .= $sql2;
+        if($ordem != null ){
+            $sql .= " order by ";
+            $campos_sql = explode("#",$ordem);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }
+        return $sql;
+    }
+    function sql_query_file ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){
+        $sql = "select ";
+        if($campos != "*" ){
+            $campos_sql = explode("#",$campos);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }else{
+            $sql .= $campos;
+        }
+        $sql .= " from termo ";
+        $sql2 = "";
+        if($dbwhere==""){
+            if($v07_parcel!=null ){
+                $sql2 .= " where termo.v07_parcel = $v07_parcel ";
+            }
+        }else if($dbwhere != ""){
+            $sql2 = " where $dbwhere";
+        }
+        $sql .= $sql2;
+        if($ordem != null ){
+            $sql .= " order by ";
+            $campos_sql = explode("#",$ordem);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }
+        return $sql;
+    }
+    function sql_query_inf ( $v07_parcel=null,$campos="*",$ordem=null,$dbwhere=""){
+        $sql = "select ";
+        if($campos != "*" ){
+            $campos_sql = explode("#",$campos);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }else{
+            $sql .= $campos;
+        }
+        $sql .= " from (select ";
+        $sql .= "distinct v07_parcel,
            		      v07_dtlanc,
            		      case when k00_inscr is not null then 'Inscrição'  else
                         (case when k00_matric is not null then 'Matrícula' else
@@ -1309,52 +1311,52 @@ class cl_termo {
 		 				  end )
                         end )
                       end as dl_Cod,z01_nome as db_z01_nome";
-     $sql .= " from termo ";
-     $sql .= "      inner join arrecad on arrecad.k00_numpre = termo.v07_numpre";
-     $sql .= "      inner join cgm on  cgm.z01_numcgm = arrecad.k00_numcgm";
-     $sql .= "      left  join arrenumcgm on  arrenumcgm.k00_numpre= termo.v07_numpre";
-     $sql .= "      left  join arrematric on  arrematric.k00_numpre= termo.v07_numpre";
-     $sql .= "      left  join arreinscr on  arreinscr.k00_numpre= termo.v07_numpre";
-     $sql .= "      ) as x  ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($v07_parcel!=null ){
-         $sql2 .= " where termo.v07_parcel = $v07_parcel "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
+        $sql .= " from termo ";
+        $sql .= "      inner join arrecad on arrecad.k00_numpre = termo.v07_numpre";
+        $sql .= "      inner join cgm on  cgm.z01_numcgm = arrecad.k00_numcgm";
+        $sql .= "      left  join arrenumcgm on  arrenumcgm.k00_numpre= termo.v07_numpre";
+        $sql .= "      left  join arrematric on  arrematric.k00_numpre= termo.v07_numpre";
+        $sql .= "      left  join arreinscr on  arreinscr.k00_numpre= termo.v07_numpre";
+        $sql .= "      ) as x  ";
+        $sql2 = "";
+        if($dbwhere==""){
+            if($v07_parcel!=null ){
+                $sql2 .= " where termo.v07_parcel = $v07_parcel ";
+            }
+        }else if($dbwhere != ""){
+            $sql2 = " where $dbwhere";
+        }
+        $sql .= $sql2;
+        if($ordem != null ){
+            $sql .= " order by ";
+            $campos_sql = explode("#",$ordem);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }
+        return $sql;
+    }
 
-  function sql_query_origem_divida($numpre=null, $campos="*", $lPrimeiroParcelamento = false){ 
+    function sql_query_origem_divida($numpre=null, $campos="*", $lPrimeiroParcelamento = false){
 
-  	if($numpre == null){
-			return null;
-		}
-	
-		if ($lPrimeiroParcelamento){
-			$sSqlPrimeiroParcelamento = "select rinumpre as primeiro_numpre from fc_parc_origem_completo({$numpre}) order by rdtlanc limit 1";
-			$rsPrimeiroParcelamento   = db_query($sSqlPrimeiroParcelamento);
-			if ($rsPrimeiroParcelamento && pg_num_rows($rsPrimeiroParcelamento) > 0) {
-				$oPrimeiroNumpre = db_utils::fieldsMemory($rsPrimeiroParcelamento,0);				
-				$numpre = $oPrimeiroNumpre->primeiro_numpre;
-			}else{
-				throw (new Exception("Origem do parcelamento de numpre : [{$numpre}] não encontrado"));
-			}
-		}
-		
-		$sql = "select $campos
+        if($numpre == null){
+            return null;
+        }
+
+        if ($lPrimeiroParcelamento){
+            $sSqlPrimeiroParcelamento = "select rinumpre as primeiro_numpre from fc_parc_origem_completo({$numpre}) order by rdtlanc limit 1";
+            $rsPrimeiroParcelamento   = db_query($sSqlPrimeiroParcelamento);
+            if ($rsPrimeiroParcelamento && pg_num_rows($rsPrimeiroParcelamento) > 0) {
+                $oPrimeiroNumpre = db_utils::fieldsMemory($rsPrimeiroParcelamento,0);
+                $numpre = $oPrimeiroNumpre->primeiro_numpre;
+            }else{
+                throw (new Exception("Origem do parcelamento de numpre : [{$numpre}] não encontrado"));
+            }
+        }
+
+        $sql = "select $campos
 	            from  fc_parc_origem_completo({$numpre})as origemparcelamento 
              inner join termo       on termo.v07_parcel      = riparcel                
              inner join termodiv    on termodiv.parcel       = riparcel                
@@ -1381,14 +1383,14 @@ class cl_termo {
 						  left join iptubase    on iptubase.j01_matric   = arrematric.k00_matric   
 						  left join lote        on lote.j34_idbql        = iptubase.j01_idbql                 
               left join arreinscr   on arreinscr.k00_numpre  = rinumpre  ";
-		
-		return $sql;
-				 
-  }
-  
-  function sql_query_acerta_parcelamento($parcelamento, $valor_entrada, $valor_parcela, $tipo_parcelamento = 22) {
-    
-    $sql = "
+
+        return $sql;
+
+    }
+
+    function sql_query_acerta_parcelamento($parcelamento, $valor_entrada, $valor_parcela, $tipo_parcelamento = 22) {
+
+        $sql = "
 				    select d.parcelamento,
 				       d.numpre,
 				       d.numpar,
@@ -1445,22 +1447,127 @@ class cl_termo {
 				     and v07_desconto = {$tipo_parcelamento}
 				   group by v07_parcel, v07_numpre, v07_totpar, v07_valor, k00_receit
 				   order by k00_receit) as a) as b) as c) as d ";
-    
-    return $sql;
-    
-  }
-  
-  function sql_query_parcelas_termo($parcelamento, $tipo_parcelamento = 22) {
-    
-    $sql = "select v07_parcel, v07_totpar, k00_numpre, k00_numpar, sum(k00_valor) as k00_valor
+
+        return $sql;
+
+    }
+
+    function sql_query_parcelas_termo($parcelamento, $tipo_parcelamento = 22) {
+
+        $sql = "select v07_parcel, v07_totpar, k00_numpre, k00_numpar, sum(k00_valor) as k00_valor
               from termo
              inner join arrecad on k00_numpre = v07_numpre
              where v07_parcel   = {$parcelamento}
                and v07_desconto = {$tipo_parcelamento}
              group by v07_parcel, v07_totpar, k00_numpre, k00_numpar
              order by v07_parcel, k00_numpre, k00_numpar";
-    
-    return $sql;
-  }
+
+        return $sql;
+    }
+
+    /**
+     * Função que cria a query para executar a simulação da anulação de parcelamento
+     * @param  integer $iTermo
+     * @return string  Query montada
+     */
+    public function sql_query_simular_anulacao($iTermo)
+    {
+        $sSql = "select fc_parc_gera_simulacao_anulacao({$iTermo}) as simulacao";
+        return $sSql;
+    }
+
+    /**
+     * Função que cria a query para executar a anulação do parcelamento
+     * @param integer  $iCodigoSimulacao
+     * @param integer  $iUsuario
+     * @return string  Query montada
+     */
+    public function sql_query_anular_parcelamento($iCodigoSimulacao, $iUsuario)
+    {
+        $sSql = "select fc_excluiparcelamento({$iCodigoSimulacao}, {$iUsuario}, null, null) as anulacao";
+        return $sSql;
+    }
+
+    public function sql_query_simulacao($iTermo = null, $iSumulacao = null, $sCampos = "*", $sOrderBy = null)
+    {
+        $sWhere = "";
+        $sAnd   = "where";
+
+        if (!is_null($iTermo)) {
+
+            $sWhere = " {$sAnd} v21_parcel = {$iTermo}";
+            $sAnd   = "and";
+        }
+
+        if ( !is_null($iSumulacao) ) {
+            $sWhere = " {$sAnd} v21_sequencial = {$iTermo}";
+        }
+
+        $sSql  = " select {$sCampos}  ";
+        $sSql .= "   from termosimula ";
+        $sSql .= $sWhere;
+
+        if ( !is_null($sOrderBy) ) {
+            $sSql .= "  order by v21_sequencial ";
+        }
+
+        return $sSql;
+    }
+
+    /**
+     * @param integer $parcelamento
+     * @return string
+     */
+    public function sql_query_tabela_origem_parcelamento($parcelamento)
+    {
+        return "select fc_parc_gettipoparcelamento({$parcelamento}) as tabela";
+    }
+
+    /**
+     * @param integer $parcelamento
+     * @param integer $tipo
+     * @return string
+     * @throws DBException
+     */
+    public function sql_query_origem($parcelamento, $tipo)
+    {
+        $sql = "select fc_parc_getselectorigens($parcelamento, $tipo) as sql_origem";
+        $rs = db_query($sql);
+
+        if (!$rs || pg_num_rows($rs) == 0) {
+            throw new \DBException("Erro ao criar consulta da origem do parcelamento.");
+        }
+
+        $sql = \db_utils::fieldsMemory($rs, 0)->sql_origem;
+
+        return $sql;
+    }
+
+    /**
+     * Função que cria o sql para consultar a origem do parcelamento
+     * @param  integer $iParcelamento
+     * @return string  query pronta
+     * @throws DBException
+     */
+    public function sql_query_origem_parcelamento($iParcelamento)
+    {
+        $sql = $this->sql_query_tabela_origem_parcelamento($iParcelamento);
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new \DBException("Erro ao buscar tipo de origem do parcelamento");
+        }
+
+        if (pg_num_rows($rs) == 0) {
+            throw new \DBException("Tipo de parcelamento não encontrado.");
+        }
+
+        $tabelaParcelamento = \db_utils::fieldsMemory($rs, 0);
+
+        $tiposParcelamento = TermoOrigemRepositoryFactory::getTipoPorTabela();
+        $tipo = $tiposParcelamento[$tabelaParcelamento->tabela];
+
+        return $this->sql_query_origem($iParcelamento, $tipo);
+    }
 }
 ?>

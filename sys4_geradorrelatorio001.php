@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_db_usuarios_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
 
 $cldb_depart   = new cl_db_depart();
 $cldb_usuarios = new cl_db_usuarios();
@@ -48,8 +48,6 @@ $rsDepart  = $cldb_depart->sql_record($cldb_depart->sql_query($codDepart,"descrd
 if ($cldb_depart->numrows > 0) {
 	db_fieldsmemory($rsDepart,0);
 }
-
-
 
 ?>
 <html>
@@ -125,23 +123,26 @@ if ($cldb_depart->numrows > 0) {
 					  	  <td>
 					  	    <fieldset>
 			  		  	    <table align="center">
-				     		  	  <td width="5%">
+				     		  	  <td width="25%">
 			    			  	  	 <input type="radio" name="relTipoRad" onClick='js_pesquisaRelatorios("Usuario");' >
-					    	  	  </td>
-			  		  	      <td width="30%">
 					  	         	<b>Usuário</b>
+					    	  	  </td>
+			  		  	      <td width="0%">
 					  	        </td>
-						  	      <td width="5%">
+						  	      <td width="25%">
 						  	        <input type="radio" name="relTipoRad" onClick='js_pesquisaRelatorios("Depto");'  >
-						  	      </td>
-			  		  	      <td width="30%">
 			  		  	      	<b>Departamento</b>
-				 	   	        </td>			  
-				 	   	        <td width="5%">
-						  	        <input type="radio" name="relTipoRad" onClick='js_pesquisaRelatorios("Publico");' title="Relatórios não vinculados a usuários e departamentos." checked >
 						  	      </td>
-			  		  	      <td width="25%">
+			  		  	      <td width="0%">
+				 	   	        </td>			  
+				 	   	        <td width="25%">
+						  	        <input type="radio" name="relTipoRad" onClick='js_pesquisaRelatorios("Publico");' title="Relatórios não vinculados a usuários e departamentos." checked >
 			  		  	      	<b>Público</b>
+						  	      </td>
+						      <td width="25%">
+						  	        <input type="radio" name="relTipoRad" onClick='js_pesquisaRelatorios("Cubos");' title="Relatórios dos Cubos."  >
+			  		  	      	<b>Cubos BI</b>
+	
 				 	   	        </td>			  	  	  
 					  	      </table>
 					  	    </fieldset>
@@ -231,7 +232,7 @@ if ($cldb_depart->numrows > 0) {
 	function js_retornaExportacao (oAjax) {
 		
 		js_removeObj("msgBox");
-		var oRetorno = eval("("+oAjax.responseText+")");
+		var oRetorno = JSON.parse(oAjax.responseText);
 
 		if (oRetorno.iStatus == 1) {
       js_arquivo_abrir(oRetorno.sNomeArquivo);
@@ -435,7 +436,7 @@ if ($cldb_depart->numrows > 0) {
 	
 	function js_carregaGrid(oAjax){
 	  
-	  var aRetorno = eval("("+oAjax.responseText+")");
+	  var aRetorno = JSON.parse(oAjax.responseText);
 	  var sLinha = "";
 	  
 	  if (aRetorno.erro == true){
@@ -469,7 +470,7 @@ if ($cldb_depart->numrows > 0) {
 
 
 	function js_infoRel(iCodRel){
-	  js_OpenJanelaIframe('top.corpo','db_iframe_inforel','sys4_inforelatorio001.php?codrel='+iCodRel,'Pesquisa',true);
+	  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inforel','sys4_inforelatorio001.php?codrel='+iCodRel,'Pesquisa',true);
 	}
    
    
@@ -528,7 +529,7 @@ if ($cldb_depart->numrows > 0) {
 	
 	  js_removeObj("msgBox");
 	  
-	  var aRetorno = eval("("+oAjax.responseText+")");
+	  var aRetorno = JSON.parse(oAjax.responseText);
 	  
  	  if (aRetorno.erro == true){
   		alert(aRetorno.msg.urlDecode());
@@ -549,7 +550,7 @@ if ($cldb_depart->numrows > 0) {
       return false;
     } 
     
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_lancarmenu',
                         'sys4_geradorteladinamica001.php?lEsconderMenus=true&iCodRelatorio='+objMarcado[0].id,
                         'Filtros',true);
@@ -588,7 +589,7 @@ if ($cldb_depart->numrows > 0) {
 	  js_removeObj('msgBox');
 	
 	  var sExpReg  = new RegExp('\\\\n','g');
-	  var aRetorno = eval("("+oAjax.responseText+")");
+	  var aRetorno = JSON.parse(oAjax.responseText);
 	    
 	  if ( aRetorno.erro ) {
 	     alert(aRetorno.msg.urlDecode().replace(sExpReg,'\n'));
@@ -608,7 +609,7 @@ if ($cldb_depart->numrows > 0) {
       return false;
     } 
     
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_lancarmenu',
                         'sys4_mostraMenus001.php',
                         'Lancar Menu',true);
@@ -647,7 +648,7 @@ if ($cldb_depart->numrows > 0) {
   function js_retornoCadastroMenu(oAjax){
     
     var sExpReg  = new RegExp('\\\\n','g');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if ( oRetorno.lErro ) {  
       alert(oRetorno.sMensagem.urlDecode().replace(sExpReg,'\n'));
@@ -721,7 +722,7 @@ if ($cldb_depart->numrows > 0) {
 
 		js_removeObj('msgbox');
 		
-		var oRetorno = eval("("+oAjax.responseText+")");
+		var oRetorno = JSON.parse(oAjax.responseText);
 
 		if (oRetorno.iStatus == 1) {
 			alert(_M('configuracao.configuracao.sys4_geradorrelatorio001.mensagem_ajax_salvando_dados_ok'));

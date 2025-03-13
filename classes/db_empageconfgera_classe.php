@@ -1,66 +1,66 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: empenho
 //CLASSE DA ENTIDADE empageconfgera
-class cl_empageconfgera { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $e90_codmov = 0; 
-   var $e90_codgera = 0; 
-   var $e90_correto = 'f'; 
-   var $e90_cancelado = 'f'; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_empageconfgera {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $e90_codmov = 0;
+   var $e90_codgera = 0;
+   var $e90_correto = 'f';
+   var $e90_cancelado = 'f';
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 e90_codmov = int4 = Movimento 
-                 e90_codgera = int4 = Código 
-                 e90_correto = bool = Correto 
-                 e90_cancelado = bool = Cancelado 
+                 e90_codmov = int4 = Movimento
+                 e90_codgera = int4 = Código
+                 e90_correto = bool = Correto
+                 e90_cancelado = bool = Cancelado
                  ";
-   //funcao construtor da classe 
-   function cl_empageconfgera() { 
+   //funcao construtor da classe
+   function cl_empageconfgera() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("empageconfgera"); 
+     $this->rotulo = new rotulo("empageconfgera");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -73,7 +73,7 @@ class cl_empageconfgera {
      if($exclusao==false){
        $this->e90_codmov = ($this->e90_codmov == ""?@$GLOBALS["HTTP_POST_VARS"]["e90_codmov"]:$this->e90_codmov);
        $this->e90_codgera = ($this->e90_codgera == ""?@$GLOBALS["HTTP_POST_VARS"]["e90_codgera"]:$this->e90_codgera);
-       $this->e90_correto = ($this->e90_correto == "f"?@$GLOBALS["HTTP_POST_VARS"]["e90_correto"]:$this->e90_correto);
+       $this->e90_correto = ($this->e90_correto == ""?@$GLOBALS["HTTP_POST_VARS"]["e90_correto"]:$this->e90_correto);
        $this->e90_cancelado = ($this->e90_cancelado == "f"?@$GLOBALS["HTTP_POST_VARS"]["e90_cancelado"]:$this->e90_cancelado);
      }else{
        $this->e90_codmov = ($this->e90_codmov == ""?@$GLOBALS["HTTP_POST_VARS"]["e90_codmov"]:$this->e90_codmov);
@@ -81,9 +81,9 @@ class cl_empageconfgera {
      }
    }
    // funcao para inclusao
-   function incluir ($e90_codmov,$e90_codgera){ 
+   function incluir ($e90_codmov,$e90_codgera){
       $this->atualizacampos();
-     if($this->e90_correto == null ){ 
+     if($this->e90_correto == null ){
        $this->erro_sql = " Campo Correto nao Informado.";
        $this->erro_campo = "e90_correto";
        $this->erro_banco = "";
@@ -92,7 +92,7 @@ class cl_empageconfgera {
        $this->erro_status = "0";
        return false;
      }
-     if($this->e90_cancelado == null ){ 
+     if($this->e90_cancelado == null ){
        $this->erro_sql = " Campo Cancelado nao Informado.";
        $this->erro_campo = "e90_cancelado";
        $this->erro_banco = "";
@@ -101,9 +101,9 @@ class cl_empageconfgera {
        $this->erro_status = "0";
        return false;
      }
-       $this->e90_codmov = $e90_codmov; 
-       $this->e90_codgera = $e90_codgera; 
-     if(($this->e90_codmov == null) || ($this->e90_codmov == "") ){ 
+       $this->e90_codmov = $e90_codmov;
+       $this->e90_codgera = $e90_codgera;
+     if(($this->e90_codmov == null) || ($this->e90_codmov == "") ){
        $this->erro_sql = " Campo e90_codmov nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -111,7 +111,7 @@ class cl_empageconfgera {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->e90_codgera == null) || ($this->e90_codgera == "") ){ 
+     if(($this->e90_codgera == null) || ($this->e90_codgera == "") ){
        $this->erro_sql = " Campo e90_codgera nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -120,19 +120,19 @@ class cl_empageconfgera {
        return false;
      }
      $sql = "insert into empageconfgera(
-                                       e90_codmov 
-                                      ,e90_codgera 
-                                      ,e90_correto 
-                                      ,e90_cancelado 
+                                       e90_codmov
+                                      ,e90_codgera
+                                      ,e90_correto
+                                      ,e90_cancelado
                        )
                 values (
-                                $this->e90_codmov 
-                               ,$this->e90_codgera 
-                               ,'$this->e90_correto' 
-                               ,'$this->e90_cancelado' 
+                                $this->e90_codmov
+                               ,$this->e90_codgera
+                               ,'$this->e90_correto'
+                               ,'$this->e90_cancelado'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "empageconfgera ($this->e90_codmov."-".$this->e90_codgera) nao Incluído. Inclusao Abortada.";
@@ -168,16 +168,16 @@ class cl_empageconfgera {
        $resac = db_query("insert into db_acount values($acount,1005,19303,'','".AddSlashes(pg_result($resaco,0,'e90_cancelado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($e90_codmov=null,$e90_codgera=null) { 
+   function alterar ($e90_codmov=null,$e90_codgera=null) {
       $this->atualizacampos();
      $sql = " update empageconfgera set ";
      $virgula = "";
-     if(trim($this->e90_codmov)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e90_codmov"])){ 
+     if(trim($this->e90_codmov)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e90_codmov"])){
        $sql  .= $virgula." e90_codmov = $this->e90_codmov ";
        $virgula = ",";
-       if(trim($this->e90_codmov) == null ){ 
+       if(trim($this->e90_codmov) == null ){
          $this->erro_sql = " Campo Movimento nao Informado.";
          $this->erro_campo = "e90_codmov";
          $this->erro_banco = "";
@@ -187,10 +187,10 @@ class cl_empageconfgera {
          return false;
        }
      }
-     if(trim($this->e90_codgera)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e90_codgera"])){ 
+     if(trim($this->e90_codgera)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e90_codgera"])){
        $sql  .= $virgula." e90_codgera = $this->e90_codgera ";
        $virgula = ",";
-       if(trim($this->e90_codgera) == null ){ 
+       if(trim($this->e90_codgera) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "e90_codgera";
          $this->erro_banco = "";
@@ -200,10 +200,10 @@ class cl_empageconfgera {
          return false;
        }
      }
-     if(trim($this->e90_correto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e90_correto"])){ 
+     if(trim($this->e90_correto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e90_correto"])){
        $sql  .= $virgula." e90_correto = '$this->e90_correto' ";
        $virgula = ",";
-       if(trim($this->e90_correto) == null ){ 
+       if(trim($this->e90_correto) == null ){
          $this->erro_sql = " Campo Correto nao Informado.";
          $this->erro_campo = "e90_correto";
          $this->erro_banco = "";
@@ -213,10 +213,10 @@ class cl_empageconfgera {
          return false;
        }
      }
-     if(trim($this->e90_cancelado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e90_cancelado"])){ 
+     if(trim($this->e90_cancelado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e90_cancelado"])){
        $sql  .= $virgula." e90_cancelado = '$this->e90_cancelado' ";
        $virgula = ",";
-       if(trim($this->e90_cancelado) == null ){ 
+       if(trim($this->e90_cancelado) == null ){
          $this->erro_sql = " Campo Cancelado nao Informado.";
          $this->erro_campo = "e90_cancelado";
          $this->erro_banco = "";
@@ -252,7 +252,7 @@ class cl_empageconfgera {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "empageconfgera nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->e90_codmov."-".$this->e90_codgera;
@@ -280,14 +280,14 @@ class cl_empageconfgera {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($e90_codmov=null,$e90_codgera=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($e90_codmov=null,$e90_codgera=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($e90_codmov,$e90_codgera));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -323,7 +323,7 @@ class cl_empageconfgera {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "empageconfgera nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$e90_codmov."-".$e90_codgera;
@@ -351,11 +351,11 @@ class cl_empageconfgera {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -377,8 +377,8 @@ class cl_empageconfgera {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $e90_codmov=null,$e90_codgera=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $e90_codmov=null,$e90_codgera=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -398,16 +398,16 @@ class cl_empageconfgera {
      $sql2 = "";
      if($dbwhere==""){
        if($e90_codmov!=null ){
-         $sql2 .= " where empageconfgera.e90_codmov = $e90_codmov "; 
-       } 
+         $sql2 .= " where empageconfgera.e90_codmov = $e90_codmov ";
+       }
        if($e90_codgera!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " empageconfgera.e90_codgera = $e90_codgera "; 
-       } 
+         }
+         $sql2 .= " empageconfgera.e90_codgera = $e90_codgera ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -424,7 +424,7 @@ class cl_empageconfgera {
      return $sql;
   }
 
-  function sql_query_arq ( $e90_codmov=null,$e90_codgera=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  function sql_query_arq ( $e90_codmov=null,$e90_codgera=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -440,21 +440,21 @@ class cl_empageconfgera {
      $sql .= "      inner join empagemov      on  empagemov.e81_codmov   = empageconfgera.e90_codmov  ";
      $sql .= "      inner join empagegera     on  empagegera.e87_codgera = empageconfgera.e90_codgera ";
      $sql .= "      left  join empempenho     on  empempenho.e60_numemp  = empagemov.e81_numemp       ";
-     $sql .= "      left  join empagemovforma on  e97_codmov             = e81_codmov                 ";     
+     $sql .= "      left  join empagemovforma on  e97_codmov             = e81_codmov                 ";
      $sql .= "      inner join empage         on  empage.e80_codage      = empagemov.e81_codage       ";
      $sql2 = "";
      if($dbwhere==""){
        if($e90_codmov!=null ){
-         $sql2 .= " where empageconfgera.e90_codmov = $e90_codmov "; 
-       } 
+         $sql2 .= " where empageconfgera.e90_codmov = $e90_codmov ";
+       }
        if($e90_codgera!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " empageconfgera.e90_codgera = $e90_codgera "; 
-       } 
+         }
+         $sql2 .= " empageconfgera.e90_codgera = $e90_codgera ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -497,13 +497,13 @@ class cl_empageconfgera {
      $sql .= "      left  join empagetipo on empagetipo.e83_codtipo = empagepag.e85_codtipo ";
      $sql .= "      left  join empagedadosret on empagedadosret.e75_codgera = empageconfgera.e90_codgera ";
      $sql .= "      left  join pagordemconta on pagordemconta.e49_codord = empord.e82_codord ";
-     $sql .= "      left  join cgm a on a.z01_numcgm = pagordemconta.e49_numcgm ";  
+     $sql .= "      left  join cgm a on a.z01_numcgm = pagordemconta.e49_numcgm ";
      $sql .= "      left  join empageslip on empageslip.e89_codmov = empagemov.e81_codmov ";
-     $sql .= "      left  join slip on empageslip.e89_codigo = slip.k17_codigo ";       
-     $sql .= "      left  join slipnum on slipnum.k17_codigo = slip.k17_codigo ";       
-     $sql .= "      left  join cgm cgmslip on slipnum.k17_numcgm = cgmslip.z01_numcgm ";       
+     $sql .= "      left  join slip on empageslip.e89_codigo = slip.k17_codigo ";
+     $sql .= "      left  join slipnum on slipnum.k17_codigo = slip.k17_codigo ";
+     $sql .= "      left  join cgm cgmslip on slipnum.k17_numcgm = cgmslip.z01_numcgm ";
 
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($e90_codmov!=null ){
@@ -520,7 +520,7 @@ class cl_empageconfgera {
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
-    
+
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
@@ -533,7 +533,7 @@ class cl_empageconfgera {
      }
      return $sql;
   }
-   function sql_query_file ( $e90_codmov=null,$e90_codgera=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $e90_codmov=null,$e90_codgera=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -549,16 +549,16 @@ class cl_empageconfgera {
      $sql2 = "";
      if($dbwhere==""){
        if($e90_codmov!=null ){
-         $sql2 .= " where empageconfgera.e90_codmov = $e90_codmov "; 
-       } 
+         $sql2 .= " where empageconfgera.e90_codmov = $e90_codmov ";
+       }
        if($e90_codgera!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " empageconfgera.e90_codgera = $e90_codgera "; 
-       } 
+         }
+         $sql2 .= " empageconfgera.e90_codgera = $e90_codgera ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -598,7 +598,7 @@ class cl_empageconfgera {
      $sql .= "      left  join empagepag on empagepag.e85_codmov = empagemov.e81_codmov ";
      $sql .= "      left  join empagetipo on empagetipo.e83_codtipo = empagepag.e85_codtipo ";
 
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($e90_codmov!=null ){
@@ -615,7 +615,7 @@ class cl_empageconfgera {
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
-    
+
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
@@ -628,7 +628,7 @@ class cl_empageconfgera {
      }
      return $sql;
   }
-  
+
   function sql_query_buscacodretempagedadosretmov ( $e90_codmov=null,$e90_codgera=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
@@ -655,7 +655,7 @@ class cl_empageconfgera {
       $sql2 .= " where ";
       }
         $sql2 .= " empageconfgera.e90_codgera = $e90_codgera ";
-         } 
+         }
        }else if($dbwhere != ""){
         $sql2 = " where $dbwhere";
   }
@@ -671,39 +671,39 @@ class cl_empageconfgera {
         }
         return $sql;
   }
-  
+
   function sql_query_movimentacoes_banco ( $e90_codmov = null, $e90_codgera = null, $campos = "*", $ordem = null, $dbwhere = "") {
-    
+
     $sql = "select ";
-    
+
     if ($campos != "*" ) {
-      
+
       $campos_sql = split("#",$campos);
       $virgula    = "";
-      
+
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
-        
+
         $sql     .= $virgula.$campos_sql[$i];
         $virgula  = ",";
       }
     } else {
       $sql .= $campos;
     }
-    
+
     $sql .= " from empageconfgera ";
     $sql .= "      inner join empagemov  on  empagemov.e81_codmov   = empageconfgera.e90_codmov";
     $sql .= "      inner join empagegera on  empagegera.e87_codgera = empageconfgera.e90_codgera";
     $sql .= "      left  join empempenho on  empempenho.e60_numemp  = empagemov.e81_numemp";
     $sql .= "      inner join empage     on  empage.e80_codage      = empagemov.e81_codage";
     $sql2 = "";
-    
+
     if ($dbwhere == "") {
-      
+
       if ($e90_codmov != null ) {
         $sql2 .= " where empageconfgera.e90_codmov = $e90_codmov ";
       }
       if ($e90_codgera != null ) {
-        
+
         if ($sql2 != "") {
           $sql2 .= " and ";
         } else {
@@ -714,16 +714,16 @@ class cl_empageconfgera {
     } else if ($dbwhere != "") {
       $sql2 = " where $dbwhere";
     }
-    
+
     $sql .= $sql2;
     if ($ordem != null ) {
-      
+
       $sql        .= " order by ";
       $campos_sql  = split("#",$ordem);
       $virgula = "";
-      
+
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
-        
+
         $sql     .= $virgula.$campos_sql[$i];
         $virgula  = ",";
       }

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,14 +26,14 @@
  */
 
 // ABA TRATAMENTO
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 db_postmemory($_POST);
 
@@ -48,10 +48,11 @@ $oDaoTfdEncaminPedidoTfd    = new cl_tfd_encaminpedidotfd();
 $oDaoTfdPedidoRegulado      = new cl_tfd_pedidoregulado();
 $oDaoTfdParametros          = new cl_tfd_parametros();
 
-$db_opcao                   = 1;
-$iDbOpcaoRegulado           = 1;
-$db_botao                   = true;
-$sRegulador                 = "";
+$db_opcao         = 1;
+$iDbOpcaoRegulado = 1;
+$db_botao         = true;
+$sRegulador       = "";
+$lTemRegulador    = false;
 
 function formataData($dData, $iTipo = 1) {
 
@@ -67,7 +68,6 @@ function formataData($dData, $iTipo = 1) {
  return $dData;
 }
 
-
 if (isset($confirmar)) {
 
   db_inicio_transacao();
@@ -78,7 +78,6 @@ if (isset($confirmar)) {
   $oDaoTfdPedidoTfd->tf01_c_horasistema = date('H:i');
   $oDaoTfdPedidoTfd->tf01_i_login       = db_getsession('DB_id_usuario');
   $oDaoTfdPedidoTfd->tf01_i_depto       = db_getsession('DB_coddepto');
-
   $oDaoTfdPedidoTfd->incluir($tf01_i_codigo);
 
   /* Documentos */
@@ -95,16 +94,14 @@ if (isset($confirmar)) {
       $oDaoTfdDocumentosEntregues->tf22_c_horaentrega = date('H:i');
       $oDaoTfdDocumentosEntregues->tf22_c_numdoc      = $aInfo[2];
       $oDaoTfdDocumentosEntregues->incluir(null);
+
       if ($oDaoTfdDocumentosEntregues->erro_status == '0') {
 
         $oDaoTfdPedidoTfd->erro_status = '0';
         $oDaoTfdPedidoTfd->erro_msg    = 'Problema na Inserção dos Documentos: \\n\\n';
         $oDaoTfdPedidoTfd->erro_msg   .= $oDaoTfdDocumentosEntregues->erro_msg;
-
       }
-
     }
-
   }
 
   /* Situação */
@@ -113,7 +110,7 @@ if (isset($confirmar)) {
   $oDaoTfdSituacaoPedidoTfd->tf28_i_login       = db_getsession('DB_id_usuario');
   $oDaoTfdSituacaoPedidoTfd->tf28_d_datasistema = date('Y-m-d', db_getsession('DB_datausu'));
   $oDaoTfdSituacaoPedidoTfd->tf28_c_horasistema = date('H:i');
-  $oDaoTfdSituacaoPedidoTfd->tf28_c_obs         = 'PEDIDO EM ANDAMENTO.';
+  $oDaoTfdSituacaoPedidoTfd->tf28_c_obs         = 'PEDIDO ATIVO';
 
   if ($oDaoTfdPedidoTfd->erro_status != '0') {
 
@@ -123,9 +120,7 @@ if (isset($confirmar)) {
       $oDaoTfdPedidoTfd->erro_status = '0';
       $oDaoTfdPedidoTfd->erro_msg    = 'Problema na Inserção da Situação: \\n\\n';
       $oDaoTfdPedidoTfd->erro_msg   .= $oDaoTfdSituacaoPedidoTfd->erro_msg;
-
     }
-
   }
 
   /* Procedimentos */
@@ -142,11 +137,8 @@ if (isset($confirmar)) {
         $oDaoTfdPedidoTfd->erro_status = '0';
         $oDaoTfdPedidoTfd->erro_msg    = 'Problema na Inserção dos Procedimentos: \\n\\n';
         $oDaoTfdPedidoTfd->erro_msg   .= $oDaoTfdProcPedidoTfd->erro_msg;
-
       }
-
     }
-
   }
 
   /* Prontuário */
@@ -163,11 +155,8 @@ if (isset($confirmar)) {
         $oDaoTfdPedidoTfd->erro_status = '0';
         $oDaoTfdPedidoTfd->erro_msg    = 'Problema na Inserção do Prontuário: \\n\\n';
         $oDaoTfdPedidoTfd->erro_msg   .= $oDaoTfdProntPedidoTfd->erro_msg;
-
       }
-
     }
-
   }
 
   /* Encaminhamento */
@@ -184,12 +173,11 @@ if (isset($confirmar)) {
         $oDaoTfdPedidoTfd->erro_status = '0';
         $oDaoTfdPedidoTfd->erro_msg    = 'Problema na Inserção dos Encaminhamento: \\n\\n';
         $oDaoTfdPedidoTfd->erro_msg   .= $oDaoTfdEncaminPedidoTfd->erro_msg;
-
       }
-
     }
-
   }
+
+  $iEspecMedico = null;
 
   /* Incluir o regulador padrão */
   $sInner    = " inner join tfd_procpedidotfd on sd96_i_procedimento = tf23_i_procedimento";
@@ -197,38 +185,46 @@ if (isset($confirmar)) {
   $sWhere    = " exists (select * from sau_proccbo $sInner where $sSubWhere)";
   $sSql      = $oDaoTfdParametros->sql_query("", "tf11_especmedico", "", $sWhere);
   $rs        = $oDaoTfdParametros->sql_record($sSql);
+
   if ($oDaoTfdParametros->numrows > 0) {
 
-    $oDados                                    = db_utils::fieldsmemory($rs, 0);
+    $lTemRegulador = true;
+    $iEspecMedico  = db_utils::fieldsmemory($rs, 0)->tf11_especmedico;
+  } else {
+
+    $lTemRegulador = false;
+    $sSql          = $oDaoTfdParametros->sql_query("", "tf11_especmedico", "", "tf11_especmedico is not null");
+    $rs            = $oDaoTfdParametros->sql_record($sSql);
+
+    if ($oDaoTfdParametros->numrows > 0) {
+
+      $lTemRegulador = true;
+      $iEspecMedico  = db_utils::fieldsmemory($rs, 0)->tf11_especmedico;
+
+      $sRegulador    = "Regulador padrão informado nos parâmetros não pode regular este pedidos,";
+      $sRegulador   .= "pois sua especialidade não engloba todos os procedimentos deste pedido de TFD.";
+    }
+  }
+
+  if( $lTemRegulador ) {
+
     $oDaoTfdPedidoRegulado->tf34_i_codigo      = null;
-    $oDaoTfdPedidoRegulado->tf34_i_especmedico = $oDados->tf11_especmedico;
+    $oDaoTfdPedidoRegulado->tf34_i_especmedico = $iEspecMedico;
     $oDaoTfdPedidoRegulado->tf34_i_pedidotfd   = $oDaoTfdPedidoTfd->tf01_i_codigo;
     $oDaoTfdPedidoRegulado->tf34_i_login       = db_getsession('DB_id_usuario');
     $oDaoTfdPedidoRegulado->tf34_d_datasistema = date('Y-m-d', db_getsession('DB_datausu'));;
     $oDaoTfdPedidoRegulado->tf34_c_horasistema = date('H:i');
     $oDaoTfdPedidoRegulado->incluir(null);
+
     if ($oDaoTfdPedidoRegulado->erro_status == '0') {
 
       $oDaoTfdPedidoTfd->erro_status = '0';
       $oDaoTfdPedidoTfd->erro_msg    = 'Problema na Inserção do Regulador: \\n\\n';
       $oDaoTfdPedidoTfd->erro_msg   .= $oDaoTfdEncaminPedidoTfd->erro_msg;
-
     }
-
-  } else {
-
-    $sSql      = $oDaoTfdParametros->sql_query("", "tf11_especmedico", "", "");
-    $rs        = $oDaoTfdParametros->sql_record($sSql);
-    if ($oDaoTfdParametros->numrows > 0) {
-
-      $sRegulador  = "Regulador padrão informado nos parâmetros não pode regular este pedidos,";
-      $sRegulador .= "pois sua especialidade não engloba todos os procedimentos deste pedido de TFD.";
-
-    }
-
   }
-  db_fim_transacao($oDaoTfdPedidoTfd->erro_status == '0' ? true : false);
 
+  db_fim_transacao($oDaoTfdPedidoTfd->erro_status == '0' ? true : false);
 }
 
 if (isset($alterar)) {
@@ -264,9 +260,7 @@ if (isset($alterar)) {
         $oDaoTfdPedidoTfd->erro_status = '0';
         $oDaoTfdPedidoTfd->erro_msg    = $oDaoTfdProcPedidoTfd->erro_msg;
         break;
-
       }
-
     }
 
     /* Insere os procedimentos */
@@ -283,17 +277,12 @@ if (isset($alterar)) {
           $oDaoTfdPedidoTfd->erro_status = '0';
           $oDaoTfdPedidoTfd->erro_msg    = 'Problema na Inserção dos Procedimentos: \\n\\n';
           $oDaoTfdPedidoTfd->erro_msg   .= $oDaoTfdProcPedidoTfd->erro_msg;
-
         }
-
       }
-
     }
-
   }
 
   db_fim_transacao($oDaoTfdPedidoTfd->erro_status == '0' ? true : false);
-
 }
 
 if (isset($chavepesquisa)) {
@@ -311,7 +300,6 @@ if (isset($chavepesquisa)) {
   if ($oDaoTfdPedidoRegulado->numrows > 0) {
     $iDbOpcaoRegulado = 3;
   }
-
 }
 
 
@@ -321,7 +309,7 @@ if (isset($chavepesquisa)) {
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<?
+<?php
 db_app::load("scripts.js, strings.js, prototype.js, datagrid.widget.js, webseller.js, /widgets/dbautocomplete.widget.js");
 db_app::load("grid.style.css");
 ?>
@@ -336,7 +324,7 @@ db_app::load("grid.style.css");
     <center>
       <fieldset style='width: 83%; padding-bottom: 1px;'> <legend><b>Pedido de Tratamento Fora do Município</b></legend>
 	        <?
-	        require_once("forms/db_frmtfd_pedidotfd.php");
+	        require_once(modification("forms/db_frmtfd_pedidotfd.php"));
           ?>
       </fieldset>
     </center>
@@ -344,40 +332,33 @@ db_app::load("grid.style.css");
   </tr>
 </table>
 </center>
-<?
-/*db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"),
-          db_getsession("DB_anousu"),db_getsession("DB_instit")
-         );*/
-?>
 </body>
 </html>
 <script>
 js_tabulacaoforms("form1", "tf01_i_cgsund", true, 1, "tf01_i_cgsund", true);
 </script>
-<?
+<?php
 if ($sRegulador != '') {
   echo "<script>alert('$sRegulador');</script>";
 }
+
 if (isset($lRegulador)) {
   echo "<script>js_regulador();</script>";
 }
+
 if (isset($confirmar) || isset($alterar)) {
 
   if ($oDaoTfdPedidoTfd->erro_status == '0') {
 
     $oDaoTfdPedidoTfd->erro(true, false);
     $db_botao = true;
-
   } else {
 
     $oDaoTfdPedidoTfd->erro(true, false);
-    if ($sRegulador != "") {
+    if( !$lTemRegulador ) {
       $sRegulador = '&lRegulador=true';
     }
 
-    db_redireciona('tfd4_tfd_pedidotfd002.php?chavepesquisa='.$oDaoTfdPedidoTfd->tf01_i_codigo.$sRegulador);
-
+    db_redireciona('tfd4_tfd_pedidotfd002.php?chavepesquisa='.$oDaoTfdPedidoTfd->tf01_i_codigo);
   }
-
 }
-?>

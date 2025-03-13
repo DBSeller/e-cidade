@@ -1,35 +1,35 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_db_depusu_classe.php");
-require_once("classes/db_db_depart_classe.php");
-require_once("classes/db_db_usuarios_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_db_depusu_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_db_usuarios_classe.php"));
 
 define('LARGURA_PAGINA', 277);
 
@@ -60,21 +60,22 @@ $dbwhere = " ";
 $orderby = " ";
 
 if (isset($listar)) {
+    $dbwhere = "";
   if ($listar==2) {
     if($depto!= ""){
-      $dbwhere =  " and e.coddepto = ".$depto;
+      $dbwhere .=  " and e.coddepto = ".$depto;
     }
     if($id_usuario!= ""){
-      $dbwhere =  " and ru.id_usuario = ".$id_usuario;
+      $dbwhere .=  " and eu.id_usuario = ".$id_usuario;
     }
     $orderby = " e.coddepto  ";
     $head5 = "ORDEM DE DEPARTAMENTO QUE ENVIOU";
   } else {
     if($depto!= ""){
-      $dbwhere =  " and r.coddepto = ".$depto;
+      $dbwhere .=  " and r.coddepto = ".$depto;
     }
     if($id_usuario!= ""){
-      $dbwhere =  " and r.id_usuario = ".$id_usuario;
+      $dbwhere .=  " and ru.id_usuario = ".$id_usuario;
     }
     $orderby = " r.coddepto ";
     $head5 = "ORDEM DE DEPARTAMENTO QUE RECEBERÁ";
@@ -105,8 +106,8 @@ $sql = "select p62_codtran,
              left join db_usuarios as ru on ru.id_usuario = p62_id_usorec
              left join proctransand on p64_codtran = p62_codtran
              left join arqproc on p68_codproc = p63_codproc
-        where ( p62_id_usorec = 1 or p62_id_usorec = 0 )
-          and p64_codtran is null
+        where 
+          p64_codtran is null
           and p68_codproc is null
           $dbwhere
           and p58_instit = ".db_getsession("DB_instit")."
@@ -161,14 +162,14 @@ for ($x2 = 0; $x2 < $cldepart->numrows; $x2++) {
     $pdf->cell(larguraColuna(5),$alt,"Hora",1,0,"C",0);
 
     if ($listar==1 ) {
-      $pdf->cell(larguraColuna(30),$alt,"Departamento que Enviou ",1,0,"L",0);
+      $pdf->cell(larguraColuna(25),$alt,"Departamento que Enviou ",1,0,"L",0);
     } else {
-      $pdf->cell(larguraColuna(30),$alt,"Departamento que Receberá ",1,0,"L",0);
+      $pdf->cell(larguraColuna(25),$alt,"Departamento que Receberá ",1,0,"L",0);
     }
 
-    $pdf->cell(larguraColuna(8),$alt,"Cod. Processo",1,0,"C",0);
+    $pdf->cell(larguraColuna(15),$alt,"Cod. Processo",1,0,"C",0);
     $pdf->cell(larguraColuna(26),$alt,"Requerente",1,0,"C",0);
-    $pdf->cell(larguraColuna(18),$alt,"Tipo",1,1,"C",0);
+    $pdf->cell(larguraColuna(16),$alt,"Tipo",1,1,"C",0);
 
     $total = 0;
     $troca = 0;
@@ -179,27 +180,29 @@ for ($x2 = 0; $x2 < $cldepart->numrows; $x2++) {
   $pdf->cell(larguraColuna(6),$alt, db_formatar($p62_dttran, 'd'),0,0,"C",0);
   $pdf->cell(larguraColuna(5),$alt,$p62_hora,0,0,"C",0);
   if ($listar==1 ) {
-    $pdf->cell(larguraColuna(30),$alt,$e_coddepto."-".$e_descricao,0,0,"L",0);
+    $pdf->cell(larguraColuna(25),$alt,$e_coddepto."-".$e_descricao,0,0,"L",0);
   } else {
-    $pdf->cell(larguraColuna(30),$alt,$r_coddepto."-".$r_descricao,0,0,"L",0);
+    $pdf->cell(larguraColuna(35),$alt,$r_coddepto."-".$r_descricao,0,0,"L",0);
   }
 
-  $pdf->cell(larguraColuna(8),$alt,$processos,0,0,"L",0); 
+  $pdf->setfont('arial', '', 7);
+  $pdf->cell(larguraColuna(15),$alt,$processos,0,0,"L",0);
+  $pdf->setfont('arial', '', 8);
 
-  $pdf->cell(larguraColuna(26),$alt, limitarTexto($p58_requer, 45), 0,0,"L",0); 
-  $pdf->cell(larguraColuna(18),$alt, limitarTexto($p51_descr, 25),0,1,"L",0); 
+  $pdf->cell(larguraColuna(26),$alt, limitarTexto($p58_requer, 45), 0,0,"L",0);
+  $pdf->cell(larguraColuna(16),$alt, limitarTexto($p51_descr, 25),0,1,"L",0);
 }
 
 $pdf->Output();
 
 /**
- * Largura da coluna 
- * 
- * @param string $sTipo 
- * @param float $nPorcentagem - Porcentagem que a coluna ocupara na linha   
+ * Largura da coluna
+ *
+ * @param string $sTipo
+ * @param float $nPorcentagem - Porcentagem que a coluna ocupara na linha
  * @return float
  */
-function larguraColuna($nPorcentagem = 0) {   
+function larguraColuna($nPorcentagem = 0) {
 
   if (empty($nPorcentagem)) {
     return LARGURA_PAGINA;

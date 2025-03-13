@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,240 +24,441 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+use ECidade\Pdf\Pdf;
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_selecao_classe.php");
-$clselecao = new cl_selecao();
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sql.php");
+require_once modification("classes/db_selecao_classe.php");
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-//db_postmemory($HTTP_SERVER_VARS,2);exit;
+$oGet = db_utils::postMemory($_GET);
+
+$iInstituicao = db_getsession('DB_instit');
+$iMesFolha    = DBPessoal::getMesFolha();
+$iAnoFolha    = DBPessoal::getAnoFolha();
+$sWhere       = '';
+
+/**
+ * Define cabeçalho
+ */
 $head2 = "Resumo de Pensões Alimentícias";
-$head4 = "Período : ".$mes." / ".$ano;
+$head4 = "Período: {$oGet->mes}/{$oGet->ano}";
 
-$sWhere = " ";
+switch ($oGet->tipo) {
+  case 's':
+    $head6      = 'Salário';
+    $sValor     = 'r52_valor + r52_valfer';
+    $iTipoFolha = FolhaPagamento::TIPO_FOLHA_SALARIO;
+    break;
 
-if (trim($selecao) != "") {
+  case 'c':
+    $head6      = 'Complementar';
+    $sValor     = 'r52_valcom';
+    $iTipoFolha = FolhaPagamento::TIPO_FOLHA_COMPLEMENTAR;
+    break;
 
-  $result_selecao = $clselecao->sql_record($clselecao->sql_query_file($selecao,db_getsession("DB_instit")));
+  case '3':
+    $head6  = '13º. Salário';
+    $sValor = 'r52_val13'; 
+    break;
 
-  if ($clselecao->numrows > 0) {
+  case 'r':
+    $head6  = 'Rescisão';
+    $sValor = 'r52_valres'; 
+    break;
 
-    db_fieldsmemory($result_selecao, 0);
-    $sWhere = " and ".$r44_where;
-    $head8 = "Seleção: ".$selecao." - ".$r44_descr;
+  case 'u':
+    $head6      = 'Suplementar';
+    $sValor     = 'r52_valor + r52_valfer';
+    $iTipoFolha = FolhaPagamento::TIPO_FOLHA_SUPLEMENTAR;
+    break;
+}
+
+$head7 = "";
+if (!empty($oGet->selecao)) {
+
+  $oDaoSelecao = new cl_selecao;
+
+  $sSql     = $oDaoSelecao->sql_query_file($oGet->selecao, $iInstituicao);
+  $rsResult = $oDaoSelecao->sql_record($sSql);
+
+  if ($oDaoSelecao->numrows) {
+
+    $oSelecao = db_utils::fieldsMemory($rsResult, 0);
+    $sWhere   = "AND {$oSelecao->r44_where}";
+
+    $head7    = "Seleção {$oGet->selecao} - {$oSelecao->r44_descr}";
   }
 }
 
-if ($tipo == 's') {
 
-  $head6  = "Salário ";
-  $valor = " r52_valor + r52_valfer "; 
-} else if($tipo == 'c') {
-
-  $head6 = "Complementar ";
-  $valor = " r52_valcom"; 
-} else if($tipo == '3') {
-
-  $head6 = "13º.  Salário ";
-  $valor = " r52_val13 "; 
-} else if($tipo == 'r') {
-
-  $head6 = "Rescisão ";
-  $valor = " r52_valres "; 
+if ($oGet->ordem == 'n') {
+  $sOrder = 'codigo_banco, rh01_regist';
+} else {
+  if ($oGet->func == 's') {
+    $sOrder = 'codigo_banco, r70_estrut, z01_nome, codigo_banco, codigo_agencia';
+  } else {
+    $sOrder = 'codigo_banco, codigo_agencia, r70_estrut, nome_beneficiario';
+  }
 }
 
-if ($ordem == 'n') {
-  $ordem = " order by rh01_regist ";
+if (!empty($oGet->bancos)) {
+    $sWhere .= " AND cast(trim(db90_codban) as integer) in ({$oGet->bancos})";
+    $head8 = "Bancos selecionados: {$oGet->bancos}";
+    $sOrder = "codigo_banco, r70_estrut, nome_beneficiario, z01_nome";
+}
+
+if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+    $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+    $sWhere .= " and rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+}
+
+$sGroup  = 'descricao_banco, codigo_banco, codigo_agencia, r52_dvagencia, conta, r52_dvconta, '; 
+$sGroup .= 'cgm_beneficiario, nome_beneficiario, cpf_beneficiario, r70_estrut, r70_descr, rh01_regist, ';
+$sGroup .= 'x.z01_nome, x.w01_work05, cpf, r52_observacao ';
+
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar() && isset($iTipoFolha)) {
+
+  $sSql = "
+    SELECT *
+      FROM (
+        SELECT CASE WHEN trim(r52_codbco) = '' OR r52_codbco IS NULL THEN '000'
+                    ELSE r52_codbco
+               END                     AS codigo_banco,
+               CASE WHEN db90_descr IS NOT NULL THEN db90_descr
+                    ELSE 'SEM BANCO'
+               END                     AS descricao_banco,
+               to_char(to_number(CASE WHEN trim(r52_codage) = '' THEN '0'
+                    ELSE r52_codage
+               END, '99999'), '99999') AS codigo_agencia,
+               CASE WHEN r52_dvagencia IS NULL THEN ''
+                    ELSE r52_dvagencia
+               END                     AS r52_dvagencia,
+               r52_conta               AS conta,
+               CASE WHEN r52_dvconta IS NULL THEN ''
+                    ELSE r52_dvconta
+               END                     AS r52_dvconta,
+               r52_numcgm              AS cgm_beneficiario,
+               cgm.z01_nome            AS nome_beneficiario,
+               cgm.z01_cgccpf          AS cpf_beneficiario,
+               a.z01_nome,
+               a.z01_cgccpf AS cpf,
+               r70_estrut,
+               r70_descr,
+               rh01_regist,
+               (
+                 SELECT sum(rh145_valor)
+                   FROM rhhistoricopensao
+                        INNER JOIN rhfolhapagamento  ON rh145_rhfolhapagamento = rh141_sequencial
+
+                  WHERE rh141_anousu    = r52_anousu
+                    AND rh141_mesusu    = r52_mesusu
+                    AND rh141_instit    = rh02_instit
+                    AND rh141_tipofolha = {$iTipoFolha}
+                    AND rh145_pensao    = r52_sequencial
+               )                       AS w01_work05,
+               r52_observacao
+          FROM pensao
+               INNER JOIN cgm          ON r52_numcgm              = z01_numcgm
+               INNER JOIN rhpessoal    ON rh01_regist             = r52_regist
+               INNER JOIN rhpessoalmov ON rh01_regist             = rh02_regist
+                                      AND rh02_anousu             = {$iAnoFolha}
+                                      AND rh02_mesusu             = {$iMesFolha}
+                                      AND rh02_instit             = {$iInstituicao}
+               INNER JOIN rhlota       ON r70_codigo              = rh02_lota
+                                      AND r70_instit              = rh02_instit
+               INNER JOIN cgm AS a     ON a.z01_numcgm            = rh01_numcgm
+               LEFT  JOIN db_bancos    ON r52_codbco::varchar(10) = db90_codban
+         WHERE r52_anousu = {$oGet->ano}
+           AND r52_mesusu = {$oGet->mes}
+               {$sWhere}
+      ) AS x
+     WHERE w01_work05 > 0
+     GROUP BY {$sGroup}
+     ORDER BY {$sOrder}
+  ";
 } else {
 
-  if ($func == 's') {
-    $ordem = " order by z01_nome, codigo_banco, codigo_agencia ";
-  } else {
-    $ordem = " order by  codigo_banco, codigo_agencia, nome_beneficiario";
-  }
+  $sSql = "
+    SELECT *
+      FROM (
+        SELECT CASE WHEN trim(r52_codbco) = '' OR r52_codbco IS NULL THEN '000'
+                    ELSE r52_codbco
+               END                     AS codigo_banco,
+               CASE WHEN db90_descr IS NOT NULL THEN db90_descr
+                    ELSE 'SEM BANCO'
+               END                     AS descricao_banco,
+               to_char(to_number(CASE WHEN trim(r52_codage) = '' THEN '0'
+                    ELSE r52_codage
+               END, '99999'), '99999') AS codigo_agencia,
+               CASE WHEN r52_dvagencia IS NULL THEN ''
+                    ELSE r52_dvagencia
+               END                     AS r52_dvagencia,
+               r52_conta               AS conta,
+               CASE WHEN r52_dvconta IS NULL THEN ''
+                    ELSE r52_dvconta
+               END                     AS r52_dvconta,
+               r52_numcgm              AS cgm_beneficiario,
+               cgm.z01_nome            AS nome_beneficiario,
+               cgm.z01_cgccpf          AS cpf_beneficiario,
+               a.z01_nome,
+               a.z01_cgccpf AS cpf,
+               rh01_regist,
+               r70_estrut,
+               r70_descr,
+               {$sValor}               AS w01_work05,
+               r52_observacao
+          FROM pensao
+            INNER JOIN cgm          ON   r52_numcgm              =  z01_numcgm
+            INNER JOIN rhpessoal    ON  rh01_regist              =  r52_regist
+            INNER JOIN rhpessoalmov ON  rh01_regist              = rh02_regist
+                                   AND  rh02_anousu              = {$iAnoFolha}
+                                   AND  rh02_mesusu              = {$iMesFolha}
+                                   AND  rh02_instit              = {$iInstituicao}
+            INNER JOIN rhlota       ON   r70_codigo              = rh02_lota
+                                   AND   r70_instit              = rh02_instit
+            INNER JOIN cgm AS a     ON a.z01_numcgm              = rh01_numcgm
+            LEFT  JOIN db_bancos    ON   r52_codbco::varchar(10) = db90_codban
+         WHERE r52_anousu = {$oGet->ano}
+           AND r52_mesusu = {$oGet->mes}
+           AND {$sValor}  > 0
+               {$sWhere}
+      ) AS x
+     GROUP BY {$sGroup}
+     ORDER BY {$sOrder}
+  ";
 }
 
-$sSql = "
-select * from 
-(
-       select case when trim(r52_codbco) = '' or r52_codbco is null 
-                   then '000' 
-		   else r52_codbco 
-	      end as codigo_banco,
-              case when db90_descr is not null 
-	           then db90_descr 
-		   else 'SEM BANCO' 
-	      end as descricao_banco,
-              to_char(to_number(case when trim(r52_codage) = '' 
-	                     then '0' 
-			     else r52_codage 
-			end,'99999'),'99999') as codigo_agencia,
-	      case when r52_dvagencia is null 
-	           then '' 
-		   else r52_dvagencia 
-	      end as r52_dvagencia,
-		   r52_conta as conta,
-	      case when r52_dvconta is null 
-	           then '' 
-		   else r52_dvconta 
-	      end as r52_dvconta,
-	      r52_numcgm as cgm_beneficiario,
-	      cgm.z01_nome as nome_beneficiario,
-	      a.z01_nome,
-	      rh01_regist,
-	      $valor as w01_work05 
-       from pensao
-            inner join cgm       on r52_numcgm = z01_numcgm
-      	    inner join rhpessoal on rh01_regist = r52_regist
-						inner join rhpessoalmov on rh01_regist = rh02_regist 
-						                       and rh02_anousu = ".db_anofolha()." 
-						                       and rh02_mesusu = ".db_mesfolha()." 
-                                   and rh02_instit = ".db_getsession("DB_instit")."
-            inner join rhlota       on r70_codigo  = rh02_lota
-                                   and r70_instit  = rh02_instit
-	          inner join cgm a     on a.z01_numcgm = rh01_numcgm
-	          left  join db_bancos on r52_codbco::varchar(10) = db90_codban
-       where r52_anousu = $ano 
-         and r52_mesusu = $mes 
-         $sWhere
-
-	 and $valor > 0
-) as x
-group by descricao_banco,codigo_banco,codigo_agencia,r52_dvagencia,conta, r52_dvconta, cgm_beneficiario, nome_beneficiario,rh01_regist, x.z01_nome,x.w01_work05
-$ordem
-       ";
-$result = db_query($sSql);
-$iNumeroLinhas = pg_numrows($result);
-if ($iNumeroLinhas == 0){
-   db_redireciona('db_erros.php?fechar=true&db_erro=Nao existem lancamentos no periodo de '.$mes.' / '.$ano);
+$rsResult = db_query($sSql);
+if (!pg_num_rows($rsResult)) {
+  db_redireciona("db_erros.php?fechar=true&db_erro=Nao existem lancamentos no periodo de {$oGet->mes}/{$oGet->ano}");
 }
 
-$pdf = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
-$alt = 5;
-$total = 0;
+$oPDF = new Pdf();
+$oPDF->addTitulo($head2,2);
+$oPDF->addTitulo($head4,4);
+$oPDF->addTitulo($head6,6);
+$oPDF->addTitulo($head7,7);
+$oPDF->addTitulo($head8,8);
+$oPDF->AliasNbPages(); 
+$oPDF->setfillcolor(235);
+
+$oPDF->init(false);
+
+$oPDF->setfont('arial', 'b', 8);
+
+$alt     = 5;
+$total   = 0;
 $total_g = 0;
-$pdf->setfillcolor(235);
-$pdf->setfont('arial','b',8);
 
-db_fieldsmemory($result,0);
+$banco_atual = "";
+$lotacao_atual = "";
 
-if($func != 's'){
-  
-  if($tipoquebra == 'a'){
+db_fieldsmemory($rsResult,0);
+
+if($oGet->tipoquebra == 'a'){
     $quebra = substr($codigo_banco,0,3).$codigo_agencia;
-  }else{  
+}else{
     $quebra = substr($codigo_banco,0,3);
-  }
-  $troca = 0;
+}
+$troca = 0;
 
-  for($x = 0; $x < pg_numrows($result);$x++){
+
+if($oGet->func != 's'){
+  
+  for($x = 0; $x < pg_numrows($rsResult);$x++){
      
-     db_fieldsmemory($result,$x);
+     db_fieldsmemory($rsResult,$x);
 
-     if ($quebra != substr($codigo_banco,0,3).$codigo_agencia && $tipoquebra == 'a') {
+     if ($quebra != substr($codigo_banco,0,3).$codigo_agencia && $oGet->tipoquebra == 'a') {
 
-        $pdf->setfont('arial','b',8);
-        $pdf->cell(122,$alt,'Total da Agência',"T",0,"C",0);
-        $pdf->cell(40,$alt,'',"T",0,"C",0);
-        $pdf->cell(30,$alt,db_formatar($total,'f'),"T",1,"R",0);
-        $pdf->sety(300);
+        $oPDF->setfont('arial','b',8);
+        $oPDF->cell(122,$alt,'Total da Agência',"T",0,"C",0);
+        $oPDF->cell(40,$alt,'',"T",0,"C",0);
+        $oPDF->cell(30,$alt,db_formatar($total,'f'),"T",1,"R",0);
+        $oPDF->sety(300);
         $total = 0;
         $quebra = substr($codigo_banco,0,3).$codigo_agencia;
      }
 
-     if ($quebra != substr($codigo_banco,0,3) && $tipoquebra != 'a') {
+     if ($quebra != substr($codigo_banco,0,3) && $oGet->tipoquebra != 'a') {
 
-        $pdf->setfont('arial','b',8);
-        $pdf->cell(122,$alt,'Total do Banco',"T",0,"C",0);
-        $pdf->cell(40,$alt,'',"T",0,"C",0);
-        $pdf->cell(30,$alt,db_formatar($total,'f'),"T",1,"R",0);
-        $pdf->sety(300);
+        $oPDF->setfont('arial','b',8);
+        $oPDF->cell(122,$alt,'Total do Banco',"T",0,"C",0);
+        $oPDF->cell(40,$alt,'',"T",0,"C",0);
+        $oPDF->cell(30,$alt,db_formatar($total,'f'),"T",1,"R",0);
+        $oPDF->sety(300);
         $total = 0;
         $quebra = substr($codigo_banco,0,3);
      }
 
-     if ($pdf->gety() > $pdf->h - 30 || $troca == 0) {
+     if ($oPDF->getY() > $oPDF->getH() - 30 || $troca == 0) {
 
-        $pdf->addpage();
-        $pdf->setfont('arial','b',8);
-        if ($tipoquebra == 'a') {
-          $pdf->cell(80,$alt,$descricao_banco.' - Agência: '.$codigo_agencia,0,1,"L",0);
+        $oPDF->addpage();
+        $oPDF->setfont('arial','b',8);
+        if ($oGet->tipoquebra == 'a') {
+          $oPDF->cell(80,$alt,$descricao_banco.' - Agência: '.$codigo_agencia,0,1,"L",0);
         } else {
-          $pdf->cell(80,$alt,$descricao_banco,0,1,"L",0);
+          $oPDF->cell(80,$alt,$descricao_banco,0,1,"L",0);
         }
-        $pdf->ln(3);
-        $pdf->cell(122,$alt,'Nome do Beneficiário',1,0,"C",1);
-        $pdf->cell(20,$alt,'Agência',1,0,"C",1);
-        $pdf->cell(20,$alt,'Conta',1,0,"C",1);
-        $pdf->cell(30,$alt,'Valor',1,1,"C",1);
+        $oPDF->ln(3);
+        $oPDF->cell(102,$alt,'Nome do Beneficiário',1,0,"C",1);
+        $oPDF->cell(20,$alt,'CPF',1,0,"C",1);
+        $oPDF->cell(20,$alt,'Agência',1,0,"C",1);
+        $oPDF->cell(20,$alt,'Conta',1,0,"C",1);
+        $oPDF->cell(30,$alt,'Valor',1,1,"C",1);
         $troca = 1;
      }
 
-     $pdf->setfont('arial','',7);
-     $pdf->cell(122, $alt, $nome_beneficiario,0,0,"l",0);
-     $pdf->cell(20, $alt, $codigo_agencia.$r52_dvagencia, 0, 0, "R", 0);
-     $pdf->cell(20, $alt, $conta.$r52_dvconta, 0, 0, "R", 0);
-     $pdf->cell(30, $alt, db_formatar($w01_work05,'f'), 0, 1, "R", 0);
+     $oPDF->setfont('arial','',7);
+     $oPDF->cell(102, $alt, $nome_beneficiario,0,0,"l",0);
+     $oPDF->cell(20, $alt, db_formatar($cpf, "CPF"),0,0,"l",0);
+     $oPDF->cell(20, $alt, $codigo_agencia.$r52_dvagencia, 0, 0, "R", 0);
+     $oPDF->cell(20, $alt, $conta.$r52_dvconta, 0, 0, "R", 0);
+     $oPDF->cell(30, $alt, db_formatar($w01_work05,'f'), 0, 1, "R", 0);
+     if ($oGet->mostraobservacao == "t" && !empty($r52_observacao)) {
+         $oPDF->multicell(192,$alt,"OBSERVAÇÃO: ".$r52_observacao,0);
+     }
+     
      $total   += $w01_work05;
      $total_g += $w01_work05;
   }
 
-  $pdf->setfont('arial','b',8);
-  if ($tipoquebra == 'a') {
-    $pdf->cell(122,$alt,'Total da Agência',"T",0,"C",0);
+  $oPDF->setfont('arial','b',8);
+  if ($oGet->tipoquebra == 'a') {
+    $oPDF->cell(122,$alt,'Total da Agência',"T",0,"C",0);
   } else {
-    $pdf->cell(122,$alt,'Total do Banco',"T",0,"C",0);
+    $oPDF->cell(122,$alt,'Total do Banco',"T",0,"C",0);
   }
-  $pdf->cell(40,$alt,'',"T",0,"C",0);
-  $pdf->cell(30,$alt,db_formatar($total,'f'),"T",1,"R",0);
+  $oPDF->cell(40,$alt,'',"T",0,"C",0);
+  $oPDF->cell(30,$alt,db_formatar($total,'f'),"T",1,"R",0);
 
-  $pdf->ln(5);
-  $pdf->cell(122,$alt,'Total do Geral',"T",0,"C",0);
-  $pdf->cell(40,$alt,'',"T",0,"C",0);
-  $pdf->cell(30,$alt,db_formatar($total_g,'f'),"T",1,"R",0);
-}else{
+  $oPDF->ln(5);
+  $oPDF->cell(122,$alt,'Total do Geral',"T",0,"C",0);
+  $oPDF->cell(40,$alt,'',"T",0,"C",0);
+  $oPDF->cell(30,$alt,db_formatar($total_g,'f'),"T",1,"R",0);
+  
+} else {
 
-  $troca = 0;
+  for ($x = 0; $x < pg_numrows($rsResult);$x++) {
+     
+      db_fieldsmemory($rsResult,$x);
+      
+      if ($quebra != substr($codigo_banco,0,3).$codigo_agencia && $oGet->tipoquebra == 'a') {
+          
+          $oPDF->setfont('arial','b',8);
+          $oPDF->cell(249,$alt,"Total da Agência {$codigo_agencia}","T",0,"C",0);
+          $oPDF->cell(25,$alt,db_formatar($total,'f'),"T",1,"R",0);
+          $total = 0;
+          $quebra = substr($codigo_banco,0,3).$codigo_agencia;
+      }
+      
+      if ($quebra != substr($codigo_banco,0,3) && $oGet->tipoquebra != 'a') {
+          
+          $oPDF->setfont('arial','b',8);
+          $oPDF->cell(249,$alt,"Total do Banco {$banco_atual}","T",0,"R",0);
+          $oPDF->cell(25,$alt,db_formatar($total,'f'),"T",1,"R",0);
+          $total = 0;
+          $quebra = substr($codigo_banco,0,3);
+      }
+     
+     if ($oPDF->getY() > $oPDF->getH() - 30 || $troca == 0) {
 
-  for ($x = 0; $x < pg_numrows($result);$x++) {
-     db_fieldsmemory($result,$x);
-     if ($pdf->gety() > $pdf->h - 30 || $troca == 0) {
-
-        $pdf->addpage('L');
-        $pdf->setfont('arial','b',8);
-        $pdf->ln(3);
-        $pdf->cell(15,$alt,'Matr',1,0,"C",1);
-        $pdf->cell(80,$alt,'Nome do Funcionário',1,0,"C",1);
-        $pdf->cell(15,$alt,'CGM',1,0,"C",1);
-        $pdf->cell(80,$alt,'Nome do Beneficiário',1,0,"C",1);
-        $pdf->cell(10,$alt,'Banco',1,0,"C",1);
-        $pdf->cell(20,$alt,'Agência',1,0,"C",1);
-        $pdf->cell(20,$alt,'Conta',1,0,"C",1);
-        $pdf->cell(30,$alt,'Valor',1,1,"C",1);
+        $oPDF->addpage('L');
+        $oPDF->setfont('arial','b',8);
+        
+        if ($banco_atual != $descricao_banco) {
+            if ($oGet->tipoquebra == 'a') {
+                $oPDF->cell(80,$alt,"BANCO: ".$descricao_banco.' - Agência: '.$codigo_agencia,0,1,"L",0);
+            } else {
+                $oPDF->cell(80,$alt,"BANCO: ".$descricao_banco,0,1,"L",0);
+            }
+            
+        }
+        
+        if ($lotacao_atual != $r70_estrut || $banco_atual != $descricao_banco) {
+          $oPDF->cell(80,$alt,"LOTAÇÃO: {$r70_estrut} - {$r70_descr}",0,1,"L",0);
+        }
+        $lotacao_atual = $r70_estrut;
+        $banco_atual = $descricao_banco;
+        
+        $oPDF->cell(12,$alt,'Matr',1,0,"C",1);
+        $oPDF->cell(75,$alt,'Nome do Funcionário',1,0,"C",1);
+        $oPDF->cell(12,$alt,'CGM',1,0,"C",1);
+        $oPDF->cell(75,$alt,'Nome do Beneficiário',1,0,"C",1);
+        $oPDF->cell(25,$alt,'CPF',1,0,"C",1);
+        $oPDF->cell(10,$alt,'Banco',1,0,"C",1);
+        $oPDF->cell(20,$alt,'Agência',1,0,"C",1);
+        $oPDF->cell(20,$alt,'Conta',1,0,"C",1);
+        $oPDF->cell(25,$alt,'Valor',1,1,"C",1);
         $troca = 1;
      }
 
-     $pdf->setfont('arial','',7);
-     $pdf->cell(15,$alt,$rh01_regist,0,0,"l",0);
-     $pdf->cell(80,$alt,$z01_nome,0,0,"l",0);
-     $pdf->cell(15,$alt,$cgm_beneficiario,0,0,"l",0);
-     $pdf->cell(80,$alt,$nome_beneficiario,0,0,"l",0);
-     $pdf->cell(10,$alt,$codigo_banco,0,0,"l",0);
-     $pdf->cell(20,$alt,$codigo_agencia.$r52_dvagencia,0,0,"R",0);
-     $pdf->cell(20,$alt,$conta.$r52_dvconta,0,0,"R",0);
-     $pdf->cell(30,$alt,db_formatar($w01_work05,'f'),0,1,"R",0);
+     
+     if ($banco_atual != $descricao_banco) {
+         
+         $oPDF->ln(2);
+         
+         $oPDF->setfont('arial','b',8);
+         
+         if ($oGet->tipoquebra == 'a') {
+             $oPDF->cell(80,$alt,"BANCO: ".$descricao_banco.' - Agência: '.$codigo_agencia,0,1,"L",0);
+         } else {
+             $oPDF->cell(80,$alt,"BANCO: ".$descricao_banco,0,1,"L",0);
+         }
+         $oPDF->setfont('arial','',7);
+     }
+     
+     
+     if ($lotacao_atual != $r70_estrut || $banco_atual != $descricao_banco) {
+         
+         $oPDF->ln(2);
+         
+         $oPDF->setfont('arial','b',8);
+         $oPDF->cell(80,$alt,"LOTAÇÃO: {$r70_estrut} - {$r70_descr}",0,1,"L",0);
+         
+         $oPDF->cell(12,$alt,'Matr',1,0,"C",1);
+         $oPDF->cell(75,$alt,'Nome do Funcionário',1,0,"C",1);
+         $oPDF->cell(12,$alt,'CGM',1,0,"C",1);
+         $oPDF->cell(75,$alt,'Nome do Beneficiário',1,0,"C",1);
+         $oPDF->cell(25,$alt,'CPF',1,0,"C",1);
+         $oPDF->cell(10,$alt,'Banco',1,0,"C",1);
+         $oPDF->cell(20,$alt,'Agência',1,0,"C",1);
+         $oPDF->cell(20,$alt,'Conta',1,0,"C",1);
+         $oPDF->cell(25,$alt,'Valor',1,1,"C",1);
+         
+         $oPDF->setfont('arial','',8);
+     }
+     $lotacao_atual = $r70_estrut;
+     $banco_atual = $descricao_banco;
+     
+     $oPDF->setfont('arial','',7);
+     $oPDF->cell(12,$alt,$rh01_regist,0,0,"l",0);
+     $oPDF->cell(75,$alt,$z01_nome,0,0,"l",0);
+     $oPDF->cell(12,$alt,$cgm_beneficiario,0,0,"l",0);
+     $oPDF->cell(75,$alt,$nome_beneficiario,0,0,"l",0);
+     $oPDF->cell(25,$alt,$cpf_beneficiario,0,0,"C",0);
+     $oPDF->cell(10,$alt,$codigo_banco,0,0,"l",0);
+     $oPDF->cell(20,$alt,$codigo_agencia.$r52_dvagencia,0,0,"R",0);
+     $oPDF->cell(20,$alt,$conta.$r52_dvconta,0,0,"R",0);
+     $oPDF->cell(25,$alt,db_formatar($w01_work05,'f'),0,1,"R",0);
+     if ($oGet->mostraobservacao == "t" && !empty($r52_observacao)) {
+        $oPDF->multicell(270,$alt,"OBSERVAÇÃO: ".$r52_observacao,0);
+     }
+     
      $total += $w01_work05;
      $total_g += $w01_work05;
   }
 
-  $pdf->ln(5);
-  $pdf->cell(200,$alt,'TOTAL GERAL',"T",0,"C",0);
-  $pdf->cell(40,$alt,'',"T",0,"C",0);
-  $pdf->cell(30,$alt,db_formatar($total_g,'f'),"T",1,"R",0);
+  $oPDF->setfont('arial','b',8);
+  $oPDF->cell(249,$alt,"Total do Banco {$banco_atual}","T",0,"R",0);
+  $oPDF->cell(25,$alt,db_formatar($total,'f'),"T",1,"R",0);
+  
+  $oPDF->setfont('arial','b',8);
+  $oPDF->ln(5);
+  $oPDF->cell(249,$alt,'TOTAL GERAL',"T",0,"R",0);
+  $oPDF->cell(25,$alt,db_formatar($total_g,'f'),"T",1,"R",0);
 }
 
 $sName = 'tmp/pensaoAlimenticia' . date('YmdHms') . '.pdf';
-$pdf->Output($sName, false);
+$oPDF->Output("I",$sName, false);

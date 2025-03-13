@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: escola
@@ -51,6 +51,7 @@ class cl_procavaliacao {
    var $ed41_c_boletim = null; 
    var $ed41_i_sequencia = 0; 
    var $ed41_numerodisciplinasrecuperacao = 0; 
+   var $ed41_julgamenoravaliacao = 'f'; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  ed41_i_codigo = int8 = Código 
@@ -62,6 +63,7 @@ class cl_procavaliacao {
                  ed41_c_boletim = char(1) = Aparece no Boletim 
                  ed41_i_sequencia = int4 = Ordenação 
                  ed41_numerodisciplinasrecuperacao = int4 = Número de Disciplinas Reprovação 
+                 ed41_julgamenoravaliacao = bool = Julgar Menor Avaliação 
                  ";
    //funcao construtor da classe 
    function cl_procavaliacao() { 
@@ -90,6 +92,7 @@ class cl_procavaliacao {
        $this->ed41_c_boletim = ($this->ed41_c_boletim == ""?@$GLOBALS["HTTP_POST_VARS"]["ed41_c_boletim"]:$this->ed41_c_boletim);
        $this->ed41_i_sequencia = ($this->ed41_i_sequencia == ""?@$GLOBALS["HTTP_POST_VARS"]["ed41_i_sequencia"]:$this->ed41_i_sequencia);
        $this->ed41_numerodisciplinasrecuperacao = ($this->ed41_numerodisciplinasrecuperacao == ""?@$GLOBALS["HTTP_POST_VARS"]["ed41_numerodisciplinasrecuperacao"]:$this->ed41_numerodisciplinasrecuperacao);
+       $this->ed41_julgamenoravaliacao = ($this->ed41_julgamenoravaliacao == "f"?@$GLOBALS["HTTP_POST_VARS"]["ed41_julgamenoravaliacao"]:$this->ed41_julgamenoravaliacao);
      }else{
        $this->ed41_i_codigo = ($this->ed41_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed41_i_codigo"]:$this->ed41_i_codigo);
      }
@@ -151,6 +154,15 @@ class cl_procavaliacao {
      if($this->ed41_numerodisciplinasrecuperacao == null ){ 
        $this->ed41_numerodisciplinasrecuperacao = "null";
      }
+     if($this->ed41_julgamenoravaliacao == null ){ 
+       $this->erro_sql = " Campo Julgar Menor Avaliação não informado.";
+       $this->erro_campo = "ed41_julgamenoravaliacao";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      if($ed41_i_codigo == "" || $ed41_i_codigo == null ){
        $result = db_query("select nextval('procavaliacao_ed41_i_codigo_seq')"); 
        if($result==false){
@@ -193,6 +205,7 @@ class cl_procavaliacao {
                                       ,ed41_c_boletim 
                                       ,ed41_i_sequencia 
                                       ,ed41_numerodisciplinasrecuperacao 
+                                      ,ed41_julgamenoravaliacao 
                        )
                 values (
                                 $this->ed41_i_codigo 
@@ -204,6 +217,7 @@ class cl_procavaliacao {
                                ,'$this->ed41_c_boletim' 
                                ,$this->ed41_i_sequencia 
                                ,$this->ed41_numerodisciplinasrecuperacao 
+                               ,'$this->ed41_julgamenoravaliacao' 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -249,12 +263,13 @@ class cl_procavaliacao {
          $resac = db_query("insert into db_acount values($acount,1010078,1008456,'','".AddSlashes(pg_result($resaco,0,'ed41_c_boletim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010078,1008457,'','".AddSlashes(pg_result($resaco,0,'ed41_i_sequencia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010078,20418,'','".AddSlashes(pg_result($resaco,0,'ed41_numerodisciplinasrecuperacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010078,20898,'','".AddSlashes(pg_result($resaco,0,'ed41_julgamenoravaliacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
    // funcao para alteracao
-   function alterar ($ed41_i_codigo=null) { 
+   public function alterar ($ed41_i_codigo=null) { 
       $this->atualizacampos();
      $sql = " update procavaliacao set ";
      $virgula = "";
@@ -357,6 +372,19 @@ class cl_procavaliacao {
        $sql  .= $virgula." ed41_numerodisciplinasrecuperacao = $this->ed41_numerodisciplinasrecuperacao ";
        $virgula = ",";
      }
+     if(trim($this->ed41_julgamenoravaliacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed41_julgamenoravaliacao"])){ 
+       $sql  .= $virgula." ed41_julgamenoravaliacao = '$this->ed41_julgamenoravaliacao' ";
+       $virgula = ",";
+       if(trim($this->ed41_julgamenoravaliacao) == null ){ 
+         $this->erro_sql = " Campo Julgar Menor Avaliação não informado.";
+         $this->erro_campo = "ed41_julgamenoravaliacao";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($ed41_i_codigo!=null){
        $sql .= " ed41_i_codigo = $this->ed41_i_codigo";
@@ -366,37 +394,39 @@ class cl_procavaliacao {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->ed41_i_codigo));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,1008450,'$this->ed41_i_codigo','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_codigo"]) || $this->ed41_i_codigo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_codigo"]) || $this->ed41_i_codigo != "")
              $resac = db_query("insert into db_acount values($acount,1010078,1008450,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_i_codigo'))."','$this->ed41_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_procedimento"]) || $this->ed41_i_procedimento != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_procedimento"]) || $this->ed41_i_procedimento != "")
              $resac = db_query("insert into db_acount values($acount,1010078,1008451,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_i_procedimento'))."','$this->ed41_i_procedimento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_periodoavaliacao"]) || $this->ed41_i_periodoavaliacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_periodoavaliacao"]) || $this->ed41_i_periodoavaliacao != "")
              $resac = db_query("insert into db_acount values($acount,1010078,1008452,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_i_periodoavaliacao'))."','$this->ed41_i_periodoavaliacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_formaavaliacao"]) || $this->ed41_i_formaavaliacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_formaavaliacao"]) || $this->ed41_i_formaavaliacao != "")
              $resac = db_query("insert into db_acount values($acount,1010078,1008453,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_i_formaavaliacao'))."','$this->ed41_i_formaavaliacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_procavalvinc"]) || $this->ed41_i_procavalvinc != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_procavalvinc"]) || $this->ed41_i_procavalvinc != "")
              $resac = db_query("insert into db_acount values($acount,1010078,1008454,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_i_procavalvinc'))."','$this->ed41_i_procavalvinc',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_procresultvinc"]) || $this->ed41_i_procresultvinc != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_procresultvinc"]) || $this->ed41_i_procresultvinc != "")
              $resac = db_query("insert into db_acount values($acount,1010078,1008455,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_i_procresultvinc'))."','$this->ed41_i_procresultvinc',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_c_boletim"]) || $this->ed41_c_boletim != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_c_boletim"]) || $this->ed41_c_boletim != "")
              $resac = db_query("insert into db_acount values($acount,1010078,1008456,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_c_boletim'))."','$this->ed41_c_boletim',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_sequencia"]) || $this->ed41_i_sequencia != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_i_sequencia"]) || $this->ed41_i_sequencia != "")
              $resac = db_query("insert into db_acount values($acount,1010078,1008457,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_i_sequencia'))."','$this->ed41_i_sequencia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed41_numerodisciplinasrecuperacao"]) || $this->ed41_numerodisciplinasrecuperacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_numerodisciplinasrecuperacao"]) || $this->ed41_numerodisciplinasrecuperacao != "")
              $resac = db_query("insert into db_acount values($acount,1010078,20418,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_numerodisciplinasrecuperacao'))."','$this->ed41_numerodisciplinasrecuperacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed41_julgamenoravaliacao"]) || $this->ed41_julgamenoravaliacao != "")
+             $resac = db_query("insert into db_acount values($acount,1010078,20898,'".AddSlashes(pg_result($resaco,$conresaco,'ed41_julgamenoravaliacao'))."','$this->ed41_julgamenoravaliacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Avaliações do Procedimento nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed41_i_codigo;
@@ -405,8 +435,8 @@ class cl_procavaliacao {
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
          $this->erro_sql = "Avaliações do Procedimento nao foi Alterado. Alteracao Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed41_i_codigo;
@@ -415,7 +445,7 @@ class cl_procavaliacao {
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Alteração efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->ed41_i_codigo;
@@ -428,13 +458,13 @@ class cl_procavaliacao {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($ed41_i_codigo=null,$dbwhere=null) { 
+   public function excluir ($ed41_i_codigo=null,$dbwhere=null) { 
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($ed41_i_codigo));
        } else { 
@@ -457,24 +487,25 @@ class cl_procavaliacao {
            $resac  = db_query("insert into db_acount values($acount,1010078,1008456,'','".AddSlashes(pg_result($resaco,$iresaco,'ed41_c_boletim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010078,1008457,'','".AddSlashes(pg_result($resaco,$iresaco,'ed41_i_sequencia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010078,20418,'','".AddSlashes(pg_result($resaco,$iresaco,'ed41_numerodisciplinasrecuperacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010078,20898,'','".AddSlashes(pg_result($resaco,$iresaco,'ed41_julgamenoravaliacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from procavaliacao
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($ed41_i_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($ed41_i_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " ed41_i_codigo = $ed41_i_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Avaliações do Procedimento nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed41_i_codigo;
@@ -483,8 +514,8 @@ class cl_procavaliacao {
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
          $this->erro_sql = "Avaliações do Procedimento nao Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$ed41_i_codigo;
@@ -493,7 +524,7 @@ class cl_procavaliacao {
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$ed41_i_codigo;
@@ -506,9 +537,9 @@ class cl_procavaliacao {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -517,8 +548,8 @@ class cl_procavaliacao {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:procavaliacao";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -528,92 +559,56 @@ class cl_procavaliacao {
       }
      return $result;
    }
-   function sql_query ( $ed41_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
+   // funcao do sql
+   public function sql_query ($ed41_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos}";
      $sql .= " from procavaliacao ";
      $sql .= "      inner join periodoavaliacao  on  periodoavaliacao.ed09_i_codigo = procavaliacao.ed41_i_periodoavaliacao";
      $sql .= "      inner join formaavaliacao  on  formaavaliacao.ed37_i_codigo = procavaliacao.ed41_i_formaavaliacao";
      $sql .= "      inner join procedimento  on  procedimento.ed40_i_codigo = procavaliacao.ed41_i_procedimento";
      $sql2 = "";
-     if($dbwhere==""){
-       if($ed41_i_codigo!=null ){
-         $sql2 .= " where procavaliacao.ed41_i_codigo = $ed41_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
+     if (empty($dbwhere)) {
+       if (!empty($ed41_i_codigo)) {
+         $sql2 .= " where procavaliacao.ed41_i_codigo = $ed41_i_codigo ";
+       }
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   function sql_query_file ( $ed41_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from procavaliacao ";
+   // funcao do sql 
+   public function sql_query_file ($ed41_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from procavaliacao ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($ed41_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($ed41_i_codigo)){
          $sql2 .= " where procavaliacao.ed41_i_codigo = $ed41_i_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
+
    function sql_query_regper ( $ed41_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from procavaliacao ";
-     $sql .= "      inner join periodoavaliacao  on  periodoavaliacao.ed09_i_codigo = procavaliacao.ed41_i_periodoavaliacao";
-     $sql .= "      inner join formaavaliacao  on  formaavaliacao.ed37_i_codigo = procavaliacao.ed41_i_formaavaliacao";
-     $sql .= "      inner join procedimento  on  procedimento.ed40_i_codigo = procavaliacao.ed41_i_procedimento";
-     $sql .= "      left join regenciaperiodo  on  regenciaperiodo.ed78_i_procavaliacao =  procavaliacao.ed41_i_codigo";
+
+     $sql  = "select {$campos}";
+     $sql .= "  from procavaliacao ";
+     $sql .= "       inner join periodoavaliacao  on  periodoavaliacao.ed09_i_codigo = procavaliacao.ed41_i_periodoavaliacao";
+     $sql .= "       inner join formaavaliacao  on  formaavaliacao.ed37_i_codigo = procavaliacao.ed41_i_formaavaliacao";
+     $sql .= "       inner join procedimento  on  procedimento.ed40_i_codigo = procavaliacao.ed41_i_procedimento";
+     $sql .= "       left join regenciaperiodo  on  regenciaperiodo.ed78_i_procavaliacao =  procavaliacao.ed41_i_codigo";
      $sql2 = "";
      if($dbwhere==""){
        if($ed41_i_codigo!=null ){
@@ -635,4 +630,3 @@ class cl_procavaliacao {
      return $sql;
   }
 }
-?>

@@ -1,48 +1,51 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_sql.php");
-require_once ("libs/JSON.php");
-require_once ("libs/db_utils.php");
-require_once ("std/db_stdClass.php");
-require_once ("classes/db_db_config_classe.php");
-require_once ("classes/db_db_depart_classe.php");
-require_once ("classes/db_cgm_classe.php");
-require_once ("classes/db_empempenho_classe.php");
-require_once ("classes/db_matordem_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_empempenho_classe.php"));
+require_once(modification("classes/db_matordem_classe.php"));
+require_once(modification("classes/db_matordemitemanu_classe.php"));
 
-$oDaoInstit     = db_utils::getDao("db_config");//new cl_db_config;
-$oDaoDepart     = new cl_db_depart; //db_utils::getDao("db_depart");
-$oDaoCgm        = db_utils::getDao("cgm"); //new cl_cgm;
-$oDaoEmpempenho = new cl_empempenho; 
-$oDaoMatOrdem   = new cl_matordem;
+$oDaoInstit          = db_utils::getDao("db_config");//new cl_db_config;
+$oDaoDepart          = new cl_db_depart; //db_utils::getDao("db_depart");
+$oDaoCgm             = db_utils::getDao("cgm"); //new cl_cgm;
+$oDaoEmpempenho      = new cl_empempenho;
+$oDaoMatOrdem        = new cl_matordem;
+$oDaoMatOrdemItemAnu = new cl_matordemitemanu;
 
 $oGet         = db_utils::postMemory($_GET);
+
 
 $dDataUsu     = date("d/m/Y", db_getsession("DB_datausu"));
 $iInstituicao = db_getsession("DB_instit");
@@ -60,11 +63,10 @@ $sForncedor    = "";
 $sDataEmissao  = date("d/m/Y", db_getsession("DB_datausu"));
 $aItens        = array();
 
-
 $sWereEmpenho = "e60_instit = (select codigo from db_config where prefeitura is true limit 1) ";
 
 $sCamposEmpenho  = "distinct m51_codordem as codigo_ordem, ";
-$sCamposEmpenho .= "e60_numemp ||'/'|| e60_anousu as codigo_empenho ";
+$sCamposEmpenho .= "e60_codemp ||'/'|| e60_anousu as codigo_empenho ";
 
 if ($sDataInicial != '') {
   $sWereEmpenho .= " and e60_emiss >= '{$sDataInicial}' ";
@@ -95,62 +97,48 @@ $sSqlEmpempenho = $oDaoEmpempenho->sql_query_codord(null, $sCamposEmpenho, null,
 $rsEmpempenho   = $oDaoEmpempenho->sql_record($sSqlEmpempenho);
 $aEmpenhos      = db_utils::getCollectionByRecord($rsEmpempenho);
 
+if ($oDaoEmpempenho->numrows > '0') {
 
-if ($oDaoEmpempenho->numrows > '0' && $iOrdem == '') {
-  
   for ($iOrdens = 0; $iOrdens < $oDaoEmpempenho->numrows; $iOrdens++) {
-    
+
     $oOrdem    = db_utils::fieldsMemory($rsEmpempenho, $iOrdens);
-    
+
     //echo "<br>" . $oOrdem->codigo_ordem;
-    
-    $sSQlItens = sqlDadosOrdem($oOrdem->codigo_ordem); 
+
+    $sSQlItens = sqlDadosOrdem($oOrdem->codigo_ordem);
     $rsItens   = db_query($sSQlItens);
-    
+
     if (pg_num_rows($rsItens) == 0) {
-      
+
       continue;
     }
-    
+
     $oDadosRelatorio    = db_utils::getCollectionByRecord($rsItens);
-    
+
+    $oOrdemCompra = new OrdemDeCompra($oOrdem->codigo_ordem);
+    foreach ($oDadosRelatorio as $key => $dadoRelatorio) {
+        foreach ($oOrdemCompra->getItens() as $itemOrdem) {
+            if ($itemOrdem->getCodigoLancamento() == $dadoRelatorio->codigo_lanc) {
+                $oDadosRelatorio[$key]->itemLancamento = $itemOrdem;
+            }
+        }
+    }
+
     $oDadosQuebra = new stdClass();
-    $oDadosQuebra->deptoOridem  = $oDadosRelatorio[0]->deptoorigem;//"origem"; 
+    $oDadosQuebra->deptoOridem  = $oDadosRelatorio[0]->deptoorigem;//"origem";
     $oDadosQuebra->deptoDestino = $oDadosRelatorio[0]->deptodestino; //"destino";
     $oDadosQuebra->iOrdem       = $oOrdem->codigo_ordem;
     $oDadosQuebra->iEmpenho     = $oOrdem->codigo_empenho;
     $oDadosQuebra->sDataEmissao = $oDadosRelatorio[0]->data;
-    
+
     $oRelatorio = new stdClass();
     $oRelatorio->quebra = $oDadosQuebra;
     $oRelatorio->dados  = $oDadosRelatorio;
-    
+
     $aItens[] = $oRelatorio;
+
   }
 }
-
-if ($iOrdem != '' && $oDaoEmpempenho->numrows > '0') {
-  
-  $sSQlItens = sqlDadosOrdem($iOrdem);
-  $rsItens   = db_query($sSQlItens);
-  
-  $oItens    = db_utils::getCollectionByRecord($rsItens);
-  
-  $oDadosQuebra = new stdClass();
-  $oDadosQuebra->deptoOridem  =  $oItens[0]->deptoorigem ;//'depto origem'   ;//$oDadosRelatorio[0]->deptoorigem;//"origem";
-  $oDadosQuebra->deptoDestino =  $oItens[0]->deptodestino;  //'depto destino'   ;//$oDadosRelatorio[0]->deptodestino; //"destino";
-  $oDadosQuebra->iOrdem       =  $iOrdem   ;//$oOrdem->codigo_ordem;
-  $oDadosQuebra->iEmpenho     =  $aEmpenhos[0]->codigo_empenho   ;//$oOrdem->codigo_empenho;
-  $oDadosQuebra->sDataEmissao =  $oItens[0]->data   ;//$oDadosRelatorio[0]->data;
-  
-  $oRelatorio = new stdClass();
-  $oRelatorio->quebra = $oDadosQuebra;
-  $oRelatorio->dados  = $oItens;
-  
-  $aItens[] = $oRelatorio;
-  
-}
-
   if (count($aItens) == 0) {
     db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum Registro Encontrado! Verifique os filtros.");
   }
@@ -170,7 +158,7 @@ $sDataFinal   = implode("/", array_reverse(explode("-",$sDataFinal)));
 
 
 //================================ HEADER DO RELATORIO ======================================
- 
+
 $head1   = "RELATÓRIO POSIÇÃO ORDEM COMPRA \n";
 $head2   = "\n";
 
@@ -201,25 +189,25 @@ $oPdf->setfont('arial', 'b', $iFonte);
 
 
 foreach ($aItens as $iItens => $oValores ) {
-  
+
   $sDataEmissao = implode("/", array_reverse(explode("-", $oValores->quebra->sDataEmissao)));
   $oPdf->cell(30 ,  $iAlturalinha, "ORDEM DE COMPRA Nº:"           , "" ,  0, "L", 1);
   $oPdf->cell(20 ,  $iAlturalinha, $oValores->quebra->iOrdem       , "" ,  0, "L", 1);
   $oPdf->cell(25 ,  $iAlturalinha, "DATA DE EMISSÃO:"              , "" ,  0, "L", 1);
   $oPdf->cell(45 ,  $iAlturalinha, $sDataEmissao                   , "" ,  1, "L", 1);
-  
+
   $oPdf->cell(30 ,  $iAlturalinha, "EMPENHO:"                      , "" ,  0, "L", 1);
   $oPdf->cell(90 ,  $iAlturalinha, $oValores->quebra->iEmpenho     , "" ,  1, "L", 1);
-  
+
   $oPdf->cell(30 ,  $iAlturalinha, "DEPTO. ORIGEM:"                , "" ,  0, "L", 1);
   $oPdf->cell(90 ,  $iAlturalinha, $oValores->quebra->deptoOridem  , "" ,  1, "L", 1);
-  
+
   $oPdf->cell(30 ,  $iAlturalinha, "DEPTO. DESTINO:"               , "" ,  0, "L", 1);
-  $oPdf->cell(90 ,  $iAlturalinha, $oValores->quebra->deptoDestino , "" ,  1, "L", 1);  
-  
-  
+  $oPdf->cell(90 ,  $iAlturalinha, $oValores->quebra->deptoDestino , "" ,  1, "L", 1);
+
+
   //==================================================  CABECALHO ====================================
-  
+
   $oPdf->cell(120,  $iAlturalinha, ""                        , "LTRB" ,  0, "C", 1);
   $oPdf->cell(60 ,  $iAlturalinha, "Quantidade Ordem Compra" , "LTRB" ,  0, "C", 1);
   $oPdf->cell(45 ,  $iAlturalinha, "Quantidade em Estoque"   , "LTRB" ,  0, "C", 1);
@@ -239,69 +227,78 @@ foreach ($aItens as $iItens => $oValores ) {
   $oPdf->cell(20 ,  $iAlturalinha, "Prazo"                   , "LTRB" ,  0, "C", 1);
   $oPdf->cell(15 ,  $iAlturalinha, "Quant."                  , "LTRB" ,  0, "C", 1);
   $oPdf->cell(20 ,  $iAlturalinha, "Dias em Atraso"          , "TLRB" ,  1, "C", 1);
-  
-  
+
+
   //==================================================================================================
-  
+
   foreach ($oValores->dados as $iDados => $oDados) {
-    
-    
-    
-   /*  
+
+    $sSqlMatOrdemItemAnu = $oDaoMatOrdemItemAnu->sql_query(null, "e62_item,m36_vrlanu,m36_qtd", null, "e62_item = {$oDados->codigo_item} AND m36_matordemitem = {$oDados->codigo_lanc}");
+    $rsMatOrdemItemAnu   = $oDaoMatOrdemItemAnu->sql_record($sSqlMatOrdemItemAnu);
+
+    if($oDaoMatOrdemItemAnu->numrows > 0){
+      $aMatOrdemItemAnu    = db_utils::getCollectionByRecord($rsMatOrdemItemAnu);
+      $iQuantItemOrdemAnulado = $aMatOrdemItemAnu[0]->m36_qtd    ;
+    }else{
+      $iQuantItemOrdemAnulado = "0";
+    }
+
+    /*
     $fValorUnitarioOrdem  = db_formatar($oDados->valor_unitario_ordem ,'f');
     $fValorTotalOrdem     = db_formatar($oDados->valor_total_ordem    ,'f');
-    $fValorUnidadeEstoque = db_formatar(($oDados->quantidade_estoque / $oDados->valor_unitario_ordem),'f'); 
+    $fValorUnidadeEstoque = db_formatar(($oDados->quantidade_estoque / $oDados->valor_unitario_ordem),'f');
     $fValorTotalEstoque   = db_formatar($oDados->valor_total_estoque  ,'f');
-     */
+    */
 
-    
+
     $nValorUnitarioEstoque  = "0";
-    $iQuantItemOrdem        = db_formatar($oDados->quantidade_item_ordem ,'f')       ;
-    $iQuantItemOrdemAnulado = db_formatar($oDados->quantidade_anulada_ordem ,'f')    ;
-    $nValorUnitario         = db_formatar($oDados->valor_unitario_ordem  ,'f')       ;
-    $nValorTotalOrdem       = db_formatar((($oDados->quantidade_item_ordem - $oDados->quantidade_anulada_ordem) * $oDados->valor_unitario_ordem),'f');
-    
-    
+
+    $iQuantItemOrdem        = $oDados->itemLancamento->getQuantidade();
+
+    $nValorUnitario         = db_formatar($oDados->valor_unitario_ordem  ,'f');
+    $nValorTotalOrdem       = db_formatar((($iQuantItemOrdem - $iQuantItemOrdemAnulado) * $oDados->valor_unitario_ordem),'f');
+
     $iQuantEstoque         = $oDados->quantidade_estoque;
     $fValorTotalEstoque    = $oDados->valor_total_estoque;
+
     if ($iQuantEstoque > 0) {
-      
-      $nValorUnitarioEstoque = ($fValorTotalEstoque / $iQuantEstoque);
+      $nValorUnitarioEstoque = db_formatar(($fValorTotalEstoque / $iQuantEstoque), 'f');
     }
+
     $fValorTotalEstoque = db_formatar($fValorTotalEstoque, "f");
-    
+
     $sDataDia             = date("d/m/Y", db_getsession('DB_datausu'));
-    
-    
+
     $iDiasAtraso          = diasAtraso ($sDataEmissao , $sDataDia, $oDados->prazoentrega);
-    $iQuantidadeSaldo     = ($oDados->quantidade_item_ordem - $oDados->quantidade_anulada_ordem - $oDados->quantidade_estoque);
+    $iQuantidadeSaldo     = ($iQuantItemOrdem - $iQuantItemOrdemAnulado - $oDados->quantidade_estoque);
     if ($iQuantidadeSaldo == "") {
       $iQuantidadeSaldo = "0";
     }
-    
-    $oPdf->cell(15 ,  $iAlturalinha, $oDados->codigo_item              , "TRB"  ,  0, "C", 0);                  
-    $oPdf->cell(45 ,  $iAlturalinha, substr($oDados->descricao_item, 0, 30)           , "LTRB" ,  0, "L", 0);               
-    $oPdf->cell(15 ,  $iAlturalinha, $oDados->unidade                  , "LTRB" ,  0, "L", 0);                                    
+
+    $oPdf->cell(15 ,  $iAlturalinha, $oDados->codigo_item              , "TRB"  ,  0, "C", 0);
+    $oPdf->cell(45 ,  $iAlturalinha, substr($oDados->descricao_item, 0, 30)           , "LTRB" ,  0, "L", 0);
+    $oPdf->cell(15 ,  $iAlturalinha, $oDados->unidade                  , "LTRB" ,  0, "L", 0);
     $oPdf->cell(45 ,  $iAlturalinha, substr($oDados->fornecedor, 0, 30), "LTRB" ,  0, "L", 0);
-                       
-    $oPdf->cell(15 ,  $iAlturalinha, $iQuantItemOrdem        , "LTRB" ,  0, "C", 0);  //OC. quantidade      
-    $oPdf->cell(15 ,  $iAlturalinha, $iQuantItemOrdemAnulado , "LTRB" ,  0, "C", 0);  //OC. qtd Anulada  
-    $oPdf->cell(15 ,  $iAlturalinha, $nValorUnitario              , "LTRB" ,  0, "C", 0);  //OC. Vlr Unitario      
-    $oPdf->cell(15 ,  $iAlturalinha, $nValorTotalOrdem                 , "LTRB" ,  0, "C", 0);  //OC. Vlr Total  
-            
-    $oPdf->cell(15 ,  $iAlturalinha, $iQuantEstoque      , "LTRB" ,  0, "C", 0);  //ES. quantidade                            
-    $oPdf->cell(15 ,  $iAlturalinha, $nValorUnitarioEstoque             , "LTRB" ,  0, "C", 0);  //ES. vlr Unitario          
-    $oPdf->cell(15 ,  $iAlturalinha, $fValorTotalEstoque               , "LTRB" ,  0, "C", 0);  //ES. vlr Total 
-         
-    $oPdf->cell(20 ,  $iAlturalinha, $oDados->prazoentrega             , "LTRB" ,  0, "C", 0);         
-    $oPdf->cell(15 ,  $iAlturalinha, $iQuantidadeSaldo                 , "LTRB" ,  0, "C", 0);                        
-    $oPdf->cell(20 ,  $iAlturalinha, $iDiasAtraso                      , "TLB"  ,  1, "C", 0); 
-    imprimirSubCabecalho($oPdf, $iAlturalinha, false);    
+
+    $oPdf->cell(15 ,  $iAlturalinha, $iQuantItemOrdem, "LTRB" ,  0, "C", 0);  //OC. quantidade
+    $oPdf->cell(15 ,  $iAlturalinha, $iQuantItemOrdemAnulado , "LTRB" ,  0, "C", 0);  //OC. qtd Anulada
+    $oPdf->cell(15 ,  $iAlturalinha, $nValorUnitario, "LTRB" ,  0, "C", 0);  //OC. Vlr Unitario
+    $oPdf->cell(15 ,  $iAlturalinha, $nValorTotalOrdem                 , "LTRB" ,  0, "C", 0);  //OC. Vlr Total
+
+    $oPdf->cell(15 ,  $iAlturalinha, $iQuantEstoque      , "LTRB" ,  0, "C", 0);  //ES. quantidade
+    $oPdf->cell(15 ,  $iAlturalinha, $nValorUnitarioEstoque             , "LTRB" ,  0, "C", 0);  //ES. vlr Unitario
+    $oPdf->cell(15 ,  $iAlturalinha, $fValorTotalEstoque               , "LTRB" ,  0, "C", 0);  //ES. vlr Total
+
+    $oPdf->cell(20 ,  $iAlturalinha, $oDados->prazoentrega             , "LTRB" ,  0, "C", 0);
+    $oPdf->cell(15 ,  $iAlturalinha, $iQuantidadeSaldo                 , "LTRB" ,  0, "C", 0);
+    $oPdf->cell(20 ,  $iAlturalinha, $iDiasAtraso                      , "TLB"  ,  1, "C", 0);
+    imprimirSubCabecalho($oPdf, $iAlturalinha, false);
   }
   $oPdf->Ln($iAlturalinha);
-  imprimirCabecalho($oPdf, $iAlturalinha, false);    
+  imprimirCabecalho($oPdf, $iAlturalinha, false);
 }
 
+// 1012473
 $oPdf->output();
 
 
@@ -314,8 +311,8 @@ function imprimirSubCabecalho($oPdf, $iAlturalinha, $lImprime) {
     if ( !$lImprime ) {
       $oPdf->AddPage("L");
     }
-    
-    
+
+
     $oPdf->cell(120,  $iAlturalinha, ""                        , "LTRB" ,  0, "C", 1);
     $oPdf->cell(60 ,  $iAlturalinha, "Quantidade Ordem Compra" , "LTRB" ,  0, "C", 1);
     $oPdf->cell(45 ,  $iAlturalinha, "Quantidade em Estoque"   , "LTRB" ,  0, "C", 1);
@@ -334,7 +331,7 @@ function imprimirSubCabecalho($oPdf, $iAlturalinha, $lImprime) {
     $oPdf->cell(15 ,  $iAlturalinha, "Valor Total"             , "LTRB" ,  0, "C", 1);
     $oPdf->cell(20 ,  $iAlturalinha, "Prazo"                   , "LTRB" ,  0, "C", 1);
     $oPdf->cell(15 ,  $iAlturalinha, "Quant."                  , "LTRB" ,  0, "C", 1);
-    $oPdf->cell(20 ,  $iAlturalinha, "Dias em Atraso"          , "TLRB" ,  1, "C", 1);    
+    $oPdf->cell(20 ,  $iAlturalinha, "Dias em Atraso"          , "TLRB" ,  1, "C", 1);
 
     $oPdf->setfont('arial','b',6);
   }
@@ -370,20 +367,23 @@ function sqlDadosOrdem ($iCodigoOrdem) {
   $sCamposItens .= "z01_nome                          as fornecedor,               ";
   $sCamposItens .= "deptoorigem.descrdepto            as deptoorigem,              ";
   $sCamposItens .= "deptodestino.descrdepto           as deptodestino,             ";
-  $sCamposItens .= "m51_prazoent                      as prazoentrega,             ";             
+  $sCamposItens .= "m51_prazoent                      as prazoentrega,             ";
 
   $sCamposItens .= "rnquantini                        as quantidade_item_ordem,    ";
   $sCamposItens .= "rnvaloranul                       as quantidade_anulada_ordem, ";
   $sCamposItens .= "rnvaloruni                        as valor_unitario_ordem,     ";
+  $sCamposItens .= "ricoditemordem                    as codigo_lanc,              ";
+  //$sCamposItens .= "ricodemp                          as numero_emp,               ";
+  //$sCamposItens .= "rianoemp                          as ano_emp,                  ";
   //$sCamposItens .= "rnsaldovalor                      as valor_total_ordem,        ";
 
-  
+
   $sCamposItens .= "rnsaldoestoque                    as quantidade_estoque,       ";
   $sCamposItens .= "rnvalorestoque                    as valor_total_estoque,    ";
  // $sCamposItens .= "(rnvalorestoque * rnsaldoestoque) as valor_total_estoque,      ";
-  
-  
-  
+
+
+
   $sCamposItens .= "m51_data                          as data,                     ";
   $sCamposItens .= "'quant_saldo'                     as quant_saldo,              ";
   $sCamposItens .= "'dias_atraso'                     as dias_atraso               ";
@@ -398,9 +398,9 @@ function sqlDadosOrdem ($iCodigoOrdem) {
   $sSQlItens .= "                   left join db_depart deptoorigem  on matordem.m51_deptoorigem = deptoorigem.coddepto ";
   $sSQlItens .= "                  left join cgm                    on matordem.m51_numcgm     = cgm.z01_numcgm        ";
   $sSQlItens .= "               ) as x                                                                                  ";
-  
- // echo $sSQlItens;
-  // die();
+
+  //echo $sSQlItens;
+  //die();
 
   return $sSQlItens;
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -468,6 +468,8 @@ class cl_empageslip {
      $sql .= "      left join empagepag   on   e85_codmov = empagemov.e81_codmov";
      $sql .= "      left join empagetipo  on  empagetipo.e83_codtipo = empagepag.e85_codtipo";
      $sql .= "      inner join slip s on   e89_codigo = s.k17_codigo";
+     $sql .= "      inner join sliptipooperacaovinculo on sliptipooperacaovinculo.k153_slip = s.k17_codigo ";
+     $sql .= "      inner join sliptipooperacao on sliptipooperacao.k152_sequencial = sliptipooperacaovinculo.k153_slipoperacaotipo ";
      $sql .= "      left  join emphist on s.k17_hist = e40_codhist";
      $sql .= "	    inner join conplanoreduz x on x.c61_reduz = s.k17_debito and x.c61_anousu = ".db_getsession("DB_anousu");
      $sql .= "	    inner join conplano z on z.c60_codcon = x.c61_codcon and z.c60_anousu = x.c61_anousu ";
@@ -483,6 +485,11 @@ class cl_empageslip {
      $sql .= "      left join empagemovconta   on empageslip.e89_codmov  = empagemovconta.e98_codmov";
      $sql .= "      left join pcfornecon       on pcfornecon.pc63_contabanco = empagemovconta.e98_contabanco";
      $sql .= "      left join slipprocesso on s.k17_codigo = k145_slip";
+     $sql .= "      left join sliprecursocontas on sliprecursocontas.k181_slip = s.k17_codigo  ";
+     $sql .= "      left join orctiporec on orctiporec.o15_codigo = sliprecursocontas.k181_recursodebito ";
+     $sql .= "      left join slipretencaoreceitas on s.k17_codigo = k206_slip ";
+     $sql .= "      left join retencaoreceitas on k206_retencaoreceitas = e23_sequencial ";
+     $sql .= "      left join retencaotiporec on e23_retencaotiporec = e21_sequencial ";
 
      $sql2 = "";
      if($dbwhere==""){
@@ -538,9 +545,11 @@ class cl_empageslip {
      $sql .= "      inner join slip s on   e89_codigo = s.k17_codigo";
      $sql .= "	    inner join conplanoreduz pag on pag.c61_reduz = e83_conta and pag.c61_anousu = ".db_getsession("DB_anousu");
      $sql .= "	    inner join conplano conpag on conpag.c60_codcon = pag.c61_codcon and conpag.c60_anousu = pag.c61_anousu ";
-     $sql .= "	    inner join conplanoconta on conpag.c60_codcon = conplanoconta.c63_codcon and conpag.c60_anousu = conplanoconta.c63_anousu ";
-     $sql .= "      inner join conplanocontabancaria  on conplanocontabancaria.c56_codcon = conplanoconta.c63_codcon
-                                                     and conplanocontabancaria.c56_anousu = conplanoconta.c63_anousu";
+     $sql .= "	    inner join conplanoconta on conpag.c60_anousu = conplanoconta.c63_anousu
+                                            and pag.c61_reduz = conplanoconta.c63_reduz ";
+
+     $sql .= "      inner join conplanocontabancaria  on conplanocontabancaria.c56_anousu = conplanoconta.c63_anousu
+                                                     and conplanocontabancaria.c56_reduz  = pag.c61_reduz  ";
      $sql .= "      inner join contabancaria  on  contabancaria.db83_sequencial =  conplanocontabancaria.c56_contabancaria ";
      $sql .= "	    inner join orctiporec on pag.c61_codigo = o15_codigo";
      $sql .= "      left  join emphist on s.k17_hist = e40_codhist";
@@ -551,7 +560,8 @@ class cl_empageslip {
      $sql .= "      left join pcfornecon on pcfornecon.pc63_contabanco = empagemovconta.e98_contabanco";
      $sql .= "	    left join conplanoreduz cre on cre.c61_reduz   = k17_debito and cre.c61_anousu = ".db_getsession("DB_anousu");
      $sql .= "	    left join conplano concre on concre.c60_codcon = cre.c61_codcon and concre.c60_anousu = cre.c61_anousu ";
-     $sql .= "	    left join conplanoconta descrconta on concre.c60_codcon = descrconta.c63_codcon and concre.c60_anousu = descrconta.c63_anousu ";
+     $sql .= "	    left join conplanoconta descrconta on concre.c60_anousu = descrconta.c63_anousu
+                                                      and cre.c61_reduz = descrconta.c63_reduz ";
      $sql .= "      left  join empagemovtipotransmissao on  e25_empagemov                = empagemov.e81_codmov ";
      $sql2 = "";
      if($dbwhere==""){
@@ -582,6 +592,78 @@ class cl_empageslip {
      }
      return $sql;
   }
+
+    function sql_query_txtbanco_pagamento ( $e89_codmov=null,$campos="*",$ordem=null,$dbwhere=""){
+
+        $sql = "select ";
+        if($campos != "*" ){
+            $campos_sql = split("#",$campos);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }else{
+            $sql .= $campos;
+        }
+
+        $sql .= " from empageslip ";
+        $sql .= "      inner join empagemov  on  empagemov.e81_codmov = empageslip.e89_codmov";
+        $sql .= "      inner join empage   b on   b.e80_codage = empagemov.e81_codage";
+        $sql .= "	    inner join  empageconf on e86_codmov=e81_codmov ";
+        $sql .= "	    inner join  empagemovforma on e81_codmov=e97_codmov ";
+        $sql .= "      inner  join empagepag   on   e85_codmov = empagemov.e81_codmov";
+        $sql .= "      inner  join empagetipo  on  empagetipo.e83_codtipo = empagepag.e85_codtipo";
+        $sql .= "      inner join slip s on   e89_codigo = s.k17_codigo";
+        $sql .= "	    inner join conplanoreduz pag on pag.c61_reduz = e83_conta and pag.c61_anousu = ".db_getsession("DB_anousu");
+        $sql .= "	    inner join conplano conpag on conpag.c60_codcon = pag.c61_codcon and conpag.c60_anousu = pag.c61_anousu ";
+        $sql .= "	    inner join conplanoconta on conpag.c60_anousu = conplanoconta.c63_anousu
+                                                and pag.c61_reduz = conplanoconta.c63_reduz";
+        $sql .= "      inner join conplanocontabancaria  on conplanocontabancaria.c56_anousu = conplanoconta.c63_anousu
+                                                     and conplanocontabancaria.c56_reduz = conplanoconta.c63_reduz";
+        $sql .= "      inner join contabancaria  on  contabancaria.db83_sequencial =  conplanocontabancaria.c56_contabancaria ";
+        $sql .= "	    inner join orctiporec on pag.c61_codigo = o15_codigo";
+        $sql .= "      left  join emphist on s.k17_hist = e40_codhist";
+        $sql .= "	    inner join slipnum o on o.k17_codigo = s.k17_codigo";
+        $sql .= "	    left join cgm on z01_numcgm = o.k17_numcgm";
+        $sql .= "	    left join  empageconfgera on e81_codmov=e90_codmov ";
+        $sql .= "      left join empagemovconta on empagemovconta.e98_codmov = empagemov.e81_codmov ";
+        $sql .= "      left join pcfornecon on pcfornecon.pc63_contabanco = empagemovconta.e98_contabanco";
+        $sql .= "	    left join conplanoreduz cre on cre.c61_reduz   = k17_debito and cre.c61_anousu = ".db_getsession("DB_anousu");
+        $sql .= "	    left join conplano concre on concre.c60_codcon = cre.c61_codcon and concre.c60_anousu = cre.c61_anousu ";
+        $sql .= "	    left join conplanoconta descrconta on concre.c60_codcon = descrconta.c63_codcon
+                                                         and cre.c61_reduz = descrconta.c63_reduz
+                                                         and concre.c60_anousu = descrconta.c63_anousu ";
+        $sql .= "      left  join empagemovtipotransmissao on  e25_empagemov                = empagemov.e81_codmov ";
+        $sql2 = "";
+        if($dbwhere==""){
+            if($e89_codmov!=null ){
+                $sql2 .= " where empageslip.e89_codmov = $e89_codmov ";
+            }
+            if($e89_codigo!=null ){
+                if($sql2!=""){
+                    $sql2 .= " and ";
+                }else{
+                    $sql2 .= " where ";
+                }
+                $sql2 .= " empageslip.e89_codigo = $e89_codigo ";
+            }
+        }else if($dbwhere != ""){
+            $sql2 = " where $dbwhere";
+        }
+        //$sql2 .= ($sql2!=""?" and ":" where ") . " k17_instit = " . db_getsession("DB_instit");
+        $sql .= $sql2;
+        if($ordem != null ){
+            $sql .= " order by ";
+            $campos_sql = split("#",$ordem);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+                $sql .= $virgula.$campos_sql[$i];
+                $virgula = ",";
+            }
+        }
+        return $sql;
+    }
    function sql_query_file ( $e89_codmov=null,$e89_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
@@ -721,6 +803,37 @@ class cl_empageslip {
       $virgula = ",";
       }
     }
+    return $sql;
+  }
+
+  function sql_query_movimentacaoslip_errobanco($e89_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+
+    $sql  = "select ";
+
+    $sql .= $campos;
+
+    $sql .= " from empageslip ";
+    $sql .= "       LEFT JOIN empageconfgera              ON e90_codmov            = e89_codmov";
+    $sql .= "       LEFT JOIN empagedadosret              ON e75_codgera           = e90_codgera";
+    $sql .= "       LEFT JOIN empagedadosretmov           ON e76_codmov            = e89_codmov";
+    $sql .= "                                            AND e76_codret            = e75_codret";
+    $sql .= "       LEFT JOIN empagedadosretmovocorrencia ON e02_empagedadosret    = e76_codret";
+    $sql .= "                                            AND e02_empagedadosretmov = e76_codmov";
+    $sql .= "       LEFT JOIN errobanco                   ON e02_errobanco         = e92_sequencia ";
+
+    if ($dbwhere=="") {
+      if ($e89_codigo!=null ) {
+        $sql .= " where empageslip.e89_codigo = $e89_codigo ";
+      }
+    } elseif ($dbwhere != "") {
+      $sql .= " where $dbwhere";
+    }
+
+    if($ordem != null ){
+      $sql .= " order by ";
+      $sql .= " $ordem ";
+    }
+
     return $sql;
   }
 

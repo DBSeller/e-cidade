@@ -108,10 +108,10 @@ $clrotulo->label("z01_nome");
 <script>
 function js_pesquisave41_veicmotoristas(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_veicmotoristascentral','db_iframe_veicmotoristas','func_veicmotoristas.php?funcao_js=parent.js_mostraveicmotoristas1|ve05_codigo|z01_nome','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicmotoristascentral','db_iframe_veicmotoristas','func_veicmotoristas.php?funcao_js=parent.js_mostraveicmotoristas1|ve05_codigo|z01_nome','Pesquisa',true,'0');
   }else{
      if(document.form1.ve41_veicmotoristas.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_veicmotoristascentral','db_iframe_veicmotoristas','func_veicmotoristas.php?pesquisa_chave='+document.form1.ve41_veicmotoristas.value+'&funcao_js=parent.js_mostraveicmotoristas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicmotoristascentral','db_iframe_veicmotoristas','func_veicmotoristas.php?pesquisa_chave='+document.form1.ve41_veicmotoristas.value+'&funcao_js=parent.js_mostraveicmotoristas','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -133,4 +133,17 @@ function js_mostraveicmotoristas1(chave1,chave2){
 
   db_iframe_veicmotoristas.hide();
 }
+document.getElementById("db_opcao").addEventListener("click", function(event){
+  var dataInicio = document.getElementById("ve41_dtini");
+  var dataFim = document.getElementById("ve41_dtfim");
+
+  if (dataInicio.value == "") {
+    const data = new Date();
+    dataInicio.value = data.toLocaleDateString('pt-BR');
+  }
+  if (dataFim.value != "" && dataInicio.value > dataFim.value) {
+    alert("A data de início do exercício não pode ser maior que a data final.");
+    event.preventDefault();
+  }
+});
 </script>

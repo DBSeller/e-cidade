@@ -26,7 +26,7 @@
  */
 
 //MODULO: configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 //echo 'codcpd '.$db34_codcpd;
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo = new rotulocampo;
@@ -137,7 +137,7 @@ function js_cancelar(){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_versaocpdarq','func_db_versaocpdarq.php?funcao_js=parent.js_preenchepesquisa|db34_codcpd','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_versaocpdarq','func_db_versaocpdarq.php?funcao_js=parent.js_preenchepesquisa|db34_codcpd','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   alert(chave);

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcsuplementacaoparametro_classe.php");
-include("classes/db_orcsuplementacaoparametrocriterio_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcsuplementacaoparametro_classe.php"));
+include(modification("classes/db_orcsuplementacaoparametrocriterio_classe.php"));
 $clorcsuplementacaoparametro = new cl_orcsuplementacaoparametro;
   /*
 $clorcsuplementacaoparametrocriterio = new cl_orcsuplementacaoparametrocriterio;
@@ -71,7 +71,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcsuplementacaoparametro.php");
+	include(modification("forms/db_frmorcsuplementacaoparametro.php"));
 	?>
     </center>
 	</td>
@@ -96,7 +96,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.orcsuplementacaoparametrocriterio.disabled=false;
-         top.corpo.iframe_orcsuplementacaoparametrocriterio.location.href='orc1_orcsuplementacaoparametrocriterio001.php?o135_orcsuplementacaoparametro=".@$o134_anousu."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcsuplementacaoparametrocriterio.location.href='orc1_orcsuplementacaoparametrocriterio001.php?o135_orcsuplementacaoparametro=".@$o134_anousu."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('orcsuplementacaoparametrocriterio');";

@@ -1,73 +1,90 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_agualeitura_classe.php");
-include("dbforms/db_funcoes.php");
+require_once (modification("libs/db_stdlib.php"));
+require_once (modification("libs/db_conecta.php"));
+require_once (modification("libs/db_sessoes.php"));
+require_once (modification("libs/db_usuariosonline.php"));
+require_once (modification("classes/db_agualeitura_classe.php"));
+require_once (modification("dbforms/db_funcoes.php"));
+
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
+
 $clagualeitura = new cl_agualeitura;
 $clagualeitura->rotulo->label();
 
 $sql = "";
-if(isset($matric) && trim($matric) != ""){
-  $campos = "
-	     x21_codleitura,
-	     x21_exerc,
-	     x21_mes,
-	     x21_dtleitura as db_x21_dtleitura,
-	     x21_leitura,
-	     x17_descr,
-	     x21_consumo as x19_conspadrao,
-       case 
-         when x21_excesso >= 0 then x21_consumo + x21_excesso
-         else x21_consumo
-       end as x21_consumo,
-	     case 
-         when x21_excesso < 0 then 0
-         else x21_excesso
-       end as x21_excesso,
-       x21_saldo,
-       fc_agua_saldocompensado(x21_exerc, x21_mes, x04_matric) as x34_saldoutilizado,
-       CASE WHEN x21_tipo = 1 THEN 'Digitação Manual' 
-                WHEN x21_tipo = 2 THEN 'Exportada Coletor' 
-                ELSE 'Importada Coletor'
-            END as x21_tipo, 
-            CASE WHEN x21_status = 1 THEN 'Ativo' 
-                WHEN x21_status = 2 THEN 'Inativo' 
-                ELSE 'Cancelado'
-              END as x21_status,
-	     x21_numcgm,
-	     z01_nome
-	    ";
+if (isset($matric) && trim($matric) != "") {
 
+  $campos = "
+    x21_codleitura,
+    x21_aguacontrato,
+    x21_exerc,
+    x21_mes,
+    x21_dtleitura as db_x21_dtleitura,
+    x21_leitura,
+    x17_descr,
+    
+    (case when x21_excesso >= 0 then
+      x21_consumo + x21_excesso
+    else
+      x21_consumo
+    end) as x21_consumo,
+    
+    (case when x21_excesso < 0 then
+      0
+    else
+      x21_excesso
+    end) as x21_excesso,
+
+    x21_saldo,
+    fc_agua_saldocompensado(x21_exerc, x21_mes, x04_matric) as x34_saldoutilizado,
+    
+    (CASE WHEN x21_tipo = 1 THEN
+      'Digitação Manual'
+    WHEN x21_tipo = 2 THEN
+      'Exportada Coletor'
+    ELSE
+      'Importada Coletor'
+    END) as x21_tipo,
+    
+    (CASE WHEN x21_status = 1 THEN
+      'Ativo'
+    WHEN x21_status = 2 THEN
+      'Inativo'
+    ELSE
+      'Cancelado'
+    END) as x21_status,
+
+    x21_dtleitura,
+    x21_numcgm,
+    z01_nome
+  ";
 
   $dbwhere = "";
 
@@ -97,8 +114,7 @@ if(isset($matric) && trim($matric) != ""){
     }
   }
 
-  $sql = $clagualeitura->sql_query_anteriores("",$campos,"x21_exerc desc, x21_mes desc",$dbwhere." x04_matric = ".$matric );
-//  die($sql);
+  $sql = $clagualeitura->sql_query_anteriores("",$campos,"x21_exerc desc, x21_mes desc, x21_codleitura desc",$dbwhere." x04_matric = ".$matric );
 }
 ?>
 <html>
@@ -154,18 +170,16 @@ if(isset($matric) && trim($matric) != ""){
       ?>
     </td>
   </tr>
-  <tr> 
-    <td align="center" colspan="2" valign="top" bgcolor="#CCCCCC"> 
-      <input name="pesquisar" type="submit" id="pesquisar" value="Pesquisar"> 
+  <tr>
+    <td align="center" colspan="2" valign="top" bgcolor="#CCCCCC">
+      <input name="pesquisar" type="submit" id="pesquisar" value="Pesquisar">
       <input name="limpar" type="reset" id="limpar" value="Limpar" >
       <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_anterior.hide();">
     </td>
   </tr>
 </table>
 </form>
-  <?
-  db_lovrot($sql,20,"()");
-  ?>
+<?php db_lovrot($sql,20,"()"); ?>
 </center>
 </body>
 </html>

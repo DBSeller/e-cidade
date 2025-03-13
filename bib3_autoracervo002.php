@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_acervo_classe.php");
-require_once("classes/db_biblioteca_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_acervo_classe.php"));
+require_once(modification("classes/db_biblioteca_classe.php"));
 
 $iDepto = db_getsession("DB_coddepto");
 $clbiblioteca = new cl_biblioteca;
@@ -57,28 +57,24 @@ if($clbiblioteca->numrows!=0){
 
 if (isset($valor)) {
 
-  $sSqlAcervoAutor  = "select bi06_seq,                                                    ";
-  $sSqlAcervoAutor .= "       bi06_titulo,                                                 ";
-  $sSqlAcervoAutor .= "       bi06_edicao,                                                 ";
-  $sSqlAcervoAutor .= "       bi06_volume,                                                 ";
-  $sSqlAcervoAutor .= "       bi06_tipoitem,                                               ";
-  $sSqlAcervoAutor .= "       bi05_nome,                                                   ";
-  $sSqlAcervoAutor .= "       bi06_biblioteca,                                             ";
-  $sSqlAcervoAutor .= "       bi29_nome                                                    ";
+  $sSqlAcervoAutor  = "select distinct bi06_seq                                                    ";
+  $sSqlAcervoAutor .= "       ,bi06_titulo                                                 ";
+  $sSqlAcervoAutor .= "       ,bi06_subtitulo                                              ";
+  $sSqlAcervoAutor .= "       ,bi06_edicao                                                 ";
+  $sSqlAcervoAutor .= "       ,bi06_volume                                                 ";
+  $sSqlAcervoAutor .= "       ,bi06_tipoitem                                               ";
+  $sSqlAcervoAutor .= "       ,bi05_nome                                                   ";
+  $sSqlAcervoAutor .= "       ,trim(bi17_nome) as biblioteca                               ";
+  $sSqlAcervoAutor .= "       ,bi29_nome                                                    ";
+  $sSqlAcervoAutor .= "       ,(SELECT count(*) FROM exemplar WHERE bi23_acervo = bi06_seq) as exemplares ";
   $sSqlAcervoAutor .= "  from acervo                                                       ";
   $sSqlAcervoAutor .= "   inner join autoracervo   on bi21_acervo = bi06_seq               ";
   $sSqlAcervoAutor .= "   inner join tipoitem      on bi05_codigo = bi06_tipoitem          ";
+  $sSqlAcervoAutor .= "   inner join biblioteca    on bi17_codigo = bi06_biblioteca          ";
   $sSqlAcervoAutor .= "    left join colecaoacervo on bi06_colecaoacervo = bi29_sequencial ";
   $sSqlAcervoAutor .= "   where bi21_autor      = {$valor} and                             ";
   $sSqlAcervoAutor .= "         bi06_biblioteca = {$bi17_codigo}                           ";
-  $sSqlAcervoAutor .= "group by bi06_seq,                                                  ";
-  $sSqlAcervoAutor .= "         bi06_titulo,                                               ";
-  $sSqlAcervoAutor .= "         bi06_edicao,                                               ";
-  $sSqlAcervoAutor .= "         bi06_volume,                                               ";
-  $sSqlAcervoAutor .= "         bi06_tipoitem,                                             ";
-  $sSqlAcervoAutor .= "         bi05_nome,                                                 ";
-  $sSqlAcervoAutor .= "         bi06_biblioteca,                                           ";
-  $sSqlAcervoAutor .= "         bi29_nome                                                  ";
+  $sSqlAcervoAutor .= "   order by bi06_titulo, bi06_subtitulo                           ";
 
   $rsAcervoAutor = db_query($sSqlAcervoAutor);
   $iLinhas       = pg_numrows($rsAcervoAutor);
@@ -90,24 +86,24 @@ if (isset($valor)) {
   <tr>
    <td colspan="8" align="right">
     <?if($todos=="false" and $iLinhas!=0){?>
-     <input type="checkbox" name="todos" value="true" onclick="js_vertodos()">Ver exemplares
+        <input type="checkbox" name="todos" id="todos" value="true" onclick="js_vertodos()"> <label for="todos">Ver exemplares</label>
     <?}elseif($todos=="true" and $iLinhas!=0){?>
-     <input type="checkbox" name="todos" value="false" onclick="js_vertodos()">Ocultar exemplares
+        <input type="checkbox" name="todos"  id="todos" value="false" onclick="js_vertodos()"><label for="todos">Ocultar exemplares</label>
     <?}?>
    </td>
   </tr>
   <tr bgcolor="#999999">
    <td align="center" width="5%"><b>Código Acervo</b></td>
-   <td width="35%"><b>Titulo</b></td>
-   <td width="30%"><b>Coleção</b></td>
-   <td align="center" width="5%"><b>Biblioteca</b></td>
-   <td align="center" width="4%"><b>Edição</b></td>
+   <td width="20%"><b>Título</b></td>
+   <td width="20%"><b>Subtítulo</b></td>
+   <td width="10%"><b>Coleção</b></td>
+   <td align="center" width="15%"><b>Biblioteca</b></td>
    <td align="center" width="4%"><b>Volume</b></td>
    <td align="center" width="10%"><b>Tipo</b></td>
    <td align="center" width="3%"><b>Exemplares</b></td>
   </tr>
   <?php
-   $cor1 = "#ababab";
+   $cor1 = "#cbcbcb";
    $cor2 = "#f3f3f3";
    $cor=$cor1;
    if($iLinhas!=0){
@@ -119,25 +115,17 @@ if (isset($valor)) {
       $cor=$cor1;
      }
      ?>
-     <tr><td colspan="7" height="1" bgcolor="#000000"></td></tr>
+     <tr><td colspan="9" height="1" bgcolor="#000000"></td></tr>
      <tr bgcolor="<?=$cor?>">
       <td align="center"><?=$bi06_seq?></td>
       <td><b><?=$bi06_titulo?></b></td>
+      <td><b><?=$bi06_subtitulo?></b></td>
       <td><b><?=$bi29_nome?></b></td>
-      <td align="center"><b><?=$bi06_biblioteca?></b></td>
-      <td align="center"><?=$bi06_edicao?></td>
+      <td><b><?=$biblioteca?></b></td>
       <td align="center"><?=$bi06_volume?></td>
-      <td align="center"><?=$bi05_nome?></td>
-      <td align="center">
-        <?php
-          $sql3 = "SELECT count(*)
-                  FROM exemplar
-                  WHERE bi23_acervo = $bi06_seq
-                 ";
-          $rsAcervoAutor3 = db_query($sql3);
-          echo pg_result($rsAcervoAutor3,0,'count');
-        ?>
-      </td>
+      <td><b><?=$bi05_nome?></b></td>
+      <td align="center"><?=$exemplares?></td>
+
      </tr>
 
      <?php
@@ -152,14 +140,16 @@ if (isset($valor)) {
      ?>
        <tr bgcolor="<?=$cor?>">
         <td></td>
-        <td align="center" colspan="5">
+        <td align="center" colspan="8">
          <table width="100%" cellspacing="0" cellpading="3">
           <tr>
-           <td align="center" width="20%"><b>Código Exemplar</b></td>
-           <td width="15%"><b>Cód. Barras</b></td>
+           <td align="center" width="5%"><b>Código</b></td>
+           <td width="10%"><b>Código Barras</b></td>
            <td align="center" width="25%"><b>Aquisição</b></td>
            <td align="center" width="15%"><b>Data Aquisição</b></td>
-           <td align="center" width="15%"><b>Situação</b></td>
+           <td align="center" width="15%"><b>Ano Edição</b></td>
+           <td align="center" width="10%"><b>Edição</b></td>
+           <td align="center" width="10%"><b>Situação</b></td>
            <td align="center" width="10%"><b>Empréstimo</b></td>
           </tr>
           <tr><td colspan="6" height="1" bgcolor="#CCCCCC"></td></tr>
@@ -180,6 +170,8 @@ if (isset($valor)) {
              <td><?=$bi23_codbarras?></td>
              <td align="center"><?=$bi04_forma?></td>
              <td align="center"><?=db_formatar($bi23_dataaquisicao,'d')?></td>
+             <td align="center"><?=$bi23_anoedicao?></td>
+             <td align="center"><?=$bi23_edicao?></td>
              <td align="center"><?=$bi23_situacao=="N"?"INATIVO":"ATIVO"?></td>
              <td align="center">
               <?php

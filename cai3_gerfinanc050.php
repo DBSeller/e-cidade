@@ -1,36 +1,36 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
+use ECidade\Tributario\Arrecadacao\CGF\Repository\Certidao as RepositoryCertidao;
 
-require_once("fpdf151/scpdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
 if (!empty($Parcelamento)) {
   $sSqlNumpreParcelamento = "select v07_numpre as numpre from termo where v07_parcel = {$Parcelamento}";
   $rsNumpreParcelamento   = db_query($sSqlNumpreParcelamento);
@@ -59,13 +59,13 @@ if(isset($db_datausu)){
 
 if(isset($HTTP_POST_VARS["inicial"])) {
   global $HTTP_SESSION_VARS;
-  include("cai3_gerfinanc003.php");
+  include(modification("cai3_gerfinanc003.php"));
   exit;
 }
 /**
- * Busca parâmetro partilha na tabela parjuridico 
+ * Busca parâmetro partilha na tabela parjuridico
  */
-$sSqlParametrosJuridico  = "select v19_partilha from parjuridico where v19_anousu = ".db_getsession('DB_anousu');
+$sSqlParametrosJuridico  = "select v19_partilha from parjuridico where v19_anousu = ".db_getsession('DB_anousu') . " and v19_instit = " . db_getsession('DB_instit');
 $rsSqlParametrosJuridico = db_query($sSqlParametrosJuridico);
 $sPartilha               = db_utils::fieldsMemory($rsSqlParametrosJuridico,0)->v19_partilha ;
 $lPartilha               = $sPartilha == 't' ? true : false;
@@ -106,43 +106,221 @@ if (isset($matric)) {
   $valor=$numpre;
 }
 
-$sql=" select distinct
-              v50_inicial,
-              v50_advog,
-              v50_data,
-              v50_id_login,
-              nome,
-              v50_codlocal,
-              v54_descr,
-              v70_vara,
-              v53_descr,
-              v50_codmov,
-              v70_codforo,
-              v52_descr,
-              z01_nome as nomeadvog
-         from arrecad
-              inner join arreinstit on arreinstit.k00_numpre = arrecad.k00_numpre 
-                                   and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
-                                   $tabela
-              inner join arretipo             on arrecad.k00_tipo                = arretipo.k00_tipo
-              inner join inicialnumpre        on inicialnumpre.v59_numpre        = arrecad.k00_numpre
-              inner join inicial              on inicial.v50_inicial             = inicialnumpre.v59_inicial
-              inner join cgm 	                on inicial.v50_advog               = cgm.z01_numcgm
-              inner join db_usuarios          on db_usuarios.id_usuario          = inicial.v50_id_login
-              inner join localiza             on inicial.v50_codlocal            = localiza.v54_codlocal
-              inner join inicialmov           on inicial.v50_codmov              = inicialmov.v56_codmov
-              inner join situacao             on inicialmov.v56_codsit           = situacao.v52_codsit
-               left  join processoforoinicial on processoforoinicial.v71_inicial = inicial.v50_inicial
-                                             and processoforoinicial.v71_anulado is false
-               left  join processoforo        on processoforo.v70_sequencial     = processoforoinicial.v71_processoforo
-               left  join vara                on vara.v53_codvara                = processoforo.v70_vara
-         where $campo = $valor 
-           and k03_tipo = 18
-           and v50_situacao = 1";
 
-$result = pg_query($sql) or die($sql);
-$numrows= pg_numrows($result);
+function adicionarCabecalhoTabelaDebitos($mostraDadosCda = false)
+{
+    global $Tv50_inicial, $Tv70_codforo, $Tv50_advog, $Tnome, $Tv54_descr, $Tv52_descr, $Tv53_descr, $Tv50_codmov, $RLv50_data, $RLnome, $RLv50_codmov, $RLv52_descr;
 
+    if (!$mostraDadosCda) {
+        return "
+            <tr bgcolor=\"#FFCC66\">   \n
+            <th class=\"borda\" style=\"font-size:11px\" nowrap>O</td>\n
+            <th title=\"Marca/Desmarca Todas\" class=\"borda\" style=\"font-size:12px\" nowrap><a id=\"marca\" href=\"\" style=\"color:black; display: none; \" onclick=\"js_marca();return false\">M</a>
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_inicial' nowrap>Inicial</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='Lista Débitos' nowrap>Rec</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='Valor Total'   nowrap>Valor Total</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_advog'   nowrap>$RLv50_data</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv70_codforo' nowrap>Processo</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_advog'   nowrap>Advogado</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tnome'          nowrap>$RLnome</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv54_descr'   nowrap>Localizacao</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv53_descr'   nowrap>Vara</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_codmov'  nowrap>$RLv50_codmov</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv52_descr'   nowrap>$RLv52_descr</th>\n
+            </tr>
+        ";
+    }
+
+    return "
+            <tr bgcolor=\"#FFCC66\">   \n
+            <th class=\"borda\" style=\"font-size:11px\" nowrap>O</td>\n
+            <th title=\"Marca/Desmarca Todas\" class=\"borda\" style=\"font-size:12px\" nowrap><a id=\"marca\" href=\"\" style=\"color:black; display: none; \" onclick=\"js_marca();return false\">M</a>
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_inicial' nowrap>Inicial</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='Lista Débitos' nowrap>Rec</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='Valor Total'   nowrap>Valor Total</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_advog'   nowrap>$RLv50_data</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='$Tv70_codforo' nowrap>Processo</th>\n
+            <th class=\"borda\" style=\"font-size:11px\" title='Origens' colspan='6' nowrap>Origens</th>\n
+            </tr>
+        ";
+
+}
+
+
+function adicionarCorpoTabelaDebitos($mostraDadosCda = false, $tabela, $campo, $valor, $DB_DATACALC, $tipo)
+{
+    global $Tv50_inicial, $Tv70_codforo, $Tv50_advog, $Tnome, $Tv54_descr, $Tv52_descr, $Tv53_descr, $Tv50_codmov, $numrows;
+    $sLinhaRegistros = "";
+    $oInicial = new \cl_inicial();
+    $instituicao = \db_getsession('DB_instit');
+
+    $sqlArrecad = " select distinct
+                          v50_inicial,
+                          v50_advog,
+                          v50_data,
+                          v50_id_login,
+                          nome,
+                          v50_codlocal,
+                          v54_descr,
+                          v70_vara,
+                          v53_descr,
+                          v50_codmov,
+                          v70_sequencial,
+                          v70_codforo,
+                          v52_descr,
+                          z01_nome as nomeadvog
+                     from arrecad
+                          inner join arreinstit on arreinstit.k00_numpre = arrecad.k00_numpre
+                                               and arreinstit.k00_instit = {$instituicao}
+                                               $tabela
+                          inner join arretipo             on arrecad.k00_tipo                = arretipo.k00_tipo
+                          inner join inicialnumpre        on inicialnumpre.v59_numpre        = arrecad.k00_numpre
+                          inner join inicial              on inicial.v50_inicial             = inicialnumpre.v59_inicial
+                          inner join cgm                    on inicial.v50_advog               = cgm.z01_numcgm
+                          inner join db_usuarios          on db_usuarios.id_usuario          = inicial.v50_id_login
+                          inner join localiza             on inicial.v50_codlocal            = localiza.v54_codlocal
+                          inner join inicialmov           on inicial.v50_codmov              = inicialmov.v56_codmov
+                          inner join situacao             on inicialmov.v56_codsit           = situacao.v52_codsit
+                           left  join processoforoinicial on processoforoinicial.v71_inicial = inicial.v50_inicial
+                                                         and processoforoinicial.v71_anulado is false
+                           left  join processoforo        on processoforo.v70_sequencial     = processoforoinicial.v71_processoforo
+                           left  join vara                on vara.v53_codvara                = processoforo.v70_vara
+                     where $campo = $valor
+                       and arretipo.k00_tipo = $tipo
+                       and v50_situacao = 1 order by 1 asc";
+
+    $rsArrecad = db_query($sqlArrecad);
+
+    $valor_total = 0;
+    $validaCor = true;
+    $numrowsArrecad = pg_num_rows($rsArrecad);
+    $numrows = $numrowsArrecad;
+    if ($numrowsArrecad == 0) {
+        $sLinhaRegistros = "<tr><td><small>Nenhum registro encontrado</small></td></tr>";
+    }
+
+    for($i = 0; $i < $numrowsArrecad; $i++) {
+        $oArrecad = db_utils::fieldsMemory($rsArrecad, $i);
+
+        $sqlInicial = $oInicial->sql_queryFiltraInicialArrecad($oArrecad->v50_inicial, $instituicao);
+        $rsInicial = db_query($sqlInicial);
+
+        $valor_geral = 0;
+        $valor_corr = 0;
+        $valor_juros = 0;
+        $valor_multa = 0;
+        $aNumpres = \db_utils::makeCollectionFromRecord($rsInicial, function ($oRetorno) {
+            return $oRetorno->numpres;
+        });
+        foreach ($aNumpres as $numpre) {
+            $result_valinicial = debitos_numpre($numpre, 0, 0, $DB_DATACALC, date("Y", $DB_DATACALC), 0, true, "", " and y.k00_hist <> 918");
+            $valorInicial = \db_utils::fieldsMemory($result_valinicial, 0);
+
+            $valor_geral += $valorInicial->total;
+            $valor_corr += $valorInicial->vlrcor;
+            $valor_juros += $valorInicial->vlrjuros;
+            $valor_multa += $valorInicial->vlrmulta;
+        }
+
+        $valor_total += $valor_geral;
+
+        if ($validaCor) {
+            $validaCor = false;
+            $color = '#E4F471';
+        } else {
+            $validaCor = true;
+            $color = '#EFE029';
+        }
+
+        $funcao = "js_inicial($oArrecad->v50_inicial);";
+        $v70_codforo = $oArrecad->v70_codforo;
+
+        $sDisabilitaCheck = "js_desabilitaProcessoForo(this);";
+        $sLinhaRegistros .= "  <tr bgcolor=\"$color\">   \n                                                                                       ";
+        $sLinhaRegistros .= "  <input type='hidden' name='valor$i'      value='$valor_geral' id='valor$i'>                                        ";
+        $sLinhaRegistros .= "  <input type='hidden' name='valorcorr$i'  value='$valor_corr' id='valorcorr$i'>                                     ";
+        $sLinhaRegistros .= "  <input type='hidden' name='valorjuros$i' value='$valor_juros' id='valorjuros$i'>                                   ";
+        $sLinhaRegistros .= "  <input type='hidden' name='valormulta$i' value='$valor_multa' id='valormulta$i'>                                   ";
+        $sLinhaRegistros .= "  <td class=\"borda\" style=\"font-size:11px\" nowrap><a href='#' onclick=\"$funcao return false;\">MI</a></td>\n       ";
+
+        $sLinhaRegistros .= "  <td class=\"borda\" style=\"font-size:11px\" id=\"coluna$i\" nowrap>                                               ";
+        $sLinhaRegistros .= "    <input style       =\"visibility:'visible'\"                                                                     ";
+        $sLinhaRegistros .= "           type        =\"checkbox\"                                                                                 ";
+
+
+        $sLinhaRegistros .= "         class       ='check_processoforo'                                                                         ";
+        $sLinhaRegistros .= "         processoforo='$oArrecad->v70_codforo'                                                                               ";
+
+        $sLinhaRegistros .= "           value       =\"" . $oArrecad->v50_inicial . "\"                                                                     ";
+        $sLinhaRegistros .= "           ".($v70_codforo == ""?"disabled = \"disabled\"":"")."                                             ";
+        $sLinhaRegistros .= "           id          =\"CHECK$i\"                                                                                  ";
+        $sLinhaRegistros .= "           name        =\"CHECK$i\"                                                                                  ";
+        $sLinhaRegistros .= "           id          ='$i'                                                                                         ";
+        $sLinhaRegistros .= "           onClick     ='js_vermarcados();js_soma();{$sDisabilitaCheck}'>                                            ";
+        $sLinhaRegistros .= "  <input type='hidden' id='_VALORES{$i}' value='{$oArrecad->v50_inicial}'> ";
+        $sLinhaRegistros .= "  </td>                                                                                                              ";
+
+        $processo = "<a href='#' onclick='js_consultarProcesso($oArrecad->v70_sequencial)'>" . $oArrecad->v70_codforo . "</a>";
+
+        $sLinhaRegistros .= "  <td  class=\"borda\" style=\"font-size:11px\" title='$Tv50_inicial' nowrap>$oArrecad->v50_inicial</td>\n                                     ";
+        $sLinhaRegistros .= "  <td  class=\"borda\" style=\"font-size:11px\" title='Lista Receita' nowrap><a href='#' onclick='js_listaDebitos()'>DE</a></td>\n   ";
+        $sLinhaRegistros .= "  <td  class=\"borda\" style=\"font-size:11px\" title='Valor Total'   nowrap> " . db_formatar($valor_geral, 'f') . "</td>\n               ";
+        $sLinhaRegistros .= "  <td  class=\"borda\" style=\"font-size:11px\" title='$Tv50_advog'   nowrap>" . db_formatar($oArrecad->v50_data, "d") . "</td>\n               ";
+        $sLinhaRegistros .= "  <td  class=\"borda\" style=\"font-size:11px\" title='$Tv70_codforo' nowrap>$processo</td>\n ";
+
+        if ($mostraDadosCda) {
+            $sLinhaRegistros .= " <td style=\"font-size:11px\" title='Origens' nowrap> ";
+            $sLinhaRegistros .= " <table id='CDAs' style='max-width: 600px;'> ";
+            $sLinhaRegistros .= " <tr bgcolor=\"$color\"> ";
+            $sLinhaRegistros .= " <th class=\"borda\" style=\"font-size:11px\" title='Código CDA(s)'   nowrap>CDA(s)</th>\n ";
+            $sLinhaRegistros .= " <th class=\"borda\" style=\"font-size:11px\" title='Exercícios'   nowrap>Exercícios</th>\n ";
+            $sLinhaRegistros .= " <th class=\"borda\" style=\"font-size:11px\" title='Procedência da CDA' nowrap>Procedências</th>\n ";
+            $sLinhaRegistros .= " <th class=\"borda\" style=\"font-size:11px\" title='Situação Débito' nowrap>Situação Débito</th>\n ";
+            $sLinhaRegistros .= " <th class=\"borda\" style=\"font-size:11px\" title='Status da CDA' nowrap>Status</th>\n ";
+            $sLinhaRegistros .= " </tr> ";
+
+            $aCDA = RepositoryCertidao::getCdaByInicial($oArrecad->v50_inicial);
+
+            foreach ($aCDA as $cda) {
+                $sLinhaRegistros .= " <tr style=\"font-size:11px; text-align: center; \"> ";
+                $sLinhaRegistros .= " <td class=\"borda\" style='width: 80px; max-width: 80px;' nowrap><a href='#' onclick='js_consultarCDA({$cda->certidao})'>{$cda->certidao}</a></td>";
+
+                $cda->exercicio = explode(",", $cda->exercicio);
+                $cda->exercicio = implode(", ", array_unique($cda->exercicio));
+                $exercicio = strlen($cda->exercicio) > 14 ? substr($cda->exercicio,0, 12) . '...' : $cda->exercicio;
+                $sLinhaRegistros .= " <td class=\"borda\" style='width: 100px; max-width: 100px;' title='$cda->exercicio' nowrap>{$exercicio}</td>";
+
+                $cda->procedencia = explode(",", $cda->procedencia);
+                $cda->procedencia = implode(", ", array_unique($cda->procedencia));
+                $procedencia = strlen($cda->procedencia) > 60 ? substr($cda->procedencia,0, 57) . '...' : $cda->procedencia;
+                $sLinhaRegistros .= " <td class=\"borda\" style='width: 400px; max-width: 400px; text-align: left' title='{$cda->procedencia}' nowrap>{$procedencia}</td>";
+
+                $situacaoDebito = RepositoryCertidao::getSituacaoDebito($cda->certidao);
+
+                $sLinhaRegistros .= " <td class=\"borda\" style='width: 60px; max-width: 60px; text-align: left' title='{$situacaoDebito}' nowrap>{$situacaoDebito}</td>";
+
+                $situacao = RepositoryCertidao::getSituacaoCda($cda->certidao);
+                $situacaoFormatada = strlen($situacao) > 14 ? substr($situacao,0, 12) . '...' : $situacao;
+
+                $sLinhaRegistros .= " <td class=\"borda\" style='width: 100px; max-width: 100px; text-align: left' title='{$situacao}' nowrap>{$situacaoFormatada}</td> ";
+                $sLinhaRegistros .= " </tr> ";
+            }
+
+
+            $sLinhaRegistros .= " </table> ";
+        } else {
+            $sLinhaRegistros .= "  <td  style=\"font-size:11px\" title='$Tv50_advog'   nowrap>$oArrecad->nomeadvog</td>\n                                       ";
+            $sLinhaRegistros .= "  <td  style=\"font-size:11px\" title='$Tnome'        nowrap>$oArrecad->nome</td>\n                                            ";
+            $sLinhaRegistros .= "  <td  style=\"font-size:11px\" title='$Tv54_descr'   nowrap>$oArrecad->v54_descr</td>\n                                       ";
+            $sLinhaRegistros .= "  <td  style=\"font-size:11px\" title='$Tv53_descr'   nowrap>$oArrecad->v53_descr</td>\n                                       ";
+            $sLinhaRegistros .= "  <td  style=\"font-size:11px\" title='$Tv50_codmov'  nowrap>$oArrecad->v50_codmov</td>\n                                      ";
+            $sLinhaRegistros .= "  <td  style=\"font-size:11px\" title='$Tv52_descr'   nowrap>$oArrecad->v52_descr</td>\n                                       ";
+            $sLinhaRegistros .= "  </tr>                                                                                                                                                                                                                         ";
+        }
+    }
+
+    return $sLinhaRegistros;
+}
 ?>
 <html>
 <head>
@@ -158,10 +336,10 @@ $numrows= pg_numrows($result);
     parent.document.getElementById("btcda").disabled          = true; //botao Certidao
     parent.document.getElementById("btcancela").disabled      = true; //botao Cancelamento
     parent.document.getElementById("btnSuspender").disabled   = true; //botao Parcelamento
-    parent.document.getElementById("btcarne").disabled        = true; //botao emite carne 
-    parent.document.getElementById("emisscarne").disabled     = true; //botao emite carne 
+    parent.document.getElementById("btcarne").disabled        = true; //botao emite carne
+    parent.document.getElementById("emisscarne").disabled     = true; //botao emite carne
     parent.document.getElementById("btjust").disabled         = true; //botao justifica
-    parent.document.getElementById("btnotifica").disabled     = true;   
+    parent.document.getElementById("btnotifica").disabled     = true;
 
     if ( parent.document.getElementById("enviar").value == 'Recibo'){
       parent.document.getElementById("enviar").disabled     = true; //botao Recibo
@@ -183,130 +361,30 @@ $numrows= pg_numrows($result);
   onLoad="parent.document.getElementById('processando').style.visibility = 'hidden'; js_desabilitaBotoes();">
 <center>
 <form name="form1" id="form1" method="post" action="" target="reciboweb2">
-<table>
-<?
-if($numrows>0){
-  $sDesabilitaMarcarTodos = $lPartilha ? "display: none;" : "";
-  echo "
-  <tr bgcolor=\"#FFCC66\">   \n  	
-  <th class=\"borda\" style=\"font-size:11px\" nowrap>O</td>\n  	  
-  <th title=\"Marca/Desmarca Todas\" class=\"borda\" style=\"font-size:12px\" nowrap><a id=\"marca\" href=\"\" style=\"color:black; $sDesabilitaMarcarTodos\" onclick=\"js_marca();return false\">M</a>
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_inicial' nowrap>Inicial</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='Lista Débitos' nowrap>Rec</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='Valor Total'   nowrap>Valor Total</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_advog'   nowrap>$RLv50_data</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tv70_codforo' nowrap>Processo</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_advog'   nowrap>Advogado</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tnome' 	     nowrap>$RLnome</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tv54_descr'   nowrap>Localizacao</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tv53_descr'   nowrap>Vara</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tv50_codmov'  nowrap>$RLv50_codmov</th>\n
-  <th class=\"borda\" style=\"font-size:11px\" title='$Tv52_descr'   nowrap>$RLv52_descr</th>\n
-  </tr>  
-  ";	  
-  $valor_total = 0;
-  for($i=0; $i<$numrows; $i++){
-    db_fieldsmemory($result,$i);
-    //      if($i == 0){
-    $sql="select distinct
-                   arrecad.k00_numpre as numpres
-              from inicial
-                   inner join inicialcert on v51_inicial           =  v50_inicial
-                   inner join certdiv     on v51_certidao          = v14_certid 
-                   inner join divida      on v14_coddiv            = v01_coddiv  
-                   inner join arrecad     on arrecad.k00_numpre    = divida.v01_numpre
-                                         and arrecad.k00_numpar    = divida.v01_numpar
-                   inner join arreinstit  on arreinstit.k00_numpre = arrecad.k00_numpre 
-                                         and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
-             where v50_inicial = {$v50_inicial} 
-             union all
-            select distinct 
-                   arrecad.k00_numpre as numpres
-              from inicial
-                   inner join inicialcert on v51_inicial           =  v50_inicial
-                   inner join certter     on v51_certidao          = v14_certid 
-                   inner join termo       on v14_parcel            = v07_parcel  
-                   inner join arrecad     on arrecad.k00_numpre    = termo.v07_numpre
-                   inner join arreinstit  on arreinstit.k00_numpre = arrecad.k00_numpre 
-                                         and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
-             where v50_inicial = {$v50_inicial}";
-     
-    $result1 = pg_query($sql);
-    $numrows1= pg_numrows($result1);
-    $virgula = "";
-    $numpre1 = "";
-    $valor_geral  = 0;
-    $valor_corr   = 0;
-    $valor_juros  = 0;
-    $valor_multa  = 0;
+<table id="tabdebitos">
+<?php
 
-    for ($j = 0;$j < $numrows1;$j++) {
-      db_fieldsmemory($result1,$j);
-      $numpre1 .= $virgula.$numpres;
-      $result_valinicial = debitos_numpre($numpres,0,0,$DB_DATACALC,date("Y", $DB_DATACALC),0,true,"", " and y.k00_hist <> 918");
-      db_fieldsmemory($result_valinicial,0);
-      $valor_geral += $total;
-      $valor_corr  += $vlrcor;
-      $valor_juros += $vlrjuros;
-      $valor_multa += $vlrmulta;
-      $virgula = ",";
+try{
+    $daoParJuridico = new cl_parjuridico();
+    $sql = $daoParJuridico->sql_query_file(db_getsession("DB_anousu"), db_getsession("DB_instit"), "v19_consultaanaliticainicial");
+    $rs = \db_query($sql);
+
+    if (!$rs) {
+        throw new \DBException("Erro buscar configuração do jurídico.");
     }
 
-    $valor_total += $valor_geral;
+    $configuracao = \db_utils::fieldsMemory($rs, 0);
 
-    if ($i%2==0) {
-      $color='#E4F471';
-    } else {
-      $color='#EFE029';
-    }
-
-    $funcao           =  "js_inicial($v50_inicial);";
-    $sDisabilitaCheck =  $lPartilha ? "js_desabilitaProcessoForo(this);" : "";
-    $sLinhaRegistros  =  "  <tr bgcolor=\"$color\">   \n                                                                                       ";
-    $sLinhaRegistros .=  "  <input type='hidden' name='valor$i'      value='$valor_geral' id='valor$i'>                                        ";
-    $sLinhaRegistros .=  "  <input type='hidden' name='valorcorr$i'  value='$valor_corr' id='valorcorr$i'>                                     ";
-    $sLinhaRegistros .=  "  <input type='hidden' name='valorjuros$i' value='$valor_juros' id='valorjuros$i'>                                   ";
-    $sLinhaRegistros .=  "  <input type='hidden' name='valormulta$i' value='$valor_multa' id='valormulta$i'>                                   ";
-    $sLinhaRegistros .=  "  <td class=\"borda\" style=\"font-size:11px\" nowrap><a href='#' onclick=\"$funcao return false;\">MI</a></td>\n  	 ";
-    
-    $sLinhaRegistros .=  "  <td class=\"borda\" style=\"font-size:11px\" id=\"coluna$i\" nowrap>                                               ";
-    $sLinhaRegistros .=  "    <input style       =\"visibility:'visible'\"                                                                     ";
-    $sLinhaRegistros .=  "           type        =\"checkbox\"                                                                                 ";
-    
-    if($lPartilha){
-      $sLinhaRegistros .=  "         class       ='check_processoforo'                                                                         ";
-      $sLinhaRegistros .=  "         processoforo='$v70_codforo'                                                                               ";
-    }
-    $sLinhaRegistros .=  "           value       =\"".$v50_inicial."\"                                                                         ";
-    $sLinhaRegistros .=  "           ".($v70_codforo == ""?"disabled = \"disabled\"":"")."                                                     ";
-    $sLinhaRegistros .=  "           id          =\"CHECK$i\"                                                                                  ";
-    $sLinhaRegistros .=  "           name        =\"CHECK$i\"                                                                                  ";
-    $sLinhaRegistros .=  "           id          ='$i'                                                                                         ";
-    $sLinhaRegistros .=  "           onClick     ='js_vermarcados();js_soma();{$sDisabilitaCheck}'>                                            ";
-    $sLinhaRegistros .=  "  </td>                                                                                                              ";
-    
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tv50_inicial' nowrap>$v50_inicial</td>\n                                     ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='Lista Receita' nowrap><a href='#' onclick='js_listaDebitos()'>DE</a></td>\n   ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='Valor Total'   nowrap> ".db_formatar($valor_geral,'f')."</td>\n               ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tv50_advog'   nowrap>" . db_formatar($v50_data,"d") . "</td>\n               ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tv70_codforo' nowrap>$v70_codforo</td>\n                                     ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tv50_advog'   nowrap>$nomeadvog</td>\n                                       ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tnome' 	      nowrap>$nome</td>\n                                            ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tv54_descr'   nowrap>$v54_descr</td>\n                                       ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tv53_descr'   nowrap>$v53_descr</td>\n                                       ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tv50_codmov'  nowrap>$v50_codmov</td>\n                                      ";
-    $sLinhaRegistros .=  "  <td  style=\"font-size:11px\" title='$Tv52_descr'   nowrap>$v52_descr</td>\n                                       ";
-    $sLinhaRegistros .=  "  </tr>  																																																						 ";
-    echo $sLinhaRegistros;
+    $mostraDadosCra = $configuracao->v19_consultaanaliticainicial == 'f' ? false : true;
+    echo adicionarCabecalhoTabelaDebitos($mostraDadosCra);
+    echo adicionarCorpoTabelaDebitos($mostraDadosCra, $tabela, $campo, $valor, $DB_DATACALC, $tipo);
+    echo "</table>";
+  } catch (Exception $erro) {
+      db_msgbox($erro->getMessage());
   }
 
-  echo "<input type='hidden' name='k03_permparc' value=18>";
-  echo "<input type='hidden' name='k03_tipo' value=18>";
-  echo "<input type='hidden' name='inicial' value='t'>";
-  echo "<form name=\"form1\" id=\"form1\" method=\"post\" target=\"reciboweb2\">\n";
 
-
-  if (isset($matric)) {
+if (isset($matric)) {
     echo "<input type=\"hidden\" name=\"ver_matric\" value=\"".$matric."\">\n";
   } elseif (isset($inscr)) {
     echo "<input type=\"hidden\" name=\"ver_inscr\" value=\"".@$inscr."\">\n";
@@ -317,53 +395,82 @@ if($numrows>0){
 
   echo "<input type=\"hidden\" name=\"totregistros\" value=\"".@$numrows."\">\n";
 
-  echo "<input type=\"hidden\" name=\"tipo_debito\" value=\"".$tipo."\">\n";
+  // Configuração de parcelamento
+  $sSqlTipo  = " select cadtipo.k03_tipo,k03_parcelamento,k03_permparc,k00_formemissao ";
+  $sSqlTipo .= "   from arretipo                                                       ";
+  $sSqlTipo .= "        inner join cadtipo on arretipo.k03_tipo = cadtipo.k03_tipo     ";
+  $sSqlTipo .= "  where k00_tipo   = {$tipo}                                           ";
+  $sSqlTipo .= "    and k00_instit = ".db_getsession('DB_instit')."                    ";
 
+  $result_k03_tipo = db_query($sSqlTipo);
 
-}else{
-  ?>
-  <tr>
-    <td><small>Nenhum registro encontrado</small></td>
-  </tr>
-  <?
-}
+  db_fieldsmemory($result_k03_tipo, 0);
+
+  echo "<input type=\"hidden\" name=\"tipo_debito\" id=\"tipo_debito\" value=\"".$tipo."\">\n";
+  echo "<input type=\"hidden\" name=\"k03_tipo\" value=\"".$k03_tipo."\">\n";
+  echo "<input type=\"hidden\" name=\"perfil_procuradoria\" value=\"".$perfil_procuradoria."\">\n";
+  echo "<input type=\"hidden\" name=\"k03_parcelamento\" value=\"".$k03_parcelamento."\">\n";
+  echo "<input type=\"hidden\" name=\"k03_permparc\" value=\"".$k03_permparc."\">\n";
+  echo "<input type=\"hidden\" name=\"k00_formemissao\" id=\"k00_formemissao\" value=\"".$k00_formemissao."\">\n";
+
+  echo "<input type='hidden' name='inicial' value='t'>";
+
+  echo "</form>";
+
 ?>
-</table>
-</form>
 </center>
 </body>
 </html>
 <script>
+
+var k03_tipo = '<?=$k03_tipo?>';
+
+if (k03_tipo == 18) {
+  parent.document.getElementById("btmarca").disabled = true;
+}
+
 /**
  * Função para desabilitar os checkbox do processo do foro
  */
 function js_desabilitaProcessoForo(oElemento){
-  
-   var aChecks       = new Array();  
-   var sProcessoForo = oElemento.getAttribute('processoforo');
-   
-   $$('.check_processoforo').each(function(oCheckBox, iIndice){
-     if(oCheckBox.checked){
-       aChecks[iIndice] = new Array(oCheckBox.id);
-     }
-     if(oCheckBox.getAttribute('processoforo') != sProcessoForo) {
-       oCheckBox.disabled = true;
-     }
-   });
-   
-   if (aChecks.length == 0){
-     
-     $$('.check_processoforo').each(function(oCheckBox){
-       
-       if(oCheckBox.getAttribute('processoforo') != ""){
-         oCheckBox.disabled = false;
-       }
-     });
-   }
+
+
+    var aChecks       = new Array();
+    var sProcessoForo = oElemento.getAttribute('processoforo');
+
+    $$('.check_processoforo').each(function(oCheckBox, iIndice){
+
+        if(oCheckBox.checked){
+            aChecks[iIndice] = new Array(oCheckBox.id);
+        }
+        if (sProcessoForo == '' && oCheckBox.getAttribute('processoforo') != '') {
+
+            oCheckBox.disabled = true;
+        }
+        if (sProcessoForo != '' && oCheckBox.getAttribute('processoforo') == '') {
+
+            oCheckBox.disabled = true;
+        }
+    });
+
+    if (aChecks.length == 0){
+
+        $$('.check_processoforo').each(function(oCheckBox){
+            oCheckBox.disabled = false;
+        });
+    }
+}
+
+function js_consultarProcesso(codProcesso){
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe12','jur1_consultaprocessoforo002.php?v70_sequencial='+codProcesso,'Consultar Processo',true);
+}
+
+function js_consultarCDA(codigoCDA) {
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cda', 'jur3_emiteinicial011.php?certidao='+codigoCDA, 'Consultar CDA', true);
 }
 
 function js_inicial(inicial){
-  js_OpenJanelaIframe('top.corpo','db_iframe12','cai3_gerfinanc040.php?tabela=<?=$tabela?>&campo=<?=$campo?>&valor=<?=$valor?>&origem=inicial&inicial='+inicial+'&tipo=<?=$tipo?>','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe12','cai3_gerfinanc040.php?tabela=<?=$tabela?>&campo=<?=$campo?>&valor=<?=$valor?>&origem=inicial&inicial='+inicial+'&tipo=<?=$tipo?>','Pesquisa',true);
 }
 
 function js_listaDebitos(){
@@ -371,7 +478,7 @@ function js_listaDebitos(){
 }
 
 function js_marca() {
-  
+
   var ID = document.getElementById('marca');
   var BT = parent.document.getElementById('btmarca');
 
@@ -382,10 +489,10 @@ function js_marca() {
   var permissao_cancelar     = <?=db_permissaomenu(db_getsession("DB_anousu"),81,4554)?>;
   var permissao_justif       = <?=db_permissaomenu(db_getsession("DB_anousu"),81,5024)?>;
   var permissao_suspender    = <?=db_permissaomenu(db_getsession("DB_anousu"),81,7653)?>;
-  
+
   if(!ID) {
-		return false;
-	}
+        return false;
+    }
   var F = document.form1;
   if(ID.innerHTML == 'M') {
     var dis = true;
@@ -437,11 +544,11 @@ function js_marca() {
   if ( ( k03_tipo == 13 || k03_tipo == 18 ) && perfil_procuradoria == 0 ) {
     parent.document.getElementById("enviar").disabled = true;//botao emite recibo
     parent.document.getElementById("btparc").disabled = true;
-    parent.document.getElementById("btcarne").disabled = true;	  
+    parent.document.getElementById("btcarne").disabled = true;
   }
 }
 function js_vermarcados(){
-  
+
   var permissao_parcelamento = <?=db_permissaomenu(db_getsession("DB_anousu"),81,3415)?>;
   var permissao_cancelar     = <?=db_permissaomenu(db_getsession("DB_anousu"),81,4554)?>;
   var permissao_justif       = <?=db_permissaomenu(db_getsession("DB_anousu"),81,5024)?>;
@@ -453,15 +560,16 @@ function js_vermarcados(){
   F = document.form1;
   for(i = 0;i < F.elements.length;i++) {
     if(F.elements[i].type == "checkbox"){
-      
+
       if(F.elements[i].checked == true){
 
         parent.document.js_parc = js_a;
-				//parent.document.getElementById('btparc').onclick = js_a();
-        
+                //parent.document.getElementById('btparc').onclick = js_a();
+
         if (parent.document.getElementById('btparc').disabled == true && permissao_parcelamento == true) {
           parent.document.getElementById("btparc").disabled = false; // botao parcelamento
         }
+
         if (parent.document.getElementById('btcancela').disabled == true && permissao_cancelar == true) {
           parent.document.getElementById("btcancela").disabled = false; // botao cancelamento
         }
@@ -471,6 +579,8 @@ function js_vermarcados(){
         if (parent.document.getElementById('btnSuspender').disabled == true && permissao_suspender == true) {
           parent.document.getElementById("btnSuspender").disabled = true; // botao suspender
         }
+        parent.document.getElementById("btncustas").disabled = false;
+        parent.document.getElementById("btnTef").disabled = false;
         return true;
       }else{
 
@@ -486,7 +596,10 @@ function js_vermarcados(){
         if (parent.document.getElementById('btnSuspender').disabled == true && permissao_suspender == true) {
           parent.document.getElementById("btnSuspender").disabled = true; // botao suspender
         }
-        
+
+        parent.document.getElementById("btncustas").disabled = true;
+          parent.document.getElementById("btnTef").disabled = true;
+
       }
     }
   }
@@ -494,7 +607,7 @@ function js_vermarcados(){
   if ( ( k03_tipo == 13 || k03_tipo == 18 ) && perfil_procuradoria == 0 ) {
     parent.document.getElementById("enviar").disabled = true;//botao emite recibo
     parent.document.getElementById("btparc").disabled = true;
-    parent.document.getElementById("btcarne").disabled = true;	  
+    parent.document.getElementById("btcarne").disabled = true;
   }
 
 }
@@ -530,14 +643,14 @@ function js_soma1(obj,linha) {
       parent.document.getElementById("btparc").disabled = false;//botao parcelamento
       parent.document.getElementById("btcda").disabled = false;//botao certidao
     }
-    parent.document.getElementById("btcarne").disabled = true;//botao emite carne	
-    parent.document.getElementById("btnotifica").disabled = false;	  
-//    parent.document.getElementById("btcarnep").disabled = false;//botao emite carne	
+    parent.document.getElementById("btcarne").disabled = true;//botao emite carne
+    parent.document.getElementById("btnotifica").disabled = false;
+//    parent.document.getElementById("btcarnep").disabled = false;//botao emite carne
   }
-  var indi = js_parse_int(obj.id);	  
-  
+  var indi = js_parse_int(obj.id);
+
   var total     = parent.document.getElementById('valor'+linha).innerHTML;
-  
+
   if(obj.checked == true){
     total += new Number(document.getElementById('total'+indi).value.replace(",",""));
   }else{
@@ -551,7 +664,7 @@ function js_soma1(obj,linha) {
     multa = Number(parent.document.getElementById('multa1').innerHTML) - multa;
     desconto = Number(parent.document.getElementById('desconto1').innerHTML) - desconto;
     total = Number(parent.document.getElementById('total1').innerHTML) - total;
-    
+
     parent.document.getElementById('valor3').innerHTML = valor.toFixed(2);
     parent.document.getElementById('valorcorr3').innerHTML = valorcorr.toFixed(2);
     parent.document.getElementById('juros3').innerHTML = juros.toFixed(2);
@@ -559,7 +672,7 @@ function js_soma1(obj,linha) {
     parent.document.getElementById('desconto3').innerHTML = desconto.toFixed(2);
     parent.document.getElementById('total3').innerHTML = total.toFixed(2);
   }
-  
+
 }
 
 function js_soma(linha) {
@@ -580,13 +693,13 @@ function js_soma(linha) {
   var tab = document.getElementById('tabdebitos');
   if(emrec == 't'){
     parent.document.getElementById("enviar").disabled = false;//botao emite recibo
-    parent.document.getElementById("btcarne").disabled = true;//botao carne	
-    parent.document.getElementById("btnotifica").disabled = false;	  
+    parent.document.getElementById("btcarne").disabled = true;//botao carne
+    parent.document.getElementById("btnotifica").disabled = false;
 //    parent.document.getElementById("btcarnep").disabled = false; //botao emite carne
   }
   for(var i = 0;i < F.length;i++) {
     if((F.elements[i].type == "checkbox" || F.elements[i].type == "submit") && (F.elements[i].checked == true || linha == 1)) {
-      var indi   = js_parse_int(F.elements[i].id);	  
+      var indi   = js_parse_int(F.elements[i].id);
       total      += new Number(document.getElementById('valor'+indi).value.replace(",",""));
       valorcorr  += new Number(document.getElementById('valorcorr'+indi).value.replace(",",""));
       valorjuros += new Number(document.getElementById('valorjuros'+indi).value.replace(",",""));
@@ -600,13 +713,13 @@ function js_soma(linha) {
   if(linha == 2) {
     total = Number(parent.document.getElementById('total1').innerHTML) - total;
   }
-  
+
       var aux = 0;
       for(i = 0;i < F.length;i++) {
         if(F.elements[i].type == "checkbox")
         if(F.elements[i].checked == true)
         aux = 1;
-      }  
+      }
       if(aux == 0) {
         parent.document.getElementById("enviar").disabled       = true
         parent.document.getElementById("btparc").disabled       = true
@@ -614,9 +727,9 @@ function js_soma(linha) {
         parent.document.getElementById("btcancela").disabled    = true
         parent.document.getElementById("btnSuspender").disabled = true
         parent.document.getElementById("btjust").disabled       = true
-        parent.document.getElementById("btcarne").disabled      = true   
-        parent.document.getElementById("emisscarne").disabled   = true    
-        parent.document.getElementById("btnotifica").disabled   = true    
+        parent.document.getElementById("btcarne").disabled      = true
+        parent.document.getElementById("emisscarne").disabled   = true
+        parent.document.getElementById("btnotifica").disabled   = true
         document.getElementById('marca').innerHTML              = "M";
         parent.document.getElementById('btmarca').value         = "Marcar Todas";
         parent.document.getElementById("geranotif").disabled    = true;
@@ -625,7 +738,7 @@ function js_soma(linha) {
   if ( ( k03_tipo == 13 || k03_tipo == 18 ) && perfil_procuradoria == 0 ) {
     parent.document.getElementById("enviar").disabled = true;//botao emite recibo
     parent.document.getElementById("btparc").disabled = true;
-    parent.document.getElementById("btcarne").disabled = true;	  
+    parent.document.getElementById("btcarne").disabled = true;
   }
 
 }

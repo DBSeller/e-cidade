@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 //////////INCLUIR/////////////
 if(isset($HTTP_POST_VARS["incluir"])) {
@@ -37,7 +37,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   $sql = "select u.login,u.usuarioativo
           from db_usuarios u
 	       left outer join db_usuacgm on db_usuacgm.id_usuario = u.id_usuario";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   for($x = 0;$x < pg_numrows($result);$x++){
     db_fieldsmemory($result,$x);
     if($login == $nomelogin){
@@ -46,13 +46,13 @@ if(isset($HTTP_POST_VARS["incluir"])) {
       exit;		   
     }
   }
-  $result = pg_exec("select max(id_usuario) + 1 from db_usuarios");
+  $result = db_query("select max(id_usuario) + 1 from db_usuarios");
   $id_usuario = pg_result($result,0,0);
   $id_usuario = $id_usuario==""?"1":$id_usuario;
-  pg_exec("BEGIN");
+  db_query("BEGIN");
   for($i = 0;$i < sizeof($instit);$i++)
-   pg_exec("insert into db_userinst values(".$instit[$i].",$id_usuario)") or die("Erro(21)($i) inserindo em db_userinst: ".pg_errormessage());
-   pg_exec("insert into db_usuarios (
+   db_query("insert into db_userinst values(".$instit[$i].",$id_usuario)") or die("Erro(21)($i) inserindo em db_userinst: ".pg_errormessage());
+   db_query("insert into db_usuarios (
                   id_usuario,
 		  nome,
 		  login,
@@ -69,23 +69,23 @@ if(isset($HTTP_POST_VARS["incluir"])) {
 		   '',
 		   2)")
                    or die("Erro(23) inserindo em db_usuarios: ".pg_errormessage());
-  pg_exec("COMMIT");
+  db_query("COMMIT");
   echo "<script>alert('Inclusão efetuada com sucesso!')</script>";
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
   exit;		   
 ////////////////ALTERAR////////////////  
 } else if(isset($HTTP_POST_VARS["alterar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec("BEGIN");
-  pg_exec("delete from db_userinst where id_usuario = $id_usuario") or die("Erro(43) deletando db_userinst: ".pg_errormessage());
+  db_query("BEGIN");
+  db_query("delete from db_userinst where id_usuario = $id_usuario") or die("Erro(43) deletando db_userinst: ".pg_errormessage());
   for($i = 0;$i < sizeof($instit);$i++) {     
-    pg_exec("insert into db_userinst values(".$instit[$i].",$id_usuario)") or die("Erro(21)($i) inserindo em db_userinst: ".pg_errormessage());  
+    db_query("insert into db_userinst values(".$instit[$i].",$id_usuario)") or die("Erro(21)($i) inserindo em db_userinst: ".pg_errormessage());  
   }
-  pg_exec("delete from db_usuacgm where id_usuario = $id_usuario") or die("Erro(43) deletando db_usuacgm: ".pg_errormessage());
+  db_query("delete from db_usuacgm where id_usuario = $id_usuario") or die("Erro(43) deletando db_usuacgm: ".pg_errormessage());
   $sql = "select u.id_usuario as usuariocomp ,u.login as loginho
           from db_usuarios u
 	       where u.id_usuario <> $id_usuario";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   for($x = 0;$x < pg_numrows($result);$x++){
     db_fieldsmemory($result,$x);
     if($loginho == $nomelogin){
@@ -94,7 +94,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
       exit;		   
     }
   }
-  pg_exec("update db_usuarios set
+  db_query("update db_usuarios set
              nome = '$nome',
 		     login = '$nomelogin',
 		     senha = '',
@@ -102,17 +102,17 @@ if(isset($HTTP_POST_VARS["incluir"])) {
 		     email = '',
 		     usuext = 2
 		   where id_usuario = $id_usuario") or die("Erro(38) alterando db_usuarios: ".pg_errormessage());
-  pg_exec("COMMIT");
+  db_query("COMMIT");
   echo "<script>alert('Alteração efetuada com sucesso!')</script>";
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
 //  exit;		     
 ////////////////EXCLUIR//////////////
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("BEGIN");
-  pg_exec("delete from db_userinst where id_usuario = ".$HTTP_POST_VARS["id_usuario"]) or die("Erro(58) excluindo db_userinst: ".pg_errormessage());
-  pg_exec("delete from db_usuacgm  where id_usuario = ".$HTTP_POST_VARS["id_usuario"]) or die("Erro(58) excluindo db_usuacgm: ".pg_errormessage());
-  pg_exec("delete from db_usuarios where id_usuario = ".$HTTP_POST_VARS["id_usuario"]) or die("Erro(43) excluindo db_usuarios: ".pg_errormessage());
-  pg_exec("COMMIT");  
+  db_query("BEGIN");
+  db_query("delete from db_userinst where id_usuario = ".$HTTP_POST_VARS["id_usuario"]) or die("Erro(58) excluindo db_userinst: ".pg_errormessage());
+  db_query("delete from db_usuacgm  where id_usuario = ".$HTTP_POST_VARS["id_usuario"]) or die("Erro(58) excluindo db_usuacgm: ".pg_errormessage());
+  db_query("delete from db_usuarios where id_usuario = ".$HTTP_POST_VARS["id_usuario"]) or die("Erro(43) excluindo db_usuarios: ".pg_errormessage());
+  db_query("COMMIT");  
   echo "<script>alert('Exclusão efetuada com sucesso!')</script>";
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
 //  exit;  
@@ -124,7 +124,7 @@ if(isset($retorno)) {
           from db_usuarios u
 	       left outer join db_usuacgm on db_usuacgm.id_usuario = u.id_usuario
  	  where u.id_usuario = $retorno";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 }
 
@@ -209,14 +209,14 @@ input {
               <td height="25" nowrap> <select name="instit[]" size="5" multiple>
                   <?
 		  if(isset($retorno)) {		  
-	        $result = pg_exec("select c.codigo,c.nomeinst,u.id_instit
+	        $result = db_query("select c.codigo,c.nomeinst,u.id_instit
                                from db_config c
                                left outer join db_userinst u							   
                                on u.id_instit = c.codigo
 							   and u.id_usuario = $retorno							   
 							   ");
 		  } else {
-		    $result = pg_exec("select codigo,nomeinst from db_config");
+		    $result = db_query("select codigo,nomeinst from db_config");
 		  }
 		  for($i = 0;$i < pg_numrows($result);$i++) {
 		    

@@ -1,43 +1,43 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/verticalTab.widget.php");
-require_once("model/Acordo.model.php");
-require_once("model/AcordoComissao.model.php");
-require_once("model/AcordoComissaoMembro.model.php");
-require_once("model/CgmFactory.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
+require_once(modification("model/Acordo.model.php"));
+require_once(modification("model/AcordoComissao.model.php"));
+require_once(modification("model/AcordoComissaoMembro.model.php"));
+require_once(modification("model/CgmFactory.model.php"));
 
 $clrotulo = new rotulocampo;
 $db_opcao = 3;
@@ -48,6 +48,66 @@ $clrotulo->label("pc67_motivo");
 
 $oGet     = db_utils::postMemory($_GET);
 $clAcordo = new Acordo($oGet->ac16_sequencial);
+
+$tiposInstrumento = $clAcordo->getTiposInstrumento();
+$tipoInstrumento = $tiposInstrumento[$clAcordo->getTipoInstrumento()];
+
+$estiloOrdemInicio = "document.getElementById('ordemInicio').style = 'display:none;'";
+if ($clAcordo->buscaEventosPorTipo(5) && $clAcordo->getDependeOrdemInicio() == 't') {
+  $estiloOrdemInicio = "document.getElementById('ordemInicio').style = 'display:table-row;'";
+}
+
+/**
+ * Modifica a data exibida para acordos que dependem de ordem de inicio, caso possua um evento do tipo
+ * ordem de inicio cadastrado.
+ */
+
+// Percorre as posições verificando se existem aditamentos de prazo ou renovação.
+$acordoPosicoes = $clAcordo->getPosicoes();
+$posicoes = [];
+foreach($acordoPosicoes as $acordoposicao){
+  $tipo = $acordoposicao->getTipo();
+  if (in_array($tipo, array(5, 6))) {
+    $posicoes[] = $tipo;
+  }
+}
+
+/**
+ * Percorre os eventos fazendo a verificação se ele é de ordem de inicio e só permite a alteração da data se
+ * se não existir posições de aditamento de prazo ou renovação
+ */
+$eventos = $clAcordo->getEventos();
+$datainicio = $clAcordo->getDataInicial();
+$datafim = $clAcordo->getDataFinal();
+$dataOrdemInicio = "";
+foreach($eventos as $evento) {
+  if($evento->getTipoEvento() == 5 && $clAcordo->getDependeOrdemInicio() == 't'){
+      if(count($posicoes) == 0) {
+        // Calcula o periodo usando como base a vigência de inclusão do acordo
+        $dataInicioAnterior = new DBDate($datainicio);
+        $dataFimAnterior = new DBDate($datafim);
+        $intervalo = DBDate::getIntervaloEntreDatas($dataInicioAnterior, $dataFimAnterior);
+
+        // Calcula a data de fim usando como base a data da ordem de inicio
+        $oData = $evento->getData();
+        $datainicio = $oData->getDate('d/m/Y');
+        $dataOrdemInicio = $evento->getData();
+        $oData = new DBDate($datainicio);
+        $oData->modificarIntervalo('+' . $intervalo->days . ' days');
+        $datafim = $oData->getDate('d/m/Y');
+    }
+    else {
+      $dataOrdemInicio = $evento->getData();
+    }
+  }
+}
+
+if ($clAcordo->getInstit() != db_getsession('DB_instit') ) {
+
+  $oInstituicao = InstituicaoRepository::getInstituicaoByCodigo(db_getsession('DB_instit'));
+  $sMensagem = "Acordo de código {$oGet->ac16_sequencial} não pertence a instituição {$oInstituicao->getDescricao()}.";
+  header("Location: db_erros.php?db_erro={$sMensagem}");
+}
 
 db_app::import("configuracao.DBDepartamento");
 ?>
@@ -112,7 +172,7 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
           <b>Acordo:</b>
         </td>
         <td class="tdBgColor" width="150">
-          <?php echo $clAcordo->getNumeroAcordo() . '/' . $clAcordo->getAno(); ?>
+            <?php echo $clAcordo->getNumeroAcordo() . '/' . $clAcordo->getAno();  ?>
         </td>
         <td class="tdWidth">
           <b>Número:</b>
@@ -154,10 +214,7 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
           <b>Período de Vigência:</b>
         </td>
         <td class="tdBgColor">
-          <?php
-            $oDataInicial  = $clAcordo->getDataInicialVigenciaOriginal();
-            $oDataFinal    = $clAcordo->getDataFinalVigenciaOriginal();
-            echo "{$oDataInicial->getDate(DBDate::DATA_PTBR)} até {$oDataFinal->getDate(DBDate::DATA_PTBR)}";
+          <?php echo "{$datainicio} até {$datafim}";
           ?>
         </td>
       </tr>
@@ -184,23 +241,23 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
       <tr>
         <td class="tdWidth"><b>Lei:</b></td>
         <td class="tdBgColor" colspan="1"><?php echo $clAcordo->getLei();?></td>
-        
+
         <td width="150">
           <b>Depto. Responsável:</b>
         </td>
-        <td class="tdBgColor"> 
-          <?php 
+        <td class="tdBgColor">
+          <?php
           $iDepartamentoResponsavel = $clAcordo->getDepartamentoResponsavel();
           $oDepartamento            = new DBDepartamento($iDepartamentoResponsavel);
           echo "{$iDepartamentoResponsavel} - {$oDepartamento->getNomeDepartamento()}";
           ?>
         </td>
       </tr>
-      
+
       <tr>
         <td class="tdWidth"><b>Valor Total:</b></td>
         <td class="tdBgColor" colspan="1">
-          <?php echo db_formatar($clAcordo->getValorContrato(), 'f'); ?>
+          <?php echo 'R$' . db_formatar($clAcordo->getValorContrato(), 'f'); ?>
         </td>
 
         <td class="tdWidth"><b>Classificação:</b></td>
@@ -224,30 +281,34 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
       <tr>
         <td class="tdWidth"><b>Processo:</b></td>
         <td class="tdBgColor" colspan="3"><?php echo $clAcordo->getProcesso();?></td>
-      </tr> 
-      
+      </tr>
+
       <tr>
         <td class="tdWidth">
           <b>Categoria:</b>
         </td>
         <td colspan="4" class="tdBgColor" >
-          <?php 
-            $iCategoria          = $clAcordo->getCategoriaAcordo(); 
+          <?php
+            $iCategoria          = $clAcordo->getCategoriaAcordo();
             $oDAOAcordoCategoria = db_utils::getDao("acordocategoria");
             $sSqlAcordoCategoria = $oDAOAcordoCategoria->sql_query_file($iCategoria);
             $sRsAcordoCategoria  = $oDAOAcordoCategoria->sql_record($sSqlAcordoCategoria);
-            
+
             if ($oDAOAcordoCategoria->numrows >0) {
-                          
+
               $oStdCategoria = db_utils::fieldsMemory($sRsAcordoCategoria, 0);
               echo $oStdCategoria->ac50_sequencial . " - " .$oStdCategoria->ac50_descricao;
             }
           ?>
         </td>
       </tr>
+      <tr>
+        <td class="tdWidth"><b>Instrumento:</b></td>
+        <td class="tdBgColor" colspan="3"><?php echo strtoupper($tipoInstrumento) ?></td>
+      </tr>
 
       <tr>
-        <td class="tdWidth">
+        <td class="tdWidth" >
           <b>Objeto:</b>
         </td>
         <td colspan="4" class="tdBgColor" >
@@ -261,6 +322,15 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
         </td>
         <td class="tdBgColor" colspan="3"><?php echo $clAcordo->getResumoObjeto(); ?></td>
       </tr>
+
+
+      <tr id="ordemInicio">
+        <td class="tdWidth">
+          <b>Ordem de Início :</b>
+        </td>
+        <td class="tdBgColor" colspan="3"><?php echo $dataOrdemInicio ?></td>
+      </tr>
+
 
     </table>
  </fieldset>
@@ -425,15 +495,15 @@ function js_showDadosItem(iLinha) {
 }
 
 function js_consultaEmpenho(iNumeroEmpenho) {
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_empempenho001', 'func_empempenho001.php?e60_numemp=' + iNumeroEmpenho, 'Pesquisa Empenho', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_empempenho001', 'func_empempenho001.php?e60_numemp=' + iNumeroEmpenho, 'Pesquisa Empenho', true);
 }
 
 function js_consultaLicitacao(iCodigoLicitacao) {
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_infolic', 'lic3_licitacao002.php?l20_codigo=' + iCodigoLicitacao, 'Pesquisa Licitação', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_infolic', 'lic3_licitacao002.php?l20_codigo=' + iCodigoLicitacao, 'Pesquisa Licitação', true);
 }
 
 function js_consultaProcessoCompras(iCodigoProcesso) {
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_pesquisa_processo', 'com3_pesquisaprocessocompras003.php?pc80_codproc=' + iCodigoProcesso, 'Pesquisa Processo de Compras', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_pesquisa_processo', 'com3_pesquisaprocessocompras003.php?pc80_codproc=' + iCodigoProcesso, 'Pesquisa Processo de Compras', true);
 }
 
 function js_showInfoItem(oDados) {
@@ -534,6 +604,9 @@ function js_showInfoItem(oDados) {
    oWindowGridDetalhesItem.show();
 }
 
+
+<?php echo $estiloOrdemInicio; ?>
+
 function js_detalhesAutorizacao(iCodigo) {
 
   var sQuery = '';
@@ -555,7 +628,7 @@ function js_detalhesEmpenho(iCodigo) {
 function js_mostraSaldo(chave){
 
   arq = 'func_saldoorcdotacao.php?o58_coddot='+chave
-  js_OpenJanelaIframe('top.corpo','db_iframe_saldos',arq,'Saldo da dotação',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saldos',arq,'Saldo da dotação',true);
   $('Jandb_iframe_saldos').style.zIndex='1500000';
 }
 

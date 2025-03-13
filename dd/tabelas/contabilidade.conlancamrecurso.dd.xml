@@ -1,0 +1,136 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010355' name='contabilidade.conlancamrecurso' description="Recursos do lançamento contabil" prefix="c130" label="Recursos do lançamento contabil" type="0">
+  <fields>
+    <field codigo="1010186" 
+           campo_api='' 
+           name="c130_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='contabilidade.conlancamrecurso_c130_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010187" 
+           campo_api='' 
+           name="c130_conlancam" 
+           conteudo="int4" 
+           description="Código do lançamento" 
+           inivalue="" 
+           label="Código do lançamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do lançamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010188" 
+           campo_api='' 
+           name="c130_orctiporec" 
+           conteudo="int4" 
+           description="Fonte de Recurso" 
+           inivalue="" 
+           label="Fonte de Recurso" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Fonte de Recurso" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010189" 
+           campo_api='' 
+           name="c130_conta" 
+           conteudo="int4" 
+           description="Fonte de Recurso" 
+           inivalue="" 
+           label="Conta" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Conta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010190" 
+           campo_api='' 
+           name="c130_anousu" 
+           conteudo="int4" 
+           description="Ano da Conta" 
+           inivalue="" 
+           label="Ano da Conta" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano da Conta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010191" 
+           campo_api='' 
+           name="c130_natureza" 
+           conteudo="char(1)" 
+           description="Natureza da Conta" 
+           inivalue="" 
+           label="Natureza da Conta" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Natureza da Conta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c130_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="orctiporec" inner='t'>
+      <fieldfk name="c130_orctiporec" reference="o15_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="conlancam" inner='t'>
+      <fieldfk name="c130_conlancam" reference="c70_codlan" /> 
+    </foreignkey>
+    <foreignkey reference="conplanoreduz" inner='t'>
+      <fieldfk name="c130_conta" reference="c61_reduz" /> 
+      <fieldfk name="c130_anousu" reference="c61_anousu" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -95,6 +95,12 @@ class Job {
   private $sCaminhoPrograma;
 
   /**
+   * Parametros a serem repassados/informados para a classe
+   * @var array
+   */
+  private $aParametros = array();
+
+  /**
    * Constante com a terminação do
    * @var string
    */
@@ -106,15 +112,17 @@ class Job {
   function __construct( $sNome = null ) {
 
     db_app::import('configuracao.TaskManager');
+
     $this->setMomentoCricao( time() );
     $this->sDiretorio = TaskManager::PATH_FILA_TAREFAS;
 
     if ( !empty($sNome) ) {
 
       $this->setNome($sNome);
+
       if ( !file_exists( $this->getCaminhoTarefa() )) {
         throw new BusinessException("Arquivo não encontrado.");
-        
+
       }
       $oArquivoXML = new DOMDocument();
       $oArquivoXML->load($this->getCaminhoTarefa());
@@ -135,10 +143,16 @@ class Job {
           $this->setTipoPeriodicidade($oXMLPeriodicidades->getAttribute('TipoPeriodicidade'));
 
           $aXMLPeriodicidade = $oXMLPeriodicidades->getElementsByTagName('Periodicidade');
-          for ( $iIndicePeriodicidade = 0;
-          $iIndicePeriodicidade < $aXMLPeriodicidade->length;
-          $iIndicePeriodicidade++ ) {
+          for ( $iIndicePeriodicidade = 0; $iIndicePeriodicidade < $aXMLPeriodicidade->length; $iIndicePeriodicidade++ ) {
             $this->adicionarPeriodicidade($aXMLPeriodicidade->item($iIndicePeriodicidade)->nodeValue);
+          }
+        }
+        $aXMLParametros = $oXMLTarefa->getElementsByTagName('Parametros');
+        foreach ( $aXMLParametros as $oXMLParametro ) {
+
+          $aXMLParametro = $oXMLParametro->getElementsByTagName('Parametro');
+          for ( $iIndiceParametro = 0; $iIndiceParametro < $aXMLParametro->length; $iIndiceParametro++ ) {
+            $this->adicionarParametro($aXMLParametro->item($iIndiceParametro)->getAttribute('name'), $aXMLParametro->item($iIndiceParametro)->getAttribute('value'));
           }
         }
       }
@@ -254,7 +268,8 @@ class Job {
 
 
   public function getCaminhoTarefa() {
-    return $this->getDiretorio() . "/" . $this->getNome().self::SUFIXO_NOME_TAREFA;
+
+    return $this->getDiretorio() . $this->getNome().self::SUFIXO_NOME_TAREFA;
   }
 
 
@@ -277,17 +292,22 @@ class Job {
     $this->sPeriodicidadeExecucao = $sUnidade;
   }
 
-
   public function getPeriodicidadeExecucao() {
     return $this->sPeriodicidadeExecucao;
   }
-
 
   public function salvar() {
 
     $oXMLWriter = new XMLWriter;
 
-    $oXMLWriter->openURI($this->getCaminhoTarefa());
+    if (!is_writable(dirname($this->getCaminhoTarefa()))) {
+        throw new \Exception(sprintf("Sem permissão de escrita no diretório %s",$this->getCaminhoTarefa()));
+    }
+
+    if (!@$oXMLWriter->openURI($this->getCaminhoTarefa())) {
+        throw new \Exception(sprintf("Erro ao abrir arquivo %s",$this->getCaminhoTarefa()));
+    }
+
     $oXMLWriter->setindent(true);
     $oXMLWriter->startDocument('1.0', 'UTF-8');
 
@@ -331,6 +351,30 @@ class Job {
     }
     $oXMLWriter->endElement();//Fim Periodicidades
 
+    /**
+     * Adicionado bloco de parâmetros para passar para o model chamado
+     */
+    if (count($this->aParametros) > 0) {
+
+      $oXMLWriter->startElement('Parametros'); // abre <Parametros>
+
+      foreach ($this->aParametros as $sName => $mValor) {
+
+        $oXMLWriter->startElement('Parametro'); // abre <Parametro>
+
+        $oXMLWriter->startAttribute('name');
+        $oXMLWriter->text( $sName );
+        $oXMLWriter->endAttribute();
+
+        $oXMLWriter->startAttribute('value');
+        $oXMLWriter->text( $mValor );
+        $oXMLWriter->endAttribute();
+
+        $oXMLWriter->endElement(); // fecha </Parametro>
+      }
+
+      $oXMLWriter->endElement(); // fecha </Parametros>
+    }
     $oXMLWriter->endElement();//Fim Tarefa
 
     $oXMLWriter->endDocument();
@@ -343,6 +387,33 @@ class Job {
     $this->aPeriodicidades[] = $iValor;
   }
 
+  /**
+   * [adicionarParametro description]
+   * @param  mixed $sParametro nome do parametro
+   * @param  mixed $mValor     valor
+   */
+  public function adicionarParametro($sParametro, $mValor) {
 
+    $this->aParametros[$sParametro] = $mValor;
+  }
 
+  /**
+   * Retornar os parâmetros informados
+   * @return array onde o index é o nome do parâmetro
+   */
+  public function getParametros() {
+
+   return $this->aParametros;
+  }
+
+  /**
+   * Exclui o arquivo XML
+   */
+  public function excluir() {
+
+    if ( empty($this->sNome) || !file_exists( $this->getCaminhoTarefa() ) ){
+      throw new BusinessException("Arquivo não encontrado.");
+    }
+    unlink($this->getCaminhoTarefa());
+  }
 }

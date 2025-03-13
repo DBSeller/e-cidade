@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,151 +25,186 @@
  *                                licenca/licenca_pt.txt
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_usuariosonline.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
-  $clrotulo = new rotulocampo;
-  $clrotulo->label("v14_certid");
-  $clrotulo->label("DBtxt14");
-  $clrotulo->label("DBtxt15");
-  $clrotulo->label('DBtxt10');
-  $clrotulo->label('DBtxt11');
-  $clrotulo->label("DBtxt16");
-  $oGet  = db_utils::postMemory($_GET);
+$clrotulo = new rotulocampo;
+$clrotulo->label("v14_certid");
+$clrotulo->label("DBtxt14");
+$clrotulo->label("DBtxt15");
+$clrotulo->label("DBtxt10");
+$clrotulo->label("DBtxt11");
+$clrotulo->label("DBtxt16");
 
-  if (isset($oGet->iCdaDividaIni) && isset($oGet->iCdaDividaFim)) {
+$oGet = db_utils::postMemory($_GET);
 
-    $v14_certid  = $oGet->iCdaDividaIni;
-    $v14_certid1 = $oGet->iCdaDividaFim;
-  }
+if (isset($oGet->iCdaDividaIni) && isset($oGet->iCdaDividaFim)) {
+
+  $v14_certid  = $oGet->iCdaDividaIni;
+  $v14_certid1 = $oGet->iCdaDividaFim;
+}
+
 ?>
 <html>
 <head>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Expires" content="0">
+<script language="javascript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/prototype.js"></script>
 <script type="text/javascript">
-  function js_AbreJanelaRelatorio() {
 
-    ordenarpor = '';
-    for(i=0;i<document.form1.DBtxt16.length;i++){
+function js_AbreJanelaRelatorio() {
 
-      if(document.form1.DBtxt16[i].checked==true){
-        ordenarpor = document.form1.DBtxt16[i].value
-      }
+  var ordenarpor = '';
+
+  var eDBtxt16 = document.getElementById("DBtxt16");
+  ordenarpor = eDBtxt16.options[eDBtxt16.selectedIndex].value;
+
+  if (js_verifica() == true) {
+
+    if (document.form1.v14_certid.value != '') {
+
+  	  datacertidao = '';
+
+      if (document.form1.DBtxt15_ano.value != '') {
+    	  datacertidao = document.form1.DBtxt15_ano.value+'/'+document.form1.DBtxt15_mes.value+'/'+document.form1.DBtxt15_dia.value;
+    	}
+
+      jan = window.open('div2_certidaodivida002.php?tipo=2&certid='+document.form1.v14_certid.value+'&certid1='+document.form1.v14_certid1.value+'&reemissao='+document.form1.DBtxt14.value+'&valormaximo='+document.form1.DBtxt11.value+'&valorminimo='+document.form1.DBtxt10.value+'&datacertidao='+datacertidao+'&ordenarpor='+ordenarpor+'&totexe='+document.form1.totexe.value+'&endaimp='+document.form1.endaimp.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
+      jan.moveTo(0, 0);
+    } else {
+  	  alert('Campo Certidão é de preenchimento obrigatório.');
     }
+  }
+}
 
-    if( js_verifica() == true ){
-      if ( document.form1.v14_certid.value!='' ) {
-
-    	  datacertidao = '';
-      	if( document.form1.DBtxt15_ano.value != '' ){
-      	  datacertidao=document.form1.DBtxt15_ano.value+'/'+document.form1.DBtxt15_mes.value+'/'+document.form1.DBtxt15_dia.value;
-      	}
-
-        jan = window.open('div2_certidaodivida002.php?tipo=2&certid='+document.form1.v14_certid.value+'&certid1='+document.form1.v14_certid1.value+'&reemissao='+document.form1.DBtxt14.value+'&valormaximo='+document.form1.DBtxt11.value+'&valorminimo='+document.form1.DBtxt10.value+'&datacertidao='+datacertidao+'&ordenarpor='+ordenarpor+'&totexe='+document.form1.totexe.value+'&endaimp='+document.form1.endaimp.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-        jan.moveTo(0,0);
-      } else {
-    	  alert('Você Deverá Digitar o Número da Certidão.');
-      }
-    }
-   }
 </script>
 <link href="estilos.css" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+
+#DBtxt10, #DBtxt11, #DBtxt16 {
+  width: 83px;
+}
+#DBtxt16 {
+  font-size:14px;
+}
+
+
+</style>
 </head>
 <body class="body-default" onLoad="a=1" >
 <form class="container" name="form1" method="post" action="div2_certparc_002.php" onsubmit="return js_verifica()">
-		<fieldset>
-			<legend>Certidão de Dívida Ativa</legend>
-				<table class="form-container">
-          <tr>
-            <td nowrap title="<?=@$Tcertid?>">
-              <?php
-                db_ancora(@$Lv14_certid,"js_pesquisaparcel(true)",4)
-              ?>
-            </td>
-            <td>
-              <?php
-                db_input('v14_certid',10,$Iv14_certid,true,'text',4,"onchange='js_pesquisaparcel(false);document.form1.v14_certid1.value=this.value'")
-              ?>
-              &nbsp;À&nbsp;
-              <?php
-                db_ancora(@$Lv14_certid,"js_pesquisaparcel1(true)",4);
-                db_input('v14_certid',10,$Iv14_certid,true,'text',4,"onchange='js_pesquisaparcel1(false);'","v14_certid1");
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td nowrap title="Informe o Intervalor de Valores">Valores de:</td>
-            <td align="left">
-              <? db_input('DBtxt10', 15, $IDBtxt10, true, 'text', 4);  ?>
-              &nbsp; Até&nbsp;
-              <? db_input('DBtxt11', 15, $IDBtxt11, true, 'text', 4);  ?>
-            </td>
-            </tr>
-            <tr>
-              <td  nowrap title="Informe a data de Emissão da certidão" >
-              Data Emissão da Certidão:
-              </td>
-            <td>
-            <?=db_inputdata('DBtxt15','','','',true,'text',4)?>
-            </td>
-          </tr>
+	<fieldset>
+		<legend>Certidão de Dívida Ativa</legend>
+			<table class="form-container">
 
-          <tr>
-            <td nowrap title="Escolha a Ordem" >Ordenar as Certidões por:</td>
-            <td>
-              <input type="radio" name="DBtxt16" value="v14_certid" checked> Certidão
-              <input type="radio" name="DBtxt16" value="z01_nome"> Nome
-            </td>
-          </tr>
-
-          <tr>
-            <td nowrap title="<?=@$TDBtxt14?>"><?=@$LDBtxt14?></td>
-            <td>
-              <?php
-                $x = array("t"=>"Sim","f"=>"Não");
-                db_select('DBtxt14',$x,true,4,"");
-              ?>
-            </td>
-          </tr>
-
-          <tr>
-            <td nowrap title="">Totaliza por exercício:</td>
-            <td>
-              <?php
-                $x = array("f"=>"Não","t"=>"Sim");
-                db_select('totexe',$x,true,4,"");
-              ?>
-            </td>
-          </tr>
-
-          <tr>
-          <td nowrap title="">Endereço a imprimir:</td>
-          <td>
+        <tr>
+          <td title="<?php echo $Tv14_certid; ?>">
             <?php
-              $r = db_query("select v04_ordemendcda from pardiv");
-              db_fieldsmemory($r,0);
-              $endaimp = "o";
-              if ($v04_ordemendcda == 2) {
-                $endaimp = "c";
-              }
-              $x = array("o"=>"Origem","c"=>"CGM");
-              db_select('endaimp',$x,true,4,"");
+              db_ancora($Lv14_certid, "js_pesquisaparcel(true)", 1);
             ?>
           </td>
-          </tr>
-        </table>
-    </fieldset>
-    <input name="exibir_relatorio" type="button" id="exibir_relatorio" value="Exibir relat&oacute;rio" onClick="js_AbreJanelaRelatorio()"/>
-  </form>
+          <td>
+            <?php
+
+              $Sv14_certid = "Certidão";
+
+              db_input("v14_certid", 10, 1, true, "text", 1, "onchange='js_pesquisaparcel(false);document.form1.v14_certid1.value=this.value'");
+
+              db_ancora("<strong>à</strong>", "js_pesquisaparcel1(true)", 1);
+
+              db_input("v14_certid", 10, 1, true, "text", 1, "onchange='js_pesquisaparcel1(false);'", "v14_certid1");
+            ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for="DBtxt10">Valores:</label>
+          </td>
+          <td>
+            <?php
+
+              $SDBtxt10 = "Valor";
+              $SDBtxt11 = "Valor";
+
+              db_input("DBtxt10", 15, 4, true, "text", 1);
+            ?>
+            <strong>à</strong>
+            <?php
+              db_input("DBtxt11", 15, 4, true, "text", 1);
+            ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td nowrap title="Informe a data de Emissão da certidão">
+            <label for="DBtxt15">Data de Emissão:</label>
+          </td>
+          <td>
+            <?php db_inputdata("DBtxt15", "", "", "", true, "text", 4) ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td nowrap title="<?php echo $TDBtxt14;?>">
+              <label for="DBtxt14"><?php echo $LDBtxt14;?></label>
+            </td>
+          <td>
+            <?php
+              $aReemissao = array("t" => "Sim", "f" => "Não");
+              db_select("DBtxt14", $aReemissao, true, 4, "");
+            ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td><label for="totexe">Totaliza por exercício:</label></td>
+          <td>
+            <?php
+              $aTotaliza = array("f" => "Não", "t" => "Sim");
+              db_select("totexe", $aTotaliza, true, 4, "");
+            ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td nowrap title="Escolha a Ordem"><label for="DBtxt16">Ordenar por:</label></td>
+          <td>
+            <?php
+              $aOrder = array("v14_certid" => "Certidão", "z01_nome" => "Nome");
+              db_select("DBtxt16", $aOrder, true, 4, "");
+            ?>
+          </td>
+        </tr>
+
+        <tr>
+        <td nowrap title=""><label for="endaimp">Endereço a imprimir:</label></td>
+        <td>
+          <?php
+            $r = db_query("select v04_ordemendcda from pardiv");
+            db_fieldsmemory($r, 0);
+
+            $endaimp = "o";
+            if ($v04_ordemendcda == 2) {
+              $endaimp = "c";
+            }
+
+            $aImprime = array("o" => "Origem", "c" => "CGM");
+            db_select("endaimp", $aImprime, true, 4, "");
+          ?>
+        </td>
+        </tr>
+      </table>
+  </fieldset>
+  <input name="exibir_relatorio" type="button" id="exibir_relatorio" value="Processar" onClick="js_AbreJanelaRelatorio()"/>
+</form>
 
 <?php
   if (!isset($oGet->iCdaDividaIni) && !isset($oGet->iCdaDividaFim)) {
@@ -181,10 +216,10 @@
 <script type="text/javascript">
 function js_pesquisaparcel(mostra){
 
-     if(mostra==true){
-       js_OpenJanelaIframe('top.corpo','db_iframe','func_certdiv.php?funcao_js=parent.js_mostratermo1|0','Pesquisa',true);
+     if(mostra == true){
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_certdiv.php?funcao_js=parent.js_mostratermo1|0','Pesquisa',true);
      }else{
-       js_OpenJanelaIframe('top.corpo','db_iframe','func_certdiv.php?pesquisa_chave='+document.form1.v14_certid.value+'&funcao_js=parent.js_mostratermo','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_certdiv.php?pesquisa_chave='+document.form1.v14_certid.value+'&funcao_js=parent.js_mostratermo','Pesquisa',false);
      }
 }
 function js_mostratermo(chave,erro){
@@ -204,9 +239,9 @@ function js_mostratermo1(chave1){
 function js_pesquisaparcel1(mostra){
 
      if(mostra==true){
-       js_OpenJanelaIframe('top.corpo','db_iframe','func_certdiv.php?funcao_js=parent.js_mostratermo11|0','Pesquisa',true);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_certdiv.php?funcao_js=parent.js_mostratermo11|0','Pesquisa',true);
      }else{
-       js_OpenJanelaIframe('top.corpo','db_iframe','func_certdiv.php?pesquisa_chave='+document.form1.v14_certid1.value+'&funcao_js=parent.js_mostratermo2','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_certdiv.php?pesquisa_chave='+document.form1.v14_certid1.value+'&funcao_js=parent.js_mostratermo2','Pesquisa',false);
      }
 }
 function js_mostratermo2(chave,erro){

@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
   
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_autotipo_classe.php");
-include("classes/db_autorec_classe.php");
-include("classes/db_autousu_classe.php");
-include("classes/db_autotestem_classe.php");
-include("classes/db_autonumpre_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_autotipo_classe.php"));
+include(modification("classes/db_autorec_classe.php"));
+include(modification("classes/db_autousu_classe.php"));
+include(modification("classes/db_autotestem_classe.php"));
+include(modification("classes/db_autonumpre_classe.php"));
 $clautotipo= new cl_autotipo;
 $clautorec= new cl_autorec;
 $clautousu= new cl_autousu;
@@ -72,7 +72,7 @@ if ($solicitacao == "Proced") {
   }
 }
 if ($pesquisaLocalizada==true) {
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if(pg_numrows($result) == 0){
     echo "<br><br><b>Nenhum Registro Cadastrado!!<b>";
   }else{

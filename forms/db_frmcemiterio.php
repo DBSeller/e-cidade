@@ -47,7 +47,7 @@ db_input('cm14_i_codigo',10,$Icm14_i_codigo,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cemiterio','func_cemiterio.php?funcao_js=parent.js_preenchepesquisa|cm14_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cemiterio','func_cemiterio.php?funcao_js=parent.js_preenchepesquisa|cm14_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cemiterio.hide();

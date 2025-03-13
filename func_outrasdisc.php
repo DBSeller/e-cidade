@@ -26,15 +26,15 @@
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_diarioresultado_classe.php");
-include("classes/db_diariofinal_classe.php");
-include("classes/db_regencia_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_diarioresultado_classe.php"));
+include(modification("classes/db_diariofinal_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cldiarioresultado = new cl_diarioresultado;
@@ -46,14 +46,14 @@ $sql = "SELECT ed47_i_codigo as codaluno,ed47_v_nome as nomealuno
          inner join diarioresultado on ed73_i_diario = ed95_i_codigo
         WHERE ed73_i_codigo = $codigo
        ";
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 $sql = "SELECT ed57_i_codigo as turma
         FROM turma
          inner join regencia on ed59_i_turma = ed57_i_codigo
         WHERE ed59_i_codigo = $regencia
        ";
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 if(isset($coddisciplinas)){
  $result = $cldiarioresultado->sql_record($cldiarioresultado->sql_query("","ed95_i_codigo as codatual",""," ed73_i_codigo = $codigo"));
@@ -62,7 +62,7 @@ if(isset($coddisciplinas)){
  for($t=0;$t<$cldiarioresultado->numrows;$t++){
   db_fieldsmemory($result,$t);
   $sql3 = "UPDATE diarioresultado SET ed73_c_aprovmin = '$valor' WHERE ed73_i_codigo = $outroscodigos";
-  $result3 = pg_query($sql3);
+  $result3 = db_query($sql3);
   if($valor=="S"){
    $valoraprov = "A";
    $valordescrito = "Parecer";
@@ -93,13 +93,13 @@ if(isset($coddisciplinas)){
            ed74_i_percfreq = $ed74_i_percfreq,
            ed74_c_resultadofinal = '$res_final'
           WHERE ed74_i_diario = $coddiariodeste";
-  $result2 = pg_query($sql2);
+  $result2 = db_query($sql2);
   $dataatualiz = date("Y-m-d");
   $sql1 = "UPDATE regencia SET
            ed59_d_dataatualiz = '$dataatualiz'
           WHERE ed59_i_codigo = $outrasregs
          ";
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
  }
  ?>
  <script>
@@ -144,7 +144,7 @@ if(isset($coddisciplinas)){
            AND ed59_c_freqglob != 'F'
            ORDER BY ed59_i_ordenacao
           ";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    $linhas = pg_num_rows($result);
    if($linhas>0){
     ?>
@@ -201,4 +201,10 @@ if(isset($coddisciplinas)){
  function js_fechar(){
   parent.db_iframe_outrasdisc.hide();
  }
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

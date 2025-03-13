@@ -1,39 +1,40 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cflicita_classe.php");
-require_once("classes/db_pctipocompratribunal_classe.php");
-require_once("classes/db_pccflicitapar_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cflicita_classe.php"));
+require_once(modification("classes/db_pctipocompratribunal_classe.php"));
+require_once(modification("classes/db_pccflicitapar_classe.php"));
+require_once(modification("model/licitacao/LicitacaoModalidade.model.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -45,21 +46,27 @@ $db_botao = true;
 $iInstit  = db_getsession('DB_instit');
 
 if (isset($incluir)) {
-	
+
   $sqlerro = false;
-  
-  db_inicio_transacao();
-  
-  $clcflicita->incluir($l03_codigo);
-  if($clcflicita->erro_status==0){
-    $sqlerro=true;
-  } 
-  
-  $erro_msg = $clcflicita->erro_msg; 
-  
-  db_fim_transacao($sqlerro);
-  
-  $l03_codigo = $clcflicita->l03_codigo;
+  if (LicitacaoModalidade::possuiTipoCadastrado($l03_tipo)) {
+
+    $sqlerro  = true;
+    $erro_msg = "Tipo da Licitação [$l03_tipo] já cadastrado no sistema.";
+  } else {
+
+    db_inicio_transacao();
+
+    $clcflicita->incluir($l03_codigo);
+    if ($clcflicita->erro_status == 0) {
+      $sqlerro = true;
+    }
+
+    $erro_msg = $clcflicita->erro_msg;
+
+    db_fim_transacao($sqlerro);
+
+    $l03_codigo = $clcflicita->l03_codigo;
+  }
   $db_opcao   = 1;
   $db_botao   = true;
 }
@@ -79,11 +86,11 @@ if (isset($incluir)) {
   <tr>
     <td>&nbsp;</td>
   </tr>
-  <tr> 
-    <td valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td valign="top" bgcolor="#CCCCCC">
     <center>
       <?
-        include("forms/db_frmcflicita.php");
+        include(modification("forms/db_frmcflicita.php"));
       ?>
     </center>
   </td>
@@ -93,17 +100,17 @@ if (isset($incluir)) {
 </html>
 <?
 if (isset($incluir)) {
-	
+
   if ($sqlerro == true) {
-  	
+
     db_msgbox($erro_msg);
     if ($clcflicita->erro_campo != "") {
-    	
+
       echo "<script> document.form1.".$clcflicita->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clcflicita->erro_campo.".focus();</script>";
     }
   } else {
-  	
+
    db_msgbox($erro_msg);
    db_redireciona("lic1_cflicita005.php?liberaaba=true&chavepesquisa=$l03_codigo");
   }

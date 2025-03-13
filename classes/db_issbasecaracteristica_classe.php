@@ -1,64 +1,64 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: issqn
 //CLASSE DA ENTIDADE issbasecaracteristica
-class cl_issbasecaracteristica { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $q138_sequencial = 0; 
-   var $q138_caracteristica = 0; 
-   var $q138_inscr = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_issbasecaracteristica {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $q138_sequencial = 0;
+   var $q138_caracteristica = 0;
+   var $q138_inscr = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 q138_sequencial = int8 = Código Caracteristica Issqn 
-                 q138_caracteristica = int8 = Código Característica 
-                 q138_inscr = int4 = Inscrição Municipal 
+                 q138_sequencial = int8 = Código Caracteristica Issqn
+                 q138_caracteristica = int8 = Código Característica
+                 q138_inscr = int4 = Inscrição Municipal
                  ";
-   //funcao construtor da classe 
-   function cl_issbasecaracteristica() { 
+   //funcao construtor da classe
+   function cl_issbasecaracteristica() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("issbasecaracteristica"); 
+     $this->rotulo = new rotulo("issbasecaracteristica");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -77,9 +77,9 @@ class cl_issbasecaracteristica {
      }
    }
    // funcao para inclusao
-   function incluir ($q138_sequencial){ 
+   function incluir ($q138_sequencial){
       $this->atualizacampos();
-     if($this->q138_caracteristica == null ){ 
+     if($this->q138_caracteristica == null ){
        $this->erro_sql = " Campo Código Característica nao Informado.";
        $this->erro_campo = "q138_caracteristica";
        $this->erro_banco = "";
@@ -88,7 +88,7 @@ class cl_issbasecaracteristica {
        $this->erro_status = "0";
        return false;
      }
-     if($this->q138_inscr == null ){ 
+     if($this->q138_inscr == null ){
        $this->erro_sql = " Campo Inscrição Municipal nao Informado.";
        $this->erro_campo = "q138_inscr";
        $this->erro_banco = "";
@@ -98,16 +98,16 @@ class cl_issbasecaracteristica {
        return false;
      }
      if($q138_sequencial == "" || $q138_sequencial == null ){
-       $result = db_query("select nextval('issbasecaracteristica_q138_sequencial_seq')"); 
+       $result = db_query("select nextval('issbasecaracteristica_q138_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: issbasecaracteristica_q138_sequencial_seq do campo: q138_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: issbasecaracteristica_q138_sequencial_seq do campo: q138_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->q138_sequencial = pg_result($result,0,0); 
+       $this->q138_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from issbasecaracteristica_q138_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $q138_sequencial)){
@@ -118,10 +118,10 @@ class cl_issbasecaracteristica {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->q138_sequencial = $q138_sequencial; 
+         $this->q138_sequencial = $q138_sequencial;
        }
      }
-     if(($this->q138_sequencial == null) || ($this->q138_sequencial == "") ){ 
+     if(($this->q138_sequencial == null) || ($this->q138_sequencial == "") ){
        $this->erro_sql = " Campo q138_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -130,17 +130,17 @@ class cl_issbasecaracteristica {
        return false;
      }
      $sql = "insert into issbasecaracteristica(
-                                       q138_sequencial 
-                                      ,q138_caracteristica 
-                                      ,q138_inscr 
+                                       q138_sequencial
+                                      ,q138_caracteristica
+                                      ,q138_inscr
                        )
                 values (
-                                $this->q138_sequencial 
-                               ,$this->q138_caracteristica 
-                               ,$this->q138_inscr 
+                                $this->q138_sequencial
+                               ,$this->q138_caracteristica
+                               ,$this->q138_inscr
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "issbasecaracteristica ($this->q138_sequencial) nao Incluído. Inclusao Abortada.";
@@ -179,16 +179,16 @@ class cl_issbasecaracteristica {
        }
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($q138_sequencial=null) { 
+   function alterar ($q138_sequencial=null) {
       $this->atualizacampos();
      $sql = " update issbasecaracteristica set ";
      $virgula = "";
-     if(trim($this->q138_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q138_sequencial"])){ 
+     if(trim($this->q138_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q138_sequencial"])){
        $sql  .= $virgula." q138_sequencial = $this->q138_sequencial ";
        $virgula = ",";
-       if(trim($this->q138_sequencial) == null ){ 
+       if(trim($this->q138_sequencial) == null ){
          $this->erro_sql = " Campo Código Caracteristica Issqn nao Informado.";
          $this->erro_campo = "q138_sequencial";
          $this->erro_banco = "";
@@ -198,10 +198,10 @@ class cl_issbasecaracteristica {
          return false;
        }
      }
-     if(trim($this->q138_caracteristica)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q138_caracteristica"])){ 
+     if(trim($this->q138_caracteristica)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q138_caracteristica"])){
        $sql  .= $virgula." q138_caracteristica = $this->q138_caracteristica ";
        $virgula = ",";
-       if(trim($this->q138_caracteristica) == null ){ 
+       if(trim($this->q138_caracteristica) == null ){
          $this->erro_sql = " Campo Código Característica nao Informado.";
          $this->erro_campo = "q138_caracteristica";
          $this->erro_banco = "";
@@ -211,10 +211,10 @@ class cl_issbasecaracteristica {
          return false;
        }
      }
-     if(trim($this->q138_inscr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q138_inscr"])){ 
+     if(trim($this->q138_inscr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q138_inscr"])){
        $sql  .= $virgula." q138_inscr = $this->q138_inscr ";
        $virgula = ",";
-       if(trim($this->q138_inscr) == null ){ 
+       if(trim($this->q138_inscr) == null ){
          $this->erro_sql = " Campo Inscrição Municipal nao Informado.";
          $this->erro_campo = "q138_inscr";
          $this->erro_banco = "";
@@ -250,7 +250,7 @@ class cl_issbasecaracteristica {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "issbasecaracteristica nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->q138_sequencial;
@@ -278,11 +278,11 @@ class cl_issbasecaracteristica {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($q138_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($q138_sequencial=null,$dbwhere=null) {
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (isset($lSessaoDesativarAccount) && $lSessaoDesativarAccount === false) {
@@ -290,7 +290,7 @@ class cl_issbasecaracteristica {
        if ($dbwhere==null || $dbwhere=="") {
 
          $resaco = $this->sql_record($this->sql_query_file($q138_sequencial));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -321,7 +321,7 @@ class cl_issbasecaracteristica {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "issbasecaracteristica nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$q138_sequencial;
@@ -349,11 +349,11 @@ class cl_issbasecaracteristica {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -375,8 +375,8 @@ class cl_issbasecaracteristica {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $q138_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $q138_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -396,8 +396,8 @@ class cl_issbasecaracteristica {
      $sql2 = "";
      if($dbwhere==""){
        if($q138_sequencial!=null ){
-         $sql2 .= " where issbasecaracteristica.q138_sequencial = $q138_sequencial "; 
-       } 
+         $sql2 .= " where issbasecaracteristica.q138_sequencial = $q138_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -413,8 +413,8 @@ class cl_issbasecaracteristica {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $q138_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $q138_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -430,8 +430,8 @@ class cl_issbasecaracteristica {
      $sql2 = "";
      if($dbwhere==""){
        if($q138_sequencial!=null ){
-         $sql2 .= " where issbasecaracteristica.q138_sequencial = $q138_sequencial "; 
-       } 
+         $sql2 .= " where issbasecaracteristica.q138_sequencial = $q138_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -446,6 +446,39 @@ class cl_issbasecaracteristica {
        }
      }
      return $sql;
+  }
+
+  /**
+   * Valida se existe a caracteristica ativa para o alvara
+   * @param  integer $iCodigoInscricao      inscricao municipal
+   * @param  integer $iCodigoCaracteristica codigo da caracteristica
+   * @return string                         sql query da consulta
+   */
+  function sql_query_valida_caracteristica($iCodigoInscricao, $iCodigoCaracteristica) {
+
+    $sSql  = "select * from issbasecaracteristica where     ";
+    $sSql .= "q138_inscr = {$iCodigoInscricao} and          ";
+    $sSql .= "q138_caracteristica = {$iCodigoCaracteristica}";
+
+    return $sSql;
+  }
+
+  /**
+   * Criamos a query que consulta a caracteristica da inscrição pelo grupo
+   *
+   * @param  integer $iInscricao
+   * @param  integer $iGrupoCaracteristica
+   * @return string
+   */
+  public function sql_query_por_grupo( $iInscricao, $iGrupoCaracteristica ) {
+
+    $sSql  = " select *                                                                   ";
+    $sSql .= "   from issbasecaracteristica                                               ";
+    $sSql .= "        inner join caracteristica on q138_caracteristica = db140_sequencial ";
+    $sSql .= "  where db140_grupocaracteristica = {$iGrupoCaracteristica}                 ";
+    $sSql .= "    and q138_inscr = {$iInscricao}                                          ";
+
+    return $sSql;
   }
 }
 ?>

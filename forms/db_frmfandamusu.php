@@ -26,7 +26,7 @@
  */
 
 //MODULO: fiscal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clfandamusu->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -117,9 +117,9 @@ db_textarea('y40_obs',3,50,$Iy40_obs,true,'text',$db_opcao,"")
 <script>
 function js_pesquisay40_codandam(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_fandam','func_fandam.php?funcao_js=parent.js_mostrafandam1|y39_codandam|y39_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fandam','func_fandam.php?funcao_js=parent.js_mostrafandam1|y39_codandam|y39_data','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_fandam','func_fandam.php?pesquisa_chave='+document.form1.y40_codandam.value+'&funcao_js=parent.js_mostrafandam','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fandam','func_fandam.php?pesquisa_chave='+document.form1.y40_codandam.value+'&funcao_js=parent.js_mostrafandam','Pesquisa',false);
   }
 }
 function js_mostrafandam(chave,erro){
@@ -136,9 +136,9 @@ function js_mostrafandam1(chave1,chave2){
 }
 function js_pesquisay40_id_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.y40_id_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.y40_id_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
   }
 }
 function js_mostradb_usuarios(chave,erro){
@@ -154,7 +154,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_fandamusu','func_fandamusu.php?funcao_js=parent.js_preenchepesquisa|y40_codandam|1','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fandamusu','func_fandamusu.php?funcao_js=parent.js_preenchepesquisa|y40_codandam|1','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_fandamusu.hide();

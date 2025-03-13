@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_liclicita_classe.php");
-include("classes/db_liclicitasituacao_classe.php");
-include("classes/db_liclicitem_classe.php");
-include("classes/db_empautitem_classe.php");
-include("classes/db_pcorcamjulg_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_liclicita_classe.php"));
+include(modification("classes/db_liclicitasituacao_classe.php"));
+include(modification("classes/db_liclicitem_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("classes/db_pcorcamjulg_classe.php"));
 $clliclicita         = new cl_liclicita;
 $clliclicitasituacao = new cl_liclicitasituacao;
 $clliclicitem        = new cl_liclicitem;
@@ -151,7 +151,7 @@ for($i=0;$i<$numrows;$i++){
   $pdf->setfont('arial','b',8); 
   $pdf->cell(30,$alt,'Objeto :',0,0,"R",0); 
   $pdf->setfont('arial','',7);
-  $pdf->multicell(150,$alt,$l20_objeto,0,"L",0);
+  $pdf->multicell(150,$alt,htmlspecialchars_decode($l20_objeto),0,"L",0);
 
   $rsAndam = $clliclicitasituacao->sql_record($clliclicitasituacao->sql_query('','*',"l11_data,l11_sequencial"
 	                                 ,"l11_liclicita = $l20_codigo $whAnda")); 

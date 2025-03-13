@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,17 +27,17 @@
 
 if (!isset($arqinclude)){ // se este arquivo não esta incluido por outro
 
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_liborcamento.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_libtxt.php");
-  include("libs/db_utils.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_conrelinfo_classe.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("classes/db_db_config_classe.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_libtxt.php"));
+  include(modification("libs/db_utils.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_db_config_classe.php"));
 
   $oGet = db_utils::postMemory($_GET);
   
@@ -275,12 +275,12 @@ $db_filtro  = " o70_instit in ({$sListaInstit})";
 // Exercicio Atual
 $rsRecExeAtual         = db_receitasaldo(11,1,3,true,$db_filtro,$anousu,$dtDataInicial,$dtDataFinal);
 $iLinhasRecExeAtual    = pg_num_rows($rsRecExeAtual);
-@pg_query("drop table work_receita");
+@db_query("drop table work_receita");
 
 // Exercicio Anterior
 $rsRecExeAnterior      = db_receitasaldo(11,1,3,true,$db_filtro,$anousu_ant,$dtDataInicialAnt,$dtDataFinalAnt);
 $iLinhasRecExeAnterior = pg_num_rows($rsRecExeAnterior);
-@pg_query("drop table work_receita");
+@db_query("drop table work_receita");
 
 
 
@@ -732,19 +732,19 @@ $db_filtro_disponivel = "c61_instit in (".$sListaInstit.") ";
 // Exercicio Atual
 $rsDispAtual 	  = db_planocontassaldo_matriz($anousu,$dtDataInicial,$dtDataFinal,false,$db_filtro_disponivel);
 $iLinhasDispAtual = pg_num_rows($rsDispAtual);
-@pg_query("drop table work_receita"); 
-@pg_query("drop table work_pl");
-@pg_query("drop table work_pl_estrut");
-@pg_query("drop table work_pl_estrutmae");
+@db_query("drop table work_receita"); 
+@db_query("drop table work_pl");
+@db_query("drop table work_pl_estrut");
+@db_query("drop table work_pl_estrutmae");
 
 
 // Exercicio Anterior
 $rsDispAnterior      = db_planocontassaldo_matriz($anousu_ant, $dtDataInicialAnt, $dtDataFinalAnt, false, $db_filtro_disponivel);
 $iLinhasDispAnterior = pg_num_rows($rsDispAnterior);
-@pg_query("drop table work_receita"); 
-@pg_query("drop table work_pl");
-@pg_query("drop table work_pl_estrut");
-@pg_query("drop table work_pl_estrutmae");
+@db_query("drop table work_receita"); 
+@db_query("drop table work_pl");
+@db_query("drop table work_pl_estrut");
+@db_query("drop table work_pl_estrutmae");
 
 for ($linha = 28; $linha <= 33; $linha++){	
   
@@ -867,28 +867,28 @@ $db_filtro_disponivel = "c61_instit in (".$sListaInstit.") ";
 // Exercicio Atual
 $rsDispAtual 	  = db_planocontassaldo_matriz($anousu,$dtDataInicial,$dtDataFinal,false,$db_filtro_disponivel);
 $iLinhasDispAtual = pg_num_rows($rsDispAtual);
-@pg_query("drop table work_receita"); 
-@pg_query("drop table work_pl");
-@pg_query("drop table work_pl_estrut");
-@pg_query("drop table work_pl_estrutmae");
+@db_query("drop table work_receita"); 
+@db_query("drop table work_pl");
+@db_query("drop table work_pl_estrut");
+@db_query("drop table work_pl_estrutmae");
 
 
 // Exercicio Anterior
 $rsDispAnterior      = db_planocontassaldo_matriz($anousu_ant,$dtDataInicialAnt,$dtDataFinalAnt,false,$db_filtro_disponivel);
 $iLinhasDispAnterior = pg_num_rows($rsDispAnterior);
-@pg_query("drop table work_receita"); 
-@pg_query("drop table work_pl");
-@pg_query("drop table work_pl_estrut");
-@pg_query("drop table work_pl_estrutmae");
+@db_query("drop table work_receita"); 
+@db_query("drop table work_pl");
+@db_query("drop table work_pl_estrut");
+@db_query("drop table work_pl_estrutmae");
 
 $aDataMes               = explode("-", $dtDataInicial);
 $dtDataFinalMesAnterior = "{$aDataMes[0]}-{$aDataMes[1]}-".cal_days_in_month(CAL_GREGORIAN, $aDataMes[1], $aDataMes[2]);
 $rsDispMesAnterior      = db_planocontassaldo_matriz($anousu, $dtDataInicial, $dtDataFinalMesAnterior, false, $db_filtro_disponivel);
 $iLinhasMesAnterior     = pg_num_rows($rsDispMesAnterior);
-@pg_query("drop table work_receita"); 
-@pg_query("drop table work_pl");
-@pg_query("drop table work_pl_estrut");
-@pg_query("drop table work_pl_estrutmae");
+@db_query("drop table work_receita"); 
+@db_query("drop table work_pl");
+@db_query("drop table work_pl_estrut");
+@db_query("drop table work_pl_estrutmae");
 
 
 for ($linha = 35; $linha <= 38; $linha++){
@@ -954,7 +954,7 @@ if (!isset($arqinclude)){ //
   $perini = $dtDataInicial;
   $perfin = $dtDataFinal;
 
-  $resultinst = pg_exec("select upper(munic) as munic, codigo,nomeinst,nomeinstabrev from db_config where db21_tipoinstit in (5,6)");
+  $resultinst = db_query("select upper(munic) as munic, codigo,nomeinst,nomeinstabrev from db_config where db21_tipoinstit in (5,6)");
   $descr_inst = '';
   $xvirg = '';
   $flag_abrev = false;

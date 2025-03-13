@@ -1,31 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("model/financeiro/ContaBancaria.model.php");
+use ECidade\Financeiro\Contabilidade\PlanoDeContas\Estrutural;
+
+require_once(modification("model/financeiro/ContaBancaria.model.php"));
 /**
  *
  * @author dbseller
@@ -35,38 +37,73 @@ require_once("model/financeiro/ContaBancaria.model.php");
  */
 abstract class ContaPlano {
 
-   protected $iCodigoConta;
-   protected $sEstrutural;
-   protected $iAno;
-   protected $sTipo;
-   protected $sDescricao;
-   protected $sFinalidade;
-   protected $iReduzido;
-   protected $iRecurso;
-   protected $iInstituicao;
-   protected $iContraPartida;
-   protected $sNomeDao;
-   protected $iNaturezaSaldo;
-   protected $sIdentificadorFinanceiro;
-   protected $iCodigoGrupo;
-   protected $iGrupoComplano;
-   protected $oSistemaConta        = null;
-   protected $oSubSistemaConta     = null;
-   protected $oClassificacaoConta  = null;
-   protected $oContaBancaria       = null;
-   protected $sFuncao              = null;
-   protected $oDadosAnteriores     = null;
-   protected $iCodigoContaBancaria = null;
+  protected $iCodigoConta;
+  protected $sEstrutural;
+  protected $iAno;
+  protected $sTipo;
+  protected $sDescricao;
+  protected $sFinalidade;
+  protected $iReduzido;
+  protected $iRecurso;
+  protected $iInstituicao;
+  protected $iContraPartida;
+  protected $sNomeDao;
+  protected $iNaturezaSaldo;
+  protected $sIdentificadorFinanceiro;
+  protected $iCodigoGrupo;
+  protected $iGrupoComplano;
+  protected $oSistemaConta        = null;
+  protected $oSubSistemaConta     = null;
 
-   const CAMINHO_MENSAGEM = 'financeiro.contabilidade.ContaPlano';
-   /**
-    *
-    * Classe construtora, Se setado os parâmetros busca os dados
-    * @param integer $iCodigoConta codcon
-    * @param integer $iAnoUsu Ano
-    * @param integer $iReduz  Código Reduzido
-    */
+  /**
+   * @type GrupoContaOrcamento
+   */
+  protected $oGrupoConta;
+
+  /**
+   * @type ClassificacaoConta
+   */
+  protected $oClassificacaoConta  = null;
+
+  /**
+   * @type ContaBancaria
+   */
+  protected $oContaBancaria       = null;
+  protected $sFuncao              = null;
+  protected $oDadosAnteriores     = null;
+  protected $iCodigoContaBancaria = null;
+  protected $saldoContinuo = false;
+
+  const CAMINHO_MENSAGEM = 'financeiro.contabilidade.ContaPlano';
+
+  /**
+   * Natureza de Saldo Devedor
+   * @type integer
+   */
+  const NATUREZA_SALDO_DEVEDOR = 1;
+
+  /**
+   * Natureza de Saldo Credor
+   * @type integer
+   */
+  const NATUREZA_SALDO_CREDOR = 2;
+
+  /**
+   * Natureza de Saldo Credor e Devedor
+   * @type integer
+   */
+  const NATUREZA_SALDO_CREDOR_DEVEDOR = 3;
+
+
+  /**
+   *
+   * Classe construtora, Se setado os parâmetros busca os dados
+   * @param integer $iCodigoConta codcon
+   * @param integer $iAnoUsu Ano
+   * @param integer $iReduz  Código Reduzido
+   */
   public function __construct($iCodigoConta = null, $iAnoUsu = null, $iReduz = null, $iInstituicao = null) {
+
 
     $oDaoConPlano = db_utils::getDao($this->getNomeDao());
     $aWhere       = array();
@@ -93,7 +130,8 @@ abstract class ContaPlano {
 
     if (!empty($sWhere)) {
 
-      $sSqlContaPlano = $oDaoConPlano->sql_query_dados_plano(null,"*", null, $sWhere);
+
+      $sSqlContaPlano = $oDaoConPlano->sql_query_dados_plano(null,"*", "c61_instit", $sWhere);
       $rsContaPlano   = $oDaoConPlano->sql_record($sSqlContaPlano);
 
       if ($oDaoConPlano->numrows > 0) {
@@ -112,7 +150,6 @@ abstract class ContaPlano {
             break;
           }
         }
-
         $oContaPlano = db_utils::fieldsMemory($rsContaPlano, $iLinhaResult);
         $this->setCodigoConta($oContaPlano->c60_codcon);
         $this->setAno($oContaPlano->c60_anousu);
@@ -140,6 +177,10 @@ abstract class ContaPlano {
         $this->setNaturezaSaldo($oContaPlano->c60_naturezasaldo);
         $this->oDadosAnteriores     = $oContaPlano;
         $this->iCodigoContaBancaria = $oContaPlano->c56_sequencial;
+        if ($this->sNomeDao == 'conplano') {
+            $this->saldoContinuo = $oContaPlano->c60_saldocontinuo == 't';
+        }
+
       }
     }
   }
@@ -172,7 +213,7 @@ abstract class ContaPlano {
    * Busca o último ano cadastrado na tabela conplano ou conplanoorcamento
    * @return integer
    */
-  protected function getUltimoAnoPlano($sWhere = null) {
+  public function getUltimoAnoPlano($sWhere = null) {
 
     $oDaoPlano     = db_utils::getDao($this->getNomeDao());
     $sCampo        = "max(c60_anousu) as c60_anousu";
@@ -182,87 +223,84 @@ abstract class ContaPlano {
     return db_utils::fieldsMemory($rsMaximoAno, 0)->c60_anousu;
   }
 
+
   /**
-  * Valida a estrutura do Plano de Contas
-  * @return boolean
-  */
+   * Valida a estrutura do Plano de Contas
+   * @return bool
+   * @throws \Exception
+   */
   protected function validaEstrutural() {
 
     $oDaoPlano = db_utils::getDao($this->getNomeDao());
     if (empty($this->sEstrutural)) {
-
       throw new Exception("Código estrutural da conta é um campo obrigatório e não pode ser vazio.");
-    } else if ($this->getEstrutural()) {
+    }
 
-      /**
-       * Verifica se o estrutural já existe para o ano atual
-       */
-      $sCampos      = "c60_anousu as anousuAnterior";
-      $sWhere       = "c60_estrut = '{$this->getCodigoConta()}'";
+    /**
+     * Verifica se o estrutural já existe para o ano atual
+     */
+    if (empty($this->iCodigoConta)) {
 
-      $rsConPlano   = $oDaoPlano->sql_record($oDaoPlano->sql_query_file("","",$sCampos, "", $sWhere));
-
+      $sCampos = "c60_anousu as anousuanterior";
+      $sWhere = "     c60_estrut = '{$this->getEstrutural()}'";
+      $sWhere .= " and c60_anousu >= " . db_getsession("DB_anousu");
+      $sSqlBuscaaEstrutural = $oDaoPlano->sql_query_file(null, null, $sCampos, null, $sWhere);
+      $rsConPlano = $oDaoPlano->sql_record($sSqlBuscaaEstrutural);
       if ($oDaoPlano->numrows > 0) {
 
-        $iAnoAnterior = db_utils::fieldsMemory($rsConPlano, 0)->anousuAnterior;
-        if ($iAnoAnterior == db_getsession("DB_anousu")) {
-
-          $sMsgErroEstrutura  = "Este estrutural {$this->getCodigoConta()} ja existe no plano de contas ";
-          $sMsgErroEstrutura .= "(Exercício $iAnoAnterior)!";
-          throw new Exception($sMsgErroEstrutura);
-        }
+        $sMsgErroEstrutura = "Este estrutural {$this->getEstrutural()} ja existe no plano de contas ";
+        $sMsgErroEstrutura .= "(Exercício " . db_getsession("DB_anousu") . ")!";
+        throw new Exception($sMsgErroEstrutura);
       }
-    } else if ($this->getEstrutural()) {
+    }
 
-      /**
-       * Verifica se o estrutural tem um nível acima.
-       */
-      if ($oDaoPlano->db_verifica_conplano($this->getEstrutural(),$this->getAno()) == false) {
+    /**
+     * Verifica se o estrutural tem um nível acima.
+     */
+    if ($oDaoPlano->db_verifica_conplano($this->getEstrutural(),$this->getAno()) == false) {
 
-        $sMsgErroValidaEstrutura  = "";
-        $sMsgErroValidaEstrutura .= str_replace("\\n", "\n", $oDaoPlano->erro_msg);
-        throw new Exception($sMsgErroValidaEstrutura);
-      } else {
+      $sMsgErroValidaEstrutura  = "";
+      $sMsgErroValidaEstrutura .= str_replace("\\n", "\n", $oDaoPlano->erro_msg);
+      throw new Exception($sMsgErroValidaEstrutura);
+    }
 
-        $iNivel = db_le_mae_conplano($this->getEstrutural(), true);
-        if ($iNivel != 1) {
+    $iNivel = db_le_mae_conplano($this->getEstrutural(), true);
+    if ($iNivel != 1) {
 
-          $iAnoUsu        = db_getsession("DB_anousu");
-          $sEstruturalMae = db_le_mae_conplano($this->getEstrutural(), false);
-          $sCampos        = "c60_codcon as c60_codcon_mae";
-          $sWhere         = "c60_anousu = {$iAnoUsu} and c60_estrut='{$sEstruturalMae}'";
-          $sSqlConPlano   = $oDaoPlano->sql_query_file("","",$sCampos, "", $sWhere);
-          $rsConPlano     = $oDaoPlano->sql_record($sSqlConPlano);
-          $oConPlano      = db_utils::fieldsMemory($rsConPlano, 0);
+      $iAnoUsu        = db_getsession("DB_anousu");
+      $sEstruturalMae = db_le_mae_conplano($this->getEstrutural(), false);
+      $sCampos        = "c60_codcon as c60_codcon_mae";
+      $sWhere         = "c60_anousu = {$iAnoUsu} and c60_estrut='{$sEstruturalMae}'";
+      $sSqlConPlano   = $oDaoPlano->sql_query_file("","",$sCampos, "", $sWhere);
+      $rsConPlano     = $oDaoPlano->sql_record($sSqlConPlano);
+      $oConPlano      = db_utils::fieldsMemory($rsConPlano, 0);
 
-          $oDaoPlanoReduz = db_utils::getDao("conplanoreduz");
-          if ($this->getNomeDao() == "conplanoorcamento") {
-            $oDaoPlanoReduz = db_utils::getDao("conplanoorcamentoanalitica");
-          }
+      $oDaoPlanoReduz = db_utils::getDao("conplanoreduz");
+      if ($this->getNomeDao() == "conplanoorcamento") {
+        $oDaoPlanoReduz = db_utils::getDao("conplanoorcamentoanalitica");
+      }
 
-          $sWhereReduz       = "c61_anousu = {$iAnoUsu} and c61_codcon = {$oConPlano->c60_codcon_mae}";
-          $sSqlConPlanoReduz = $oDaoPlanoReduz->sql_query_file(null,null, "*", '', $sWhereReduz);
-          $rsConPlanoReduz   = $clconplanoreduz->sql_record($sSqlConPlanoReduz);
+      $sWhereReduz       = "c61_anousu = {$iAnoUsu} and c61_codcon = {$oConPlano->c60_codcon_mae}";
+      $sSqlConPlanoReduz = $oDaoPlanoReduz->sql_query_file(null,null, "*", '', $sWhereReduz);
+      $rsConPlanoReduz   = $oDaoPlanoReduz->sql_record($sSqlConPlanoReduz);
 
-          if ($oDaoPlanoReduz->numrows > 0) {
-            throw new Exception("Conta superior $sEstruturalMae é analítica!\\n Inclusão não permitida!");
-          }
-        }
+      if ($oDaoPlanoReduz->numrows > 0) {
+        throw new Exception("Conta superior $sEstruturalMae é analítica!\\n Inclusão não permitida!");
       }
     }
     return true;
   }
 
- /**
-  * Verifica se existem lançamentos contabeis para o ANO e REDUZIDO. Retorna TRUE caso haja lançamento contabil
-  * @param integer $iAno
-  * @param integer $iReduzido
-  * @return boolean
-  */
-  public function hasLancamentosContabeis($iReduzido, $iAno) {
+  /**
+   * Verifica se existem lançamentos contabeis para o ANO e REDUZIDO. Retorna TRUE caso haja lançamento contabil
+   * @param integer $iAno
+   * @param integer $iReduzido
+   * @return boolean
+   */
+  public function possuiLancamentoContabil($iReduzido, $iAno) {
 
-    $oDaoConlancamVal    = db_utils::getDao('conlancamval');
-    $sWhereConLacamVal   = "c69_anousu = {$iAno} and ";
+    $oDaoConlancamVal    = new cl_conlancamval();
+    $sWhereConLacamVal   = "c69_anousu >= {$iAno} and ";
     $sWhereConLacamVal  .= "(c69_debito = {$iReduzido} or c69_credito = {$iReduzido})";
     $sSqlBuscaLancamento = $oDaoConlancamVal->sql_query_file(null, "*", null, $sWhereConLacamVal);
     $rsBuscaLancamento   = $oDaoConlancamVal->sql_record($sSqlBuscaLancamento);
@@ -273,9 +311,9 @@ abstract class ContaPlano {
   }
 
   /**
-  * Valida se já existe um reduzido cadastrado para o Ano e Instituição
-  * @return boolean
-  */
+   * Valida se já existe um reduzido cadastrado para o Ano e Instituição
+   * @return boolean
+   */
   public function hasReduzidoAnoInstituicao() {
 
     $oDaoReduzido       = db_utils::getDao($this->getNomeDao());
@@ -291,34 +329,35 @@ abstract class ContaPlano {
   }
 
 
- /**
-  * Retorna Código da Conta
-  * @return  integer
-  */
+  /**
+   * @return integer
+   */
   public function getCodigoConta() {
     return $this->iCodigoConta;
   }
 
+
   /**
-   * Recebe o Código da Conta
    * @param $iCodigoConta
+   * @return $this
    */
   public function setCodigoConta($iCodigoConta) {
     $this->iCodigoConta = $iCodigoConta;
     return $this;
   }
 
+
   /**
-   * Retorna o código estrutural da conta
-   * @return  o código estrutural da conta
+   * @return string
    */
   public function getEstrutural(){
     return $this->sEstrutural;
   }
 
+
   /**
-   * Recebe o código estrutural da conta
    * @param $sEstrutural
+   * @return $this
    */
   public function setEstrutural($sEstrutural) {
     $this->sEstrutural = str_replace(".", "", $sEstrutural);
@@ -399,7 +438,7 @@ abstract class ContaPlano {
 
   /**
    * Retorna o código do Recurso
-   * @return interger
+   * @return integer
    */
   public function getRecurso() {
     return $this->iRecurso;
@@ -436,7 +475,11 @@ abstract class ContaPlano {
    * @return ContaBancaria
    */
   public function getContaBancaria() {
-      return $this->oContaBancaria;
+
+    if (empty($this->oContaBancaria) && !empty($this->iCodigoContaBancaria)) {
+        $this->setContaBancaria(new ContaBancaria($this->iCodigoContaBancaria));
+    }
+    return $this->oContaBancaria;
   }
 
   /**
@@ -448,27 +491,28 @@ abstract class ContaPlano {
     return $this;
   }
 
- /**
-  * Retorna uma instancia de  um tipo de sistema de conta
-  * @return SistemaConta
-  */
+  /**
+   * Retorna uma instancia de  um tipo de sistema de conta
+   * @return SistemaConta
+   */
   public function getSistemaConta() {
-      return $this->oSistema;
+    return $this->oSistemaConta;
   }
 
   /**
    * Recebe uma instancia de um tipo de sistema de conta
    * @param SistemaConta
+   * @return ContaPlano
    */
   public function setSistemaConta(SistemaConta $oSistema) {
-    $this->oSistema = $oSistema;
+    $this->oSistemaConta = $oSistema;
     return $this;
   }
 
   /**
-  * Retorna a Descricao da Finalidade
-  * @return string
-  */
+   * Retorna a Descricao da Finalidade
+   * @return string
+   */
   public function getFinalidade() {
     return $this->sFinalidade;
   }
@@ -476,6 +520,7 @@ abstract class ContaPlano {
   /**
    * Recebe a Descricao da Finalidade
    * @param SistemaConta
+   * @return ContaPlano
    */
   public function setFinalidade($sFinalidade) {
     $this->sFinalidade = $sFinalidade;
@@ -483,17 +528,7 @@ abstract class ContaPlano {
   }
 
   /**
-   * Retorna uma instancia de ClassificacaoConta
-   * @return ClassificacaoContaif(!db_utils::inTransaction()){
-      throw new Exception("Sem transação");
-    }
-
-    if (empty($this->getCodigoConta())) {
-      throw new Exception("Código da conta esta nule.");
-    }
-
-    $iMaximoAno = $this->getUltimoAnoPlano($sWhereMaximoAno);
-    $iAnoUsu    = db_getsession("DB_anousu");
+   * @return ClassificacaoConta
    */
   public function getClassificacaoConta() {
     return $this->oClassificacaoConta;
@@ -502,6 +537,7 @@ abstract class ContaPlano {
   /**
    * Recebe uma instancia de ClassificacaoConta
    * @param ClassificacaoConta
+   * @return ContaPlano
    */
   public function setClassificacaoConta(ClassificacaoConta $oClassificacaoConta) {
     $this->oClassificacaoConta = $oClassificacaoConta;
@@ -519,6 +555,7 @@ abstract class ContaPlano {
   /**
    * Recebe uma conta de Contra Partida
    * @param $iContraPartida
+   * @return ContaPlano
    */
   public function setContraPartida($iContraPartida) {
     $this->iContraPartida = $iContraPartida;
@@ -526,9 +563,9 @@ abstract class ContaPlano {
   }
 
   /**
-  * Retorna o nome da tabela utilizada pela query
-  * @return string
-  */
+   * Retorna o nome da tabela utilizada pela query
+   * @return string
+   */
   protected function getNomeDao() {
     return $this->sNomeDao;
   }
@@ -559,6 +596,7 @@ abstract class ContaPlano {
    * 2- Saldo Credor
    * 3- Ambos
    * @param $iNaturezaSaldo
+   * @return ContaPlano
    */
   public function setNaturezaSaldo($iNaturezaSaldo) {
 
@@ -567,9 +605,9 @@ abstract class ContaPlano {
   }
 
   /**
-  * Retorna uma instancia de SubSistemaConta
-  * @return SubSistemaConta
-  */
+   * Retorna uma instancia de SubSistemaConta
+   * @return SubSistemaConta
+   */
   public function getSubSistema() {
     return $this->oSubSistemaConta;
   }
@@ -577,6 +615,7 @@ abstract class ContaPlano {
   /**
    * Recebe uma instancia de SubSistemaConta
    * @param SubSistemaConta
+   * @return ContaPlano
    */
   public function setSubSistema(SubSistemaConta $oSubSistemaConta) {
     $this->oSubSistemaConta = $oSubSistemaConta;
@@ -584,24 +623,25 @@ abstract class ContaPlano {
   }
 
   /**
-  * Retorna um caracter
-  *
-  * P => Patrimonial
-  * F => Financeiro
-  * N => Não se aplica
-  * @return string
-  */
+   * Retorna um caracter
+   *
+   * P => Patrimonial
+   * F => Financeiro
+   * N => Não se aplica
+   * @return string
+   */
   public function getIdentificadorFinanceiro() {
     return $this->sIdentificadorFinanceiro;
   }
 
   /**
-  * Seta um caracter
-  *
-  * P => Patrimonial
-  * F => Financeiro
-  * N => Não se aplica
+   * Seta um caracter
+   *
+   * P => Patrimonial
+   * F => Financeiro
+   * N => Não se aplica
    * @param string
+   * @return ContaPlano
    */
   public function setIdentificadorFinanceiro($sIdentificadorFinanceiro) {
 
@@ -610,22 +650,49 @@ abstract class ContaPlano {
   }
 
   /**
-  * Retorna Código sequencial do grupo
-  * @return integer
-  */
+   * Retorna Código sequencial do grupo
+   * @return integer
+   */
   public function getCodigoGrupo() {
+
+    if (empty($this->iCodigoGrupo)) {
+
+      $oDaoGrupo = new cl_conplanoorcamentogrupo();
+      if ($this->sNomeDao == "conplano") {
+        $oDaoGrupo = new cl_conplanogrupo();
+      }
+      $sWhere    = "c21_codcon = {$this->iCodigoConta} and c21_anousu = {$this->iAno} and c21_instit = ".db_getsession('DB_instit');
+      $rsBuscaGrupo  = $oDaoGrupo->sql_record($oDaoGrupo->sql_query_file(null, "*", null, $sWhere));
+      if ($oDaoGrupo->numrows > 0) {
+        $this->setCodigoGrupo(db_utils::fieldsMemory($rsBuscaGrupo, 0)->c21_congrupo);
+      }
+    }
     return $this->iCodigoGrupo;
   }
 
   /**
    * Seta Código sequencial do grupo
    * @param integer $iCodigoGrupo
+   * @return ContaPlano
    */
   public function setCodigoGrupo($iCodigoGrupo) {
 
     $this->iCodigoGrupo = $iCodigoGrupo;
     return $this;
   }
+
+  /**
+   * @return GrupoContaOrcamento
+   */
+  public function getGrupoConta() {
+
+    $iCodigoGrupo = $this->getCodigoGrupo();
+    if (!empty($iCodigoGrupo)) {
+      $this->oGrupoConta = new GrupoContaOrcamento($iCodigoGrupo);
+    }
+    return $this->oGrupoConta;
+  }
+
 
 
   /**
@@ -636,9 +703,10 @@ abstract class ContaPlano {
     return $this->iGrupoComplano;
   }
 
+
   /**
-   * Seta Código do grupo Financeiro (congrupo)
-   * @param integer $iGrupoComplano
+   * @param $iGrupoComplano
+   * @return $this
    */
   public function setGrupoComplano($iGrupoComplano) {
 
@@ -651,40 +719,71 @@ abstract class ContaPlano {
    * @return string
    */
   public function getFuncao() {
-  	return $this->sFuncao;
+    return $this->sFuncao;
   }
 
   /**
-   * Seta a função da conta
-   * @param string $sFuncao
+   * @param $sFuncao
+   * @return $this
    */
   public function setFuncao($sFuncao) {
 
-  	$this->sFuncao = $sFuncao;
-  	return $this;
+    $this->sFuncao = $sFuncao;
+    return $this;
+  }
+
+  /**
+   * Verifica se a conta passada é uma conta analítica
+   *
+   * @return boolean
+   */
+  public function isContaAnalitica() {
+
+    $sEstrutural = $this->getEstrutural();
+
+    if (strlen($sEstrutural) != 15) {
+      throw new Exception("Estrutural inválido.");
+    }
+
+    /**
+     * Substitui os zeros do final do estrutural por um caracter vazio
+     * respeitando a máscara do estrutural
+     *
+     * 1.1.1.1.1.11.11.11.10.00 -> 1.1.1.1.1.11.11.11.10.xx
+     * 1.1.1.1.1.10.00.00.00.00 -> 1.1.1.1.1.10.xx.xx.xx.xx
+     * 1.1.1.1.0.00.00.00.00.00 -> 1.1.1.1.x.xx.xx.xx.xx.xx
+     */
+    $sEstrutural = preg_replace("/(0{1,4}(?=0{10}))?(0{2}){1,5}$/", "", $sEstrutural);
+
+    $sClass    = "cl_{$this->sNomeDao}";
+    $oDaoPlano = new $sClass;
+    $sSqlPlano = $oDaoPlano->sql_query_file( null,
+                                             null,
+                                             "count(*) as contas",
+                                             null,
+                                             "c60_estrut ilike '{$sEstrutural}%' and c60_anousu = {$this->getAno()}" );
+    $rsPlano = $oDaoPlano->sql_record( "{$sSqlPlano} limit 2" );
+
+    if (!empty($oDaoPlano->erro_sql)) {
+      throw new Exception("Erro ao verificar se a conta {$this->getEstrutural()} é analítica.");
+    }
+
+    return (db_utils::fieldsMemory($rsPlano, 0)->contas == 1);
   }
 
 
   /**
    * retorna o nivel em que a estrutura está digitada
-   * @param $sStrutural Estrutural
+   * @param string $sStrutural Estrutural
    * @return integer
    */
-  static function getNivelEstrutura($sStrutural) {
+  public static function getNivelEstrutura($sStrutural) {
 
-    $aNiveis = explode(".", $sStrutural);
-    $iNivel  = 1;
-    foreach ($aNiveis as $iIndice => $sNivel) {
-
-      $iTamanhoNivel = strlen($sNivel);
-      if ($sNivel != str_repeat('0', $iTamanhoNivel)){
-        $iNivel  = $iIndice+1;
-      }
-    }
-    return $iNivel;
+    $oEstrutural = new Estrutural($sStrutural);
+    return $oEstrutural->getNivel();
   }
 
-  static function getCodigoEstruturalPai($sStrutural) {
+  public static function getCodigoEstruturalPai($sStrutural) {
 
     $aNiveis          = explode(".", $sStrutural);
     $iNivel           = ContaPlano::getNivelEstrutura($sStrutural) - 1;
@@ -701,23 +800,15 @@ abstract class ContaPlano {
    * @param string $sEstruturalVincular
    * @return array
    */
-  static function getNiveisEstruturais ($sEstruturalVincular) {
+  public static function getNiveisEstruturais ($sEstruturalVincular) {
 
-   //echo "nivel na func " . $iNivelFinal;
+    //echo "nivel na func " . $iNivelFinal;
 
     $sEstrutural       = ContaPlano::montaEstrutural($sEstruturalVincular);
     $iNivelEstrutural  = ContaPlano::getNivelEstrutura($sEstrutural);
     $sMascara          = "0.0.0.0.0.00.00.00.00.00";
     $aArvoreVincular   = array($sEstrutural);
     $iNivelFinal       = $iNivelEstrutural;
-   // if ($lLimite == true) {
-   //   $iNivelFinal = 1;
-   // }
-
-    //echo "-------------> " .$iNivelFinal;
-
-   // echo "$iNivelEstrutural > $iLevel";
-   // die();
 
     while ($iNivelEstrutural > 1 ) {
 
@@ -740,7 +831,7 @@ abstract class ContaPlano {
    * @param string $sEstrutural
    * @return string
    */
-  static function montaEstrutural($sEstrutural) {
+  public static function montaEstrutural($sEstrutural) {
     /*
      * verificamos se o estrutural digitado, possui %
     * ele significa que do % em diante serão zeros até o ultimo nivel da mascara
@@ -757,27 +848,25 @@ abstract class ContaPlano {
     if (strlen($sEstruturalDigitado) < 15) {
       $sEstruturalDigitado = str_pad($sEstruturalDigitado , 15, "0", STR_PAD_RIGHT);
     }
-
-
     return db_formatar($sEstruturalDigitado, "receita");
   }
-  
+
   /**
    * Retorna a descrição da conta contábil
    * @param integer $iReduzido
    * @throws Exception
    */
   static function getDescricaoContaPorReduzido($iReduzido) {
-  	
+
     $oDaoConPlano = new cl_conplano();
     $sWhere       = "     conplanoreduz.c61_reduz = {$iReduzido} ";
     $sSqlDescrConta = $oDaoConPlano->sql_query(null, null, "c60_descr", null, $sWhere);
     $rsDescrConta   = $oDaoConPlano->sql_record($sSqlDescrConta);
-    
+
     if ($oDaoConPlano->numrows == 0) {
-    	throw new Exception("Não foi possível localizar descrição da conta do reduzido: {$iReduzido}");
+      throw new Exception("Não foi possível localizar descrição da conta do reduzido: {$iReduzido}");
     }
-    
+
     return db_utils::fieldsMemory($rsDescrConta, 0)->c60_descr;
   }
 
@@ -788,16 +877,16 @@ abstract class ContaPlano {
    * @return string
    */
   public static function getProximoEstruturalDisponivel($sEstrutural) {
-    
+
     $sEstrutural         = db_formatar($sEstrutural, 'receita');
     $iNivelEstrutura     = ContaPlano::getNivelEstrutura($sEstrutural);
     $iTamanhoMaximoNivel = 9;
     if ($iNivelEstrutura >= 6) {
       $iTamanhoMaximoNivel = 99;
     }
-    
+
     if ($iNivelEstrutura == 10) {
-      
+
       $oParametros = (object)array("estrutural" => $sEstrutural);
       throw new BusinessException(_M(ContaPlano::CAMINHO_MENSAGEM.'.sem_niveis_abaixo', $oParametros));
     }
@@ -805,18 +894,18 @@ abstract class ContaPlano {
     $iUltimaContaNivel = ContaPlano::getUltimaContaDaEstrutura($sEstrutural);
     $iProximoNivel     = $iUltimaContaNivel + 1;
     if ($iProximoNivel > $iTamanhoMaximoNivel) {
-      
+
       $oParametros = (object)array("estrutural" => $sEstrutural, "nivel_conta" => $iNivelEstrutura);
       throw new BusinessException(_M(ContaPlano::CAMINHO_MENSAGEM.'.quantidade_contas_excedida_nivel', $oParametros));
     }
     $iProximoNivel = str_pad($iProximoNivel, $iTamanhoNivel, "0", STR_PAD_LEFT);
-    
+
     $aNivelContaVerificar = explode(".", $sEstrutural);
     $sContaPlano          = implode("", array_splice($aNivelContaVerificar, 0, $iNivelEstrutura));
     $sProximoEstrutural   = str_pad($sContaPlano.$iProximoNivel, 15, "0", STR_PAD_RIGHT);
     return $sProximoEstrutural;
   }
-  
+
   /**
    * Retorna a ultima conta cadastrada no proximo nivel da estrutura $sEstrutural
    * @param string $sEstrutural codigo estrutural
@@ -824,12 +913,12 @@ abstract class ContaPlano {
    * @return Integer
    */
   public static function getUltimaContaDaEstrutura($sEstrutural) {
-    
+
     $iNivel               = ContaPlano::getNivelEstrutura($sEstrutural);
     $aNivelContaVerificar = explode(".", $sEstrutural);
     $sContaPlano          = implode("", array_splice($aNivelContaVerificar, 0, $iNivel));
     $aContasDoNivel       = array();
-    
+
     $oDaoConPlano = new cl_conplano();
     $sWhere       = "c60_estrut like '{$sContaPlano}%'";
     $sWhere      .= " and c60_anousu = ".db_getsession("DB_anousu");
@@ -840,22 +929,22 @@ abstract class ContaPlano {
       $aContasDoNivel[] = db_utils::fieldsMemory($rsContas, $iConta)->c60_estrut;
     }
     $iMaiorNivel  = 0;
-    
+
     /**
      * Devemos verificar o proximo nivel da conta passada como parametro
      * Percorremos todas as contas abaixo da conta Cadastrada.
      */
     $iNivelVerificar = $iNivel + 1;
     foreach($aContasDoNivel as $sConta) {
-      
+
       $sConta      = db_formatar($sConta, 'receita');
       $iNivelConta = ContaPlano::getNivelEstrutura($sConta);
       if ($iNivelConta == $iNivelVerificar) {
-        
+
         $aNiveis      = explode(".", $sConta);
         $iIndiceNivel = $iNivelConta - 1;
         if (!isset($aNiveis[$iIndiceNivel])) {
-          throw new BusinessException(_M(ContaPlano::CAMINHO_MENSAGEM.'.sem_niveis_abaixo', $oParametros));
+          throw new BusinessException(_M(ContaPlano::CAMINHO_MENSAGEM.'.sem_niveis_abaixo'));
         }
         $iValorNivel = $aNiveis[$iIndiceNivel];
         if ($iValorNivel > $iMaiorNivel) {
@@ -864,5 +953,54 @@ abstract class ContaPlano {
       }
     }
     return $iMaiorNivel;
+  }
+
+  /**
+   * @param $sEstrutura
+   * @param $iNivel
+   *
+   * @return string
+   * @deprecated
+   * @see self::getEstruturalAteNivel
+   */
+  public function getEstruturaAteNivel($sEstrutura, $iNivel) {
+
+    $aPartesEstrutural = explode(".", $sEstrutura);
+    return implode(".", array_slice($aPartesEstrutural, 0, $iNivel));
+  }
+
+
+  public static function getEstruturalAteNivel($sEstrutura, $iNivel) {
+
+    $aPartesEstrutural = explode(".", $sEstrutura);
+    return implode(".", array_slice($aPartesEstrutural, 0, $iNivel));
+  }
+  /**
+   * @return bool
+   */
+  public function sintetica() {
+    return empty($this->iRecurso);
+  }
+
+  /**
+   * @return bool
+   */
+  public function analitica() {
+    return !empty($this->iRecurso);
+  }
+
+  /**
+   * @return string
+   */
+  public function getEstruturalComMascara() {
+    return ContaPlano::montaEstrutural($this->getEstrutural());
+  }
+
+  /**
+   * Verifica se a conta tratada é do orçamento ou não
+   * @return bool
+   */
+  protected function orcamento() {
+    return $this->getNomeDao() == "conplanoorcamento";
   }
 }

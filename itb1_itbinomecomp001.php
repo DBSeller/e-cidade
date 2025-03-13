@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_itbinome_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_itbinomecgm_classe.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_itbinome_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_itbinomecgm_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -47,33 +47,34 @@ $sqlerro  = false;
 
 if( isset($mostraitbinomecgm) && $mostraitbinomecgm != "" ){
 
-      if( isset($it21_numcgm) && $it21_numcgm != "" ){
+  if( isset($it21_numcgm) && $it21_numcgm != "" ){
 
-            $rsDadoscgm = $clcgm->sql_record($clcgm->sql_query_file($it21_numcgm,"*",null," z01_numcgm = $it21_numcgm"));
-            if($clcgm->numrows > 0){
+    $rsDadoscgm = $clcgm->sql_record($clcgm->sql_query_file($it21_numcgm,"*",null," z01_numcgm = $it21_numcgm"));
+    if($clcgm->numrows > 0){
 
-              db_fieldsmemory($rsDadoscgm,0);
-              
-              $it03_nome     = $z01_nome;
-              $it03_sexo     = $z01_sexo;
-              if($it03_sexo == 'M'){
-                $aOptionsSexo = array('m'=>'Masculino');
-              }else{
-                $aOptionsSexo = array('f'=>'Feminino');
-              }
-              $it03_cpfcnpj  = str_replace('-', '', str_replace('.', '', $z01_cgccpf));
-              $it03_endereco = $z01_ender;
-              $it03_numero   = $z01_numero;
-              $it03_compl    = $z01_compl;
-              $it03_cxpostal = $z01_cxpostal;
-              $it03_bairro   = $z01_bairro;
-              $it03_munic    = $z01_munic;
-              $it03_uf       = $z01_uf;
-              $it03_cep      = str_replace('-', '', str_replace('.', '', $z01_cep));
-              $it03_mail     = $z01_email;
-            }
+      db_fieldsmemory($rsDadoscgm,0);
+
+      $it03_nome     = $z01_nome;
+      $it03_sexo     = $z01_sexo == 'M' ? 'm' : 'f';
+      if($it03_sexo == 'M'){
+        $aOptionsSexo = array('m'=>'Masculino');
+      }else{
+        $aOptionsSexo = array('f'=>'Feminino');
       }
+      $it03_cpfcnpj  = str_replace('-', '', str_replace('.', '', $z01_cgccpf));
+      $it03_endereco = $z01_ender;
+      $it03_numero   = $z01_numero;
+      $it03_compl    = $z01_compl;
+      $it03_cxpostal = $z01_cxpostal;
+      $it03_bairro   = $z01_bairro;
+      $it03_munic    = $z01_munic;
+      $it03_uf       = $z01_uf;
+      $it03_cep      = str_replace('-', '', str_replace('.', '', $z01_cep));
+      $it03_mail     = $z01_email;
+    }
+  }
 }
+
 if((isset($HTTP_POST_VARS["bt_opcao"]) && $HTTP_POST_VARS["bt_opcao"])=="Incluir"){
 
   db_inicio_transacao();
@@ -91,10 +92,11 @@ if((isset($HTTP_POST_VARS["bt_opcao"]) && $HTTP_POST_VARS["bt_opcao"])=="Incluir
     $clitbinomecgm->it21_numcgm   = $it21_numcgm;
     $clitbinomecgm->it21_itbinome = $clitbinome->it03_seq;
     $clitbinomecgm->incluir(null);
-	if(isset($clitbinomecgm->erro_status) && $clitbinomecgm->erro_status == 0){
 
-       $erro = $clitbinomecgm->erro_msg;
-       $sqlerro = true;
+	  if(isset($clitbinomecgm->erro_status) && $clitbinomecgm->erro_status == 0){
+
+      $erro = $clitbinomecgm->erro_msg;
+      $sqlerro = true;
     }
   }
   $db_opcao = 1;
@@ -117,7 +119,7 @@ if((isset($HTTP_POST_VARS["bt_opcao"]) && $HTTP_POST_VARS["bt_opcao"])=="Incluir
 <body class="body-default">
   <div class="container">
     <?php
-      require_once("forms/db_frmitbinomecomp.php");
+      require_once(modification("forms/db_frmitbinomecomp.php"));
     ?>
   </div>
 </body>
@@ -150,4 +152,3 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
           </script>";
   }
 }
-?>

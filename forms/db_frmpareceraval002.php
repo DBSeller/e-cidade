@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -81,7 +81,7 @@ $clrotulo->label("ed72_t_parecer");
            WHERE ed72_i_codigo = $ed93_i_diarioavaliacao
            ORDER BY ed59_i_ordenacao
           ";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    $linhas = pg_num_rows($result);
    if($linhas>0){
     ?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefamodulo_classe.php");
-include("classes/db_tarefaprojeto_classe.php");
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefausu_classe.php");
-//include("classes/db_atenditem_classe.php");
-include("classes/db_tarefaitem_classe.php");
-include("classes/db_tarefaenvol_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefamodulo_classe.php"));
+include(modification("classes/db_tarefaprojeto_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+//include(modification("classes/db_atenditem_classe.php"));
+include(modification("classes/db_tarefaitem_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
 $cltarefa         = new cl_tarefa;
 $cltarefamodulo   = new cl_tarefamodulo;
 $cltarefaprojeto  = new cl_tarefaprojeto;
@@ -116,7 +116,7 @@ if(isset($at40_sequencial) and $at40_sequencial != "") {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcontarefa.php");
+	include(modification("forms/db_frmcontarefa.php"));
 	?>
     </center>
 	</td>

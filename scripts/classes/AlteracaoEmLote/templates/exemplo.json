@@ -1,0 +1,66 @@
+[
+  {
+    "label": "Matricula",
+    "width": "20%",
+    "nome": "matricula",
+    "chave": true,
+    "tipo": "texto",
+    "editavel": false,
+    "valor": "j01_iptubase"
+  },
+
+  {
+    "label": "CGM",
+    "width": "30%",
+    "nome": "z01_numcgm",
+    "tipo": "lookup",
+    "parametros_lookup": {
+      "arquivo": "func_cgm.php",
+      "campo_descricao": "z01_nome"
+    },
+    "editavel": true,
+    "valor": {
+      "codigo": "z01_numcgm",
+      "descricao": "z01_nome"
+    }
+  },
+
+  {
+    "label": "Texto Comum",
+    "width": "20%",
+    "nome": "z01_descr",
+    "tipo": "text",
+    "editavel": true
+  },
+  {
+    "label": "Bairro",
+    "width": "20%",
+    "nome": "bairro",
+    "tipo": "combo",
+    "lista": [
+      {
+        "codigo": "1",
+        "descricao": "Centro"
+      },
+      {
+        "codigo": "2",
+        "descricao": "Cidade Baixa"
+      },
+      {
+        "codigo": "3",
+        "descricao": "Igara"
+      }
+
+    ],
+    "editavel": true,
+    "valor": "z01_bairro"
+  },
+  {
+    "label": "Data",
+    "width": "10%",
+    "nome": "data",
+    "tipo": "data",
+    "editavel": true,
+    "valor": "j01_data"
+  }
+]

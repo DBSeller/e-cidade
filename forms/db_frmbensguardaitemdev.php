@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: patrim
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
  
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clbensguardaitemdev->rotulo->label();
@@ -138,7 +138,7 @@ function js_imprimir() {
 }
 
 function js_pesquisa() {
-  js_OpenJanelaIframe('top.corpo','db_iframe_bensguarda','func_bensguardadev.php?funcao_js=parent.js_preenchepesquisa|t21_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensguarda','func_bensguardadev.php?funcao_js=parent.js_preenchepesquisa|t21_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bensguarda.hide();

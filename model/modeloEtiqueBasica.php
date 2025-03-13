@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -50,12 +50,12 @@ abstract class modeloEtiquetaBasica {
     switch ($this->sModelo){
 
     	case 'OS-214':
-    		require_once 'impressao.argoxOS214.php';
+    		require_once modification("model/impressao.argoxOS214.php");
     		$this->oImpressora = new impressaoOS214($this->sIp,$this->sPorta);
     		break;
 
     	case 'OS-214-Plus':
-    	  require_once 'impressao.argoxOS214_plus.php';
+    	  require_once modification("model/impressao.argoxOS214_plus.php");
     	  $this->oImpressora = new impressaoOS214_plus($this->sIp,$this->sPorta);
     	  break;
 

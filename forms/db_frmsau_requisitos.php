@@ -54,7 +54,7 @@ $clsau_requisitos->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_requisitos','func_sau_requisitos.php?funcao_js=parent.js_preenchepesquisa|s107_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_requisitos','func_sau_requisitos.php?funcao_js=parent.js_preenchepesquisa|s107_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_requisitos.hide();

@@ -27,7 +27,7 @@
 
 //MODULO: merenda
 $clmer_desper_und->rotulo->label();
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $clrotulo = new rotulocampo;
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo->label("m61_descr");

@@ -1,0 +1,108 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010481' name='configuracoes.arquivoestorage' description="Tabela que guarda a referência dos arquivos no e-Storage" prefix="db177" label="Arquivo e-Storage" type="0">
+  <fields>
+    <field codigo="1010802" 
+           campo_api='' 
+           name="db177_idestorage" 
+           conteudo="int8" 
+           description="Identificador do arquivo no e-Storage" 
+           inivalue="0" 
+           label="ID e-Storage" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="ID e-Storage" 
+           reference="" 
+           ispk="t" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010804" 
+           campo_api='' 
+           name="db177_descricao" 
+           conteudo="text" 
+           description="Informações a respeito do arquivo, arquivo do tipo JSON para tornar livre a informação que se deseja guardar a respeito do arquivo" 
+           inivalue="" 
+           label="Descrição do arquivo" 
+           size="256" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição do arquivo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010815" 
+           campo_api='' 
+           name="db177_datadocumento" 
+           conteudo="date" 
+           description="Data do arquivo/documento" 
+           inivalue="null" 
+           label="Data do arquivo/documento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data do arquivo/documento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010805" 
+           campo_api='' 
+           name="db177_url" 
+           conteudo="varchar(256)" 
+           description="Url do arquivo no e-Storage quando tratar-se de documento de domínio público" 
+           inivalue="" 
+           label="URL" 
+           size="256" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="URL" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010816" 
+           campo_api='' 
+           name="db177_idestorage_arquivoanterior" 
+           conteudo="int8" 
+           description="ID do e-Storage do arquivo anterior" 
+           inivalue="0" 
+           label="ID e-Storage Arquivo Anterior" 
+           size="19" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="ID e-Storage Arquivo Anterior" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db177_idestorage"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="arquivoestorage" inner='f'>
+      <fieldfk name="db177_idestorage_arquivoanterior" reference="db177_idestorage" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

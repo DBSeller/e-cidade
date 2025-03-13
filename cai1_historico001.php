@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select max(k01_codigo) + 1 from histcalc");
+  $result = db_query("select max(k01_codigo) + 1 from histcalc");
   $k01_codigo = pg_result($result,0,0);
   $k01_codigo = $k01_codigo==""?"1":$k01_codigo;
-  pg_exec("insert into histcalc(k01_codigo,k01_descr,k01_tipo)
+  db_query("insert into histcalc(k01_codigo,k01_descr,k01_tipo)
                        values($k01_codigo,'$k01_descr','$k01_tipo')") or die("Erro(8) inserindo em histcalc");
   db_redireciona();  
 }
@@ -62,7 +62,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 	<? 
-	  include("forms/db_frmhistcalc.php");     
+	  include(modification("forms/db_frmhistcalc.php"));     
     ?>
 	</td>
   </tr>

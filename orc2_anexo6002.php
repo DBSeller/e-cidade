@@ -1,43 +1,41 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include ("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include ("libs/db_sql.php");
-include ("libs/db_utils.php");
-include ("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-db_postmemory($HTTP_POST_VARS);
+parse_str($_SERVER['QUERY_STRING']);
+db_postmemory($_POST);
 
 $classinatura = new cl_assinatura;
-
-//$tipo_agrupa = substr($nivel,0,1);
 
 $qorgao = 0;
 $qunidade = 0;
@@ -95,7 +93,14 @@ if ($nivela >= 8) {
 }
 
 db_query("begin");
-db_query("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
+db_query("create temp table t(o58_orgao int8,
+                              o58_unidade int8,
+                              o58_funcao int8,
+                              o58_subfuncao int8,
+                              o58_programa int8,
+                              o58_projativ int8,
+                              o58_elemento varchar(255),
+                              o58_codigo int8)");
 
 $xcampos = split("-", $orgaos);
 
@@ -144,7 +149,7 @@ elseif ($tipo_agrupa == 2) {
   $grupoini = 1;
 	$grupofin = 3;
 } else {
-  
+
   $sNomeQuebra   = "o40_descr";
   $sCodigoQuebra = "o58_orgao";
 	$grupoini = 8;
@@ -168,7 +173,7 @@ $result = db_dotacaosaldo(8, 1, 3, true, $sele_work, $anousu, $dataini, $datafin
 $iTotalLinhas     = pg_num_rows($result);
 $aLinhasRelatorio = array();
 if ($tipo_agrupa == 1) {
-  
+
   $oOrgao             = new stdClass();
   $oOrgao->descricao  = '';
   $oOrgao->codigo     = '';
@@ -177,108 +182,108 @@ if ($tipo_agrupa == 1) {
 }
 
 for ($i = 0; $i < $iTotalLinhas; $i++) {
-  
+
   $oLinha = db_utils::fieldsMemory($result, $i);
   $sHash  = '';
   if ($tipo_agrupa == 2) {
-    
+
     $sHash = "o{$oLinha->o58_orgao}";
     $sHashindice = $sHash;
     if ($oLinha->o58_orgao != 0 && $oLinha->o58_funcao == 0) {
-      
+
       if (!isset($aLinhasRelatorio[$sHash])) {
-         
+
          $oOrgao                   = new stdClass();
          $oOrgao->descricaoorgao   = $oLinha->o40_descr;
          $oOrgao->codigoorgao      = $oLinha->o58_orgao;
          $oOrgao->nos              = array();
-         $oOrgao->projeto          = $oLinha->proj; 
-         $oOrgao->atividade        = $oLinha->ativ; 
+         $oOrgao->projeto          = $oLinha->proj;
+         $oOrgao->atividade        = $oLinha->ativ;
          $oOrgao->operacao         = $oLinha->oper;
          $aLinhasRelatorio[$sHash] = $oOrgao;
       }
     }
   } else if ($tipo_agrupa == 3) {
-    
+
     $sHash       = "o{$oLinha->o58_orgao}{$oLinha->o58_unidade}";
     $sHashindice = $sHash;
     if ($oLinha->o58_unidade != 0 && $oLinha->o58_funcao == 0) {
-      
+
       $oOrgao                    = new stdClass();
       $oOrgao->descricaounidade  = $oLinha->o41_descr;
       $oOrgao->descricaoorgao    = $oLinha->o40_descr;
       $oOrgao->codigounidade     = $oLinha->o58_unidade;
       $oOrgao->codigoorgao       = $oLinha->o58_orgao;
-      $oOrgao->projeto           = $oLinha->proj; 
-      $oOrgao->atividade         = $oLinha->ativ; 
+      $oOrgao->projeto           = $oLinha->proj;
+      $oOrgao->atividade         = $oLinha->ativ;
       $oOrgao->operacao          = $oLinha->oper;
       $oOrgao->nos               = array();
       $aLinhasRelatorio[$sHash] = $oOrgao;
     }
   }
-  
+
   $sHash .= "F{$oLinha->o58_funcao}";
   if ($oLinha->o58_funcao != 0 && $oLinha->o58_subfuncao == 0) {
-    
+
     $oFuncao = new stdClass();
-    $oFuncao->descricao = $oLinha->o52_descr; 
+    $oFuncao->descricao = $oLinha->o52_descr;
     $oFuncao->codigo    = db_formatar($oLinha->o58_funcao, "orgao");
-    $oFuncao->tipo      = "funcao"; 
-    $oFuncao->projeto   = $oLinha->proj; 
-    $oFuncao->atividade = $oLinha->ativ; 
+    $oFuncao->tipo      = "funcao";
+    $oFuncao->projeto   = $oLinha->proj;
+    $oFuncao->atividade = $oLinha->ativ;
     $oFuncao->operacao  = $oLinha->oper;
-    
+
     /**
      * verifica se existe existe a quebra e adiciona a linha
      */
     if ($tipo_agrupa <> 1) {
       if (isset($aLinhasRelatorio[$sHashindice])) {
         $aLinhasRelatorio[$sHashindice]->nos[$sHash] = $oFuncao;
-      } 
+      }
     } else {
       $aLinhasRelatorio[0]->nos[$sHash] = $oFuncao;
     }
   }
   $sHash .= "SF{$oLinha->o58_subfuncao}";
   if ($oLinha->o58_subfuncao != 0 && $oLinha->o58_programa == 0) {
-    
+
     $oFuncao = new stdClass();
-    $oFuncao->descricao = $oLinha->o53_descr; 
-    $oFuncao->codigo    = db_formatar($oLinha->o58_funcao,"orgao").".".db_formatar($oLinha->o58_subfuncao,"orgao"); 
-    $oFuncao->tipo      = "subfuncao"; 
-    $oFuncao->projeto   = $oLinha->proj; 
-    $oFuncao->atividade = $oLinha->ativ; 
+    $oFuncao->descricao = $oLinha->o53_descr;
+    $oFuncao->codigo    = db_formatar($oLinha->o58_funcao,"orgao").".".db_formatar($oLinha->o58_subfuncao,"orgao");
+    $oFuncao->tipo      = "subfuncao";
+    $oFuncao->projeto   = $oLinha->proj;
+    $oFuncao->atividade = $oLinha->ativ;
     $oFuncao->operacao  = $oLinha->oper;
-    
+
     /**
      * verifica se existe existe a quebra e adiciona a linha
      */
     if ($tipo_agrupa <> 1) {
       if (isset($aLinhasRelatorio[$sHashindice])) {
         $aLinhasRelatorio[$sHashindice]->nos[$sHash] = $oFuncao;
-      } 
+      }
     } else {
       $aLinhasRelatorio[0]->nos[$sHash] = $oFuncao;
     }
   }
   $sHash .= "P{$oLinha->o58_programa}";
   if ($oLinha->o58_programa != 0 && $oLinha->o58_projativ == 0) {
-    
+
     $oFuncao = new stdClass();
-    $oFuncao->descricao = $oLinha->o54_descr; 
-    $oFuncao->codigo    = db_formatar($oLinha->o58_funcao,"orgao").".".db_formatar($oLinha->o58_subfuncao,"orgao").".".db_formatar($oLinha->o58_programa,"orgao");  
-    $oFuncao->tipo      = "programa"; 
-    $oFuncao->projeto   = $oLinha->proj; 
-    $oFuncao->atividade = $oLinha->ativ; 
+    $oFuncao->descricao = $oLinha->o54_descr;
+    $oFuncao->codigo    = db_formatar($oLinha->o58_funcao,"orgao").".".db_formatar($oLinha->o58_subfuncao,"orgao").".".db_formatar($oLinha->o58_programa,"orgao");
+    $oFuncao->tipo      = "programa";
+    $oFuncao->projeto   = $oLinha->proj;
+    $oFuncao->atividade = $oLinha->ativ;
     $oFuncao->operacao  = $oLinha->oper;
-    
+
     /**
      * verifica se existe existe a quebra e adiciona a linha
      */
     if ($tipo_agrupa <> 1) {
       if (isset($aLinhasRelatorio[$sHashindice])) {
         $aLinhasRelatorio[$sHashindice]->nos[$sHash] = $oFuncao;
-      } 
+      }
     } else {
       $aLinhasRelatorio[0]->nos[$sHash] = $oFuncao;
     }
@@ -286,63 +291,80 @@ for ($i = 0; $i < $iTotalLinhas; $i++) {
   /**
    * verifica os dados do projetp/atividade
    */
-  $sHash .= "PJ{$oLinha->o58_projativ}";  
+  $sHash .= "PJ{$oLinha->o58_projativ}";
   if ($oLinha->o58_projativ != 0 && $oLinha->o58_elemento == 0) {
-    
+
     $oFuncao = new stdClass();
-    $oFuncao->descricao  = $oLinha->o55_descr; 
+    $oFuncao->descricao  = $oLinha->o55_descr;
     $sCodigo             = db_formatar($oLinha->o58_funcao,"orgao").".".db_formatar($oLinha->o58_subfuncao,"orgao").".";
-    $sCodigo            .= db_formatar($oLinha->o58_programa,"orgao").".".db_formatar($oLinha->o58_projativ,"projativ");; 
-    $oFuncao->codigo     = $sCodigo; 
-    $oFuncao->tipo       = "projativ"; 
-    $oFuncao->projeto    = $oLinha->proj; 
-    $oFuncao->atividade  = $oLinha->ativ; 
+    $sCodigo            .= db_formatar($oLinha->o58_programa,"orgao").".".db_formatar($oLinha->o58_projativ,"projativ");;
+    $oFuncao->codigo     = $sCodigo;
+    $oFuncao->tipo       = "projativ";
+    $oFuncao->projeto    = $oLinha->proj;
+    $oFuncao->atividade  = $oLinha->ativ;
     $oFuncao->operacao   = $oLinha->oper;
-    
+
     /**
      * verifica se existe existe a quebra e adiciona a linha
      */
     if ($tipo_agrupa <> 1) {
       if (isset($aLinhasRelatorio[$sHashindice])) {
         $aLinhasRelatorio[$sHashindice]->nos[$sHash] = $oFuncao;
-      } 
+      }
     } else {
       $aLinhasRelatorio[0]->nos[$sHash] = $oFuncao;
     }
   }
   $sHash .= "EL{$oLinha->o58_elemento}";
   if ($oLinha->o58_elemento != 0 && $oLinha->o58_codigo == 0) {
-    
+
     $oFuncao = new stdClass();
-    $oFuncao->descricao = $oLinha->o56_descr; 
-    $oFuncao->codigo    = db_formatar($oLinha->o58_elemento,"elemento"); 
-    $oFuncao->tipo      = "elemento"; 
-    $oFuncao->projeto   = $oLinha->proj; 
-    $oFuncao->atividade = $oLinha->ativ; 
+    $oFuncao->descricao = $oLinha->o56_descr;
+    $oFuncao->codigo    = db_formatar($oLinha->o58_elemento,"elemento");
+    $oFuncao->tipo      = "elemento";
+    $oFuncao->projeto   = $oLinha->proj;
+    $oFuncao->atividade = $oLinha->ativ;
     $oFuncao->operacao  = $oLinha->oper;
-    
+
     /**
      * verifica se existe existe a quebra e adiciona a linha
      */
     if ($tipo_agrupa <> 1) {
       if (isset($aLinhasRelatorio[$sHashindice])) {
         $aLinhasRelatorio[$sHashindice]->nos[$sHash] = $oFuncao;
-      } 
+      }
     } else {
       $aLinhasRelatorio[0]->nos[$sHash] = $oFuncao;
     }
   }
   $sHash .= "R{$oLinha->o58_codigo}";
   if ($oLinha->o58_codigo != 0) {
-    
+
     $oFuncao = new stdClass();
-    $oFuncao->descricao = $oLinha->o15_descr; 
-    $oFuncao->codigo    = db_formatar($oLinha->o58_codigo, "recurso"); 
-    $oFuncao->tipo      = "recurso"; 
-    $oFuncao->projeto   = $oLinha->proj; 
-    $oFuncao->atividade = $oLinha->ativ; 
+    $oFuncao->descricao = $oLinha->o15_descr;
+
+    $origem = 'padrao';
+    if (!empty($_GET['origemRecurso']) && $_GET['origemRecurso'] === 'gestao') {
+        $origem = 'gestao';
+    }
+    if ($origem === 'padrao') {
+        $recurso = RecursoRepository::getRecursoPorCodigo($oLinha->o58_codigo);
+        $oFuncao->codigo    = $recurso->getFonteDeRecurso();
+    } else {
+        $recurso = \App\Domain\Financeiro\Orcamento\Models\FonteRecurso::where('orctiporec_id', $oLinha->o58_codigo)
+            ->where('exercicio', db_getsession("DB_anousu"))
+            ->first();
+
+        $oFuncao->codigo = $recurso->gestao;
+        $oFuncao->descricao = substr($recurso->descricao, 0, 80) ;
+    }
+
+
+    $oFuncao->tipo      = "recurso";
+    $oFuncao->projeto   = $oLinha->proj;
+    $oFuncao->atividade = $oLinha->ativ;
     $oFuncao->operacao  = $oLinha->oper;
-    
+
     /**
      * verifica se existe existe a quebra e adiciona a linha, agrupa o recurso, dentro do nivel caso já exista
      */
@@ -350,19 +372,19 @@ for ($i = 0; $i < $iTotalLinhas; $i++) {
       if (isset($aLinhasRelatorio[$sHashindice])) {
         if (isset($aLinhasRelatorio[$sHashindice]->nos[$sHash])) {
 
-          $aLinhasRelatorio[$sHashindice]->nos[$sHash]->projeto   += $oLinha->proj; 
-          $aLinhasRelatorio[$sHashindice]->nos[$sHash]->atividade += $oLinha->ativ; 
+          $aLinhasRelatorio[$sHashindice]->nos[$sHash]->projeto   += $oLinha->proj;
+          $aLinhasRelatorio[$sHashindice]->nos[$sHash]->atividade += $oLinha->ativ;
           $aLinhasRelatorio[$sHashindice]->nos[$sHash]->operacao  += $oLinha->oper;
         } else {
           $aLinhasRelatorio[$sHashindice]->nos[$sHash] = $oFuncao;
         }
-      } 
+      }
     } else {
-      
+
       if (isset($aLinhasRelatorio[0]->nos[$sHash])) {
-        
-        $aLinhasRelatorio[0]->nos[$sHash]->projeto   += $oLinha->proj; 
-        $aLinhasRelatorio[0]->nos[$sHash]->atividade += $oLinha->ativ; 
+
+        $aLinhasRelatorio[0]->nos[$sHash]->projeto   += $oLinha->proj;
+        $aLinhasRelatorio[0]->nos[$sHash]->atividade += $oLinha->ativ;
         $aLinhasRelatorio[0]->nos[$sHash]->operacao  += $oLinha->oper;
       } else {
         $aLinhasRelatorio[0]->nos[$sHash] = $oFuncao;
@@ -370,6 +392,7 @@ for ($i = 0; $i < $iTotalLinhas; $i++) {
     }
   }
 }
+
 $pdf   = new PDF();
 $pdf->Open();
 $pdf->AliasNbPages();
@@ -387,21 +410,18 @@ $nTotalOperacao  = 0;
  * Desenhos o layout do relatorio.
  */
 foreach ($aLinhasRelatorio as $oLinha) {
-  
   foreach ($oLinha->nos as $oDetalhe) {
-
     $nTotalLinha = $oDetalhe->projeto +$oDetalhe->atividade + $oDetalhe->operacao;
     if ($nTotalLinha == 0) {
       continue;
     }
     if ($pdf->gety() > $pdf->h - 30 || $pagina == 1) {
-   
+
       $pagina = 0;
       $pdf->addpage();
       $pdf->setfont('arial', 'b', 7);
-  
+
       if ($tipo_agrupa != 1) {
-        
         $pdf->cell(0, 0.5, '', "TB", 1, "C", 0);
         $sDescricaoOrgao   = db_formatar($oLinha->codigoorgao, 'orgao').'  -  '.$oLinha->descricaoorgao;
         $pdf->cell(10, $alt, "ÓRGÃO  -  ".$sDescricaoOrgao, 0, 1, "L", 0);
@@ -424,9 +444,9 @@ foreach ($aLinhasRelatorio as $oLinha) {
       $pdf->cell(20, $alt, "TOTAL", 0, 1, "R", 0);
       $pdf->cell(0, $alt, '', "T", 1, "C", 0);
     }
-      
+
     $sAlinhamento = "L";
-    $sTipoFonte =  ""; 
+    $sTipoFonte =  "";
     if ($oDetalhe->tipo == 'recurso') {
       $sAlinhamento = "R";
     }
@@ -445,17 +465,15 @@ foreach ($aLinhasRelatorio as $oLinha) {
      * soma totalizadores
      */
     if ($oDetalhe->tipo == "funcao") {
-      
-      $nTotalProjeto   += $oDetalhe->projeto; 
-      $nTotalAtividade += $oDetalhe->atividade; 
+      $nTotalProjeto   += $oDetalhe->projeto;
+      $nTotalAtividade += $oDetalhe->atividade;
       $nTotalOperacao  += $oDetalhe->operacao;
-     
+
     }
   }
   $pagina = 1;
-  
+
   if ($tipo_agrupa == 2 || $tipo_agrupa == 3) {
-    
     $nTotalLinha = $oLinha->projeto + $oLinha->atividade + $oLinha->operacao;
     $pdf->setfont('arial', 'b', 6);
     $pdf->ln(3);
@@ -480,6 +498,7 @@ $pdf->cell(20, $alt, db_formatar($nTotalOperacao, 'f'), 0, 0, "R", 0);
 $pdf->cell(20, $alt, db_formatar($nTotalLinha, 'f'), 0, 1, "R", 0);
 $pdf->ln(14);
 if ($origem != "O") {
-  assinaturas(&$pdf,&$classinatura,'BG');
+  assinaturas($pdf, $classinatura,'BG');
 }
-include ("fpdf151/geraarquivo.php");
+
+$pdf->Output();

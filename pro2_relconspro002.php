@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_procandam_classe.php");
-require_once("classes/db_proctransfer_classe.php");
-require_once("classes/db_proctransferproc_classe.php");
-require_once("classes/db_procprocessodoc_classe.php");
-require_once("classes/db_proctransand_classe.php");
-require_once("classes/db_proctransferintand_classe.php");
-require_once("classes/db_proctransferint_classe.php");
-require_once("classes/db_procandamint_classe.php");
-require_once("classes/db_procandamintand_classe.php");
-require_once("classes/db_arqproc_classe.php");
-require_once("classes/db_arqandam_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_procandam_classe.php"));
+require_once(modification("classes/db_proctransfer_classe.php"));
+require_once(modification("classes/db_proctransferproc_classe.php"));
+require_once(modification("classes/db_procprocessodoc_classe.php"));
+require_once(modification("classes/db_proctransand_classe.php"));
+require_once(modification("classes/db_proctransferintand_classe.php"));
+require_once(modification("classes/db_proctransferint_classe.php"));
+require_once(modification("classes/db_procandamint_classe.php"));
+require_once(modification("classes/db_procandamintand_classe.php"));
+require_once(modification("classes/db_arqproc_classe.php"));
+require_once(modification("classes/db_arqandam_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $lMostrarMovimento = true;
 $lMostrarApensado  = true;
@@ -87,6 +87,8 @@ $sSqlProcessosApensados = $oDaoProcessosApensados->sql_query_processo_apensado(n
 $rsProcessosApensados   = $oDaoProcessosApensados->sql_record($sSqlProcessosApensados);
 $aProcessosApensados    = db_utils::getCollectionByRecord($rsProcessosApensados, true);
 
+$sDirPluginEditorTexto = "plugins/EditorTextoDespacho";
+$sDirPluginFpdfhtml    = "plugins/fpdfhtml";
 
 if (isset ($codproc) && $codproc != "") {
 
@@ -360,8 +362,16 @@ if (isset ($codproc) && $codproc != "") {
   										$pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   										$pdf->cell(45, $alt, substr($nome,0,25), 0, 0, "L", 0);
   										$pdf->cell(80, $alt, "{$tipo_despacho} {$aTiposTextoDespachos[$codigo_tipo_despacho]}", 0, 0, "L", 0);
-  										$pdf->multicell(65, $alt, $p78_despacho, 0, "L", 0);
-  										$cod_procandamint = $p78_sequencial;
+
+  										//Validamos se o plugin EditorTextoDespacho está instalado para remover as tags HTml do PDF.
+  										if (is_dir($sDirPluginEditorTexto) || is_dir($sDirPluginFpdfhtml)) {
+  										    $sDespacho = html_entity_decode($p78_despacho);
+                                                                                    $pdf->multicell(65, $alt, filter_var($sDespacho, FILTER_SANITIZE_STRING), 0, "L", 0);
+                                                                               } else {
+                                                                                    $pdf->multicell(65, $alt, html_entity_decode($p78_despacho), 0, "L", 0);
+                                                                               }
+
+                                                                               $cod_procandamint = $p78_sequencial;
   									}
   								}
   							}
@@ -397,7 +407,7 @@ if (isset ($codproc) && $codproc != "") {
   										$pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   										$pdf->cell(45, $alt, $usuatual, 0, 0, "L", 0);
   										$pdf->cell(80, $alt, substr("Tranferência Interna - {$p87_codtransferint} para {$idusudestino} - {$usudestino}", 0, 58), 0, 0, "L", 0);
-  										$pdf->multicell(65, $alt, $p88_despacho, 0, "L", 0);
+  										$pdf->multicell(65, $alt, html_entity_decode($p88_despacho), 0, "L", 0);
   										$result_procandamintand = $clprocandamintand->sql_record($clprocandamintand->sql_query_file(null, "*", "p86_codtrans", "p86_codtrans=$p88_codigo and p86_codandam = $p87_codandam "));
   										if ($clprocandamintand->numrows != 0) {
   											db_fieldsmemory($result_procandamintand, 0);
@@ -442,7 +452,15 @@ if (isset ($codproc) && $codproc != "") {
   														$pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   														$pdf->cell(45, $alt, substr($nome,0,25), 0, 0, "L", 0);
   														$pdf->cell(80, $alt, 'Recebeu Transferência Interna', 0, 0, "L", 0);
-  														$pdf->multicell(65, $alt, $p78_despacho, 0, "L", 0);
+  														
+  														//Validamos se o plugin EditorTextoDespacho está instalado para remover as tags HTml do PDF.
+														if (is_dir($sDirPluginEditorTexto) || is_dir($sDirPluginFpdfhtml)) {
+														    $sDespacho = html_entity_decode($p78_despacho);
+														    $pdf->multicell(65, $alt, filter_var($sDespacho, FILTER_SANITIZE_STRING), 0, "L", 0);
+														} else {
+														    $pdf->multicell(65, $alt, html_entity_decode($p78_despacho), 0, "L", 0);
+														}
+
   													} else {
   														$pdf->cell(15, $alt, db_formatar($p78_data, 'd'), 0, 0, "C", 0);
   														$pdf->cell(10, $alt, $p78_hora, 0, 0, "C", 0);
@@ -450,7 +468,13 @@ if (isset ($codproc) && $codproc != "") {
   														$pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   														$pdf->cell(45, $alt, substr($nome,0,25), 0, 0, "L", 0);
   														$pdf->cell(80, $alt, "{$tipo_despacho} {$aTiposTextoDespachos[$codigo_tipo_despacho]}", 0, 0, "L", 0);
-  														$pdf->multicell(65, $alt, $p78_despacho, 0, "L", 0);
+  														//Validamos se o plugin EditorTextoDespacho está instalado para remover as tags HTml do PDF.
+														if (is_dir($sDirPluginEditorTexto) || is_dir($sDirPluginFpdfhtml)) {
+														    $sDespacho = html_entity_decode($p78_despacho);
+														    $pdf->multicell(65, $alt, filter_var($sDespacho, FILTER_SANITIZE_STRING), 0, "L", 0);
+														} else {
+														    $pdf->multicell(65, $alt, html_entity_decode($p78_despacho), 0, "L", 0);
+														}
   													}
   													$cod_usu = $p78_usuario;
   													$cod_procandamint = $p78_sequencial;
@@ -507,7 +531,15 @@ if (isset ($codproc) && $codproc != "") {
   								$pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   							  $pdf->cell(45, $alt, substr($nome,0,25), 0, 0, "L", 0);
   							  $pdf->cell(80, $alt, "{$tipo_despacho} {$aTiposTextoDespachos[$codigo_tipo_despacho]}", 0, 0, "L", 0);
-  								$pdf->multicell(65, $alt, $p78_despacho, 0, "L", 0);
+			            
+							  //Validamos se o plugin EditorTextoDespacho está instalado para remover as tags HTml do PDF.
+							  if (is_dir($sDirPluginEditorTexto) || is_dir($sDirPluginFpdfhtml)) {
+							      $sDespacho = html_entity_decode($p78_despacho);
+							      $pdf->multicell(65, $alt, filter_var($sDespacho, FILTER_SANITIZE_STRING), 0, "L", 0);
+							  } else {
+							    $pdf->multicell(65, $alt, html_entity_decode($p78_despacho), 0, "L", 0);
+							  }
+
   								$cod_procandamint = $p78_sequencial;
   							}
   						}
@@ -526,7 +558,15 @@ if (isset ($codproc) && $codproc != "") {
   								$pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   								$pdf->cell(45, $alt, substr($nome,0,25), 0, 0, "L", 0);
   								$pdf->cell(80, $alt, 'Despacho Interno', 0, 0, "L", 0);
-  								$pdf->multicell(65, $alt, $p78_despacho, 0, "L", 0);
+  								
+								  //Validamos se o plugin EditorTextoDespacho está instalado para remover as tags HTml do PDF.
+								  if (is_dir($sDirPluginEditorTexto) || is_dir($sDirPluginFpdfhtml)) {
+								      $sDespacho = html_entity_decode($p78_despacho);
+								      $pdf->multicell(65, $alt, filter_var($sDespacho, FILTER_SANITIZE_STRING), 0, "L", 0);
+								  } else {
+								    $pdf->multicell(65, $alt, html_entity_decode($p78_despacho), 0, "L", 0);
+								  }
+
   								$result_procandamintand = $clprocandamintand->sql_record($clprocandamintand->sql_query_file(null, "*", "p86_codtrans", "p86_codtrans=$p88_codigo and p86_codandam = $p87_codandam "));
   								if ($clprocandamintand->numrows != 0) {
 
@@ -557,7 +597,15 @@ if (isset ($codproc) && $codproc != "") {
   														$pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   														$pdf->cell(45, $alt, substr($nome,0,25), 0, 0, "L", 0);
   														$pdf->cell(80, $alt, 'Recebeu Transferência Interna', 0, 0, "L", 0);
-  														$pdf->multicell(65, $alt, $p78_despacho, 0, "L", 0);
+  														
+													      //Validamos se o plugin EditorTextoDespacho está instalado para remover as tags HTml do PDF.
+													      if (is_dir($sDirPluginEditorTexto) || is_dir($sDirPluginFpdfhtml)) {
+														  $sDespacho = html_entity_decode($p78_despacho);
+														  $pdf->multicell(65, $alt, filter_var($sDespacho, FILTER_SANITIZE_STRING), 0, "L", 0);
+													      } else {
+														$pdf->multicell(65, $alt, html_entity_decode($p78_despacho), 0, "L", 0);
+													      }
+
   													} else {
   														$pdf->cell(15, $alt, db_formatar($p78_data, 'd'), 0, 0, "C", 0);
   														$pdf->cell(10, $alt, $p78_hora, 0, 0, "C", 0);
@@ -565,7 +613,13 @@ if (isset ($codproc) && $codproc != "") {
   														$pdf->cell(25, $alt, $nomeinstabrev, 0, 0, "L", 0);
   														$pdf->cell(45, $alt, substr($nome,0,25), 0, 0, "L", 0);
   														$pdf->cell(80, $alt, "{$tipo_despacho} {$aTiposTextoDespachos[$codigo_tipo_despacho]}", 0, 0, "L", 0);
-  														$pdf->multicell(65, $alt, $p78_despacho, 0, "L", 0);
+  														//Validamos se o plugin EditorTextoDespacho está instalado para remover as tags HTml do PDF.
+													      if (is_dir($sDirPluginEditorTexto) || is_dir($sDirPluginFpdfhtml)) {
+														  $sDespacho = html_entity_decode($p78_despacho);
+														  $pdf->multicell(65, $alt, filter_var($sDespacho, FILTER_SANITIZE_STRING), 0, "L", 0);
+													      } else {
+														$pdf->multicell(65, $alt, html_entity_decode($p78_despacho), 0, "L", 0);
+													      }
   											}
   											$cod_usu = $p78_usuario;
   											$cod_procandamint = $p78_sequencial;
@@ -592,7 +646,7 @@ if (isset ($codproc) && $codproc != "") {
   				$pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   				$pdf->cell(45, $alt, substr($nome,0,25), 0, 0, "L", 0);
   				$pdf->cell(80, $alt, 'Processo Arquivado', 0, 0, "L", 0);
-  				$pdf->multicell(65, $alt, $p61_despacho, 0, "L", 0);
+  				$pdf->multicell(65, $alt, html_entity_decode($p61_despacho), 0, "L", 0);
   
   				if (isset ($p90_andatual) && $p90_andatual == "t") {
   					$pdf->cell(15, $alt, db_formatar($p61_dtandam, 'd'), 0, 0, "C", 0);
@@ -601,7 +655,7 @@ if (isset ($codproc) && $codproc != "") {
   				  $pdf->cell(25, $alt, substr($nomeinstabrev,0,14), 0, 0, "L", 0);
   					$pdf->cell(45, $alt, $nome, 0, 0, "L", 0);
   					$pdf->cell(80, $alt, 'Recebeu Processo', 0, 0, "L", 0);
-  					$pdf->multicell(65, $alt, $p58_despacho, 0, "L", 0);
+  					$pdf->multicell(65, $alt, html_entity_decode($p58_despacho), 0, "L", 0);
   				}
   			}
   		}

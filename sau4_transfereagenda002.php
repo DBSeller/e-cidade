@@ -26,17 +26,17 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 
-include("classes/db_agendamentos_ext_classe.php");
-include("classes/db_undmedhorario_ext_classe.php");
+include(modification("classes/db_agendamentos_ext_classe.php"));
+include(modification("classes/db_undmedhorario_ext_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
 ?>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
