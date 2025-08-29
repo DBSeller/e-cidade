@@ -1,0 +1,5 @@
+-- init.sql
+CREATE ROLE ecidade WITH SUPERUSER LOGIN PASSWORD 'ecidade';
+CREATE ROLE plugin WITH SUPERUSER LOGIN PASSWORD 'plugin';
+CREATE ROLE dbseller WITH LOGIN PASSWORD 'dbseller';
+CREATE DATABASE ecidade OWNER ecidade;

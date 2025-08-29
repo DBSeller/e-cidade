@@ -103,6 +103,12 @@
             "$(which php5.6) bin/console extension:unpack desktop-package.tar.gz --force",
             "$(which php5.6) bin/console extension:install Desktop dbseller"
         ],
+        "configure-desktop": [
+            "$(which php5.6) -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "$(which php5.6) -r \"file_exists('libs/db_conn.php') || copy('libs/db_conn.php.dist', 'libs/db_conn.php');\"",
+            "$(which php5.6) -r \"file_exists('config/ecidade_config.php') || copy('config/ecidade_config.php.dist', 'config/ecidade_config.php');\"",
+            "$(which php5.6) -r \"file_exists('config/application.php') || copy('config/application.default.php', 'config/application.php');\""
+        ],
         "install-dbug": [
             "$(which php5.6) bin/console extension:pack DBug",
             "$(which php5.6) bin/console extension:unpack dbug-package.tar.gz --force",
@@ -114,9 +120,6 @@
         ],
         "psrcheck": [
             "ci/scripts/sniff.sh"
-        ],
-        "post-root-package-install": [
-            "$(which php5.6) -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
             "$(which php5.6) artisan key:generate"

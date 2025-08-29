@@ -32,14 +32,14 @@ $DB_EXEC      = "/usr/bin/dbs";
 $DB_NETSTAT   = "netstat";
 
 // Variaveis de Configuracao
-$DB_USUARIO   = ""; // Usuário do PostgreSQL
-$DB_SENHA     = ""; // Senha do usuário do PostgreSQL
-$DB_SERVIDOR  = ""; // Ip do servidor para a conexão com a base de dados
-$DB_PORTA     = ""; // Porta para conexao com o banco de dados (porta do Pool de Conexoes quando utilizado)
-$DB_PORTA_ALT = ""; // Porta para conexao direta com PostgreSQL quando tivermos um pool de conexao
-$DB_BASE      = ""; // Nome da base de dados
+$DB_USUARIO   = "";
+$DB_SENHA     = "";
+$DB_SERVIDOR  = "";
+$DB_PORTA     = "";
+$DB_PORTA_ALT = "";
+$DB_BASE      = "";
 $DB_SELLER    = "";
-$DB_VALIDA_REQUISITOS = false; // Variável para validar configurações de instalação do sistema.
-$lUtilizaCaptcha = false; // Variável para habilitar a utilização de captcha
-$lVeriricaIpPrivado = false; // Variável para habilitar utilização de captcha somente para IPs públicos (externos)
+$DB_VALIDA_REQUISITOS = false;
+$lUtilizaCaptcha = false;
+$lVeriricaIpPrivado = false;
 ?>

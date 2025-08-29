@@ -1,8 +1,8 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 LABEL maintainer="equipe.infraestrutura@dbseller.com.br"
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
 
@@ -10,9 +10,11 @@ RUN apt update && \
   apt install -y tzdata locales software-properties-common curl unzip zip pigz vim sqlite3 wget && \
   apt-add-repository -y ppa:ondrej/php
 
-ENV TZ America/Sao_Paulo
-RUN echo $TZ > /etc/timezone && \
-  cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
+RUN echo 'America/Sao_Paulo' > /etc/timezone && \
+  rm /etc/localtime && \
+  ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && \
+  echo "tzdata tzdata/Areas select America" | debconf-set-selections && \
+  echo "tzdata tzdata/Zones/America select Sao_Paulo" | debconf-set-selections && \
   dpkg-reconfigure -f noninteractive tzdata
 
 RUN localedef -i pt_BR -c -f ISO-8859-1 -A /usr/share/locale/locale.alias pt_BR && \
@@ -20,10 +22,11 @@ RUN localedef -i pt_BR -c -f ISO-8859-1 -A /usr/share/locale/locale.alias pt_BR 
   dpkg-reconfigure locales
 
 RUN touch /etc/apt/sources.list.d/pgdg.list && \
-  echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
-  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+  curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor > apt.postgresql.org.gpg && \
+  install -o root -g root -m 644 apt.postgresql.org.gpg /usr/share/keyrings/ && \
+  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apt.postgresql.org.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
   apt update && \
-  apt -y install postgresql-client-9.5
+  apt -y install postgresql-client-16
 
 RUN apt update && \
   apt install -y --no-install-recommends \
@@ -85,5 +88,4 @@ RUN rm /var/www/html/index.html
 
 HEALTHCHECK --interval=5s --timeout=3s --retries=3 CMD curl -f http://localhost || exit 1
 
-CMD apachectl -D FOREGROUND
-
+CMD ["apachectl", "-D", "FOREGROUND"]
