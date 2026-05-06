@@ -14,6 +14,37 @@ O **e-Cidade** automatiza, agiliza e simplifica os processos da administração 
 
 ---
 
+## 📌 Repositório Oficial
+
+O repositório **oficial** do projeto e-Cidade está disponível no Portal do Software Público Brasileiro:
+
+🔗 http://softwarepublico.gov.br/gitlab/e-cidade/
+
+Este é o ambiente institucional de referência para o projeto, onde são mantidas as versões oficiais.
+
+---
+
+## 🔄 Repositório Espelho (Mirror) – DBSeller
+
+Com o objetivo de ampliar a colaboração, facilitar contribuições e oferecer maior flexibilidade no fluxo de desenvolvimento, foi disponibilizado um repositório espelho (mirror) no GitHub:
+
+🔗 https://github.com/DBSeller/e-cidade
+---
+Este repositório:
+
+- Atua como ambiente colaborativo adicional;
+- Permite maior interação da comunidade;
+- Facilita o envio e acompanhamento de contribuições (issues e pull requests).
+
+---
+## 🔁 Sincronização entre Repositórios
+
+Todo código-fonte mantido no repositório do GitHub é sincronizado com o repositório oficial do Portal do Software Público.
+
+✔ O repositório do Portal do Software Público continuará sendo sempre a fonte oficial do projeto.  
+✔ As contribuições realizadas via GitHub serão incorporadas e refletidas no repositório oficial.
+---
+
 ## 🚀 Tecnologias
 
 - PHP 5.6 (Backend)
@@ -99,7 +130,13 @@ Para dúvidas, suporte ou alinhamentos, utilize o canal oficial no Telegram:
 ```
 Em construção
 ```
+---
 
+## DBSeller
+
+O repositório espelho é mantido com apoio da DBSeller Serviços de Informática Ltda., contribuindo para a evolução contínua do projeto e sua comunidade.
+
+---
 ---
 
 ## 📌 Observações
