@@ -1,124 +1,109 @@
-# e-Cidade - Ambiente e Base de Dados
+# 🏙️ e-Cidade
 
-Bem-vindo ao **e-Cidade** rodando em containers Docker.  
-Este projeto foi preparado para simplificar ao máximo a instalação e execução da aplicação. 🚀
+O **e-Cidade** é um sistema integrado para gestão municipal que abrange as áreas:
+- financeira
+- patrimonial
+- tributária
+- recursos humanos
+- educação
+- saúde
 
-### Instalação do Docker
- - [docker](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/)
- - [docker-compose](https://docs.docker.com/compose/install/#install-compose)
+É uma ferramenta a ser utilizada pelos servidores públicos do município e pelos cidadãos.
 
-&nbsp;
-
----
-
-## 📥 1. Clonar o projeto
-
-Clone este repositório na sua máquina:  
-
-```bash
-git clone http://softwarepublico.gov.br/gitlab/e-cidade/e-cidade.git
-```
-Entre na pasta do projeto
-```bash
-cd e-cidade
-```
-
-## 🐳 2. Subir os containers
-
-Deverá ser executado o `docker-compose` da raiz do e-cidade.
-
-Todos os containers possui um volume mapeado da raiz do e-cidade para a pasta `/var/www/html/ de cada container.
-
-Construa e inicie os serviços com:
-
-```bash
-docker-compose up -d --build
-```
-
-## 🛠️ Passo 3 – Descompacte o banco de dados
-
-Execute o comando para descompactar o banco de dados:
-
-```bash
-docker exec -it ecidade_php56 gunzip docker/database/ecidade_base.sql.gz
-```
-
-## 🛠️ Passo 4 – Executar o Script de Instalação
-
-Execute o script de instalação dentro do container PHP:
-
-```bash
-docker exec -it ecidade_php56 bash docker/install.sh
-```
-
-## 🛠️ Passo 5 Ajustar permissões do e-Cidade
-
-Deverá ser executado na raiz do e-cidade.
-Para garantir a execução correta, aplique as permissões necessárias:
-
-```bash
-docker exec -it ecidade_php56 chmod -R 775 /var/www/html
-```
-
-## 🔑 Passo 6 – Acessar a Aplicação
-
-Após a instalação, acesse o sistema nos endereços:
-
-- [http://localhost:8080](http://localhost:8080)
-- [http://127.0.0.1:8080](http://127.0.0.1:8080)
-
-**Credenciais de Acesso:**
-
-- **Login:** `dbseller`
-- **Senha:** `dbseller`
-
-&nbsp;
+O **e-Cidade** automatiza, agiliza e simplifica os processos da administração pública, tornando a gestão mais eficiente, transparente e melhorando o atendimento aos cidadãos.
 
 ---
 
-## 🧰 Solução de Problemas
+## 🚀 Tecnologias
 
-- **Porta 8080 em uso?**  
-  Altere no `docker-compose.yml` de `8080:80` para outra, como `8081:80`, e acesse via [http://localhost:8081](http://localhost:8081).
+- PHP 5.6 (Backend)
+- Html/Javascript (Frontend)
+- PostgreSQL  
+- Apache/Nginx  
+- Docker (Ambiente de Desenvolvimento)  
 
-- **Script `install.sh` não encontrado?**  
-  Verifique se você está no diretório certo e se o script está localizado em `docker/install.sh`.
+---
 
-- **Erro de permissão no script?**  
-  Rode o comando abaixo para garantir permissão de execução:
+## ⚠️ Requisitos
 
-  ```bash
-  chmod +x docker/install.sh
-  ```
-- **Precisa refazer o e-Cidade e o banco de dados?**  
-  Rode o comando abaixo para remover(-v: Volumes,--rmi all: Imagens) e após rode o passo 4 e 5:
+> ⚠️ Projeto utiliza **PHP 5.6 (legado)**. Prefira Docker.
 
-  ```bash
-  docker-compose down -v --rmi all
-  ```
-  
-## Estrutura das imagens
+---
+
+## 🐳 Docker (Recomendado)
+
+A configuração está na pasta `/docker`.
+
+📄 Documentação:  
+https://github.com/DBSeller/e-cidade/blob/master/docker/README.md
+
+---
+
+## ⚙️ Instalação Manual
+
+- Em Construção
+
+---
+
+## 🤝 Como Contribuir
+
+Contribuições são bem-vindas! Siga o fluxo abaixo:
+
+### 1. Faça um fork do projeto
+
+Clique em **Fork** no GitHub.
+
+### 2. Crie uma branch
+
+```bash
+git checkout -b minha-feature
+```
+
+### 3. Faça suas alterações
+
+Implemente melhorias ou correções.
+
+### 4. Commit
+
+```bash
+git commit -m "feat: descrição da alteração"
+```
+
+### 5. Envie para seu fork
+
+```bash
+git push origin minha-feature
+```
+
+### 6. Abra um Pull Request
+
+- Acesse o repositório original  
+- Clique em **Compare & Pull Request**  
+- Descreva claramente sua alteração  
+
+---
+
+## 📢 Canal de Comunicação
+
+Para dúvidas, suporte ou alinhamentos, utilize o canal oficial no Telegram:
+
+- 💬 **Telegram (grupo oficial do projeto)**
+  https://t.me/eCidadeCE
+  Utilize para comunicação direta com a equipe e demais colaboradores
+
+> ⚠️ Para demandas técnicas, sempre que possível registre também uma Issue para rastreabilidade.
+---
+
+## 📂 Estrutura
 
 ```
-                              +----------+
-                              |  browser |          
-                              +----------+
-                                |       |
-                                |       |
-                            +----------------+  
-                            | localhost:8080 |
-                            +----------------+  
-                                |       |               
-                                |       |             
-                            +----------------+            
-                            | ecidade-apache |            
-                            +----------------+            
-                                |        |                
-                                |        |         
-                            ____|        |_____           
-                          /                   \          
-                          /                     \         
-                  +------------------------------------+
-                  |           POSTGRES 5432            |
-                  +------------------------------------+
+Em construção
 ```
+
+---
+
+## 📌 Observações
+
+- Projeto legado  
+- Use Docker sempre que possível  
+
