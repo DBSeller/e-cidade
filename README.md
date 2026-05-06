@@ -29,6 +29,7 @@ Este é o ambiente institucional de referência para o projeto, onde são mantid
 Com o objetivo de ampliar a colaboração, facilitar contribuições e oferecer maior flexibilidade no fluxo de desenvolvimento, foi disponibilizado um repositório espelho (mirror) no GitHub:
 
 🔗 https://github.com/DBSeller/e-cidade
+
 ---
 Este repositório:
 
@@ -41,8 +42,8 @@ Este repositório:
 
 Todo código-fonte mantido no repositório do GitHub é sincronizado com o repositório oficial do Portal do Software Público.
 
-✔ O repositório do Portal do Software Público continuará sendo sempre a fonte oficial do projeto.  
-✔ As contribuições realizadas via GitHub serão incorporadas e refletidas no repositório oficial.
+- O repositório do Portal do Software Público continuará sendo sempre a fonte oficial do projeto.  
+- As contribuições realizadas via GitHub serão incorporadas e refletidas no repositório oficial.
 ---
 
 ## 🚀 Tecnologias
@@ -136,7 +137,6 @@ Em construção
 
 O repositório espelho é mantido com apoio da DBSeller Serviços de Informática Ltda., contribuindo para a evolução contínua do projeto e sua comunidade.
 
----
 ---
 
 ## 📌 Observações
