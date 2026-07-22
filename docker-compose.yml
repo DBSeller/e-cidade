@@ -1,6 +1,4 @@
-version: '3.9'
 services:
-
   ecidade_php56:
     build:
       context: ./docker/php56-apache
@@ -14,7 +12,7 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
     volumes:
-        - ./:/var/www/html/
+        - ./ecidade:/var/www/html/
     networks:
       - ecidade
 
